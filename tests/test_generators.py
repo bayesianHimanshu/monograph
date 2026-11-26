@@ -13,10 +13,10 @@ from rdflib import OWL, RDF, RDFS, BNode, Graph, Literal, URIRef
 from monograph import wiring
 from monograph.core.meta import OntClass, OntProp
 from monograph.core.models import Entity
+from monograph.core.regex import RegexSubsetError
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.vocab import Vocabulary
 from monograph.gen.artifacts import JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE
-from monograph.gen.regex import RegexSubsetError
 from monograph.gen.shacl import SH
 from monograph.gen.turtle import TurtleError, TurtleWriter
 
@@ -96,7 +96,7 @@ def test_pattern_outside_subset_fails_generation() -> None:
         code: Annotated[str, OntProp("code", "code"), Field(pattern=r"^\d+$")]
 
     spec = analyze((Entity, Bad), "0.0.0")
-    with pytest.raises(RegexSubsetError, match="escape"):
+    with pytest.raises(RegexSubsetError, match="canonical"):
         wiring.artifact_builder(spec, V).build()
 
 
@@ -119,8 +119,8 @@ def test_turtle_writer_round_trips_through_rdflib(files: dict[str, str]) -> None
 
 
 def test_ddl_lists_what_postgres_cannot_enforce(spec: SchemaSpec) -> None:
+    from monograph.core.regex import check_pattern
     from monograph.gen.ddl import DdlGenerator
-    from monograph.gen.regex import check_pattern
 
     result = DdlGenerator(spec, check_pattern).generate()
     kinds = {(u.cls, u.kind) for u in result.unenforced}

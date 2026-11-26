@@ -16,6 +16,7 @@ from rdflib import OWL, RDF, RDFS, XSD, Graph
 from monograph.core.instances import Instantiator
 from monograph.core.meta import DEFAULT_BASE
 from monograph.core.models import MODELS
+from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.version import SCHEMA_VERSION
 from monograph.core.vocab import Vocabulary
@@ -23,7 +24,6 @@ from monograph.gen.artifacts import DDL_FILE, JSON_SCHEMA_FILE, OWL_FILE, SHACL_
 from monograph.gen.ddl import DdlGenerator
 from monograph.gen.jsonschema import JsonSchemaGenerator
 from monograph.gen.owl import OwlGenerator
-from monograph.gen.regex import check_pattern
 from monograph.gen.shacl import SH, ShaclGenerator
 from monograph.gen.turtle import TurtleWriter
 from monograph.harness.results import ResultsWriter

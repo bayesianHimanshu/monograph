@@ -9,10 +9,10 @@ from typing import Annotated
 import typer
 
 from monograph import wiring
+from monograph.core.regex import RegexSubsetError
 from monograph.core.spec import SchemaError
 from monograph.core.vocab import Vocabulary
 from monograph.gen.artifacts import write_artifacts
-from monograph.gen.regex import RegexSubsetError
 from monograph.validate.drift import DriftChecker
 
 logging.getLogger("rdflib").setLevel(logging.ERROR)  # invalid IRIs in negative tests are expected
@@ -173,8 +173,8 @@ def measure(
     from monograph.core import models
     from monograph.core.instances import Instantiator
     from monograph.core.meta import DEFAULT_BASE
+    from monograph.core.regex import check_pattern
     from monograph.gen.ddl import DdlGenerator
-    from monograph.gen.regex import check_pattern
     from monograph.harness.measure import Measurement, record_conformance, record_postgres
     from monograph.harness.property_run import PropertyAgreementRun
     from monograph.ingest.openfda import ENDPOINTS, RawCache

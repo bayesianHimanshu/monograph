@@ -13,9 +13,9 @@ import pytest
 
 from monograph import wiring
 from monograph.core.instances import Instantiator
+from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec
 from monograph.gen.ddl import DdlGenerator
-from monograph.gen.regex import check_pattern
 from monograph.rdf.mapping import RdfMapper
 from monograph.validate.fixtures import Fixture, FixtureLoader
 from monograph.validate.postgres_matrix import PgMatrix, PostgresMatrixRun, scratch_schema

@@ -16,10 +16,10 @@ from pydantic import BaseModel
 from rdflib import Graph
 
 from monograph.core.instances import Instantiator
+from monograph.core.regex import RegexSubsetError
 from monograph.core.spec import SchemaSpec
 from monograph.gen.artifacts import ArtifactBuilder
 from monograph.gen.ddl import DdlResult
-from monograph.gen.regex import RegexSubsetError
 from monograph.harness.property_run import PropertyAgreementRun
 from monograph.harness.results import ResultsWriter
 from monograph.ingest.conformance import ConformanceReport
