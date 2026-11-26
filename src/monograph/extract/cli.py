@@ -183,6 +183,30 @@ def _prereg_committed(root: Path) -> bool:
     return tracked.returncode == 0 and clean.returncode == 0
 
 
+def frozen_drift(root: Path) -> list[str]:
+    """Files listed with a sha256 in PREREG's frozen-artifact table whose content no longer matches, and
+    the as-sent system prompt and schema hashes if they changed."""
+    import hashlib
+    import re
+
+    from monograph.extract.prompts import load_prompts
+    from monograph.extract.setup import PROMPT_VERSION
+    from monograph.gen.artifacts import EXTRACTION_SCHEMA_FILE
+
+    text = (root / "docs" / "h4" / "PREREG.md").read_text(encoding="utf-8")
+    out = []
+    for path, digest in re.findall(r"^\| `([^`]+)` \| `([0-9a-f]{64})` \|$", text, re.MULTILINE):
+        target = root / path
+        if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            out.append(path)
+    schema = json.loads((wiring.generated_dir(root) / EXTRACTION_SCHEMA_FILE).read_text())
+    prompts = load_prompts(PROMPT_VERSION, schema)
+    for name, digest in (("system_prompt_sha256", prompts.system_hash), ("schema_sha256", prompts.schema_hash)):
+        if not re.search(rf"`{name}` \| `{digest}`", text):
+            out.append(name)
+    return out
+
+
 def _existing_records(root: Path, split: str) -> list[dict[str, Any]]:
     from monograph.harness.results import read_results
 
@@ -221,6 +245,8 @@ def run(
     if split == "test":
         if not _prereg_committed(root):
             raise typer.Exit(code=_fail("docs/h4/PREREG.md must be committed and unchanged before a test run"))
+        if drifted := frozen_drift(root):
+            raise typer.Exit(code=_fail(f"frozen artifacts changed since PREREG: {', '.join(drifted)}"))
         done = {(r["details"]["model"], r["details"]["arm"]) for r in _existing_records(root, "test")}
         repeat = [(m, a) for m in models for a in arms if (m, a) in done]
         if repeat and deviation is None:
