@@ -23,7 +23,7 @@ from monograph.extract.score import (
     usable,
     verdict,
 )
-from monograph.extract.sources.dailymed import SplDocument, parse_spl
+from monograph.extract.sources.dailymed import NarrativeSection, SplDocument, parse_spl
 
 from .conftest import ROOT
 
@@ -194,3 +194,73 @@ def test_a_gold_ingredient_is_never_aliased_to_another() -> None:
         "E1QI2CQQ1I", "NITROFURANTOIN MONOHYDRATE", Decimal(75), "mg", Decimal(1), "1", (("927AH8112L", "x"),)
     )
     assert strength_aliases([GoldProduct(None, "N", "CAPSULE", ("ORAL",), (plain, hydrate), (), (), False)]) == {}
+
+
+def _one_strength_doc(text_strengths: str) -> SplDocument:
+    from monograph.extract.sources.dailymed import GoldIngredient, GoldProduct
+
+    cipro = GoldIngredient("5E8K9I0O4U", "CIPROFLOXACIN", Decimal(500), "mg", Decimal(1), "1")
+    product = GoldProduct("1-1", "Ciprofloxacin", "TABLET, FILM COATED", ("ORAL",), (cipro,), (), (), False)
+    return SplDocument(
+        "c1",
+        1,
+        "34391-3",
+        "Ciprofloxacin",
+        (NarrativeSection("34069-5", "HOW SUPPLIED", text_strengths),),
+        (product,),
+        False,
+    )
+
+
+def _tablet(mg: int, name: str = "ciprofloxacin") -> dict[str, Any]:
+    ingredient = {
+        "substance_name": name,
+        "strength_value": mg,
+        "strength_unit": "mg",
+        "basis_value": 1,
+        "basis_unit": "1",
+    }
+    return {
+        "name": f"Cipro {mg}",
+        "dosage_form": "TABLET, FILM COATED",
+        "routes": ["ORAL"],
+        "ingredients": [ingredient],
+        "packages": [],
+    }
+
+
+@pytest.fixture(scope="module")
+def cipro_resolver(spec: SchemaSpec) -> SubstanceResolver:
+    from monograph.extract.resolve import SubstanceSource
+
+    ref = ReferenceGraph(spec, V, wiring.mapper(spec, V))
+    ref.add_substances(
+        [
+            SubstanceSource("5E8K9I0O4U", "CIPROFLOXACIN", "dailymed-uniis"),
+            SubstanceSource("R16CO5Y76E", "ASPIRIN", "dailymed-uniis"),
+        ]
+    )
+    return SubstanceResolver(ref, V)
+
+
+def test_other_strengths_printed_in_the_text_do_not_count_against_f1(cipro_resolver: SubstanceResolver) -> None:
+    doc = _one_strength_doc("Tablets of 250 mg, 500 mg and 750 mg.")
+    score = _score(doc, {"products": [_tablet(250), _tablet(500), _tablet(750)]}, cipro_resolver)
+    assert (score.f1, score.other_strengths, score.products_extracted) == (1.0, 2, 1)
+
+
+def test_an_unprinted_strength_or_a_foreign_substance_is_still_a_false_positive(
+    cipro_resolver: SubstanceResolver,
+) -> None:
+    doc = _one_strength_doc("Tablets of 500 mg.")
+    assert _score(doc, {"products": [_tablet(500), _tablet(750)]}, cipro_resolver).f1 < 1  # 750 not printed
+    doc = _one_strength_doc("Tablets of 500 mg and 81 mg.")
+    assert _score(doc, {"products": [_tablet(500), _tablet(81, "aspirin")]}, cipro_resolver).f1 < 1
+
+
+def test_repeated_kit_parts_state_one_fact(cipro_resolver: SubstanceResolver) -> None:
+    from dataclasses import replace
+
+    doc = _one_strength_doc("Tablets of 500 mg.")
+    kit = replace(doc, products=(doc.products[0], doc.products[0]))
+    assert _score(kit, {"products": [_tablet(500)]}, cipro_resolver).f1 == 1.0

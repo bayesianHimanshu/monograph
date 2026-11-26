@@ -133,6 +133,7 @@ class H4Report:
                         _pct(a["violation_free_rate"]),
                         _pct(a.get("refusal_rate")),
                         _pct(a.get("truncation_rate")),
+                        a.get("other_strengths", 0),
                         "yes" if a.get("usable") else "no: " + ", ".join(failing),
                     ]
                 )
@@ -152,6 +153,7 @@ class H4Report:
                 "Violation-free",
                 "Refused",
                 "Truncated",
+                "Other strengths",
                 "Usable",
             ],
             rows,

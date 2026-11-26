@@ -4,7 +4,13 @@ Definitions (pre-registered in docs/h4/PREREG.md; this module is the executable 
 
 * Ingredient tuple: (UNII, strength per one basis unit, numerator dimension, denominator unit), after
   converting mass to mg and volume to mL. Extracted names get their UNII from the deterministic resolver;
-  an unresolved name yields no UNII and cannot match. Tuples are pooled per label as a multiset.
+  an unresolved name yields no UNII and cannot match. A label's tuples are the distinct tuples of its
+  products (a kit's repeated parts, or one strength split into package-size products, state one fact).
+* Other strengths: an extracted product that aligns to no gold product, uses only the label's gold
+  substances, matches no gold tuple and prints every strength value in the text is a strength the
+  narrative describes but this SPL's product data omits. It is counted on its own (`other_strengths`)
+  and left out of F1, product and NDC counts; its values still enter the hallucination and
+  unresolvable rates.
 * Strength basis: when the SPL states an ingredient's strength in terms of its active moiety (classCode
   ACTIM) or a reference substance (ACTIR), an extracted name resolving to that substance counts as the
   gold ingredient. ACTIB strengths are of the ingredient itself and get no such alias.
@@ -123,6 +129,47 @@ def strength_aliases(gold: Sequence[GoldProduct]) -> dict[str, str]:
     }
 
 
+def label_tuples(gold: Sequence[GoldProduct]) -> Counter[Tuple]:
+    """The label's distinct gold tuples (each counted once: a kit's repeated parts or one strength split
+    into package-size products state one fact)."""
+    return Counter(set(sum((gold_tuples(p) for p in gold), Counter())))
+
+
+def label_extracted_tuples(
+    extracted: Sequence[Mapping[str, Any]], resolver: SubstanceResolver, aliases: Mapping[str, str]
+) -> Counter[Tuple]:
+    return Counter(set(sum((extracted_tuples(p, resolver, aliases) for p in extracted), Counter())))
+
+
+def other_strengths(
+    gold: Sequence[GoldProduct], extracted: Sequence[Mapping[str, Any]], resolver: SubstanceResolver, text: str
+) -> set[int]:
+    """Indices of extracted products for other strengths of the label's own product: not aligned to any gold
+    product, every ingredient resolving to one of the label's gold substances, no tuple equal to a gold
+    tuple, and every strength value printed in the text. Narratives often describe every strength while one
+    SPL's product data covers only some; such products are faithful to the text, so they are counted on
+    their own and left out of F1 and the product and NDC counts. Their values still enter the
+    hallucination and unresolvable rates."""
+    aliases = strength_aliases(gold)
+    gold_set = set(label_tuples(gold))
+    gold_uniis = {t[0] for t in gold_set}
+    numbers = _numbers(text)
+    aligned = set(align(gold, extracted, resolver).values())
+    out = set()
+    for index, product in enumerate(extracted):
+        tuples = set(extracted_tuples(product, resolver, aliases))
+        values = [_dec(str(i.get("strength_value"))) for i in _items(product, "ingredients")]
+        if (
+            index not in aligned
+            and tuples
+            and {t[0] for t in tuples} <= gold_uniis
+            and not tuples & gold_set
+            and all(v is not None and v.normalize() in numbers for v in values)
+        ):
+            out.add(index)
+    return out
+
+
 def _products(payload: Any) -> list[dict[str, Any]]:
     if not isinstance(payload, dict) or not isinstance(payload.get("products"), list):
         return []
@@ -208,6 +255,7 @@ class LabelScore:
     route_correct: int = 0
     route_total: int = 0
     products_extracted: int = 0
+    other_strengths: int = 0  # extracted products for strengths the text describes but this SPL's data omits
     ndc_tp: int = 0
     ndc_fp: int = 0
     ndc_fn: int = 0
@@ -262,10 +310,13 @@ class _LabelScoring(LabelScorer):
             usage=details["usage"],
         )
         s.violation_free = details["pydantic_valid"] and not details["context_issues"]
-        self._ingredients(s, gold, extracted)
-        self._products(s, gold, extracted)
-        self._packages(s, doc, extracted, text)
-        self._references_and_values(s, doc, extracted, text)
+        others = other_strengths(gold, extracted, self._resolver, text)
+        s.other_strengths = len(others)
+        scored = [p for i, p in enumerate(extracted) if i not in others]
+        self._ingredients(s, gold, scored)
+        self._products(s, gold, scored)
+        self._packages(s, doc, scored, text)
+        self._references_and_values(s, doc, extracted, text)  # every extracted value is checked
         s.exact_match = (
             s.status == "ok"
             and s.ing_fp == 0
@@ -281,9 +332,8 @@ class _LabelScoring(LabelScorer):
         return s
 
     def _ingredients(self, s: LabelScore, gold: Sequence[GoldProduct], extracted: Sequence[Mapping[str, Any]]) -> None:
-        g: Counter[Tuple] = sum((gold_tuples(p) for p in gold), Counter())
-        aliases = strength_aliases(gold)
-        e: Counter[Tuple] = sum((extracted_tuples(p, self._resolver, aliases) for p in extracted), Counter())
+        g = label_tuples(gold)
+        e = label_extracted_tuples(extracted, self._resolver, strength_aliases(gold))
         s.ing_tp = sum((g & e).values())
         s.ing_fp = sum((e - g).values())
         s.ing_fn = sum((g - e).values())
@@ -429,6 +479,7 @@ def aggregate(scores: Sequence[LabelScore]) -> dict[str, Any]:
         "violation_free_rate": sum(s.violation_free for s in scores) / len(scores),
         "status": dict(Counter(s.status for s in scores)),
         "truncated": sum(s.status == "truncated" for s in scores),
+        "other_strengths": sum(s.other_strengths for s in scores),
         "refusal_rate": sum(s.status == "refused" for s in scores) / len(scores),
         "truncation_rate": sum(s.status == "truncated" for s in scores) / len(scores),
         "mean_repair_rounds": statistics.fmean(s.repair_rounds for s in scores),
@@ -499,9 +550,8 @@ def field_states(doc: SplDocument, payload: Any, resolver: SubstanceResolver) ->
     gold = [p for p in doc.products if p.active]
     extracted = _products(payload)
     out: dict[str, bool] = {}
-    aliases = strength_aliases(gold)
-    e: Counter[Tuple] = sum((extracted_tuples(p, resolver, aliases) for p in extracted), Counter())
-    for t, count in sum((gold_tuples(p) for p in gold), Counter()).items():
+    e = label_extracted_tuples(extracted, resolver, strength_aliases(gold))
+    for t, count in label_tuples(gold).items():
         for n in range(count):
             out[f"ingredient {t[0]} {t[1]}{t[2]}/{t[3]} #{n}"] = e[t] > n
     mapping = align(gold, extracted, resolver)
@@ -621,7 +671,7 @@ def gap_products_correct(
         if index not in mapping:
             out[ndc] = False
             continue
-        out[ndc] = gold_tuples(gold[index]) == extracted_tuples(
-            extracted[mapping[index]], resolver, strength_aliases(gold)
+        out[ndc] = set(gold_tuples(gold[index])) == set(
+            extracted_tuples(extracted[mapping[index]], resolver, strength_aliases(gold))
         )
     return out
