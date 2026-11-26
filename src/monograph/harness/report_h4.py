@@ -248,8 +248,10 @@ class H4Report:
             "",
             "Field errors (gold ingredient tuples, product forms and routes, printed NDCs) after the first round and"
             " after the last, which kind of step fixed each error, and how many correct fields a step broke. The"
-            " last column counts graph-context fixes whose gold value appeared in the feedback (registry lookup,"
-            " not extraction); under A3 it should be zero by construction.",
+            " last column counts graph-context fixes whose gold value appeared anywhere in the preceding feedback."
+            " Under A3 that happens only when the gold value also exists in a source independent of the label (a"
+            " common substance named by other labels or DailyMed's moiety list); the feedback audit below checks"
+            " every value actually sent.",
             "",
         ]
         out += _table(
@@ -264,6 +266,29 @@ class H4Report:
             ],
             rows,
         )
+        out += [
+            "",
+            "### Feedback audit",
+            "",
+            "Every allowed value sent in graph-context feedback, checked against the label it was offered for."
+            " Label-only: the value has no source except the label's own SPL, DailyMed NDC list or NDC directory"
+            " records. Must be 0 for A3; A3+ offers label-derived values by design.",
+            "",
+        ]
+        latest: dict[tuple[str, str], Record] = {}
+        for r in self._all:
+            if r["metric"] == "h4.feedback_audit" and r["details"]["split"] == self._split:
+                latest[(r["details"]["model"], r["details"]["arm"])] = r
+        if latest:
+            out += _table(
+                ["Model", "Arm", "Values offered", "Label-only", "Unmatched pieces"],
+                [
+                    [m, a, r["details"]["offered"], r["details"]["label_only"], r["details"]["unmatched"]]
+                    for (m, a), r in sorted(latest.items())
+                ],
+            )
+        else:
+            out.append("Not run. Run `monograph h4 audit-feedback`.")
         return [*out, ""]
 
     def _gap(self) -> list[str]:
@@ -303,7 +328,8 @@ class H4Report:
             "",
             "The allergenic stratum (labels of standardized or non-standardized allergenic extracts) is reported here"
             " and in the H6 gap section, outside the headline threshold: one product type would otherwise dominate"
-            " the pooled metrics.",
+            " the pooled metrics. The h6_gap group includes the allergenic gap labels, whose hundreds of products"
+            " dominate its product-pooled form and route accuracy; the H6 gap section counts gap products one by one.",
             "",
         ]
         for group in sorted(groups):

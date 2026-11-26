@@ -298,6 +298,33 @@ def _estimate(root: Path, models: list[str], arms: list[str]) -> Any:
     return total
 
 
+@h4_app.command("audit-feedback")
+def audit_feedback_command(
+    split: Annotated[str, typer.Option(help="dev or test.")],
+    root: Root = Path(),
+) -> None:
+    """Check every allowed value sent in graph-context feedback against the label it was offered for, and
+    append the result to results/h4. Under A3 no value may come only from the label's own sources."""
+    from monograph.extract.audit import audit_feedback
+    from monograph.extract.scoring_run import latest
+    from monograph.extract.setup import build_context
+    from monograph.harness.results import read_results
+
+    ctx = build_context(root)
+    _, rounds = latest(read_results(root / "results" / "h4"), split, ctx.prompts.system_hash)
+    graph_rounds = {k: v for k, v in rounds.items() if k[1] in ("A3", "A3+")}
+    result = audit_feedback(graph_rounds, ctx.reference)
+    writer = wiring.results_writer(root, "H4")
+    for config, entry in result.items():
+        model, arm = config.rsplit(" ", 1)
+        writer.write("h4.feedback_audit", entry["label_only"], {"split": split, "model": model, "arm": arm, **entry})
+        typer.echo(
+            f"{config}: {entry['offered']} offered, {entry['label_only']} label-only, {entry['unmatched']} unmatched"
+        )
+    if any(e["label_only"] for c, e in result.items() if c.endswith(" A3")):
+        raise typer.Exit(code=_fail("A3 feedback offered a value that only the label's own sources contain"))
+
+
 @h4_app.command("score")
 def score(
     split: Annotated[str, typer.Option(help="dev or test.")],
