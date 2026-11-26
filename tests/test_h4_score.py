@@ -18,6 +18,7 @@ from monograph.extract.score import (
     aggregate,
     attribute,
     bootstrap_difference,
+    strength_aliases,
     strength_key,
     usable,
     verdict,
@@ -160,3 +161,36 @@ def test_aggregate_and_paired_bootstrap(resolver: SubstanceResolver) -> None:
     diff = bootstrap_difference({"a": 1.0, "b": 0.5}, {"a": 0.5, "b": 0.5}, seed=1, n=200)
     assert diff["labels"] == 2
     assert 0.0 <= diff["ci_low"] <= diff["difference"] <= diff["ci_high"] <= 0.5
+
+
+def test_strength_basis_moiety_counts_as_the_gold_ingredient(resolver: SubstanceResolver) -> None:
+    """The ampicillin/sulbactam SPL states 1 g of ampicillin sodium as ampicillin (classCode ACTIM)."""
+    doc = next(d for d in DOCS if d.set_id.startswith("006f9a3f"))
+    sodium = doc.products[0].active[0]
+    assert sodium.name == "ampicillin sodium"
+    assert sodium.strength_basis == (("7C782967RD", "ampicillin"),)
+    moiety_named = copy.deepcopy(oracle_payload(doc))
+    for product in moiety_named["products"]:
+        for ingredient in product["ingredients"]:
+            ingredient["substance_name"] = ingredient["substance_name"].removesuffix(" sodium")
+    assert _score(doc, moiety_named, resolver).f1 == 1.0
+    assert strength_aliases(doc.products) == {"7C782967RD": "JFN36L5S8K", "S4TF6I2330": "DKQ4T82YE6"}
+
+
+def test_actib_strength_has_no_moiety_alias() -> None:
+    from monograph.extract.sources.dailymed import GoldIngredient, GoldProduct
+
+    actib = GoldIngredient("SALT000001", "x hydrochloride", Decimal(500), "mg", Decimal(1), "1")
+    product = GoldProduct(None, "X", "TABLET", ("ORAL",), (actib,), (), (), False)
+    assert strength_aliases([product]) == {}
+
+
+def test_a_gold_ingredient_is_never_aliased_to_another() -> None:
+    """Nitrofurantoin capsules list nitrofurantoin and nitrofurantoin monohydrate (moiety nitrofurantoin)."""
+    from monograph.extract.sources.dailymed import GoldIngredient, GoldProduct
+
+    plain = GoldIngredient("927AH8112L", "NITROFURANTOIN", Decimal(25), "mg", Decimal(1), "1")
+    hydrate = GoldIngredient(
+        "E1QI2CQQ1I", "NITROFURANTOIN MONOHYDRATE", Decimal(75), "mg", Decimal(1), "1", (("927AH8112L", "x"),)
+    )
+    assert strength_aliases([GoldProduct(None, "N", "CAPSULE", ("ORAL",), (plain, hydrate), (), (), False)]) == {}

@@ -96,13 +96,15 @@ required.
 `extraction_only` checks are declared on the model like `pydantic_only` in H6, run as deterministic
 code inside A3, and appear in the leak inventory.
 
-### A threat to validity, measured rather than avoided
+### A threat to validity, removed from A3 and kept as an upper bound (A3+)
 
-A3 feedback lists allowed candidates. For "this NDC is not a package of this product" the candidates
-are that product's package NDCs from the registry, which are also gold. That is what graph-context
-repair is (a registry lookup), but an A3 gain on such a field is lookup, not extraction. Every A3
-feedback message is checked for gold values, and the report splits A3's gains into fields whose gold
-appeared in feedback and fields whose gold did not.
+Feedback that lists "allowed values" taken from the label's own registry records (its products' package
+NDCs, its ingredient count) can contain gold: an A3 gain on such a field would be a registry lookup, not
+extraction. So A3 offers candidates only from sources independent of the label (other labels' records,
+DailyMed's moiety list, same-labeler NDCs not linked to this label), and its messages state no fact taken
+from the label. A leak test plants sentinels in the label's own lists. A3+ keeps the label-derived
+candidates and is reported as an upper bound outside the verdict. Every feedback message is still checked
+for gold values, and the report counts graph-context fixes whose gold appeared in feedback.
 
 ## Models and API settings
 
@@ -114,7 +116,8 @@ appeared in feedback and fields whose gold did not.
 * Sampling: these models reject non-default `temperature`, `top_p` and `top_k`, so "fixed sampling
   settings" means fixed `effort`, thinking mode and `max_tokens`, recorded on every line.
 * **No refusal fallbacks.** A server-side fallback would silently answer with another model inside a
-  run that is supposed to measure one model. A refusal is recorded as a failed extraction.
+  run that is supposed to measure one model. A refusal is recorded as `refused` and reported as a refusal
+  rate per model and arm.
 * Prompt caching: system prompt, instructions and schema in a cached prefix; cache read and cache
   write tokens are recorded separately. A prefix under the model's minimum cacheable size simply does
   not cache, and the report says so if that happens.

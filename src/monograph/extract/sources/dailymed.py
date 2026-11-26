@@ -158,6 +158,22 @@ class NarrativeSection:
     text: str
 
 
+def _strength_basis(class_code: str | None, substance: ET.Element) -> tuple[tuple[str, str], ...]:
+    """ACTIM: strength in terms of the active moiety. ACTIR: in terms of a reference (defining) substance."""
+    path = {
+        "ACTIM": "v3:activeMoiety/v3:activeMoiety",
+        "ACTIR": "v3:asEquivalentSubstance/v3:definingSubstance",
+    }.get(class_code or "")
+    if path is None:
+        return ()
+    out = []
+    for el in substance.findall(path, NS):
+        unii = _code(el.find("v3:code", NS), UNII_SYSTEM)
+        if unii:
+            out.append((unii, _text_of(el.find("v3:name", NS))))
+    return tuple(out)
+
+
 @dataclass(frozen=True, slots=True)
 class GoldIngredient:
     unii: str
@@ -166,6 +182,9 @@ class GoldIngredient:
     numerator_unit: str | None
     denominator_value: Decimal | None
     denominator_unit: str | None
+    # The substances the strength is stated for when that is not the ingredient itself: the active moiety
+    # for classCode ACTIM, the reference substance for ACTIR, as (UNII, name). Empty for ACTIB.
+    strength_basis: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -366,6 +385,7 @@ def _product(outer: ET.Element, product: ET.Element) -> GoldProduct:
                         num.get("unit") if num is not None else None,
                         _decimal(den.get("value")) if den is not None else None,
                         den.get("unit") if den is not None else None,
+                        _strength_basis(ingredient.get("classCode"), substance),
                     )
                 )
             elif unii:

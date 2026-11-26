@@ -278,5 +278,6 @@ def substance_sources_from_spls(documents: Sequence[Any]) -> list[SubstanceSourc
     for doc in documents:
         for product in doc.products:
             out += [SubstanceSource(i.unii, i.name, "spl", doc.set_id) for i in product.active if i.unii]
+            out += [SubstanceSource(u, n, "spl", doc.set_id) for i in product.active for u, n in i.strength_basis]
             out += [SubstanceSource(unii, name, "spl", doc.set_id) for unii, name in product.inactive]
     return out

@@ -5,6 +5,9 @@ Definitions (pre-registered in docs/h4/PREREG.md; this module is the executable 
 * Ingredient tuple: (UNII, strength per one basis unit, numerator dimension, denominator unit), after
   converting mass to mg and volume to mL. Extracted names get their UNII from the deterministic resolver;
   an unresolved name yields no UNII and cannot match. Tuples are pooled per label as a multiset.
+* Strength basis: when the SPL states an ingredient's strength in terms of its active moiety (classCode
+  ACTIM) or a reference substance (ACTIR), an extracted name resolving to that substance counts as the
+  gold ingredient. ACTIB strengths are of the ingredient itself and get no such alias.
 * Per-label F1 over those tuples (1.0 when gold and extraction are both empty). Primary metric: the mean
   of per-label F1. Secondary: pooled F1 over all tuples.
 * Products are aligned gold to extracted, greedily by shared tuples then name similarity. Dosage form
@@ -100,6 +103,26 @@ def gold_tuples(product: GoldProduct) -> Counter[Tuple]:
     return out
 
 
+def strength_aliases(gold: Sequence[GoldProduct]) -> dict[str, str]:
+    """UNII of a strength-basis substance (the active moiety of an ACTIM ingredient, the reference substance
+    of an ACTIR one) -> the gold ingredient's UNII. A label that says "ampicillin 1 g" for ampicillin sodium
+    whose SPL states 1 g as ampicillin is right. ACTIB strengths are of the ingredient itself: no alias.
+    A basis UNII shared by two different gold ingredients of the label, or one that is itself a gold
+    ingredient of the label, is left out."""
+    seen: dict[str, set[str]] = defaultdict(set)
+    for product in gold:
+        for i in product.active:
+            for unii, _ in i.strength_basis:
+                if unii != i.unii:
+                    seen[unii].add(i.unii)
+    own = {i.unii for product in gold for i in product.active}
+    return {
+        basis: next(iter(targets))
+        for basis, targets in seen.items()
+        if len(targets) == 1 and basis not in own  # a gold ingredient's own UNII always means itself
+    }
+
+
 def _products(payload: Any) -> list[dict[str, Any]]:
     if not isinstance(payload, dict) or not isinstance(payload.get("products"), list):
         return []
@@ -115,13 +138,18 @@ def _items(product: Mapping[str, Any], key: str) -> list[dict[str, Any]]:
     return [x for x in value if isinstance(x, dict)] if isinstance(value, list) else []
 
 
-def extracted_tuples(product: Mapping[str, Any], resolver: SubstanceResolver) -> Counter[Tuple]:
-    """`resolver` should be bound to the label (`SubstanceResolver.for_label`)."""
+def extracted_tuples(
+    product: Mapping[str, Any], resolver: SubstanceResolver, aliases: Mapping[str, str] | None = None
+) -> Counter[Tuple]:
+    """`resolver` should be bound to the label (`SubstanceResolver.for_label`); `aliases` from
+    `strength_aliases` of the label's gold."""
+    aliases = aliases or {}
     out: Counter[Tuple] = Counter()
     for i in _items(product, "ingredients"):
         name = i.get("substance_name")
         resolution = resolver.resolve(name) if isinstance(name, str) else None
         unii = resolution.iri.rsplit("/", 1)[-1] if resolution and resolution.iri else ""
+        unii = aliases.get(unii, unii)
         key = strength_key(i.get("strength_value"), i.get("strength_unit"), i.get("basis_value"), i.get("basis_unit"))
         if key is not None and unii:
             out[(unii, *key)] += 1
@@ -134,11 +162,12 @@ def align(
     gold: Sequence[GoldProduct], extracted: Sequence[Mapping[str, Any]], resolver: SubstanceResolver
 ) -> dict[int, int]:
     """gold index -> extracted index, greedy by shared tuples then name similarity."""
+    aliases = strength_aliases(gold)
     pairs = []
     for gi, g in enumerate(gold):
         gt = gold_tuples(g)
         for ei, e in enumerate(extracted):
-            shared = sum((gt & extracted_tuples(e, resolver)).values())
+            shared = sum((gt & extracted_tuples(e, resolver, aliases)).values())
             name = e.get("name") if isinstance(e.get("name"), str) else ""
             similarity = difflib.SequenceMatcher(None, g.name.upper(), str(name).upper()).ratio()
             pairs.append((shared, similarity, -gi, -ei, gi, ei))
@@ -253,7 +282,8 @@ class _LabelScoring(LabelScorer):
 
     def _ingredients(self, s: LabelScore, gold: Sequence[GoldProduct], extracted: Sequence[Mapping[str, Any]]) -> None:
         g: Counter[Tuple] = sum((gold_tuples(p) for p in gold), Counter())
-        e: Counter[Tuple] = sum((extracted_tuples(p, self._resolver) for p in extracted), Counter())
+        aliases = strength_aliases(gold)
+        e: Counter[Tuple] = sum((extracted_tuples(p, self._resolver, aliases) for p in extracted), Counter())
         s.ing_tp = sum((g & e).values())
         s.ing_fp = sum((e - g).values())
         s.ing_fn = sum((g - e).values())
@@ -312,7 +342,12 @@ class _LabelScoring(LabelScorer):
     ) -> None:
         normalized_text = normalize_name(text)
         text_numbers = _numbers(text)
-        gold_names = {normalize_name(i.name) for p in doc.products for i in p.active}
+        gold_names = {
+            normalize_name(n)
+            for p in doc.products
+            for i in p.active
+            for n in (i.name, *(b[1] for b in i.strength_basis))
+        }
         gold_numbers = {
             d.normalize()
             for p in doc.products
@@ -464,7 +499,8 @@ def field_states(doc: SplDocument, payload: Any, resolver: SubstanceResolver) ->
     gold = [p for p in doc.products if p.active]
     extracted = _products(payload)
     out: dict[str, bool] = {}
-    e: Counter[Tuple] = sum((extracted_tuples(p, resolver) for p in extracted), Counter())
+    aliases = strength_aliases(gold)
+    e: Counter[Tuple] = sum((extracted_tuples(p, resolver, aliases) for p in extracted), Counter())
     for t, count in sum((gold_tuples(p) for p in gold), Counter()).items():
         for n in range(count):
             out[f"ingredient {t[0]} {t[1]}{t[2]}/{t[3]} #{n}"] = e[t] > n
@@ -585,5 +621,7 @@ def gap_products_correct(
         if index not in mapping:
             out[ndc] = False
             continue
-        out[ndc] = gold_tuples(gold[index]) == extracted_tuples(extracted[mapping[index]], resolver)
+        out[ndc] = gold_tuples(gold[index]) == extracted_tuples(
+            extracted[mapping[index]], resolver, strength_aliases(gold)
+        )
     return out
