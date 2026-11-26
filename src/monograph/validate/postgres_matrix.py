@@ -99,4 +99,4 @@ class PostgresMatrixRun:
         for u in self._ddl.unenforced:
             if u.cls == f.cls.__name__ and u.kind == f.violates and u.field in (top, None):
                 return False
-        return not f.violates.startswith("pydantic_only:")
+        return True  # the DDL inventory lists every kind it cannot enforce, pydantic_only ones included

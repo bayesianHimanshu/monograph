@@ -6,7 +6,13 @@ that reads them, and it fails generation when one is missing.
 
 from __future__ import annotations
 
+import unicodedata
 from dataclasses import dataclass
+from enum import StrEnum
+from typing import Annotated, Any
+
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import PydanticCustomError, core_schema
 
 DEFAULT_BASE = "https://example.org/monograph/"
 VOCAB_NS = "https://example.org/monograph/ontology#"
@@ -54,3 +60,56 @@ class OntEnum:
 
     name: str
     label: str
+
+
+# ---------------------------------------------------------------------------------------------------
+# Safe string types
+# ---------------------------------------------------------------------------------------------------
+
+
+class Charset(StrEnum):
+    """Which control characters a string may contain.
+
+    IDENTIFIER: no control character at all (Unicode category Cc, which includes NUL and newlines).
+    TEXT:       no control character except tab, line feed and carriage return (so no NUL).
+    """
+
+    IDENTIFIER = "identifier"
+    TEXT = "text"
+
+    def allows(self, ch: str) -> bool:
+        if unicodedata.category(ch) != "Cc":
+            return True
+        return self is Charset.TEXT and ch in "\t\n\r"
+
+    def forbidden_ranges(self) -> tuple[tuple[int, int], ...]:
+        """Code point ranges of the forbidden characters, for the SHACL and Postgres projections."""
+        if self is Charset.IDENTIFIER:
+            return ((0x00, 0x1F), (0x7F, 0x9F))
+        return ((0x00, 0x08), (0x0B, 0x0C), (0x0E, 0x1F), (0x7F, 0x9F))
+
+
+@dataclass(frozen=True, slots=True)
+class SafeChars:
+    """Annotated marker that restricts control characters. Projected by core/spec.py into every layer."""
+
+    charset: Charset
+
+    def __get_pydantic_core_schema__(self, source: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+        charset = self.charset
+
+        def check(value: str) -> str:
+            bad = next((ch for ch in value if not charset.allows(ch)), None)
+            if bad is not None:
+                raise PydanticCustomError(
+                    "control_character",
+                    "{charset} must not contain control character U+{code}",
+                    {"charset": charset.value, "code": f"{ord(bad):04X}"},
+                )
+            return value
+
+        return core_schema.no_info_after_validator_function(check, handler(source))
+
+
+SafeIdentifier = Annotated[str, SafeChars(Charset.IDENTIFIER)]
+SafeText = Annotated[str, SafeChars(Charset.TEXT)]

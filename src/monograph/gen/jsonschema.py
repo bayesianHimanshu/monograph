@@ -61,7 +61,7 @@ class JsonSchemaGenerator:
             "properties": {
                 rule.field: {
                     "contains": {
-                        "properties": {rule.where: {"const": _json(rule.equals)}},
+                        "properties": {rule.where: {"enum": [_json(v) for v in rule.values]}},
                         "required": [rule.where],
                     },
                     "minContains": rule.min_count,

@@ -38,9 +38,10 @@ def _event(*codes: str) -> dict[str, Any]:
 
 
 def test_single_suspect_is_primary_and_several_are_not_guessed() -> None:
-    [one] = OpenFdaMapper().event(_event("1", "2"))
+    *_, one = OpenFdaMapper().event(_event("1", "2"))
+    assert one.record["source_system"] == "openfda_e2b"
     assert [d["role"] for d in one.record["drugs"]] == ["primary suspect", "concomitant"]
-    [two] = OpenFdaMapper().event(_event("1", "1", "3"))
+    *_, two = OpenFdaMapper().event(_event("1", "1", "3"))
     assert [d["role"] for d in two.record["drugs"]] == ["suspect", "suspect", "interacting"]
     assert any("does not say which is primary" in n for n in two.notes)
     assert one.record["seriousness_criteria"] == ["hospitalization"]
@@ -68,14 +69,15 @@ def test_label_sections_use_loinc_codes() -> None:
         "version": "2",
         "effective_time": "20200101",
         "indications_and_usage": ["Use it.", "Wisely."],
-        "openfda": {"rxcui": ["1", "2"]},
+        "openfda": {"rxcui": ["1", "2"], "product_ndc": ["0280-2000", "0280-2001"]},
     }
-    [label] = OpenFdaMapper().label(raw)
+    *drugs, label = OpenFdaMapper().label(raw)  # one ClinicalDrug candidate per RxCUI, then the label
+    assert [d.record for d in drugs] == [{"rxcui": "1"}, {"rxcui": "2"}]
     assert label.record["version"] == 2
     assert label.record["sections"] == [
         {"code": "34067-9", "title": "INDICATIONS AND USAGE", "text": "Use it.\nWisely."}
     ]
-    assert len(label.record["products"]) == 2
+    assert label.record["products"][0].endswith("/product/0280-2000")
 
 
 class _FakeTime:
@@ -127,7 +129,7 @@ def test_real_fixture_records_agree() -> None:
     agreed, total = report.agreement()
     assert total > 50
     assert agreed == total, report.disagreements
-    assert report.classes["AdverseEventReport"].reasons["<record>: rule:has-primary-suspect"] > 0
+    assert report.classes["Product"].candidates > 0
 
 
 @pytest.mark.parametrize("endpoint", ["ndc", "label", "event", "enforcement"])

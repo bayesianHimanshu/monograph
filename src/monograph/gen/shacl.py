@@ -15,7 +15,9 @@ from rdflib import RDF, RDFS, BNode, Graph, Literal, Namespace, URIRef
 from rdflib.collection import Collection
 from rdflib.term import Node
 
+from monograph.core.meta import Charset
 from monograph.core.refs import IRI_PATTERN
+from monograph.core.regex import analyze_pattern
 from monograph.core.rules import AtLeast, RequiredWhen, Rule, RuleValue
 from monograph.core.spec import ClassSpec, FieldSpec, Kind, SchemaSpec
 from monograph.core.vocab import XSD_FOR, Vocabulary
@@ -26,6 +28,15 @@ SH = Namespace("http://www.w3.org/ns/shacl#")
 # Lexical form of an xsd:dateTime with an explicit timezone. xsd:dateTime itself allows naive values,
 # so AwareDatetime needs this extra pattern to mean the same thing on both sides.
 TZ_PATTERN = r"(Z|[+\-][0-9]{2}:[0-9]{2})$"
+
+
+def forbidden_class(charset: Charset) -> str:
+    """A regex character class of the forbidden characters, written with the raw characters.
+
+    XPath regex has no \\x escape, so the characters themselves go in the class. The Turtle writer
+    escapes them as \\uXXXX in the file.
+    """
+    return "[" + "".join(f"{chr(lo)}-{chr(hi)}" for lo, hi in charset.forbidden_ranges()) + "]"
 
 
 class ShaclGenerator:
@@ -106,19 +117,39 @@ class ShaclGenerator:
             g.add((ps, SH.node, v.node_shape(f.target)))
 
         k = f.constraints
+        max_length = k.max_length
         if k.pattern is not None:
             self._check_pattern(k.pattern)
             g.add((ps, SH.pattern, Literal(k.pattern)))
+            implied = analyze_pattern(k.pattern).max_length
+            if implied is not None and (max_length is None or implied < max_length):
+                # Redundant with the pattern in a correct engine; it closes pySHACL's "$ before a final
+                # newline" gap for every bounded pattern.
+                max_length = implied
         if k.min_length is not None:
             g.add((ps, SH.minLength, Literal(k.min_length)))
-        if k.max_length is not None:
-            g.add((ps, SH.maxLength, Literal(k.max_length)))
+        if max_length is not None:
+            g.add((ps, SH.maxLength, Literal(max_length)))
+        if k.charset is not None:
+            g.add((ps, SH["not"], self._forbidden(g, k.charset)))
+        if f.kind is Kind.REF:
+            g.add((ps, SH["not"], self._forbidden(g, Charset.IDENTIFIER)))
         for bound, predicate in ((k.ge, SH.minInclusive), (k.le, SH.maxInclusive)):
             if bound is not None:
                 g.add((ps, predicate, self._bound(f, bound)))
         for bound, predicate in ((k.gt, SH.minExclusive), (k.lt, SH.maxExclusive)):
             if bound is not None:
                 g.add((ps, predicate, self._bound(f, bound)))
+
+    def _forbidden(self, g: Graph, charset: Charset) -> BNode:
+        """A shape matched by any string that contains a forbidden control character.
+
+        Used under sh:not. An unanchored class needs no `$`, so the projection does not depend on how an
+        engine treats a final newline.
+        """
+        shape = BNode()
+        g.add((shape, SH.pattern, Literal(forbidden_class(charset))))
+        return shape
 
     def _bound(self, f: FieldSpec, bound: int | Decimal) -> Literal:
         if f.scalar is Decimal:
@@ -155,7 +186,8 @@ class ShaclGenerator:
             child = self._spec.of(parent.target).field(rule.where)
             condition = BNode()
             g.add((condition, SH.path, v.prop(child)))
-            g.add((condition, SH.hasValue, self._value(child, rule.equals)))
+            g.add((condition, SH.minCount, Literal(1)))
+            g.add((condition, SH["in"], self._list(g, [self._value(child, value) for value in rule.values])))
             qualified = BNode()
             g.add((qualified, SH.property, condition))
             counted = BNode()

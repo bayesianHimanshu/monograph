@@ -61,9 +61,22 @@ def record_conformance(writer: ResultsWriter, report: ConformanceReport, source:
                 "valid": c.valid,
                 "duplicates_skipped": c.duplicates,
                 "top_reasons": c.reasons.most_common(8),
+                "all_reasons": sorted(c.reasons.items(), key=lambda kv: (-kv[1], kv[0])),
                 "ingest_notes": c.notes.most_common(8),
             },
         )
+    suffixed = sum(n for s, n in report.report_id_suffixes.items() if s != "(none)")
+    total_reports = sum(report.report_id_suffixes.values())
+    writer.write(
+        "ingest.report_id_suffix",
+        round(suffixed / total_reports, 4) if total_reports else None,
+        {
+            "source": source,
+            "reports": total_reports,
+            "with_suffix": suffixed,
+            "suffixes": report.report_id_suffixes.most_common(),
+        },
+    )
     agreed, total = report.agreement()
     writer.write(
         "agreement.real",

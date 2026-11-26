@@ -20,8 +20,8 @@ from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.version import SCHEMA_VERSION
 from monograph.core.vocab import Vocabulary
-from monograph.gen.artifacts import DDL_FILE, JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE, ArtifactBuilder
-from monograph.gen.ddl import DdlGenerator
+from monograph.gen.artifacts import DDL_FILE, DDL_TEST_FILE, JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE, ArtifactBuilder
+from monograph.gen.ddl import DdlGenerator, DdlProfile
 from monograph.gen.jsonschema import JsonSchemaGenerator
 from monograph.gen.owl import OwlGenerator
 from monograph.gen.shacl import SH, ShaclGenerator
@@ -59,7 +59,8 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         OWL_FILE: OwlGenerator(spec, vocab, writer).render,
         SHACL_FILE: ShaclGenerator(spec, vocab, writer, check_pattern).render,
         JSON_SCHEMA_FILE: JsonSchemaGenerator(spec, vocab, f"{DEFAULT_BASE}schema/{spec.version}").render,
-        DDL_FILE: DdlGenerator(spec, check_pattern).render,
+        DDL_FILE: DdlGenerator(spec, check_pattern, DdlProfile.DEFAULT).render,
+        DDL_TEST_FILE: DdlGenerator(spec, check_pattern, DdlProfile.TEST).render,
     }
     return ArtifactBuilder(renderers, time.perf_counter)
 

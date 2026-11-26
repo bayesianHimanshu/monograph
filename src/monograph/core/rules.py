@@ -3,7 +3,7 @@
 Only two rule patterns exist, both expressible in SHACL Core:
 
 * RequiredWhen: if field `when` equals `equals`, field `then` must be present.
-* AtLeast: at least `min_count` items of list field `field` have `where == equals`.
+* AtLeast: at least `min_count` items of list field `field` have `where` in `values`.
 
 Each rule is projected twice: into Pydantic by the model base class's `@rule_engine` validator, which
 calls `Rule.holds()`, and into SHACL by `gen/shacl.py`. Any other validator must be marked
@@ -52,18 +52,18 @@ class RequiredWhen:
 
 @dataclass(frozen=True, slots=True)
 class AtLeast:
-    """At least `min_count` items of list field `field` have `where == equals`."""
+    """At least `min_count` items of list field `field` have `where` equal to one of `values`."""
 
     id: str
     field: str
     where: str
-    equals: RuleValue
+    values: tuple[RuleValue, ...]
     min_count: int
     message: str
 
     def holds(self, model: BaseModel) -> bool:
         items = getattr(model, self.field, ())
-        count = sum(1 for item in items if getattr(item, self.where, None) == self.equals)
+        count = sum(1 for item in items if getattr(item, self.where, None) in self.values)
         return count >= self.min_count
 
 
@@ -87,11 +87,24 @@ class PydanticOnlyViolation(ValueError):
 
 
 @dataclass(frozen=True, slots=True)
+class UniqueWithin:
+    """Projection hint: the items of collection `field` are unique by `keys`. Postgres gets a UNIQUE."""
+
+    field: str
+    keys: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class PydanticOnly:
-    """The declaration attached to a validator that has no SHACL projection."""
+    """The declaration attached to a validator that has no SHACL projection.
+
+    `unique` optionally says that the validator enforces uniqueness, which the DDL can project even
+    though SHACL Core cannot. The integration test checks that Postgres rejects the same fixture.
+    """
 
     id: str
     reason: str
+    unique: UniqueWithin | None = None
 
 
 def rule_engine(func: F) -> F:
@@ -100,11 +113,11 @@ def rule_engine(func: F) -> F:
     return func
 
 
-def pydantic_only(id: str, reason: str) -> Callable[[F], F]:
+def pydantic_only(id: str, reason: str, unique: UniqueWithin | None = None) -> Callable[[F], F]:
     """Declare that a validator has no SHACL Core projection, and why. Apply it under `@model_validator`."""
 
     def mark(func: F) -> F:
-        setattr(func, PYDANTIC_ONLY_MARK, PydanticOnly(id=id, reason=reason))
+        setattr(func, PYDANTIC_ONLY_MARK, PydanticOnly(id=id, reason=reason, unique=unique))
         return func
 
     return mark

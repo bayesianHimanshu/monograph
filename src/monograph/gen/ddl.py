@@ -18,11 +18,13 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from decimal import Decimal
+from enum import StrEnum
 
 from pydantic import BaseModel
 
+from monograph.core.meta import Charset
 from monograph.core.refs import IRI_PATTERN
-from monograph.core.rules import AtLeast, RequiredWhen
+from monograph.core.rules import AtLeast, RequiredWhen, UniqueWithin
 from monograph.core.spec import Card, ClassSpec, FieldSpec, Kind, SchemaError, SchemaSpec
 
 SQL_TYPE: dict[type, str] = {
@@ -35,9 +37,12 @@ SQL_TYPE: dict[type, str] = {
 }
 
 
-# Foreign keys are deferrable so that bulk loads (and the integration probe) can replace a row and
-# have references checked at SET CONSTRAINTS ... IMMEDIATE or commit. They start out immediate.
-_DEFERRABLE = "DEFERRABLE INITIALLY IMMEDIATE"
+class DdlProfile(StrEnum):
+    """DEFAULT: plain foreign keys, checked per statement. TEST: deferrable foreign keys, so the
+    integration probe can replace a row inside a savepoint and still have references checked."""
+
+    DEFAULT = "default"
+    TEST = "test"
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,6 +57,14 @@ class Unenforced:
 class DdlResult:
     sql: str
     unenforced: tuple[Unenforced, ...]
+    partial: tuple[Unenforced, ...] = ()
+
+
+def forbidden_class_sql(charset: Charset) -> str:
+    """The forbidden characters as a Postgres ARE class. NUL is left out: Postgres text cannot hold it,
+    so the column type already rejects it."""
+    parts = [f"\\x{max(lo, 1):02x}-\\x{hi:02x}" for lo, hi in charset.forbidden_ranges()]
+    return "[" + "".join(parts) + "]"
 
 
 def table_name(model: type[BaseModel]) -> str:
@@ -89,9 +102,13 @@ class _Table:
 
 
 class DdlGenerator:
-    def __init__(self, spec: SchemaSpec, check_pattern: Callable[[str], None]) -> None:
+    def __init__(
+        self, spec: SchemaSpec, check_pattern: Callable[[str], None], profile: DdlProfile = DdlProfile.DEFAULT
+    ) -> None:
         self._spec = spec
         self._check_pattern = check_pattern
+        self._profile = profile
+        self._fk = " DEFERRABLE INITIALLY IMMEDIATE" if profile is DdlProfile.TEST else ""
 
     def render(self) -> str:
         return self.generate().sql
@@ -99,14 +116,16 @@ class DdlGenerator:
     def generate(self) -> DdlResult:
         tables: list[_Table] = []
         unenforced: list[Unenforced] = []
+        self._partial: list[Unenforced] = []
         for c in self._spec.entities():
             tables += self._entity(c, unenforced)
         header = [
-            f"-- MONOGRAPH drug product model {self._spec.version}. Generated from core/models.py; do not edit.",
+            f"-- MONOGRAPH drug product model {self._spec.version}, {self._profile.value} profile."
+            " Generated from core/models.py; do not edit.",
             "-- Run inside an empty schema. Constraint names are stable and used by the integration test.",
         ]
         sql = "\n".join(header) + "\n\n" + "\n\n".join(t.render() for t in tables) + "\n"
-        return DdlResult(sql, tuple(unenforced))
+        return DdlResult(sql, tuple(unenforced), tuple(self._partial))
 
     # -----------------------------------------------------------------------------------------------
 
@@ -118,10 +137,24 @@ class DdlGenerator:
         table.constraints.append(f"CONSTRAINT uq_{table.name}_key UNIQUE ({keys})")
         self._rules(table, c, unenforced)
         for p in c.pydantic_only:
-            unenforced.append(
-                Unenforced(c.cls.__name__, None, f"pydantic_only:{p.id}", "arbitrary Python has no DDL form")
-            )
+            if p.unique is not None:
+                self._unique(c, p.unique, extra)
+            else:
+                unenforced.append(
+                    Unenforced(c.cls.__name__, None, f"pydantic_only:{p.id}", "arbitrary Python has no DDL form")
+                )
         return [table, *extra]
+
+    def _unique(self, c: ClassSpec, unique: UniqueWithin, tables: list[_Table]) -> None:
+        f = c.field(unique.field)
+        assert f.target is not None
+        target = self._spec.of(f.target)
+        name = child_table(table_name(c.cls), f)
+        child = next(t for t in tables if t.name == name)
+        columns = ", ".join(["owner_iri", *(column_name(target.field(k)) for k in unique.keys)])
+        if any(line.endswith(f"UNIQUE ({columns})") for line in child.constraints):
+            return  # the keyed-set UNIQUE already says exactly this
+        child.constraints.append(f"CONSTRAINT uq_{name}_{'_'.join(unique.keys)} UNIQUE ({columns})")
 
     def _iri_column(self, table: _Table) -> None:
         self._check_pattern(IRI_PATTERN)
@@ -147,7 +180,7 @@ class DdlGenerator:
         if f.kind is Kind.REF:
             assert f.target is not None
             target = table_name(f.target)
-            table.columns.append(f"{col} text{not_null} REFERENCES {target} (iri) {_DEFERRABLE}")
+            table.columns.append(f"{col} text{not_null} REFERENCES {target} (iri){self._fk}")
             table.check(f"{col}_pattern", f"{col} ~ {_literal(IRI_PATTERN)}")
             return
         if f.kind is Kind.ENUM:
@@ -158,9 +191,20 @@ class DdlGenerator:
             return
         assert f.scalar is not None
         table.columns.append(f"{col} {SQL_TYPE[f.scalar]}{not_null}")
+        self._partial.append(
+            Unenforced(
+                c.cls.__name__,
+                f.name,
+                "datatype",
+                "the column type rejects values that do not cast, but Postgres casts text parameters,"
+                " so text that parses ('3', '20240501', 'true') is accepted",
+            )
+        )
         if f.scalar is Decimal:
             table.check(f"{col}_finite", f"{col} NOT IN ('NaN', 'Infinity', '-Infinity')")
         k = f.constraints
+        if k.charset is not None:
+            table.check(f"{col}_charset", f"{col} !~ {_literal(forbidden_class_sql(k.charset))}")
         if k.pattern is not None:
             self._check_pattern(k.pattern)
             table.check(f"{col}_pattern", f"{col} ~ {_literal(k.pattern)}")
@@ -191,8 +235,8 @@ class DdlGenerator:
     def _join_table(self, owner: str, c: ClassSpec, f: FieldSpec, unenforced: list[Unenforced]) -> _Table:
         assert f.target is not None
         t = _Table(child_table(owner, f))
-        t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE {_DEFERRABLE}")
-        t.columns.append(f"target_iri text NOT NULL REFERENCES {table_name(f.target)} (iri) {_DEFERRABLE}")
+        t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE{self._fk}")
+        t.columns.append(f"target_iri text NOT NULL REFERENCES {table_name(f.target)} (iri){self._fk}")
         t.check("target_iri_pattern", f"target_iri ~ {_literal(IRI_PATTERN)}")
         t.constraints.append(f"CONSTRAINT pk_{t.name} PRIMARY KEY (owner_iri, target_iri)")
         self._row_counts(c, f, unenforced)
@@ -203,7 +247,7 @@ class DdlGenerator:
         target = self._spec.of(f.target)
         t = _Table(child_table(owner, f))
         self._iri_column(t)
-        t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE {_DEFERRABLE}")
+        t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE{self._fk}")
         if f.card is Card.LIST:
             t.columns.append("position integer NOT NULL")
             t.check("position_min_inclusive", "position >= 0")

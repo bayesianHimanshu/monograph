@@ -1,16 +1,39 @@
 [
   {
-    "id": "rxcui-letters",
+    "id": "product-ndc-with-package",
     "violates": "pattern",
-    "field": "rxcui",
+    "field": "product_ndc",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "RX123",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000-10",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "clinical-drug-not-iri",
+    "violates": "ref",
+    "field": "clinical_drug",
+    "expect": "agree_invalid",
+    "record": {
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "clinical_drug": "243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -26,10 +49,11 @@
     "field": "routes",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -45,12 +69,13 @@
     "field": "routes",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORALLY"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -66,12 +91,13 @@
     "field": "ingredients",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -86,12 +112,13 @@
     "field": "ingredients",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         "aspirin 81 mg"
       ]
@@ -103,12 +130,13 @@
     "field": "ingredients.strength_value",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -124,12 +152,13 @@
     "field": "ingredients.strength_value",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -140,17 +169,40 @@
     }
   },
   {
+    "id": "unit-has-newline",
+    "violates": "charset",
+    "field": "ingredients.strength_unit",
+    "expect": "agree_invalid",
+    "record": {
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/\n1"
+        }
+      ]
+    }
+  },
+  {
     "id": "substance-not-iri",
     "violates": "ref",
     "field": "ingredients.substance",
     "expect": "agree_invalid",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "R16CO5Y76E",
@@ -166,12 +218,13 @@
     "field": "ingredients",
     "expect": "declared_leak",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -184,6 +237,7 @@
           "strength_unit": "mg/1"
         }
       ]
-    }
+    },
+    "note": "Postgres rejects this through the UNIQUE generated from the declaration's unique= hint."
   }
 ]

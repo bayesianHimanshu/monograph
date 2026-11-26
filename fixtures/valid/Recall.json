@@ -7,8 +7,8 @@
       "reason": "Failed dissolution specifications.",
       "report_date": "2025-02-12",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ],
       "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
     }
@@ -21,6 +21,16 @@
       "reason": "Microbial contamination.",
       "report_date": "2024-03-06",
       "recalling_firm": "https://example.org/monograph/organization/bayer-healthcare-llc"
+    }
+  },
+  {
+    "id": "three-digit-number",
+    "record": {
+      "recall_number": "D-321-2016",
+      "classification": "II",
+      "reason": "Lack of assurance of sterility.",
+      "report_date": "2015-11-25",
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
     }
   }
 ]

@@ -29,7 +29,7 @@ from monograph.core.spec import Card, ClassSpec, FieldSpec, Kind, SchemaSpec
 Record = dict[str, Any]
 Path = tuple[str | int, ...]
 
-_TEXT = st.characters(codec="utf-8", exclude_categories=["Cs"], exclude_characters="\n\r")
+_TEXT = st.characters(codec="utf-8", exclude_categories=["Cs", "Cc"])
 _DECIMAL_LIMIT = Decimal("1e9")
 _INT_LIMIT = 10**9
 
@@ -152,6 +152,8 @@ class Perturber:
             k = f.constraints
             if k.pattern is not None:
                 out.append(Site("pattern", p, f))
+            if k.charset is not None:
+                out.append(Site("charset", p, f))
             if k.min_length:
                 out.append(Site("min_length", p, f))
             if k.max_length is not None:
@@ -211,6 +213,13 @@ class Perturber:
             assert f.max_count is not None
             extra = st.text(_TEXT, min_size=1, max_size=8)
             return st.lists(extra, min_size=f.max_count + 1, max_size=f.max_count + 2, unique=True)
+        if kind == "charset":
+            assert k.charset is not None
+            forbidden = [chr(c) for lo, hi in k.charset.forbidden_ranges() for c in (lo, hi)]
+            base = current if isinstance(current, str) and current else "x"
+            return st.tuples(st.sampled_from(forbidden), st.integers(0, len(base))).map(
+                lambda t: base[: t[1]] + t[0] + base[t[1] :]
+            )
         if kind == "pattern":
             assert k.pattern is not None
             pattern = re.compile(k.pattern)
@@ -253,7 +262,8 @@ class Perturber:
             return None
         c = self._spec.of(self._owner(site))
         child_field = self._spec.of(_target(c.field(rule.field))).field(rule.where)
-        others = [m.value for m in child_field.enum or () if m.value != str(rule.equals)]
+        allowed = {str(v) for v in rule.values}
+        others = [m.value for m in child_field.enum or () if m.value not in allowed]
         for item in items:
             if isinstance(item, dict):
                 item[rule.where] = others[0]

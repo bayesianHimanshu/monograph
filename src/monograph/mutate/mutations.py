@@ -16,6 +16,7 @@ VERSION = Path("src/monograph/core/version.py")
 MAPPING = Path("src/monograph/rdf/mapping.py")
 SHAPES = Path("generated/monograph.shapes.ttl")
 OWL = Path("generated/monograph.owl.ttl")
+TEST_DDL = Path("generated/monograph.test.ddl.sql")
 
 Regenerate = Callable[[], None]
 
@@ -45,12 +46,16 @@ def _m1(root: Path, regen: Regenerate) -> None:
     replace_once(root, SHAPES, 'sh:pattern "^[0-9A-Z]{10}$"', 'sh:pattern "^[0-9A-Z]+$"')
 
 
-_UNII_LINE = '    unii: Annotated[str, OntProp("unii", "UNII"), Field(pattern=r"^[0-9A-Z]{10}$", description="FDA UNII code.")]\n'  # noqa: E501
+_UNII_FIELD = (
+    "    unii: Annotated[\n"
+    '        SafeIdentifier, OntProp("unii", "UNII"), Field(pattern=safe(r"^[0-9A-Z]{10}$"), description="FDA UNII code.")\n'  # noqa: E501
+    "    ]\n"
+)
 
 
 def _m2(root: Path, regen: Regenerate) -> None:
-    synonym = '    synonym: Annotated[str | None, OntProp("synonym", "synonym"), Field(min_length=1)] = None\n'
-    replace_once(root, MODELS, _UNII_LINE, _UNII_LINE + synonym)
+    synonym = '    synonym: Annotated[SafeText | None, OntProp("synonym", "synonym"), Field(min_length=1)] = None\n'
+    replace_once(root, MODELS, _UNII_FIELD, _UNII_FIELD + synonym)
 
 
 def _m3(root: Path, regen: Regenerate) -> None:
@@ -67,10 +72,10 @@ def _m4(root: Path, regen: Regenerate) -> None:
     replace_once(
         root,
         MODELS,
-        '        str | None,\n        OntProp("packageDescription", "package description"),\n'
+        '        SafeText | None,\n        OntProp("packageDescription", "package description"),\n'
         '        Field(min_length=1, max_length=2000, description="Package description as written in the source."),\n'
         "    ] = None\n",
-        '        str,\n        OntProp("packageDescription", "package description"),\n'
+        '        SafeText,\n        OntProp("packageDescription", "package description"),\n'
         '        Field(min_length=1, max_length=2000, description="Package description as written in the source."),\n'
         "    ]\n",
     )
@@ -99,7 +104,7 @@ def _m7(root: Path, regen: Regenerate) -> None:
         '    INTRADERMAL = "INTRADERMAL"\n',
         '    INTRACAUDAL = "INTRACAUDAL"\n    INTRADERMAL = "INTRADERMAL"\n',
     )
-    replace_once(root, VERSION, 'SCHEMA_VERSION = "0.1.0"', 'SCHEMA_VERSION = "0.2.0"')
+    replace_once(root, VERSION, 'SCHEMA_VERSION = "1.0.0"', 'SCHEMA_VERSION = "1.1.0"')
     regen()
 
 
@@ -117,12 +122,7 @@ def _m8(root: Path, regen: Regenerate) -> None:
 
 
 def _m9(root: Path, regen: Regenerate) -> None:
-    replace_once(
-        root,
-        MODELS,
-        'Field(pattern=r"^[0-9A-Z]{10}$", description="FDA UNII code.")',
-        'Field(pattern=r"^\\w{10}$", description="FDA UNII code.")',
-    )
+    replace_once(root, MODELS, 'pattern=safe(r"^[0-9A-Z]{10}$")', 'pattern=safe(r"^\\w{10}$")')
 
 
 def _m10(root: Path, regen: Regenerate) -> None:
@@ -132,6 +132,12 @@ def _m10(root: Path, regen: Regenerate) -> None:
         "            value = instance.__dict__[f.name]\n            if value is None:\n                continue\n",
         "            value = instance.__dict__[f.name]\n            if value is None:\n                continue\n"
         '            if f.prop.name == "strengthValue":\n                continue\n',
+    )
+
+
+def _m11(root: Path, regen: Regenerate) -> None:
+    replace_once(
+        root, TEST_DDL, "REFERENCES substance (iri) DEFERRABLE INITIALLY IMMEDIATE", "REFERENCES substance (iri)"
     )
 
 
@@ -146,6 +152,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M8", "Add a custom validator with no rule or pydantic_only declaration", "lint", _m8),
     Mutation("M9", "Introduce a regex outside the safe subset", "generation", _m9),
     Mutation("M10", "Break the instance mapping for one property", "agreement|tests", _m10),
+    Mutation("M11", "Hand-edit the test-profile DDL to make a foreign key non-deferrable", "drift", _m11),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, regen: None)

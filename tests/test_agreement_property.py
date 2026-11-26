@@ -49,6 +49,7 @@ REASON = {
     "closed": "Closed",
     "required": "MinCount",
     "pattern": "Pattern",
+    "charset": "Not",
     "min_length": "MinLength",
     "max_length": "MaxLength",
     "ge": "MinInclusive",
@@ -59,7 +60,7 @@ REASON = {
     "min_count": "MinCount",
     "max_count": "MaxCount",
     "rule:serious-requires-criterion": "Or",
-    "rule:has-primary-suspect": "QualifiedMinCount",
+    "rule:has-suspect": "QualifiedMinCount",
 }
 
 SITES = [(c, site) for c in ENTITIES for site in PERTURBER.sites(c)]

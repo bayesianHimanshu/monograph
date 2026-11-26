@@ -8,14 +8,20 @@
 
 <https://example.org/monograph/ontology>
     a owl:Ontology ;
-    owl:versionIRI <https://example.org/monograph/ontology/0.1.0> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <https://example.org/monograph/ontology/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
     rdfs:label "MONOGRAPH drug product model" .
 
 mono:AdverseEventReport
     a owl:Class ;
     rdfs:comment "A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA." ;
     rdfs:label "Adverse event report" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:ClinicalDrug
+    a owl:Class ;
+    rdfs:comment "A clinical drug concept in RxNorm, identified by its RxCUI. Several NDC products can share one clinical drug. The name is optional because openFDA carries RxCUIs without their RxNorm names." ;
+    rdfs:label "Clinical drug" ;
     rdfs:subClassOf mono:Entity .
 
 mono:DrugInvolvement
@@ -85,13 +91,13 @@ mono:Organization
 
 mono:PackagedProduct
     a owl:Class ;
-    rdfs:comment "A package of a product, identified by its 10-digit hyphenated NDC." ;
+    rdfs:comment "A package of a product, identified by its 10-digit hyphenated package NDC." ;
     rdfs:label "Packaged product" ;
     rdfs:subClassOf mono:Entity .
 
 mono:Product
     a owl:Class ;
-    rdfs:comment "A clinical drug product identified by its RxNorm concept (RxCUI)." ;
+    rdfs:comment "A drug product as listed with FDA, identified by its product NDC (labeler and product segments)." ;
     rdfs:label "Product" ;
     rdfs:subClassOf mono:Entity .
 
@@ -250,11 +256,33 @@ mono:SeriousnessCriterion-OTHER
     a mono:SeriousnessCriterion, owl:NamedIndividual ;
     rdfs:label "other" .
 
+mono:SourceSystem
+    a owl:Class ;
+    rdfs:comment "Which reporting system an adverse event report came from. The two differ in what they record (for example, only the FAERS quarterly files say which suspect drug is primary)." ;
+    rdfs:label "Source system" .
+
+mono:SourceSystem-FAERS_QDE
+    a mono:SourceSystem, owl:NamedIndividual ;
+    rdfs:label "faers_qde" .
+
+mono:SourceSystem-OPENFDA_E2B
+    a mono:SourceSystem, owl:NamedIndividual ;
+    rdfs:label "openfda_e2b" .
+
 mono:Substance
     a owl:Class ;
     rdfs:comment "A chemical or biological substance identified by its FDA Unique Ingredient Identifier." ;
     rdfs:label "Substance" ;
     rdfs:subClassOf mono:Entity .
+
+mono:clinicalDrug
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:DrugInvolvement mono:Product )
+    ] ;
+    rdfs:label "clinical drug" ;
+    rdfs:range mono:ClinicalDrug .
 
 mono:dosageForm
     a owl:DatatypeProperty, owl:FunctionalProperty ;
@@ -328,10 +356,9 @@ mono:meddraPreferredTerm
 
 mono:name
     a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:comment "Preferred name." ;
     rdfs:domain [
         a owl:Class ;
-        owl:unionOf ( mono:Organization mono:Product mono:Substance )
+        owl:unionOf ( mono:ClinicalDrug mono:Organization mono:Product mono:Substance )
     ] ;
     rdfs:label "name" ;
     rdfs:range xsd:string .
@@ -359,12 +386,17 @@ mono:patientAgeYears
 
 mono:product
     a owl:FunctionalProperty, owl:ObjectProperty ;
-    rdfs:domain [
-        a owl:Class ;
-        owl:unionOf ( mono:DrugInvolvement mono:PackagedProduct )
-    ] ;
+    rdfs:comment "The packaged product." ;
+    rdfs:domain mono:PackagedProduct ;
     rdfs:label "product" ;
     rdfs:range mono:Product .
+
+mono:productNdc
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Product NDC in 4-4, 5-3 or 5-4 form." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "product NDC" ;
+    rdfs:range xsd:string .
 
 mono:reaction
     a owl:ObjectProperty ;
@@ -382,7 +414,7 @@ mono:recallClassification
 
 mono:recallNumber
     a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:comment "FDA recall number, for example D-0123-2025." ;
+    rdfs:comment "FDA recall number, for example D-321-2016 or D-0123-2025." ;
     rdfs:domain mono:Recall ;
     rdfs:label "recall number" ;
     rdfs:range xsd:string .
@@ -432,13 +464,13 @@ mono:route
 mono:rxcui
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "RxNorm CUI." ;
-    rdfs:domain mono:Product ;
+    rdfs:domain mono:ClinicalDrug ;
     rdfs:label "RxCUI" ;
     rdfs:range xsd:string .
 
 mono:safetyReportId
     a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:comment "Safety report ID." ;
+    rdfs:comment "Safety report ID, optionally with a -digits version suffix." ;
     rdfs:domain mono:AdverseEventReport ;
     rdfs:label "safety report ID" ;
     rdfs:range xsd:string .
@@ -491,6 +523,13 @@ mono:slug
     rdfs:domain mono:Organization ;
     rdfs:label "slug" ;
     rdfs:range xsd:string .
+
+mono:sourceSystem
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Where the report came from." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "source system" ;
+    rdfs:range mono:SourceSystem .
 
 mono:strengthUnit
     a owl:DatatypeProperty, owl:FunctionalProperty ;

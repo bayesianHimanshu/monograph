@@ -6,7 +6,7 @@
     "expect": "agree_invalid",
     "record": {
       "ndc": "0280-2000-1",
-      "product": "https://example.org/monograph/product/243670",
+      "product": "https://example.org/monograph/product/0280-2000",
       "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
       "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
     }
@@ -29,7 +29,7 @@
     "expect": "agree_invalid",
     "record": {
       "ndc": "0280-2000-10",
-      "product": "https://example.org/monograph/product/243670",
+      "product": "https://example.org/monograph/product/0280-2000",
       "labeler": "bayer-healthcare-llc",
       "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
     }
@@ -41,7 +41,7 @@
     "expect": "agree_invalid",
     "record": {
       "ndc": "0280-2000-10",
-      "product": "https://example.org/monograph/product/243670",
+      "product": "https://example.org/monograph/product/0280-2000",
       "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
       "description": ""
     }

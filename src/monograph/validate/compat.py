@@ -8,6 +8,8 @@ classified:
   renames vocabulary (class, property, individual, shape property, enum member), tightens a bound,
   raises a minimum, lowers a maximum, changes a datatype, class, node or pattern, adds a required
   property or adds a rule;
+* every constraint the SHACL generator can emit is in the signature, including sh:not (an added
+  sh:not is a tightening);
 * additive: new vocabulary, loosened bounds, removed rules, new enum members, annotation changes.
 
 A pattern change is always breaking, because whether one regex accepts a superset of another cannot
@@ -90,6 +92,9 @@ def _constraints(g: Graph, ps: Node) -> dict[str, Any]:
     members = g.value(ps, SH["in"])
     if members is not None:
         out["in"] = frozenset(str(m) for m in Collection(g, members))
+    negated = frozenset(_canonical(g, n) for n in g.objects(ps, SH["not"]))
+    if negated:
+        out["not"] = negated
     return out
 
 
@@ -175,6 +180,11 @@ def diff(old: SchemaSignature, new: SchemaSignature) -> list[Change]:
         for name in _EXACT:
             if o_c.get(name) != n_c.get(name):
                 add("constraint", subject, f"{name} {o_c.get(name)!r} -> {n_c.get(name)!r}", True)
+        o_not, n_not = o_c.get("not", frozenset()), n_c.get("not", frozenset())
+        for shape in sorted(n_not - o_not):
+            add("constraint", subject, f"sh:not added {shape}", True)
+        for shape in sorted(o_not - n_not):
+            add("constraint", subject, f"sh:not removed {shape}", False)
         o_in, n_in = o_c.get("in", frozenset()), n_c.get("in", frozenset())
         for member in sorted(o_in - n_in):
             add("constraint", subject, f"sh:in lost {member}", True)
@@ -246,8 +256,8 @@ class CompatChecker:
         problem = None
         if cur < rel:
             problem = f"SCHEMA_VERSION {current} is older than the last release {release}"
-        elif changes and cur == rel:
-            problem = f"the schema changed but SCHEMA_VERSION is still {current}"
         elif any(c.breaking for c in changes) and cur[0] == rel[0]:
             problem = f"breaking changes need a major version bump from {release} (SCHEMA_VERSION is {current})"
+        elif changes and cur == rel:
+            problem = f"the schema changed but SCHEMA_VERSION is still {current}"
         return CompatReport(release, current, changes, problem)

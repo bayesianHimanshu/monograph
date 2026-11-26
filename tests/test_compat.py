@@ -114,3 +114,15 @@ def test_committed_release_matches_current_schema() -> None:
     )
     assert report.ok
     assert report.release == "0.1.0"
+
+
+def test_added_negated_constraint_is_breaking() -> None:
+    """Regression: the signature once ignored sh:not, so new control-character constraints were invisible."""
+    from rdflib import BNode
+
+    def negate(o: Graph, s: Graph) -> None:
+        shape = BNode()
+        s.add((shape, SH.pattern, Literal("[x]")))
+        s.add((ps("Recall-recallReason"), SH["not"], shape))
+
+    assert [b for _, b in _changes(negate)] == [True]

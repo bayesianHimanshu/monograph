@@ -34,6 +34,7 @@ class ConformanceReport:
     raw_records: dict[str, int]
     classes: dict[str, ClassConformance]
     disagreements: list[dict[str, Any]]
+    report_id_suffixes: Counter[str] = field(default_factory=Counter)
 
     def agreement(self) -> tuple[int, int]:
         total = sum(sum(c.outcomes.values()) for c in self.classes.values())
@@ -71,6 +72,7 @@ class ConformanceRun:
         classes: dict[str, ClassConformance] = {c.cls.__name__: ClassConformance() for c in self._spec.entities()}
         seen: set[tuple[str, str]] = set()
         disagreements: list[dict[str, Any]] = []
+        suffixes: Counter[str] = Counter()
         for candidate in self.candidates(raw):
             cls = self._spec.by_name(candidate.cls).cls
             stats = classes[candidate.cls]
@@ -81,6 +83,10 @@ class ConformanceRun:
                 continue
             seen.add(key)
             stats.candidates += 1
+            if candidate.cls == "AdverseEventReport":
+                report_id = str(candidate.record.get("report_id", ""))
+                match = re.fullmatch(r"[0-9]+(-[0-9]+)", report_id)
+                suffixes[match.group(1) if match else "(none)"] += 1
             for note in candidate.notes:
                 stats.notes[_note(note)] += 1
             result = self._checker.check(instance)
@@ -98,4 +104,4 @@ class ConformanceRun:
                         "shacl": [v.describe() for v in result.shacl.violations][:3],
                     }
                 )
-        return ConformanceReport({k: len(v) for k, v in raw.items()}, classes, disagreements)
+        return ConformanceReport({k: len(v) for k, v in raw.items()}, classes, disagreements, suffixes)

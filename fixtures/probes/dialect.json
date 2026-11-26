@@ -2,8 +2,8 @@
   {
     "id": "trailing-newline-unii",
     "class": "Substance",
-    "expect": "disagree",
-    "note": "Pydantic (Rust regex) and XPath treat $ as end of text. pySHACL evaluates sh:pattern with Python re, where $ also matches before a final newline.",
+    "expect": "agree_invalid",
+    "note": "pySHACL alone accepts '^...$' before a final newline. H6.1 closes it: sh:maxLength (implied by the fixed-length pattern) and the SafeIdentifier sh:not both reject.",
     "record": {
       "unii": "R16CO5Y76E\n",
       "name": "ASPIRIN"
@@ -12,11 +12,11 @@
   {
     "id": "trailing-newline-ndc",
     "class": "PackagedProduct",
-    "expect": "disagree",
-    "note": "Same divergence on an alternation pattern.",
+    "expect": "agree_invalid",
+    "note": "Closed the same way on an alternation pattern.",
     "record": {
       "ndc": "0280-2000-10\n",
-      "product": "https://example.org/monograph/product/243670",
+      "product": "https://example.org/monograph/product/0280-2000",
       "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
       "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
     }
@@ -24,13 +24,23 @@
   {
     "id": "trailing-newline-iri",
     "class": "PackagedProduct",
-    "expect": "disagree",
-    "note": "Same divergence on the reference IRI pattern.",
+    "expect": "agree_invalid",
+    "note": "The IRI pattern is unbounded, so only the sh:not on references closes it.",
     "record": {
       "ndc": "0280-2000-10",
-      "product": "https://example.org/monograph/product/243670",
+      "product": "https://example.org/monograph/product/0280-2000",
       "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc\n",
       "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
+    }
+  },
+  {
+    "id": "trailing-newline-slug",
+    "class": "Organization",
+    "expect": "agree_invalid",
+    "note": "Unbounded pattern; closed by the SafeIdentifier sh:not alone.",
+    "record": {
+      "slug": "acme-pharma-inc\n",
+      "name": "Acme"
     }
   },
   {
@@ -41,6 +51,27 @@
     "record": {
       "unii": "R16CO\n5Y76E",
       "name": "ASPIRIN"
+    }
+  },
+  {
+    "id": "unicode-digits-loinc",
+    "class": "Label",
+    "expect": "agree_invalid",
+    "note": "Arabic-Indic digits match \\d in Rust, Python and XPath. The canonical [0-9] rejects them everywhere.",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "effective_date": "2024-05-01",
+      "products": [
+        "https://example.org/monograph/product/0280-2000"
+      ],
+      "sections": [
+        {
+          "code": "٣٤٠٦٧-٩",
+          "title": "INDICATIONS",
+          "text": "x"
+        }
+      ]
     }
   }
 ]

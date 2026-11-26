@@ -72,14 +72,15 @@ def check_drift(root: Root = Path()) -> None:
     typer.echo("drift check ok")
 
 
-def _breaking(root: Path) -> bool:
+def _breaking(root: Path, as_version: str | None = None, record: bool = False) -> bool:
     from monograph.core.version import SCHEMA_VERSION
     from monograph.gen.artifacts import OWL_FILE, SHACL_FILE
     from monograph.validate.compat import CompatChecker
 
+    version = as_version or SCHEMA_VERSION
     files = wiring.artifact_builder(wiring.build_spec(), Vocabulary()).build().files
     checker = CompatChecker(wiring.generated_dir(root) / "releases", OWL_FILE, SHACL_FILE)
-    report = checker.check(SCHEMA_VERSION, files[OWL_FILE], files[SHACL_FILE])
+    report = checker.check(version, files[OWL_FILE], files[SHACL_FILE])
     for change in report.changes:
         label = "BREAKING" if change.breaking else "additive"
         typer.echo(f"breaking-change: {label}: {change.kind}: {change.subject}: {change.detail}")
@@ -89,14 +90,34 @@ def _breaking(root: Path) -> bool:
     )
     if report.problem:
         typer.echo(f"breaking-change: {report.problem}", err=True)
+    if record:
+        wiring.results_writer(root).write(
+            "compat.check",
+            report.ok,
+            {
+                "release": report.release,
+                "checked_version": version,
+                "schema_version_in_source": SCHEMA_VERSION,
+                "changes": len(report.changes),
+                "breaking": [f"{c.kind}: {c.subject}: {c.detail}" for c in report.breaking],
+                "additive": len(report.changes) - len(report.breaking),
+                "problem": report.problem,
+            },
+        )
     return report.ok
 
 
 @check_app.command("breaking")
-def check_breaking(root: Root = Path()) -> None:
+def check_breaking(
+    root: Root = Path(),
+    as_version: Annotated[
+        str | None, typer.Option(help="Check as if SCHEMA_VERSION were this (to show what the gate demands).")
+    ] = None,
+    record: Annotated[bool, typer.Option(help="Append the verdict to results/h6.")] = False,
+) -> None:
     """Fail if OWL/SHACL changed incompatibly since the last release without a major version bump."""
     try:
-        ok = _breaking(root)
+        ok = _breaking(root, as_version, record)
     except (SchemaError, RegexSubsetError) as exc:
         raise _fail(f"generation: {exc}") from exc
     if not ok:
@@ -174,7 +195,7 @@ def measure(
     from monograph.core.instances import Instantiator
     from monograph.core.meta import DEFAULT_BASE
     from monograph.core.regex import check_pattern
-    from monograph.gen.ddl import DdlGenerator
+    from monograph.gen.ddl import DdlGenerator, DdlProfile
     from monograph.harness.measure import Measurement, record_conformance, record_postgres
     from monograph.harness.property_run import PropertyAgreementRun
     from monograph.ingest.openfda import ENDPOINTS, RawCache
@@ -220,7 +241,7 @@ def measure(
     typer.echo("round trip, dataset integrity, leaks")
     m.round_trip(real_valid)
     m.dataset_integrity(wiring.shapes_graph(root))
-    ddl = DdlGenerator(spec, check_pattern).generate()
+    ddl = DdlGenerator(spec, check_pattern, DdlProfile.TEST).generate()
     m.leaks(ValidatorLinter(models.MODELS, models).run(), ddl, check_pattern)
     m.validator_findings(all_probes())
 
