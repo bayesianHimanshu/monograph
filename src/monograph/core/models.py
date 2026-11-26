@@ -138,16 +138,10 @@ class RecallClassification(StrEnum):
 class Substance(Entity):
     """A chemical or biological substance identified by its FDA Unique Ingredient Identifier."""
 
-    __ont__: ClassVar[OntClass] = OntClass(
-        name="Substance", label="Substance", path="substance", key=("unii",)
-    )
+    __ont__: ClassVar[OntClass] = OntClass(name="Substance", label="Substance", path="substance", key=("unii",))
 
-    unii: Annotated[
-        str, OntProp("unii", "UNII"), Field(pattern=r"^[0-9A-Z]{10}$", description="FDA UNII code.")
-    ]
-    name: Annotated[
-        str, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")
-    ]
+    unii: Annotated[str, OntProp("unii", "UNII"), Field(pattern=r"^[0-9A-Z]{10}$", description="FDA UNII code.")]
+    name: Annotated[str, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")]
 
 
 class Organization(Entity):
@@ -166,9 +160,7 @@ class Organization(Entity):
             description="Stable key: the normalized name, lowercase, words joined by hyphens.",
         ),
     ]
-    name: Annotated[
-        str, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")
-    ]
+    name: Annotated[str, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")]
 
 
 class Ingredient(EmbeddedValue):
@@ -176,9 +168,7 @@ class Ingredient(EmbeddedValue):
 
     __ont__: ClassVar[OntClass] = OntClass(name="Ingredient", label="Ingredient")
 
-    substance: Annotated[
-        Ref[Substance], OntProp("substance", "substance"), Field(description="The substance.")
-    ]
+    substance: Annotated[Ref[Substance], OntProp("substance", "substance"), Field(description="The substance.")]
     strength_value: Annotated[
         Decimal, OntProp("strengthValue", "strength value"), Field(gt=0, description="Numeric strength.")
     ]
@@ -194,12 +184,8 @@ class Product(Entity):
 
     __ont__: ClassVar[OntClass] = OntClass(name="Product", label="Product", path="product", key=("rxcui",))
 
-    rxcui: Annotated[
-        str, OntProp("rxcui", "RxCUI"), Field(pattern=r"^[0-9]{1,8}$", description="RxNorm CUI.")
-    ]
-    name: Annotated[
-        str, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")
-    ]
+    rxcui: Annotated[str, OntProp("rxcui", "RxCUI"), Field(pattern=r"^[0-9]{1,8}$", description="RxNorm CUI.")]
+    name: Annotated[str, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")]
     dosage_form: Annotated[
         str,
         OntProp("dosageForm", "dosage form"),
@@ -245,12 +231,8 @@ class PackagedProduct(Entity):
             description="Package NDC in 4-4-2, 5-3-2 or 5-4-1 form.",
         ),
     ]
-    product: Annotated[
-        Ref[Product], OntProp("product", "product"), Field(description="The packaged product.")
-    ]
-    labeler: Annotated[
-        Ref[Organization], OntProp("labeler", "labeler"), Field(description="The labeler firm.")
-    ]
+    product: Annotated[Ref[Product], OntProp("product", "product"), Field(description="The packaged product.")]
+    labeler: Annotated[Ref[Organization], OntProp("labeler", "labeler"), Field(description="The labeler firm.")]
     description: Annotated[
         str | None,
         OntProp("packageDescription", "package description"),
@@ -273,17 +255,13 @@ class LabelSection(EmbeddedValue):
         OntProp("sectionTitle", "section title"),
         Field(min_length=1, max_length=200, description="Title."),
     ]
-    text: Annotated[
-        str, OntProp("sectionText", "section text"), Field(min_length=1, description="Plain text.")
-    ]
+    text: Annotated[str, OntProp("sectionText", "section text"), Field(min_length=1, description="Plain text.")]
 
 
 class Label(Entity):
     """One version of a structured product label (SPL)."""
 
-    __ont__: ClassVar[OntClass] = OntClass(
-        name="Label", label="Label", path="label", key=("set_id", "version")
-    )
+    __ont__: ClassVar[OntClass] = OntClass(name="Label", label="Label", path="label", key=("set_id", "version"))
 
     set_id: Annotated[
         str,
@@ -398,9 +376,7 @@ class AdverseEventReport(Entity):
     receipt_date: Annotated[
         date, OntProp("receiptDate", "receipt date"), Field(description="Date FDA received the report.")
     ]
-    serious: Annotated[
-        bool, OntProp("serious", "serious"), Field(description="Whether the report is serious.")
-    ]
+    serious: Annotated[bool, OntProp("serious", "serious"), Field(description="Whether the report is serious.")]
     seriousness_criteria: Annotated[
         frozenset[SeriousnessCriterion],
         OntProp("seriousnessCriterion", "seriousness criterion"),
@@ -426,9 +402,7 @@ class AdverseEventReport(Entity):
 class Recall(Entity):
     """A drug recall from the FDA enforcement report."""
 
-    __ont__: ClassVar[OntClass] = OntClass(
-        name="Recall", label="Recall", path="recall", key=("recall_number",)
-    )
+    __ont__: ClassVar[OntClass] = OntClass(name="Recall", label="Recall", path="recall", key=("recall_number",))
 
     recall_number: Annotated[
         str,
@@ -438,12 +412,8 @@ class Recall(Entity):
     classification: Annotated[
         RecallClassification, OntProp("recallClassification", "classification"), Field(description="Class.")
     ]
-    reason: Annotated[
-        str, OntProp("recallReason", "reason"), Field(min_length=1, description="Reason for the recall.")
-    ]
-    report_date: Annotated[
-        date, OntProp("reportDate", "report date"), Field(description="Enforcement report date.")
-    ]
+    reason: Annotated[str, OntProp("recallReason", "reason"), Field(min_length=1, description="Reason for the recall.")]
+    report_date: Annotated[date, OntProp("reportDate", "report date"), Field(description="Enforcement report date.")]
     products: Annotated[
         frozenset[Ref[Product]], OntProp("recallsProduct", "recalls product"), Field(description="Products.")
     ] = frozenset()

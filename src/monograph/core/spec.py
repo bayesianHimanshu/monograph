@@ -264,9 +264,7 @@ def _analyze_field(cls: type[BaseModel], name: str, info: FieldInfo) -> FieldSpe
     elif origin is frozenset:
         card, annotation = Card.SET, get_args(annotation)[0]
     elif origin in (set, tuple, dict) or annotation in (list, set, frozenset, tuple, dict):
-        raise SchemaError(
-            f"{where}: use list[T] (ordered) or frozenset[T] (keyed); {annotation} is not supported"
-        )
+        raise SchemaError(f"{where}: use list[T] (ordered) or frozenset[T] (keyed); {annotation} is not supported")
 
     kind, scalar, enum, target = _inner_kind(where, annotation)
     _check_default(where, info, card, min_len)
@@ -340,9 +338,7 @@ def _constraints(where: str, metadata: list[Any]) -> tuple[Constraints, int | No
         elif hasattr(m, "func") and hasattr(m.func, PYDANTIC_ONLY_MARK):
             continue  # a declared pydantic_only functional validator; the lint step inventories it
         else:
-            raise SchemaError(
-                f"{where}: constraint {m!r} has no projection (supported: pattern, lengths, bounds)"
-            )
+            raise SchemaError(f"{where}: constraint {m!r} has no projection (supported: pattern, lengths, bounds)")
     constraints = Constraints(pattern=pattern, **bounds)  # type: ignore[arg-type]
     return constraints, min_len, max_len
 
@@ -353,9 +349,7 @@ def _bound(where: str, value: object) -> Bound:
     return value
 
 
-def _inner_kind(
-    where: str, annotation: Any
-) -> tuple[Kind, type | None, type[StrEnum] | None, type[BaseModel] | None]:
+def _inner_kind(where: str, annotation: Any) -> tuple[Kind, type | None, type[StrEnum] | None, type[BaseModel] | None]:
     if get_origin(annotation) is Ref:
         target = get_args(annotation)[0]
         if not (isinstance(target, type) and issubclass(target, BaseModel)):

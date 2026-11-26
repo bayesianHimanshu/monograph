@@ -1,0 +1,505 @@
+@prefix mono: <https://example.org/monograph/ontology#> .
+@prefix shape: <https://example.org/monograph/shapes#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+shape:AdverseEventReport
+    a sh:NodeShape ;
+    rdfs:label "Adverse event report" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:AdverseEventReport-drugInvolvement, shape:AdverseEventReport-patientAgeYears, shape:AdverseEventReport-reaction, shape:AdverseEventReport-receiptDate, shape:AdverseEventReport-safetyReportId, shape:AdverseEventReport-serious, shape:AdverseEventReport-seriousnessCriterion ;
+    sh:targetClass mono:AdverseEventReport .
+
+shape:AdverseEventReport-drugInvolvement
+    a sh:PropertyShape ;
+    sh:class mono:DrugInvolvement ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "drug involvement" ;
+    sh:node shape:DrugInvolvement ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:drugInvolvement .
+
+shape:AdverseEventReport-patientAgeYears
+    a sh:PropertyShape ;
+    sh:datatype xsd:decimal ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxInclusive "150"^^xsd:decimal ;
+    sh:minInclusive "0"^^xsd:decimal ;
+    sh:name "patient age in years" ;
+    sh:path mono:patientAgeYears .
+
+shape:AdverseEventReport-reaction
+    a sh:PropertyShape ;
+    sh:class mono:Reaction ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "reaction" ;
+    sh:node shape:Reaction ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:reaction .
+
+shape:AdverseEventReport-receiptDate
+    a sh:PropertyShape ;
+    sh:datatype xsd:date ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "receipt date" ;
+    sh:path mono:receiptDate .
+
+shape:AdverseEventReport-safetyReportId
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "safety report ID" ;
+    sh:path mono:safetyReportId ;
+    sh:pattern "^[0-9]{1,12}$" .
+
+shape:AdverseEventReport-serious
+    a sh:PropertyShape ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "serious" ;
+    sh:path mono:serious .
+
+shape:AdverseEventReport-seriousnessCriterion
+    a sh:PropertyShape ;
+    sh:in ( mono:SeriousnessCriterion-DEATH mono:SeriousnessCriterion-LIFE_THREATENING mono:SeriousnessCriterion-HOSPITALIZATION mono:SeriousnessCriterion-DISABLING mono:SeriousnessCriterion-CONGENITAL_ANOMALY mono:SeriousnessCriterion-OTHER ) ;
+    sh:maxCount "6"^^xsd:integer ;
+    sh:name "seriousness criterion" ;
+    sh:path mono:seriousnessCriterion .
+
+shape:DrugInvolvement
+    a sh:NodeShape ;
+    rdfs:label "Drug involvement" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:DrugInvolvement-drugRole, shape:DrugInvolvement-product, shape:DrugInvolvement-verbatimDrugName ;
+    sh:targetClass mono:DrugInvolvement .
+
+shape:DrugInvolvement-drugRole
+    a sh:PropertyShape ;
+    sh:in ( mono:DrugRole-PRIMARY_SUSPECT mono:DrugRole-SECONDARY_SUSPECT mono:DrugRole-SUSPECT mono:DrugRole-CONCOMITANT mono:DrugRole-INTERACTING ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "drug role" ;
+    sh:path mono:drugRole .
+
+shape:DrugInvolvement-product
+    a sh:PropertyShape ;
+    sh:class mono:Product ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:name "product" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:product ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:DrugInvolvement-verbatimDrugName
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "verbatim drug name" ;
+    sh:path mono:verbatimDrugName .
+
+shape:EmbeddedValue
+    a sh:NodeShape ;
+    rdfs:label "Embedded value" ;
+    sh:targetClass mono:EmbeddedValue .
+
+shape:Entity
+    a sh:NodeShape ;
+    rdfs:label "Entity" ;
+    sh:targetClass mono:Entity .
+
+shape:Ingredient
+    a sh:NodeShape ;
+    rdfs:label "Ingredient" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Ingredient-strengthUnit, shape:Ingredient-strengthValue, shape:Ingredient-substance ;
+    sh:targetClass mono:Ingredient .
+
+shape:Ingredient-strengthUnit
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "50"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "strength unit" ;
+    sh:path mono:strengthUnit .
+
+shape:Ingredient-strengthValue
+    a sh:PropertyShape ;
+    sh:datatype xsd:decimal ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minExclusive "0"^^xsd:decimal ;
+    sh:name "strength value" ;
+    sh:path mono:strengthValue .
+
+shape:Ingredient-substance
+    a sh:PropertyShape ;
+    sh:class mono:Substance ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "substance" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:substance ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:Label
+    a sh:NodeShape ;
+    rdfs:label "Label" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Label-effectiveDate, shape:Label-labelVersion, shape:Label-labelsProduct, shape:Label-section, shape:Label-setId ;
+    sh:targetClass mono:Label .
+
+shape:Label-effectiveDate
+    a sh:PropertyShape ;
+    sh:datatype xsd:date ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "effective date" ;
+    sh:path mono:effectiveDate .
+
+shape:Label-labelVersion
+    a sh:PropertyShape ;
+    sh:datatype xsd:integer ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxExclusive "1000000"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minInclusive "1"^^xsd:integer ;
+    sh:name "label version" ;
+    sh:path mono:labelVersion .
+
+shape:Label-labelsProduct
+    a sh:PropertyShape ;
+    sh:class mono:Product ;
+    sh:name "labels product" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:labelsProduct ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:Label-section
+    a sh:PropertyShape ;
+    sh:class mono:LabelSection ;
+    sh:name "section" ;
+    sh:node shape:LabelSection ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:section .
+
+shape:Label-setId
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "SPL set ID" ;
+    sh:path mono:setId ;
+    sh:pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" .
+
+shape:LabelSection
+    a sh:NodeShape ;
+    rdfs:label "Label section" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:LabelSection-loincCode, shape:LabelSection-sectionText, shape:LabelSection-sectionTitle ;
+    sh:targetClass mono:LabelSection .
+
+shape:LabelSection-loincCode
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "LOINC code" ;
+    sh:path mono:loincCode ;
+    sh:pattern "^[0-9]{1,7}-[0-9]$" .
+
+shape:LabelSection-sectionText
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "section text" ;
+    sh:path mono:sectionText .
+
+shape:LabelSection-sectionTitle
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "200"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "section title" ;
+    sh:path mono:sectionTitle .
+
+shape:Organization
+    a sh:NodeShape ;
+    rdfs:label "Organization" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Organization-name, shape:Organization-slug ;
+    sh:targetClass mono:Organization .
+
+shape:Organization-name
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "name" ;
+    sh:path mono:name .
+
+shape:Organization-slug
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "120"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "slug" ;
+    sh:path mono:slug ;
+    sh:pattern "^[a-z0-9]+(-[a-z0-9]+)*$" .
+
+shape:PackagedProduct
+    a sh:NodeShape ;
+    rdfs:label "Packaged product" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:PackagedProduct-labeler, shape:PackagedProduct-ndc, shape:PackagedProduct-packageDescription, shape:PackagedProduct-product ;
+    sh:targetClass mono:PackagedProduct .
+
+shape:PackagedProduct-labeler
+    a sh:PropertyShape ;
+    sh:class mono:Organization ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "labeler" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:labeler ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:PackagedProduct-ndc
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "NDC" ;
+    sh:path mono:ndc ;
+    sh:pattern "^([0-9]{4}-[0-9]{4}-[0-9]{2}|[0-9]{5}-[0-9]{3}-[0-9]{2}|[0-9]{5}-[0-9]{4}-[0-9])$" .
+
+shape:PackagedProduct-packageDescription
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "2000"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "package description" ;
+    sh:path mono:packageDescription .
+
+shape:PackagedProduct-product
+    a sh:PropertyShape ;
+    sh:class mono:Product ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "product" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:product ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:Product
+    a sh:NodeShape ;
+    rdfs:label "Product" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Product-dosageForm, shape:Product-ingredient, shape:Product-name, shape:Product-route, shape:Product-rxcui ;
+    sh:targetClass mono:Product .
+
+shape:Product-dosageForm
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "100"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "dosage form" ;
+    sh:path mono:dosageForm .
+
+shape:Product-ingredient
+    a sh:PropertyShape ;
+    sh:class mono:Ingredient ;
+    sh:name "ingredient" ;
+    sh:node shape:Ingredient ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:ingredient .
+
+shape:Product-name
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "name" ;
+    sh:path mono:name .
+
+shape:Product-route
+    a sh:PropertyShape ;
+    sh:in ( mono:Route-BUCCAL mono:Route-CUTANEOUS mono:Route-DENTAL mono:Route-EPIDURAL mono:Route-INTRA_ARTICULAR mono:Route-INTRADERMAL mono:Route-INTRAMUSCULAR mono:Route-INTRATHECAL mono:Route-INTRAVENOUS mono:Route-INTRAVESICAL mono:Route-INTRAVITREAL mono:Route-NASAL mono:Route-OPHTHALMIC mono:Route-ORAL mono:Route-OTIC mono:Route-PERCUTANEOUS mono:Route-RECTAL mono:Route-RESPIRATORY_INHALATION mono:Route-SUBCUTANEOUS mono:Route-SUBLINGUAL mono:Route-TOPICAL mono:Route-TRANSDERMAL mono:Route-VAGINAL ) ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "route" ;
+    sh:path mono:route .
+
+shape:Product-rxcui
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "RxCUI" ;
+    sh:path mono:rxcui ;
+    sh:pattern "^[0-9]{1,8}$" .
+
+shape:Reaction
+    a sh:NodeShape ;
+    rdfs:label "Reaction" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Reaction-meddraPreferredTerm ;
+    sh:targetClass mono:Reaction .
+
+shape:Reaction-meddraPreferredTerm
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "100"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "MedDRA preferred term" ;
+    sh:path mono:meddraPreferredTerm .
+
+shape:Recall
+    a sh:NodeShape ;
+    rdfs:label "Recall" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Recall-recallClassification, shape:Recall-recallNumber, shape:Recall-recallReason, shape:Recall-recallingFirm, shape:Recall-recallsProduct, shape:Recall-reportDate ;
+    sh:targetClass mono:Recall .
+
+shape:Recall-recallClassification
+    a sh:PropertyShape ;
+    sh:in ( mono:RecallClassification-CLASS_I mono:RecallClassification-CLASS_II mono:RecallClassification-CLASS_III ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "classification" ;
+    sh:path mono:recallClassification .
+
+shape:Recall-recallNumber
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "recall number" ;
+    sh:path mono:recallNumber ;
+    sh:pattern "^D-[0-9]{4}-[0-9]{4}$" .
+
+shape:Recall-recallReason
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "reason" ;
+    sh:path mono:recallReason .
+
+shape:Recall-recallingFirm
+    a sh:PropertyShape ;
+    sh:class mono:Organization ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "recalling firm" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:recallingFirm ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:Recall-recallsProduct
+    a sh:PropertyShape ;
+    sh:class mono:Product ;
+    sh:name "recalls product" ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:recallsProduct ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:Recall-reportDate
+    a sh:PropertyShape ;
+    sh:datatype xsd:date ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "report date" ;
+    sh:path mono:reportDate .
+
+shape:Substance
+    a sh:NodeShape ;
+    rdfs:label "Substance" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:Substance-name, shape:Substance-unii ;
+    sh:targetClass mono:Substance .
+
+shape:Substance-name
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "name" ;
+    sh:path mono:name .
+
+shape:Substance-unii
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "UNII" ;
+    sh:path mono:unii ;
+    sh:pattern "^[0-9A-Z]{10}$" .
+
+shape:rule-has-primary-suspect
+    a sh:NodeShape ;
+    rdfs:label "has-primary-suspect" ;
+    sh:message "a report needs at least one primary suspect drug" ;
+    sh:property [
+        sh:path mono:drugInvolvement ;
+        sh:qualifiedMinCount "1"^^xsd:integer ;
+        sh:qualifiedValueShape [
+            sh:property [
+                sh:hasValue mono:DrugRole-PRIMARY_SUSPECT ;
+                sh:path mono:drugRole
+            ]
+        ]
+    ] ;
+    sh:targetClass mono:AdverseEventReport .
+
+shape:rule-serious-requires-criterion
+    a sh:NodeShape ;
+    rdfs:label "serious-requires-criterion" ;
+    sh:message "a serious report needs at least one seriousness criterion" ;
+    sh:or ( [
+        sh:not [
+            sh:hasValue "true"^^xsd:boolean ;
+            sh:path mono:serious
+        ]
+    ] [
+        sh:minCount "1"^^xsd:integer ;
+        sh:path mono:seriousnessCriterion
+    ] ) ;
+    sh:targetClass mono:AdverseEventReport .

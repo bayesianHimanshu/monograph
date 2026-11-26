@@ -36,9 +36,7 @@ class Ref(Generic[T]):
         return f"Ref({self.iri!r})"
 
     @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source: Any, handler: GetCoreSchemaHandler
-    ) -> core_schema.CoreSchema:
+    def __get_pydantic_core_schema__(cls, source: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
         def unwrap(value: Any) -> Any:
             if isinstance(value, Ref):
                 return value.iri

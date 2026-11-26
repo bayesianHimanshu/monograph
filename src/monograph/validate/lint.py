@@ -77,9 +77,7 @@ class ValidatorLinter:
                         declared.append(Declared(cls.__name__, name, getattr(func, PYDANTIC_ONLY_MARK)))
                     else:
                         problems.append(
-                            Problem(
-                                cls.__name__, name, "validator is neither rule-generated nor pydantic_only"
-                            )
+                            Problem(cls.__name__, name, "validator is neither rule-generated nor pydantic_only")
                         )
             for field_name, info in cls.model_fields.items():
                 if field_name not in getattr(cls, "__annotations__", {}):
