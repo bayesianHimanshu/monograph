@@ -128,7 +128,7 @@ def test_ddl_lists_what_postgres_cannot_enforce(spec: SchemaSpec) -> None:
     assert ("AdverseEventReport", "min_count") in kinds
     assert ("Label", "pydantic_only:label-effective-date-not-future") in kinds
     assert "ck_adverse_event_report_rule_serious_requires_criterion" in result.sql
-    assert "ck_product_routes_min_count" in result.sql
+    assert "ck_product_rule_finished_rx_otc_requires_route" in result.sql
     assert ("Product", "pydantic_only:product-ingredient-substances-unique") not in kinds  # projected as UNIQUE
     assert "uq_product__ingredients_substance UNIQUE (owner_iri, substance_iri)" in result.sql
     assert "DEFERRABLE" not in result.sql

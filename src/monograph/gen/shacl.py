@@ -170,16 +170,24 @@ class ShaclGenerator:
         g.add((shape, RDFS.label, Literal(rule.id)))
         g.add((shape, SH.message, Literal(rule.message)))
         if isinstance(rule, RequiredWhen):
-            when, then = c.field(rule.when), c.field(rule.then)
-            has_value = BNode()
-            g.add((has_value, SH.path, v.prop(when)))
-            g.add((has_value, SH.hasValue, self._value(when, rule.equals)))
-            not_case = BNode()
-            g.add((not_case, SH["not"], has_value))
+            # "if C1 and C2 ... then T" is "not C1 or not C2 ... or T".
+            cases: list[Node] = []
+            for test_of in rule.when:
+                when = c.field(test_of.field)
+                test = BNode()
+                g.add((test, SH.path, v.prop(when)))
+                if len(test_of.values) == 1:
+                    g.add((test, SH.hasValue, self._value(when, test_of.values[0])))
+                else:
+                    g.add((test, SH.minCount, Literal(1)))
+                    g.add((test, SH["in"], self._list(g, [self._value(when, x) for x in test_of.values])))
+                not_case = BNode()
+                g.add((not_case, SH["not"], test))
+                cases.append(not_case)
             then_case = BNode()
-            g.add((then_case, SH.path, v.prop(then)))
+            g.add((then_case, SH.path, v.prop(c.field(rule.then))))
             g.add((then_case, SH.minCount, Literal(1)))
-            g.add((shape, SH["or"], self._list(g, [not_case, then_case])))
+            g.add((shape, SH["or"], self._list(g, [*cases, then_case])))
         elif isinstance(rule, AtLeast):
             parent = c.field(rule.field)
             assert parent.target is not None

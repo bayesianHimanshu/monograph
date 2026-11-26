@@ -12,6 +12,7 @@ from monograph.core.models import (
     DrugRole,
     Label,
     Product,
+    ProductType,
     Route,
     SeriousnessCriterion,
     SourceSystem,
@@ -91,6 +92,8 @@ def test_pydantic_only_duplicate_substances() -> None:
     }
     data = {
         "product_ndc": "0280-2000",
+        "product_type": ProductType.HUMAN_OTC_DRUG,
+        "finished": True,
         "name": "aspirin",
         "dosage_form": "TABLET",
         "routes": frozenset({Route.ORAL}),
@@ -119,3 +122,12 @@ def test_safe_strings_reject_control_characters() -> None:
     data["report_id"] = "10003301\n"
     with pytest.raises(ValidationError, match="control"):
         AdverseEventReport.model_validate(data)
+
+
+def test_route_required_only_for_finished_rx_and_otc() -> None:
+    base = {"product_ndc": "0280-2000", "name": "x", "dosage_form": "POWDER"}
+    Product.model_validate({**base, "product_type": ProductType.BULK_INGREDIENT, "finished": False})
+    Product.model_validate({**base, "product_type": ProductType.HUMAN_OTC_DRUG, "finished": False})
+    err = _error(Product, {**base, "product_type": ProductType.HUMAN_PRESCRIPTION_DRUG, "finished": True})
+    assert isinstance(err, RuleViolation)
+    assert err.rule_id == "finished-rx-otc-requires-route"

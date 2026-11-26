@@ -1,8 +1,8 @@
 """The version of the drug product model. Bump it according to semver; CI enforces the rules."""
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "2.0.0"
 
-# What changed in each release and why. Every 1.0.0 entry corrects the model in response to an H6
+# What changed in each release and why. Every entry corrects the model in response to an H6 or H6.1
 # real-data finding; none of them loosens a constraint for its own sake. `monograph measure` writes this
 # to the results so the report can state it from the data.
 CHANGES: dict[str, tuple[tuple[str, str, str], ...]] = {
@@ -53,4 +53,39 @@ CHANGES: dict[str, tuple[tuple[str, str, str], ...]] = {
             "The default DDL has plain foreign keys; a test profile keeps them deferrable. Both are drift-checked.",
         ),
     ),
+    "2.0.0": (
+        (
+            "route-conditional",
+            "H6.1: 86 of 200 NDC products had no route; 84 of them are not finished (60 bulk ingredients, 23 drugs "
+            "for further processing, 1 licensed vaccine bulk intermediate) and 2 are finished kits.",
+            "Product gains product_type (NDC directory product type) and finished. Routes are required only when "
+            "the product is finished and its type is human prescription or human OTC drug (a conditional rule); "
+            "kits are not exempt.",
+        ),
+        (
+            "route-vocabulary",
+            "H6.1: the route enum was the 23 routes observed in one sample; real records used routes outside it.",
+            "Route is the FDA SPL route of administration list (121 terms with NCI codes). OTIC is replaced by the "
+            "FDA term AURICULAR (OTIC).",
+        ),
+    ),
 }
+
+
+# Known real-data failures that are left failing on purpose and handed to later experiments. The model
+# is not loosened for them. `monograph measure` joins this ledger with the live failure counts.
+DEFERRED: tuple[tuple[str, str, str, str], ...] = (
+    (
+        "Product",
+        "ingredients[].substance: missing",
+        "H4/H2",
+        "NDC records list UNIIs without names and in no stated order, so a multi-ingredient product's "
+        "ingredients cannot be paired with substances deterministically.",
+    ),
+    (
+        "Label",
+        "sections[].text: too_short",
+        "H4/H2",
+        "openFDA delivers some label sections with empty text; the section exists but its content is missing.",
+    ),
+)

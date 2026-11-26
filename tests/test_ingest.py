@@ -137,3 +137,35 @@ def test_fixture_files_are_raw_openfda_records(endpoint: str) -> None:
     data = json.loads((ROOT / "fixtures" / "openfda" / f"{endpoint}.json").read_text())
     assert isinstance(data, list)
     assert data
+
+
+def test_set_id_is_canonicalized_and_noted() -> None:
+    raw = {"id": "x", "set_id": "0013824B-6AEE-4DA4-AFFD-35BC6BF19D91", "version": "1", "effective_time": "20200101"}
+    *_, label = OpenFdaMapper().label(raw)
+    assert label.record["set_id"] == "0013824b-6aee-4da4-affd-35bc6bf19d91"
+    assert "set_id canonicalized to lowercase" in " ".join(label.notes)
+
+
+def test_unsafe_records_are_quarantined_unchanged(tmp_path: Path) -> None:
+    import copy
+    from datetime import UTC, datetime
+
+    from monograph.ingest.quarantine import QuarantineStore
+
+    raw = {
+        "recall_number": "D-0001-2024",
+        "classification": "Class II",
+        "reason_for_recall": "Bad\x1cdata",
+        "report_date": "20240102",
+        "recalling_firm": "Acme Inc.",
+        "openfda": {},
+    }
+    original = copy.deepcopy(raw)
+    report = wiring.conformance_run(wiring.build_spec(), ROOT).run({"enforcement": [raw]})
+    [entry] = report.quarantine
+    assert entry["raw"] == original  # nothing stripped or replaced
+    assert "U+001C" in entry["reasons"][0]
+    assert report.classes["Recall"].valid == 0
+    path = QuarantineStore(tmp_path, lambda: datetime(2026, 11, 26, tzinfo=UTC)).add(report.quarantine, "run")
+    assert path is not None
+    assert json.loads(path.read_text())["raw"]["reason_for_recall"] == "Bad\x1cdata"

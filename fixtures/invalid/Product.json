@@ -6,6 +6,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000-10",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -28,6 +30,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -44,15 +48,88 @@
     }
   },
   {
-    "id": "no-routes",
-    "violates": "min_count",
+    "id": "finished-otc-without-route",
+    "violates": "rule:finished-rx-otc-requires-route",
     "field": "routes",
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "unknown-product-type",
+    "violates": "enum",
+    "field": "product_type",
+    "expect": "agree_invalid",
+    "record": {
+      "product_ndc": "0280-2000",
+      "product_type": "OTC",
+      "finished": true,
+      "name": "Bayer Low Dose Aspirin",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "finished-missing",
+    "violates": "required",
+    "field": "finished",
+    "expect": "agree_invalid",
+    "record": {
+      "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "name": "Bayer Low Dose Aspirin",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "finished-as-string",
+    "violates": "datatype",
+    "field": "finished",
+    "expect": "agree_invalid",
+    "record": {
+      "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": "Y",
+      "name": "Bayer Low Dose Aspirin",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
       "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
@@ -70,6 +147,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -92,6 +171,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -113,6 +194,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -131,6 +214,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -153,6 +238,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -175,6 +262,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -197,6 +286,8 @@
     "expect": "agree_invalid",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -219,6 +310,8 @@
     "expect": "declared_leak",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [

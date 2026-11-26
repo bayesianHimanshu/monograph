@@ -233,3 +233,23 @@ the finding behind it, and RESULTS.md prints that table. Choices the request lef
    raw openFDA fixtures are unchanged so before and after compare the same records.
 8. **Item 10 (create a private repo):** the repository `bayesianHimanshu/monograph` already existed
    and is public, so no repository was created and its visibility was not changed.
+
+## Finishing H6 (schema 2.0.0)
+
+1. **Gate hardening** (see MAPPING.md, "Releases"): a bump without a snapshot fails, a stale snapshot
+   fails, and the bump rules are checked against the previous release and along the release chain.
+   M7 (additive change) therefore releases in the same change; M12 bumps the major version without a
+   snapshot and must be caught.
+2. **Fail-closed classifier**: residual statements; the signature also models `rdfs:subClassOf`,
+   `rdfs:domain` and `sh:ignoredProperties`, which it previously skipped.
+3. **Route**: 84 of the 86 route-less NDC products are not finished (bulk ingredients, drugs for further
+   processing, a vaccine bulk intermediate) and 2 are finished kits. The route rule applies to finished
+   human prescription and OTC products; kits are not exempt, so the 2 kits keep failing. `RequiredWhen`
+   now takes a conjunction of conditions. The route enum is FDA's SPL route list (121 terms). FDA
+   publishes a second, older list in the Data Standards Manual (with INTRAVENOUS BOLUS, OTHER, UNKNOWN,
+   and without some newer SPL terms); the SPL list was chosen because openFDA's route values come from
+   SPL. The fda.gov page refuses non-browser clients, so the list was transcribed by a fetch agent; the
+   page URL and date are in the enum's docstring.
+4. **Set IDs** are lowercased at ingest (UUIDs are case-insensitive, so this is canonicalization) and
+   each change is noted. Records failing SafeIdentifier or SafeText go to `data/quarantine/` unchanged.
+5. **Deferred** failures are listed in `core/version.py:DEFERRED` and reported with live counts.

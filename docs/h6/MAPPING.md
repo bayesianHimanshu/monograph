@@ -84,7 +84,7 @@ the patterns.
 
 | Rule | Pydantic | SHACL | Postgres | JSON Schema |
 |---|---|---|---|---|
-| `RequiredWhen(when, equals, then)` | rule engine validator | `shape:rule-<id> sh:or ( [ sh:not [ sh:path when ; sh:hasValue v ] ] [ sh:path then ; sh:minCount 1 ] )` | `CHECK (when IS DISTINCT FROM v OR then present)` when both are columns of one table | `if` / `then` |
+| `RequiredWhen(when=(Condition(f1, values1), ...), then)` (all conditions must hold) | rule engine validator | `shape:rule-<id> sh:or ( [ sh:not C1 ] [ sh:not C2 ] ... [ sh:path then ; sh:minCount 1 ] )`, where Ci is `[ sh:path fi ; sh:hasValue v ]` for one value or `[ sh:path fi ; sh:minCount 1 ; sh:in (...) ]` for several | `CHECK (f1 IS NULL OR f1 NOT IN (...) OR ... OR then present)` when all fields are columns of one table | `if` (enum per field) / `then` |
 | `AtLeast(field, where, equals, n)` | rule engine validator | `shape:rule-<id> sh:property [ sh:path field ; sh:qualifiedValueShape [ sh:property [ sh:path where ; sh:hasValue v ] ] ; sh:qualifiedMinCount n ]` | not enforceable (counts child rows) | `contains` / `minContains` |
 | `@pydantic_only(id, reason)` validator | the validator | none | none | none |
 | `@pydantic_only(id, reason, unique=UniqueWithin(field, keys))` | the validator | none (indirect when the keys are the item key: duplicates mint one IRI) | `UNIQUE (owner_iri, key columns)` on the child table | none |
@@ -123,3 +123,17 @@ needs to replace a row inside a savepoint. Both are drift-checked; they differ o
 Pydantic's own `models_json_schema` in validation mode, one `$defs` entry per concrete class, plus
 `x-rdf-class`, `x-rdf-property` and the rule projections above. It is drift-checked but not validated
 against instances (that needs a JSON Schema validator, which is not an allowed dependency).
+
+## Releases and the breaking-change gate
+
+`monograph check breaking` enforces, in order:
+
+1. `SCHEMA_VERSION` has a snapshot in `generated/releases/<version>/`, and that snapshot equals the
+   current generation. A version bump is therefore complete only with `monograph release` in the same
+   change; releases are immutable.
+2. Against the previous release (the highest below `SCHEMA_VERSION`), any breaking change needs a
+   major bump.
+3. Every consecutive pair of releases obeys rule 2.
+
+The classifier is fail-closed: OWL and SHACL statements that the signature does not model explicitly
+are kept as residuals, and any residual difference counts as breaking.

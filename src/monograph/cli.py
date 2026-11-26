@@ -81,12 +81,15 @@ def _breaking(root: Path, as_version: str | None = None, record: bool = False) -
     files = wiring.artifact_builder(wiring.build_spec(), Vocabulary()).build().files
     checker = CompatChecker(wiring.generated_dir(root) / "releases", OWL_FILE, SHACL_FILE)
     report = checker.check(version, files[OWL_FILE], files[SHACL_FILE])
-    for change in report.changes:
-        label = "BREAKING" if change.breaking else "additive"
-        typer.echo(f"breaking-change: {label}: {change.kind}: {change.subject}: {change.detail}")
+    for title, changes in (("since previous release", report.changes), ("since own snapshot", report.snapshot_changes)):
+        for change in changes:
+            if change.breaking:
+                typer.echo(f"breaking-change: {title}: BREAKING: {change.kind}: {change.subject}: {change.detail}")
+    snapshot_breaking = sum(c.breaking for c in report.snapshot_changes)
     typer.echo(
-        f"breaking-change: release {report.release}, current {report.current}, "
-        f"{len(report.changes)} changes, {len(report.breaking)} breaking"
+        f"breaking-change: previous release {report.release}, current {report.current}:"
+        f" {len(report.changes)} changes ({len(report.breaking)} breaking) since the previous release,"
+        f" {len(report.snapshot_changes)} ({snapshot_breaking} breaking) since the {report.current} snapshot"
     )
     if report.problem:
         typer.echo(f"breaking-change: {report.problem}", err=True)
@@ -101,6 +104,10 @@ def _breaking(root: Path, as_version: str | None = None, record: bool = False) -
                 "changes": len(report.changes),
                 "breaking": [f"{c.kind}: {c.subject}: {c.detail}" for c in report.breaking],
                 "additive": len(report.changes) - len(report.breaking),
+                "snapshot_changes": len(report.snapshot_changes),
+                "snapshot_breaking": [
+                    f"{c.kind}: {c.subject}: {c.detail}" for c in report.snapshot_changes if c.breaking
+                ],
                 "problem": report.problem,
             },
         )
@@ -195,7 +202,7 @@ def measure(
     from monograph.core.instances import Instantiator
     from monograph.core.meta import DEFAULT_BASE
     from monograph.core.regex import check_pattern
-    from monograph.core.version import CHANGES
+    from monograph.core.version import CHANGES, DEFERRED
     from monograph.gen.ddl import DdlGenerator, DdlProfile
     from monograph.harness.coverage import CoverageMatrix
     from monograph.harness.measure import Measurement, record_conformance, record_postgres
@@ -234,7 +241,10 @@ def measure(
         raw, source = wiring.openfda_fixtures(root), "fixtures/openfda"
     typer.echo(f"real records from {source}")
     conformance = wiring.conformance_run(spec, root)
-    record_conformance(writer, conformance.run(raw), source)
+    conformance_report = conformance.run(raw)
+    record_conformance(writer, conformance_report, source)
+    wiring.quarantine_store(root).add(conformance_report.quarantine, writer.run_id)
+    m.deferred(DEFERRED, conformance_report)
     real_valid = []
     for candidate in conformance.candidates(raw):
         instance = instantiator.instantiate(spec.by_name(candidate.cls).cls, candidate.record)
@@ -401,8 +411,13 @@ def ingest_map(
             typer.echo(f"    {count} x {reason}")
     agreed, total = report.agreement()
     typer.echo(f"agreement on real records: {agreed}/{total}")
+    if report.quarantine:
+        for q in report.quarantine:
+            typer.echo(f"quarantined {q['source']}: {'; '.join(q['reasons'])}")
     if record:
-        record_conformance(wiring.results_writer(root), report, source)
+        writer = wiring.results_writer(root)
+        record_conformance(writer, report, source)
+        wiring.quarantine_store(root).add(report.quarantine, writer.run_id)
 
 
 @ingest_app.command("fixtures")

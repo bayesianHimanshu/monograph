@@ -18,7 +18,7 @@ SHAPES = Path("generated/monograph.shapes.ttl")
 OWL = Path("generated/monograph.owl.ttl")
 TEST_DDL = Path("generated/monograph.test.ddl.sql")
 
-Regenerate = Callable[[], None]
+Cli = Callable[..., None]  # runs `monograph <args>` inside the mutant copy
 
 
 class MutationError(RuntimeError):
@@ -39,10 +39,10 @@ class Mutation:
     id: str
     title: str
     expected_gate: str | None  # None means every gate must pass (a false-alarm probe)
-    apply: Callable[[Path, Regenerate], None]
+    apply: Callable[[Path, Cli], None]
 
 
-def _m1(root: Path, regen: Regenerate) -> None:
+def _m1(root: Path, cli: Cli) -> None:
     replace_once(root, SHAPES, 'sh:pattern "^[0-9A-Z]{10}$"', 'sh:pattern "^[0-9A-Z]+$"')
 
 
@@ -53,12 +53,12 @@ _UNII_FIELD = (
 )
 
 
-def _m2(root: Path, regen: Regenerate) -> None:
+def _m2(root: Path, cli: Cli) -> None:
     synonym = '    synonym: Annotated[SafeText | None, OntProp("synonym", "synonym"), Field(min_length=1)] = None\n'
     replace_once(root, MODELS, _UNII_FIELD, _UNII_FIELD + synonym)
 
 
-def _m3(root: Path, regen: Regenerate) -> None:
+def _m3(root: Path, cli: Cli) -> None:
     path = root / OWL
     text = path.read_text(encoding="utf-8")
     block = re.compile(r"\nmono:Recall\n(    .*\n)+?(?=\n)", re.MULTILINE)
@@ -68,7 +68,7 @@ def _m3(root: Path, regen: Regenerate) -> None:
     path.write_text(new, encoding="utf-8")
 
 
-def _m4(root: Path, regen: Regenerate) -> None:
+def _m4(root: Path, cli: Cli) -> None:
     replace_once(
         root,
         MODELS,
@@ -79,36 +79,38 @@ def _m4(root: Path, regen: Regenerate) -> None:
         '        Field(min_length=1, max_length=2000, description="Package description as written in the source."),\n'
         "    ]\n",
     )
-    regen()
+    cli("gen")
 
 
-def _m5(root: Path, regen: Regenerate) -> None:
+def _m5(root: Path, cli: Cli) -> None:
     replace_once(root, MODELS, 'OntProp("unii", "UNII")', 'OntProp("uniiCode", "UNII")')
-    regen()
+    cli("gen")
 
 
-def _m6(root: Path, regen: Regenerate) -> None:
+def _m6(root: Path, cli: Cli) -> None:
     replace_once(
         root,
         MODELS,
         'OntClass(name="Substance", label="Substance"',
         'OntClass(name="ChemicalSubstance", label="Substance"',
     )
-    regen()
+    cli("gen")
 
 
-def _m7(root: Path, regen: Regenerate) -> None:
+def _m7(root: Path, cli: Cli) -> None:
+    # INTRAVENOUS BOLUS (C38274) is in FDA's Data Standards Manual list but not in the SPL list we ship.
     replace_once(
         root,
         MODELS,
-        '    INTRADERMAL = "INTRADERMAL"\n',
-        '    INTRACAUDAL = "INTRACAUDAL"\n    INTRADERMAL = "INTRADERMAL"\n',
+        '    INTRAVENOUS = "INTRAVENOUS"  # C38276\n',
+        '    INTRAVENOUS = "INTRAVENOUS"  # C38276\n    INTRAVENOUS_BOLUS = "INTRAVENOUS BOLUS"  # C38274\n',
     )
-    replace_once(root, VERSION, 'SCHEMA_VERSION = "1.0.0"', 'SCHEMA_VERSION = "1.1.0"')
-    regen()
+    replace_once(root, VERSION, 'SCHEMA_VERSION = "2.0.0"', 'SCHEMA_VERSION = "2.1.0"')
+    cli("gen")
+    cli("release")  # an additive change is complete only with its snapshot
 
 
-def _m8(root: Path, regen: Regenerate) -> None:
+def _m8(root: Path, cli: Cli) -> None:
     anchor = (
         '    @model_validator(mode="after")\n    @pydantic_only(\n        id="product-ingredient-substances-unique",'
     )
@@ -121,11 +123,11 @@ def _m8(root: Path, regen: Regenerate) -> None:
     replace_once(root, MODELS, anchor, undeclared + anchor)
 
 
-def _m9(root: Path, regen: Regenerate) -> None:
+def _m9(root: Path, cli: Cli) -> None:
     replace_once(root, MODELS, 'pattern=safe(r"^[0-9A-Z]{10}$")', 'pattern=safe(r"^\\w{10}$")')
 
 
-def _m10(root: Path, regen: Regenerate) -> None:
+def _m10(root: Path, cli: Cli) -> None:
     replace_once(
         root,
         MAPPING,
@@ -135,10 +137,15 @@ def _m10(root: Path, regen: Regenerate) -> None:
     )
 
 
-def _m11(root: Path, regen: Regenerate) -> None:
+def _m11(root: Path, cli: Cli) -> None:
     replace_once(
         root, TEST_DDL, "REFERENCES substance (iri) DEFERRABLE INITIALLY IMMEDIATE", "REFERENCES substance (iri)"
     )
+
+
+def _m12(root: Path, cli: Cli) -> None:
+    replace_once(root, VERSION, 'SCHEMA_VERSION = "2.0.0"', 'SCHEMA_VERSION = "3.0.0"')
+    cli("gen")
 
 
 MUTATIONS: tuple[Mutation, ...] = (
@@ -148,11 +155,12 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M4", "Make an optional field required without a major version bump", "breaking", _m4),
     Mutation("M5", "Rename a property without a major bump", "breaking", _m5),
     Mutation("M6", "Change a class IRI", "breaking", _m6),
-    Mutation("M7", "Add an enum member with a minor bump", None, _m7),
+    Mutation("M7", "Add an enum member with a minor bump and its release snapshot", None, _m7),
     Mutation("M8", "Add a custom validator with no rule or pydantic_only declaration", "lint", _m8),
     Mutation("M9", "Introduce a regex outside the safe subset", "generation", _m9),
     Mutation("M10", "Break the instance mapping for one property", "agreement|tests", _m10),
     Mutation("M11", "Hand-edit the test-profile DDL to make a foreign key non-deferrable", "drift", _m11),
+    Mutation("M12", "Bump the major version without a release snapshot", "breaking", _m12),
 )
 
-BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, regen: None)
+BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

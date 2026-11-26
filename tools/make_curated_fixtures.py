@@ -32,18 +32,21 @@ valid = {
   ("combination", {"rxcui": "2001467"}),
  ],
  "Product": [
-  ("aspirin-81", {"product_ndc": "0280-2000", "name": "Bayer Low Dose Aspirin", "dosage_form": "TABLET, CHEWABLE",
+  ("aspirin-81", {"product_ndc": "0280-2000", "product_type": "HUMAN OTC DRUG", "finished": True, "name": "Bayer Low Dose Aspirin", "dosage_form": "TABLET, CHEWABLE",
     "routes": ["ORAL"], "clinical_drug": cdrug("243670"),
     "ingredients": [{"substance": sub("R16CO5Y76E"), "strength_value": "81", "strength_unit": "mg/1"}]}),
-  ("apap-ibu", {"product_ndc": "12345-6789", "name": "Acme Dual Action", "dosage_form": "TABLET, FILM COATED",
+  ("apap-ibu", {"product_ndc": "12345-6789", "product_type": "HUMAN PRESCRIPTION DRUG", "finished": True, "name": "Acme Dual Action", "dosage_form": "TABLET, FILM COATED",
     "routes": ["ORAL"], "clinical_drug": cdrug("2001467"), "ingredients": [
       {"substance": sub("362O9ITL9D"), "strength_value": "250", "strength_unit": "mg/1"},
       {"substance": sub("WK2XYI10QM"), "strength_value": "125.0", "strength_unit": "mg/1"}]}),
-  ("apap-500", {"product_ndc": "12345-678", "name": "Acme Acetaminophen", "dosage_form": "TABLET",
+  ("apap-500", {"product_ndc": "12345-678", "product_type": "HUMAN OTC DRUG", "finished": True, "name": "Acme Acetaminophen", "dosage_form": "TABLET",
     "routes": ["ORAL", "RECTAL"], "clinical_drug": cdrug("198440"),
     "ingredients": [{"substance": sub("362O9ITL9D"), "strength_value": "500", "strength_unit": "mg/1"}]}),
-  ("no-clinical-drug", {"product_ndc": "55555-0001", "name": "placebo topical", "dosage_form": "CREAM",
+  ("no-clinical-drug", {"product_ndc": "55555-0001", "product_type": "HUMAN OTC DRUG", "finished": True, "name": "placebo topical", "dosage_form": "CREAM",
     "routes": ["TOPICAL"]}),
+  ("bulk-without-route", {"product_ndc": "55555-0002", "product_type": "BULK INGREDIENT", "finished": False,
+    "name": "acetaminophen bulk powder", "dosage_form": "POWDER",
+    "ingredients": [{"substance": sub("362O9ITL9D"), "strength_value": "1", "strength_unit": "kg/kg"}]}),
  ],
  "PackagedProduct": [
   ("4-4-2", {"ndc": "0280-2000-10", "product": prod("0280-2000"), "labeler": org("bayer-healthcare-llc"), "description": "36 TABLET, CHEWABLE in 1 BOTTLE"}),
@@ -100,7 +103,10 @@ case("Product", "clinical-drug-not-iri", "ref", "clinical_drug", setk("clinical_
 case("ClinicalDrug", "rxcui-letters", "pattern", "rxcui", setk("rxcui", "RX123"))
 case("ClinicalDrug", "name-empty", "min_length", "name", setk("name", ""))
 case("ClinicalDrug", "name-has-nul", "charset", "name", setk("name", "aspirin\u0000 81"))
-case("Product", "no-routes", "min_count", "routes", setk("routes", []))
+case("Product", "finished-otc-without-route", "rule:finished-rx-otc-requires-route", "routes", setk("routes", []))
+case("Product", "unknown-product-type", "enum", "product_type", setk("product_type", "OTC"))
+case("Product", "finished-missing", "required", "finished", delk("finished"))
+case("Product", "finished-as-string", "datatype", "finished", setk("finished", "Y"))
 case("Product", "unknown-route", "enum", "routes", setk("routes", ["ORALLY"]))
 case("Product", "ingredient-missing-unit", "node", "ingredients", lambda r: r["ingredients"][0].pop("strength_unit"))
 case("Product", "ingredient-not-object", "node", "ingredients", setk("ingredients", ["aspirin 81 mg"]))

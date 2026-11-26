@@ -427,12 +427,19 @@ def _check_rules(c: ClassSpec) -> None:
                 raise SchemaError(f"{where}: {p.id}: {f.target.__name__} has no field {key!r}")
     for rule in c.rules:
         if isinstance(rule, RequiredWhen):
-            when, then = c.find(rule.when), c.find(rule.then)
-            if when is None or then is None:
-                raise SchemaError(f"{where}: rule {rule.id} names an unknown field")
-            if when.is_collection or when.kind not in (Kind.SCALAR, Kind.ENUM):
-                raise SchemaError(f"{where}: rule {rule.id}: `when` must be a single scalar or enum field")
-            _check_value(where, rule.id, when, rule.equals)
+            then = c.find(rule.then)
+            if then is None or not rule.when:
+                raise SchemaError(f"{where}: rule {rule.id} names an unknown field or has no condition")
+            for condition in rule.when:
+                when = c.find(condition.field)
+                if when is None:
+                    raise SchemaError(f"{where}: rule {rule.id} names an unknown field")
+                if when.is_collection or when.kind not in (Kind.SCALAR, Kind.ENUM):
+                    raise SchemaError(f"{where}: rule {rule.id}: conditions must test a single scalar or enum field")
+                if not condition.values:
+                    raise SchemaError(f"{where}: rule {rule.id}: a condition needs at least one value")
+                for value in condition.values:
+                    _check_value(where, rule.id, when, value)
             if then.card is Card.ONE:
                 raise SchemaError(f"{where}: rule {rule.id}: `then` is already required")
         elif isinstance(rule, AtLeast):

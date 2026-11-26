@@ -2,7 +2,8 @@
 
 Only two rule patterns exist, both expressible in SHACL Core:
 
-* RequiredWhen: if field `when` equals `equals`, field `then` must be present.
+* RequiredWhen: if every condition in `when` holds (each: a field has one of some values), field
+  `then` must be present.
 * AtLeast: at least `min_count` items of list field `field` have `where` in `values`.
 
 Each rule is projected twice: into Pydantic by the model base class's `@rule_engine` validator, which
@@ -35,17 +36,27 @@ def _present(value: object) -> bool:
 
 
 @dataclass(frozen=True, slots=True)
+class Condition:
+    """`field` has one of `values`."""
+
+    field: str
+    values: tuple[RuleValue, ...]
+
+    def holds(self, model: BaseModel) -> bool:
+        return getattr(model, self.field, None) in self.values
+
+
+@dataclass(frozen=True, slots=True)
 class RequiredWhen:
-    """If `when == equals` then `then` is present (not None, and non-empty for collections)."""
+    """If every condition in `when` holds, then `then` is present (not None, and non-empty for collections)."""
 
     id: str
-    when: str
-    equals: RuleValue
+    when: tuple[Condition, ...]
     then: str
     message: str
 
     def holds(self, model: BaseModel) -> bool:
-        if getattr(model, self.when, None) != self.equals:
+        if not all(c.holds(model) for c in self.when):
             return True
         return _present(getattr(model, self.then, None))
 

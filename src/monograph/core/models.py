@@ -17,6 +17,7 @@ from monograph.core.refs import Ref
 from monograph.core.regex import safe
 from monograph.core.rules import (
     AtLeast,
+    Condition,
     PydanticOnlyViolation,
     RequiredWhen,
     Rule,
@@ -65,33 +66,135 @@ class EmbeddedValue(ModelBase):
 
 
 class Route(StrEnum):
-    """Route of administration, using FDA SPL route names as they appear in openFDA."""
+    """Route of administration: the FDA SPL route of administration terms, with NCI Thesaurus codes.
+
+    Source: https://www.fda.gov/industry/structured-product-labeling-resources/route-administration
+    (content current as of 10/29/2021; NCI concept C38114). 121 terms.
+    """
 
     __ont__ = OntEnum(name="Route", label="Route of administration")
 
-    BUCCAL = "BUCCAL"
-    CUTANEOUS = "CUTANEOUS"
-    DENTAL = "DENTAL"
-    EPIDURAL = "EPIDURAL"
-    INTRA_ARTICULAR = "INTRA-ARTICULAR"
-    INTRADERMAL = "INTRADERMAL"
-    INTRAMUSCULAR = "INTRAMUSCULAR"
-    INTRATHECAL = "INTRATHECAL"
-    INTRAVENOUS = "INTRAVENOUS"
-    INTRAVESICAL = "INTRAVESICAL"
-    INTRAVITREAL = "INTRAVITREAL"
-    NASAL = "NASAL"
-    OPHTHALMIC = "OPHTHALMIC"
-    ORAL = "ORAL"
-    OTIC = "OTIC"
-    PERCUTANEOUS = "PERCUTANEOUS"
-    RECTAL = "RECTAL"
-    RESPIRATORY_INHALATION = "RESPIRATORY (INHALATION)"
-    SUBCUTANEOUS = "SUBCUTANEOUS"
-    SUBLINGUAL = "SUBLINGUAL"
-    TOPICAL = "TOPICAL"
-    TRANSDERMAL = "TRANSDERMAL"
-    VAGINAL = "VAGINAL"
+    AURICULAR_OTIC = "AURICULAR (OTIC)"  # C38192
+    BUCCAL = "BUCCAL"  # C38193
+    CONJUNCTIVAL = "CONJUNCTIVAL"  # C38194
+    CUTANEOUS = "CUTANEOUS"  # C38675
+    DENTAL = "DENTAL"  # C38197
+    ELECTRO_OSMOSIS = "ELECTRO-OSMOSIS"  # C38633
+    ENDOCERVICAL = "ENDOCERVICAL"  # C38205
+    ENDOSINUSIAL = "ENDOSINUSIAL"  # C38206
+    ENDOTRACHEAL = "ENDOTRACHEAL"  # C38208
+    ENTERAL = "ENTERAL"  # C38209
+    EPIDURAL = "EPIDURAL"  # C38210
+    EXTRA_AMNIOTIC = "EXTRA-AMNIOTIC"  # C38211
+    EXTRACORPOREAL = "EXTRACORPOREAL"  # C38212
+    HEMODIALYSIS = "HEMODIALYSIS"  # C38200
+    INFILTRATION = "INFILTRATION"  # C38215
+    INTERSTITIAL = "INTERSTITIAL"  # C38219
+    INTRA_ABDOMINAL = "INTRA-ABDOMINAL"  # C38220
+    INTRA_AMNIOTIC = "INTRA-AMNIOTIC"  # C38221
+    INTRA_ARTERIAL = "INTRA-ARTERIAL"  # C38222
+    INTRA_ARTICULAR = "INTRA-ARTICULAR"  # C38223
+    INTRABILIARY = "INTRABILIARY"  # C38224
+    INTRABRONCHIAL = "INTRABRONCHIAL"  # C38225
+    INTRABURSAL = "INTRABURSAL"  # C38226
+    INTRACAMERAL = "INTRACAMERAL"  # C64984
+    INTRACANALICULAR = "INTRACANALICULAR"  # C132737
+    INTRACARDIAC = "INTRACARDIAC"  # C38227
+    INTRACARTILAGINOUS = "INTRACARTILAGINOUS"  # C38228
+    INTRACAUDAL = "INTRACAUDAL"  # C38229
+    INTRACAVERNOUS = "INTRACAVERNOUS"  # C38230
+    INTRACAVITARY = "INTRACAVITARY"  # C38231
+    INTRACEREBRAL = "INTRACEREBRAL"  # C38232
+    INTRACISTERNAL = "INTRACISTERNAL"  # C38233
+    INTRACORNEAL = "INTRACORNEAL"  # C38234
+    INTRACORONAL_DENTAL = "INTRACORONAL, DENTAL"  # C38217
+    INTRACORONARY = "INTRACORONARY"  # C38218
+    INTRACORPORUS_CAVERNOSUM = "INTRACORPORUS CAVERNOSUM"  # C38235
+    INTRACRANIAL = "INTRACRANIAL"  # C38236
+    INTRADERMAL = "INTRADERMAL"  # C38238
+    INTRADISCAL = "INTRADISCAL"  # C38239
+    INTRADUCTAL = "INTRADUCTAL"  # C38240
+    INTRADUODENAL = "INTRADUODENAL"  # C38241
+    INTRADURAL = "INTRADURAL"  # C38242
+    INTRAEPICARDIAL = "INTRAEPICARDIAL"  # C79144
+    INTRAEPIDERMAL = "INTRAEPIDERMAL"  # C38243
+    INTRAESOPHAGEAL = "INTRAESOPHAGEAL"  # C38245
+    INTRAGASTRIC = "INTRAGASTRIC"  # C38246
+    INTRAGINGIVAL = "INTRAGINGIVAL"  # C38247
+    INTRAHEPATIC = "INTRAHEPATIC"  # C38248
+    INTRAILEAL = "INTRAILEAL"  # C38249
+    INTRALESIONAL = "INTRALESIONAL"  # C38250
+    INTRALINGUAL = "INTRALINGUAL"  # C79138
+    INTRALUMINAL = "INTRALUMINAL"  # C38251
+    INTRALYMPHATIC = "INTRALYMPHATIC"  # C38252
+    INTRAMAMMARY = "INTRAMAMMARY"  # C79137
+    INTRAMEDULLARY = "INTRAMEDULLARY"  # C38253
+    INTRAMENINGEAL = "INTRAMENINGEAL"  # C38254
+    INTRAMUSCULAR = "INTRAMUSCULAR"  # C28161
+    INTRANODAL = "INTRANODAL"  # C79141
+    INTRAOCULAR = "INTRAOCULAR"  # C38255
+    INTRAOMENTUM = "INTRAOMENTUM"  # C79142
+    INTRAOVARIAN = "INTRAOVARIAN"  # C38256
+    INTRAPERICARDIAL = "INTRAPERICARDIAL"  # C38257
+    INTRAPERITONEAL = "INTRAPERITONEAL"  # C38258
+    INTRAPLEURAL = "INTRAPLEURAL"  # C38259
+    INTRAPROSTATIC = "INTRAPROSTATIC"  # C38260
+    INTRAPULMONARY = "INTRAPULMONARY"  # C38261
+    INTRARUMINAL = "INTRARUMINAL"  # C79139
+    INTRASINAL = "INTRASINAL"  # C38262
+    INTRASPINAL = "INTRASPINAL"  # C38263
+    INTRASYNOVIAL = "INTRASYNOVIAL"  # C38264
+    INTRATENDINOUS = "INTRATENDINOUS"  # C38265
+    INTRATESTICULAR = "INTRATESTICULAR"  # C38266
+    INTRATHECAL = "INTRATHECAL"  # C38267
+    INTRATHORACIC = "INTRATHORACIC"  # C38207
+    INTRATUBULAR = "INTRATUBULAR"  # C38268
+    INTRATUMOR = "INTRATUMOR"  # C38269
+    INTRATYMPANIC = "INTRATYMPANIC"  # C38270
+    INTRAUTERINE = "INTRAUTERINE"  # C38272
+    INTRAVASCULAR = "INTRAVASCULAR"  # C38273
+    INTRAVENOUS = "INTRAVENOUS"  # C38276
+    INTRAVENTRICULAR = "INTRAVENTRICULAR"  # C38277
+    INTRAVESICAL = "INTRAVESICAL"  # C38278
+    INTRAVITREAL = "INTRAVITREAL"  # C38280
+    IONTOPHORESIS = "IONTOPHORESIS"  # C38203
+    IRRIGATION = "IRRIGATION"  # C38281
+    LARYNGEAL = "LARYNGEAL"  # C38282
+    NASAL = "NASAL"  # C38284
+    NASOGASTRIC = "NASOGASTRIC"  # C38285
+    NOT_APPLICABLE = "NOT APPLICABLE"  # C48623
+    OCCLUSIVE_DRESSING_TECHNIQUE = "OCCLUSIVE DRESSING TECHNIQUE"  # C38286
+    OPHTHALMIC = "OPHTHALMIC"  # C38287
+    ORAL = "ORAL"  # C38288
+    OROPHARYNGEAL = "OROPHARYNGEAL"  # C38289
+    PARENTERAL = "PARENTERAL"  # C38291
+    PERCUTANEOUS = "PERCUTANEOUS"  # C38676
+    PERIARTICULAR = "PERIARTICULAR"  # C38292
+    PERIDURAL = "PERIDURAL"  # C38677
+    PERINEURAL = "PERINEURAL"  # C38293
+    PERIODONTAL = "PERIODONTAL"  # C38294
+    RECTAL = "RECTAL"  # C38295
+    RESPIRATORY_INHALATION = "RESPIRATORY (INHALATION)"  # C38216
+    RETROBULBAR = "RETROBULBAR"  # C38296
+    SOFT_TISSUE = "SOFT TISSUE"  # C38198
+    SUBARACHNOID = "SUBARACHNOID"  # C38297
+    SUBCONJUNCTIVAL = "SUBCONJUNCTIVAL"  # C38298
+    SUBCUTANEOUS = "SUBCUTANEOUS"  # C38299
+    SUBGINGIVAL = "SUBGINGIVAL"  # C65103
+    SUBLINGUAL = "SUBLINGUAL"  # C38300
+    SUBMUCOSAL = "SUBMUCOSAL"  # C38301
+    SUBRETINAL = "SUBRETINAL"  # C79143
+    SUPRACHOROIDAL = "SUPRACHOROIDAL"  # C128997
+    TOPICAL = "TOPICAL"  # C38304
+    TRANSDERMAL = "TRANSDERMAL"  # C38305
+    TRANSENDOCARDIAL = "TRANSENDOCARDIAL"  # C79145
+    TRANSMUCOSAL = "TRANSMUCOSAL"  # C38283
+    TRANSPLACENTAL = "TRANSPLACENTAL"  # C38307
+    TRANSTRACHEAL = "TRANSTRACHEAL"  # C38308
+    TRANSTYMPANIC = "TRANSTYMPANIC"  # C38309
+    URETERAL = "URETERAL"  # C38312
+    URETHRAL = "URETHRAL"  # C38271
+    VAGINAL = "VAGINAL"  # C38313
 
 
 class DrugRole(StrEnum):
@@ -130,6 +233,23 @@ class RecallClassification(StrEnum):
     CLASS_I = "I"
     CLASS_II = "II"
     CLASS_III = "III"
+
+
+class ProductType(StrEnum):
+    """The FDA NDC directory product type."""
+
+    __ont__ = OntEnum(name="ProductType", label="Product type")
+
+    HUMAN_PRESCRIPTION_DRUG = "HUMAN PRESCRIPTION DRUG"
+    HUMAN_OTC_DRUG = "HUMAN OTC DRUG"
+    PLASMA_DERIVATIVE = "PLASMA DERIVATIVE"
+    CELLULAR_THERAPY = "CELLULAR THERAPY"
+    VACCINE = "VACCINE"
+    STANDARDIZED_ALLERGENIC = "STANDARDIZED ALLERGENIC"
+    NON_STANDARDIZED_ALLERGENIC = "NON-STANDARDIZED ALLERGENIC"
+    BULK_INGREDIENT = "BULK INGREDIENT"
+    DRUG_FOR_FURTHER_PROCESSING = "DRUG FOR FURTHER PROCESSING"
+    LICENSED_VACCINE_BULK_INTERMEDIATE = "LICENSED VACCINE BULK INTERMEDIATE"
 
 
 class SourceSystem(StrEnum):
@@ -220,6 +340,17 @@ class Product(Entity):
     """A drug product as listed with FDA, identified by its product NDC (labeler and product segments)."""
 
     __ont__: ClassVar[OntClass] = OntClass(name="Product", label="Product", path="product", key=("product_ndc",))
+    __rules__: ClassVar[tuple[Rule, ...]] = (
+        RequiredWhen(
+            id="finished-rx-otc-requires-route",
+            when=(
+                Condition("finished", (True,)),
+                Condition("product_type", (ProductType.HUMAN_PRESCRIPTION_DRUG, ProductType.HUMAN_OTC_DRUG)),
+            ),
+            then="routes",
+            message="a finished prescription or OTC product needs at least one route",
+        ),
+    )
 
     product_ndc: Annotated[
         SafeIdentifier,
@@ -237,9 +368,19 @@ class Product(Entity):
         OntProp("dosageForm", "dosage form"),
         Field(min_length=1, max_length=100, description="Dosage form as written in the source."),
     ]
-    routes: Annotated[
-        frozenset[Route], OntProp("route", "route"), Field(min_length=1, description="Routes of administration.")
+    product_type: Annotated[
+        ProductType, OntProp("productType", "product type"), Field(description="NDC directory product type.")
     ]
+    finished: Annotated[
+        bool,
+        OntProp("finished", "finished"),
+        Field(description="Whether this is a finished product (False for bulk ingredients and intermediates)."),
+    ]
+    routes: Annotated[
+        frozenset[Route],
+        OntProp("route", "route"),
+        Field(description="Routes of administration. Required for finished prescription and OTC products."),
+    ] = frozenset()
     ingredients: Annotated[
         list[Ingredient], OntProp("ingredient", "ingredient"), Field(description="Active ingredients, in order.")
     ] = []
@@ -400,8 +541,7 @@ class AdverseEventReport(Entity):
     __rules__: ClassVar[tuple[Rule, ...]] = (
         RequiredWhen(
             id="serious-requires-criterion",
-            when="serious",
-            equals=True,
+            when=(Condition("serious", (True,)),),
             then="seriousness_criteria",
             message="a serious report needs at least one seriousness criterion",
         ),

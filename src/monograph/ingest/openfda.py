@@ -265,6 +265,8 @@ class OpenFdaMapper:
         product: dict[str, Any] = {
             "product_ndc": product_ndc,
             "name": raw.get("brand_name") or raw.get("generic_name"),
+            "product_type": raw.get("product_type"),
+            "finished": raw.get("finished"),
             "dosage_form": raw.get("dosage_form"),
             "routes": _list(raw.get("route")),
             "ingredients": ingredients,
@@ -288,8 +290,14 @@ class OpenFdaMapper:
         source = f"label:{raw.get('id', '?')}"
         version = raw.get("version")
         openfda = raw.get("openfda") or {}
+        set_id = raw.get("set_id")
+        canonical_notes: tuple[str, ...] = ()
+        if isinstance(set_id, str) and set_id != set_id.lower():
+            # UUIDs are case-insensitive (RFC 4122), so lowercasing is lossless canonicalization, not repair.
+            set_id = set_id.lower()
+            canonical_notes = ("label: set_id canonicalized to lowercase",)
         record: dict[str, Any] = {
-            "set_id": raw.get("set_id"),
+            "set_id": set_id,
             "version": int(version) if isinstance(version, str) and version.isdigit() else version,
             "effective_date": fda_date(raw.get("effective_time")),
             "products": self._products(openfda),
@@ -305,7 +313,7 @@ class OpenFdaMapper:
         if len(uniis) == len(names) == 1:  # longer lists are not documented as aligned
             substances.append(Candidate("Substance", {"unii": uniis[0], "name": names[0]}, source))
         unmapped = sorted(k for k in raw if k not in LABEL_SECTIONS and isinstance(raw[k], list) and k != "openfda")
-        notes = (f"label: {len(unmapped)} text fields without a LOINC mapping",) if unmapped else ()
+        notes = canonical_notes + ((f"label: {len(unmapped)} text fields without a LOINC mapping",) if unmapped else ())
         return [*substances, *self.clinical_drugs(openfda, source), Candidate("Label", record, source, notes)]
 
     def event(self, raw: dict[str, Any]) -> list[Candidate]:

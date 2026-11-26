@@ -78,6 +78,15 @@ def record_conformance(writer: ResultsWriter, report: ConformanceReport, source:
             "suffixes": report.report_id_suffixes.most_common(),
         },
     )
+    writer.write(
+        "ingest.quarantine",
+        len(report.quarantine),
+        {
+            "source": source,
+            "records": [{k: v for k, v in q.items() if k != "raw"} for q in report.quarantine],
+            "note": "Raw records are kept unchanged in data/quarantine/; none is sanitized.",
+        },
+    )
     agreed, total = report.agreement()
     writer.write(
         "agreement.real",
@@ -341,6 +350,16 @@ class Measurement:
             totals,
             {"rows": [_row_dict(r) for r in rows], "constraints": len(rows)},
         )
+
+    def deferred(self, ledger: tuple[tuple[str, str, str, str], ...], report: ConformanceReport) -> None:
+        items = []
+        for cls, reason, target, rationale in ledger:
+            stats = report.classes.get(cls)
+            count = stats.reasons.get(reason, 0) if stats is not None else 0
+            items.append(
+                {"class": cls, "reason": reason, "deferred_to": target, "records": count, "rationale": rationale}
+            )
+        self._writer.write("findings.deferred", sum(i["records"] for i in items), {"items": items})
 
     def changelog(self, changes: dict[str, tuple[tuple[str, str, str], ...]]) -> None:
         for version, entries in changes.items():

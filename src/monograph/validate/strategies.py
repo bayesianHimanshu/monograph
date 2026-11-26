@@ -253,7 +253,9 @@ class Perturber:
     def _break_rule(self, record: Record, site: Site) -> Record | None:
         rule = site.rule
         if isinstance(rule, RequiredWhen):
-            record[rule.when] = rule.equals if not isinstance(rule.equals, str) else str(rule.equals)
+            for condition in rule.when:
+                value = condition.values[0]
+                record[condition.field] = value if not isinstance(value, str) else str(value)
             record.pop(rule.then, None)
             return record
         assert isinstance(rule, AtLeast)

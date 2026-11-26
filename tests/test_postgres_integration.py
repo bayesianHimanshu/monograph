@@ -93,7 +93,9 @@ def test_default_profile_applies_and_loads(
         order = {c.cls: i for i, c in enumerate(spec.entities())}
         for f in sorted(fixtures.valid(), key=lambda f: order[f.cls]):
             loader.insert(instantiator.instantiate(f.cls, f.record))
-        assert conn.execute("SELECT count(*) FROM product").fetchone() == (4,)
+        assert conn.execute("SELECT count(*) FROM product").fetchone() == (
+            len([f for f in fixtures.valid() if f.cls.__name__ == "Product"]),
+        )
 
 
 def test_dialect_probes_in_postgres(matrix: PgMatrix) -> None:

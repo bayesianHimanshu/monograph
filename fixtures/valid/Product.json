@@ -3,6 +3,8 @@
     "id": "aspirin-81",
     "record": {
       "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
@@ -22,6 +24,8 @@
     "id": "apap-ibu",
     "record": {
       "product_ndc": "12345-6789",
+      "product_type": "HUMAN PRESCRIPTION DRUG",
+      "finished": true,
       "name": "Acme Dual Action",
       "dosage_form": "TABLET, FILM COATED",
       "routes": [
@@ -46,6 +50,8 @@
     "id": "apap-500",
     "record": {
       "product_ndc": "12345-678",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "Acme Acetaminophen",
       "dosage_form": "TABLET",
       "routes": [
@@ -66,10 +72,29 @@
     "id": "no-clinical-drug",
     "record": {
       "product_ndc": "55555-0001",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "placebo topical",
       "dosage_form": "CREAM",
       "routes": [
         "TOPICAL"
+      ]
+    }
+  },
+  {
+    "id": "bulk-without-route",
+    "record": {
+      "product_ndc": "55555-0002",
+      "product_type": "BULK INGREDIENT",
+      "finished": false,
+      "name": "acetaminophen bulk powder",
+      "dosage_form": "POWDER",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/362O9ITL9D",
+          "strength_value": "1",
+          "strength_unit": "kg/kg"
+        }
       ]
     }
   }

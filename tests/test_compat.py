@@ -77,33 +77,95 @@ def test_class_removed_is_breaking() -> None:
     assert ("class removed (or its IRI changed)", True) in _changes(drop)
 
 
+def _variant(kind: str) -> tuple[str, str]:
+    owl, shacl = _graphs()
+    if kind == "breaking":
+        shacl.set((ps("PackagedProduct-packageDescription"), SH.minCount, Literal(1)))
+    elif kind == "additive":
+        shacl.set((ps("Substance-name"), SH.maxLength, Literal(600)))
+    return owl.serialize(format="turtle"), shacl.serialize(format="turtle")
+
+
+def _release(directory: Path, version: str, kind: str) -> None:
+    owl, shacl = _variant(kind)
+    (directory / version).mkdir()
+    (directory / version / OWL_FILE).write_text(owl)
+    (directory / version / SHACL_FILE).write_text(shacl)
+
+
 @pytest.mark.parametrize(
-    ("release", "current", "breaking", "ok"),
+    ("releases", "current", "fresh", "problem"),
     [
-        ("0.1.0", "0.1.0", None, True),
-        ("0.1.0", "0.1.0", False, False),
-        ("0.1.0", "0.2.0", False, True),
-        ("0.1.0", "0.2.0", True, False),
-        ("0.1.0", "1.0.0", True, True),
-        ("0.2.0", "0.1.0", None, False),
+        ([("1.0.0", "base")], "1.0.0", "base", None),
+        ([("1.0.0", "base")], "1.1.0", "additive", "no snapshot"),
+        ([("1.0.0", "base")], "2.0.0", "breaking", "no snapshot"),
+        ([("1.0.0", "base")], "1.0.0", "additive", "no longer match the 1.0.0 snapshot"),
+        ([("1.0.0", "base"), ("1.1.0", "additive")], "1.1.0", "additive", None),
+        ([("1.0.0", "base"), ("1.1.0", "breaking")], "1.1.0", "breaking", "need a major version bump"),
+        ([("1.0.0", "base"), ("2.0.0", "breaking")], "2.0.0", "breaking", None),
+        ([("2.0.0", "base")], "1.0.0", "base", "older than the last release"),
+        (
+            [("1.0.0", "base"), ("1.1.0", "breaking"), ("2.0.0", "breaking")],
+            "2.0.0",
+            "breaking",
+            "release 1.1.0 contains breaking changes",
+        ),
     ],
 )
-def test_version_rules(tmp_path: Path, release: str, current: str, breaking: bool | None, ok: bool) -> None:
-    directory = tmp_path / release
-    directory.mkdir()
-    (directory / OWL_FILE).write_text(FILES[OWL_FILE])
-    (directory / SHACL_FILE).write_text(FILES[SHACL_FILE])
+def test_release_rules(
+    tmp_path: Path, releases: list[tuple[str, str]], current: str, fresh: str, problem: str | None
+) -> None:
+    for version, kind in releases:
+        _release(tmp_path, version, kind)
+    owl, shacl = _variant(fresh)
+    report = CompatChecker(tmp_path, OWL_FILE, SHACL_FILE).check(current, owl, shacl)
+    if problem is None:
+        assert report.ok, report.problem
+    else:
+        assert not report.ok
+        assert report.problem is not None
+        assert problem in report.problem
+
+
+@pytest.mark.parametrize(
+    "edit",
+    [
+        "unique-lang",
+        "severity",
+        "new-subject",
+        "ignored-property-removed",
+        "abstract-shape-constraint",
+        "second-pattern",
+        "ontology-import",
+    ],
+)
+def test_unhandled_constructs_fail_closed(edit: str) -> None:
+    """Regression: anything the classifier does not model must be breaking, never silently ignored."""
+
+    def apply(o: Graph, s: Graph) -> None:
+        if edit == "unique-lang":
+            s.add((ps("Substance-name"), SH.uniqueLang, Literal(True)))
+        elif edit == "severity":
+            s.add((ps("Substance-unii"), SH.severity, SH.Warning))
+        elif edit == "new-subject":
+            s.add((ps("Unattached"), SH.path, URIRef(V.ns + "name")))
+        elif edit == "ignored-property-removed":
+            s.remove((ps("Substance"), SH.ignoredProperties, None))
+        elif edit == "abstract-shape-constraint":
+            s.add((ps("Entity"), SH.closed, Literal(True)))
+        elif edit == "second-pattern":
+            s.add((ps("Substance-unii"), SH.pattern, Literal("^R")))
+        elif edit == "ontology-import":
+            o.add((V.ontology, OWL.imports, URIRef("http://example.org/other")))
+
+    changes = _changes(apply)
+    assert changes, f"{edit} was not seen at all"
+    assert any(breaking for _, breaking in changes), changes
+
+
+def test_generated_artifacts_leave_no_unclassified_residual() -> None:
     owl, shacl = _graphs()
-    if breaking is True:
-        shacl.set((ps("PackagedProduct-packageDescription"), SH.minCount, Literal(1)))
-    elif breaking is False:
-        shacl.add((ps("Substance-name"), SH.maxLength, Literal(400)))
-        shacl.remove((ps("Substance-name"), SH.maxLength, Literal(400)))
-        shacl.set((ps("Substance-name"), SH.maxLength, Literal(600)))
-    report = CompatChecker(tmp_path, OWL_FILE, SHACL_FILE).check(
-        current, owl.serialize(format="turtle"), shacl.serialize(format="turtle")
-    )
-    assert report.ok is ok, report
+    assert SchemaSignature.from_graphs(owl, shacl).residual == set()
 
 
 def test_committed_release_matches_current_schema() -> None:

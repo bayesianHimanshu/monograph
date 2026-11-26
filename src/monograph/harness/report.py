@@ -75,6 +75,8 @@ class ReportBuilder:
         out += self._roundtrip_section()
         out += self._conformance_section()
         out += self._before_after_section()
+        out += self._deferred_section()
+        out += self._quarantine_section()
         out += self._coverage_section()
         out += self._leak_section()
         out += self._size_section()
@@ -313,24 +315,26 @@ class ReportBuilder:
         if len(by_version) < 2:
             return [*out, "Needs conformance runs on data/raw under two schema versions.", ""]
         versions = sorted(by_version, key=lambda v: tuple(int(x) for x in v.split(".")))
-        before, after = by_version[versions[0]], by_version[versions[-1]]
+        after = by_version[versions[-1]]
         out += [
-            f"Same cached raw sample, schema {versions[0]} against {versions[-1]}. Product changed meaning: in"
-            f" {versions[0]} it was keyed by RxCUI (that concept is now ClinicalDrug); in {versions[-1]} it is"
-            " keyed by product NDC.",
+            f"Same cached raw sample under every schema version that has a conformance run. Product changed"
+            f" meaning in 1.0.0: in {versions[0]} it was keyed by RxCUI (that concept is now ClinicalDrug),"
+            " from 1.0.0 on it is keyed by product NDC.",
             "",
         ]
+        names = sorted({n for v in versions for n in by_version[v]})
         rows = []
-        for name in sorted(set(before) | set(after)):
-            b, a = before.get(name), after.get(name)
-            rows.append(
-                [
-                    name,
-                    f"{b['details']['valid']}/{b['details']['candidates']} ({_pct(b['value'])})" if b else "absent",
-                    f"{a['details']['valid']}/{a['details']['candidates']} ({_pct(a['value'])})" if a else "absent",
-                ]
-            )
-        out += _table(["Class", versions[0], versions[-1]], rows)
+        for name in names:
+            cells = []
+            for v in versions:
+                rec = by_version[v].get(name)
+                cells.append(
+                    f"{rec['details']['valid']}/{rec['details']['candidates']} ({_pct(rec['value'])})"
+                    if rec
+                    else "absent"
+                )
+            rows.append([name, *cells])
+        out += _table(["Class", *versions], rows)
         out += ["", f"Every remaining failure reason under {versions[-1]}, with counts:", ""]
         remaining = [
             [name, n, reason]
@@ -346,6 +350,38 @@ class ReportBuilder:
                 f"Safety report ID suffixes: {d['with_suffix']} of {d['reports']} reports ({_pct(suffix['value'])})"
                 f" carry a -digits suffix. Suffix values: {d['suffixes']}.",
             ]
+        return [*out, ""]
+
+    def _deferred_section(self) -> list[str]:
+        d = self._details("findings.deferred")
+        out = ["## Deferred to H4/H2", ""]
+        if not d:
+            return [*out, "Nothing recorded.", ""]
+        out += [
+            "Real-data failures that stay failing on purpose. The model is not loosened for them; the counts are"
+            " from the latest conformance run.",
+            "",
+        ]
+        out += _table(
+            ["Class", "Failure reason", "Records", "Deferred to", "Why"],
+            [[i["class"], i["reason"], i["records"], i["deferred_to"], i["rationale"]] for i in d["items"]],
+        )
+        return [*out, ""]
+
+    def _quarantine_section(self) -> list[str]:
+        d = self._details("ingest.quarantine")
+        out = ["## Quarantine", ""]
+        if not d:
+            return [*out, "Nothing recorded.", ""]
+        out += [
+            f"{self._value('ingest.quarantine')} records failed SafeIdentifier or SafeText. They are stored unchanged"
+            " in data/quarantine/ with the reason and are never sanitized.",
+            "",
+        ]
+        out += _table(
+            ["Source", "Class", "Reason"],
+            [[q["source"], q["class"], "; ".join(q["reasons"])] for q in d.get("records", [])],
+        )
         return [*out, ""]
 
     def _coverage_section(self) -> list[str]:

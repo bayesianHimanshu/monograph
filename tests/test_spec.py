@@ -11,7 +11,7 @@ from pydantic import AwareDatetime, Field
 
 from monograph.core.meta import OntClass, OntProp, SafeIdentifier, SafeText
 from monograph.core.models import Entity, ModelBase
-from monograph.core.rules import RequiredWhen, Rule
+from monograph.core.rules import Condition, RequiredWhen, Rule
 from monograph.core.spec import Card, Kind, SchemaError, SchemaSpec, analyze
 
 
@@ -72,7 +72,7 @@ def test_minimal_thing_analyzes() -> None:
                     "x": Annotated[bool, OntProp("x", "x")],
                     "__rules__": ClassVar[tuple[Rule, ...]],
                 },
-                "__rules__": (RequiredWhen(id="r", when="x", equals=True, then="nope", message="m"),),
+                "__rules__": (RequiredWhen(id="r", when=(Condition("x", (True,)),), then="nope", message="m"),),
             },
             "unknown field",
         ),
@@ -82,7 +82,7 @@ def test_minimal_thing_analyzes() -> None:
                     "x": Annotated[bool, OntProp("x", "x")],
                     "__rules__": ClassVar[tuple[Rule, ...]],
                 },
-                "__rules__": (RequiredWhen(id="r", when="x", equals=1, then="code", message="m"),),
+                "__rules__": (RequiredWhen(id="r", when=(Condition("x", (1,)),), then="code", message="m"),),
             },
             "does not match the type",
         ),

@@ -8,7 +8,9 @@
           "if": {
             "properties": {
               "serious": {
-                "const": true
+                "enum": [
+                  true
+                ]
               }
             },
             "required": [
@@ -442,6 +444,40 @@
     },
     "Product": {
       "additionalProperties": false,
+      "allOf": [
+        {
+          "$comment": "rule finished-rx-otc-requires-route: a finished prescription or OTC product needs at least one route",
+          "if": {
+            "properties": {
+              "finished": {
+                "enum": [
+                  true
+                ]
+              },
+              "product_type": {
+                "enum": [
+                  "HUMAN PRESCRIPTION DRUG",
+                  "HUMAN OTC DRUG"
+                ]
+              }
+            },
+            "required": [
+              "finished",
+              "product_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "routes": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "routes"
+            ]
+          }
+        }
+      ],
       "description": "A drug product as listed with FDA, identified by its product NDC (labeler and product segments).",
       "properties": {
         "clinical_drug": {
@@ -467,6 +503,12 @@
           "type": "string",
           "x-rdf-property": "https://example.org/monograph/ontology#dosageForm"
         },
+        "finished": {
+          "description": "Whether this is a finished product (False for bulk ingredients and intermediates).",
+          "title": "Finished",
+          "type": "boolean",
+          "x-rdf-property": "https://example.org/monograph/ontology#finished"
+        },
         "ingredients": {
           "default": [],
           "description": "Active ingredients, in order.",
@@ -491,12 +533,17 @@
           "type": "string",
           "x-rdf-property": "https://example.org/monograph/ontology#productNdc"
         },
+        "product_type": {
+          "$ref": "#/$defs/ProductType",
+          "description": "NDC directory product type.",
+          "x-rdf-property": "https://example.org/monograph/ontology#productType"
+        },
         "routes": {
-          "description": "Routes of administration.",
+          "default": [],
+          "description": "Routes of administration. Required for finished prescription and OTC products.",
           "items": {
             "$ref": "#/$defs/Route"
           },
-          "minItems": 1,
           "title": "Routes",
           "type": "array",
           "uniqueItems": true,
@@ -507,11 +554,29 @@
         "product_ndc",
         "name",
         "dosage_form",
-        "routes"
+        "product_type",
+        "finished"
       ],
       "title": "Product",
       "type": "object",
       "x-rdf-class": "https://example.org/monograph/ontology#Product"
+    },
+    "ProductType": {
+      "description": "The FDA NDC directory product type.",
+      "enum": [
+        "HUMAN PRESCRIPTION DRUG",
+        "HUMAN OTC DRUG",
+        "PLASMA DERIVATIVE",
+        "CELLULAR THERAPY",
+        "VACCINE",
+        "STANDARDIZED ALLERGENIC",
+        "NON-STANDARDIZED ALLERGENIC",
+        "BULK INGREDIENT",
+        "DRUG FOR FURTHER PROCESSING",
+        "LICENSED VACCINE BULK INTERMEDIATE"
+      ],
+      "title": "ProductType",
+      "type": "string"
     },
     "Reaction": {
       "additionalProperties": false,
@@ -604,30 +669,128 @@
       "type": "string"
     },
     "Route": {
-      "description": "Route of administration, using FDA SPL route names as they appear in openFDA.",
+      "description": "Route of administration: the FDA SPL route of administration terms, with NCI Thesaurus codes.\n\nSource: https://www.fda.gov/industry/structured-product-labeling-resources/route-administration\n(content current as of 10/29/2021; NCI concept C38114). 121 terms.",
       "enum": [
+        "AURICULAR (OTIC)",
         "BUCCAL",
+        "CONJUNCTIVAL",
         "CUTANEOUS",
         "DENTAL",
+        "ELECTRO-OSMOSIS",
+        "ENDOCERVICAL",
+        "ENDOSINUSIAL",
+        "ENDOTRACHEAL",
+        "ENTERAL",
         "EPIDURAL",
+        "EXTRA-AMNIOTIC",
+        "EXTRACORPOREAL",
+        "HEMODIALYSIS",
+        "INFILTRATION",
+        "INTERSTITIAL",
+        "INTRA-ABDOMINAL",
+        "INTRA-AMNIOTIC",
+        "INTRA-ARTERIAL",
         "INTRA-ARTICULAR",
+        "INTRABILIARY",
+        "INTRABRONCHIAL",
+        "INTRABURSAL",
+        "INTRACAMERAL",
+        "INTRACANALICULAR",
+        "INTRACARDIAC",
+        "INTRACARTILAGINOUS",
+        "INTRACAUDAL",
+        "INTRACAVERNOUS",
+        "INTRACAVITARY",
+        "INTRACEREBRAL",
+        "INTRACISTERNAL",
+        "INTRACORNEAL",
+        "INTRACORONAL, DENTAL",
+        "INTRACORONARY",
+        "INTRACORPORUS CAVERNOSUM",
+        "INTRACRANIAL",
         "INTRADERMAL",
+        "INTRADISCAL",
+        "INTRADUCTAL",
+        "INTRADUODENAL",
+        "INTRADURAL",
+        "INTRAEPICARDIAL",
+        "INTRAEPIDERMAL",
+        "INTRAESOPHAGEAL",
+        "INTRAGASTRIC",
+        "INTRAGINGIVAL",
+        "INTRAHEPATIC",
+        "INTRAILEAL",
+        "INTRALESIONAL",
+        "INTRALINGUAL",
+        "INTRALUMINAL",
+        "INTRALYMPHATIC",
+        "INTRAMAMMARY",
+        "INTRAMEDULLARY",
+        "INTRAMENINGEAL",
         "INTRAMUSCULAR",
+        "INTRANODAL",
+        "INTRAOCULAR",
+        "INTRAOMENTUM",
+        "INTRAOVARIAN",
+        "INTRAPERICARDIAL",
+        "INTRAPERITONEAL",
+        "INTRAPLEURAL",
+        "INTRAPROSTATIC",
+        "INTRAPULMONARY",
+        "INTRARUMINAL",
+        "INTRASINAL",
+        "INTRASPINAL",
+        "INTRASYNOVIAL",
+        "INTRATENDINOUS",
+        "INTRATESTICULAR",
         "INTRATHECAL",
+        "INTRATHORACIC",
+        "INTRATUBULAR",
+        "INTRATUMOR",
+        "INTRATYMPANIC",
+        "INTRAUTERINE",
+        "INTRAVASCULAR",
         "INTRAVENOUS",
+        "INTRAVENTRICULAR",
         "INTRAVESICAL",
         "INTRAVITREAL",
+        "IONTOPHORESIS",
+        "IRRIGATION",
+        "LARYNGEAL",
         "NASAL",
+        "NASOGASTRIC",
+        "NOT APPLICABLE",
+        "OCCLUSIVE DRESSING TECHNIQUE",
         "OPHTHALMIC",
         "ORAL",
-        "OTIC",
+        "OROPHARYNGEAL",
+        "PARENTERAL",
         "PERCUTANEOUS",
+        "PERIARTICULAR",
+        "PERIDURAL",
+        "PERINEURAL",
+        "PERIODONTAL",
         "RECTAL",
         "RESPIRATORY (INHALATION)",
+        "RETROBULBAR",
+        "SOFT TISSUE",
+        "SUBARACHNOID",
+        "SUBCONJUNCTIVAL",
         "SUBCUTANEOUS",
+        "SUBGINGIVAL",
         "SUBLINGUAL",
+        "SUBMUCOSAL",
+        "SUBRETINAL",
+        "SUPRACHOROIDAL",
         "TOPICAL",
         "TRANSDERMAL",
+        "TRANSENDOCARDIAL",
+        "TRANSMUCOSAL",
+        "TRANSPLACENTAL",
+        "TRANSTRACHEAL",
+        "TRANSTYMPANIC",
+        "URETERAL",
+        "URETHRAL",
         "VAGINAL"
       ],
       "title": "Route",
@@ -683,7 +846,7 @@
       "x-rdf-class": "https://example.org/monograph/ontology#Substance"
     }
   },
-  "$id": "https://example.org/monograph/schema/1.0.0",
+  "$id": "https://example.org/monograph/schema/2.0.0",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "anyOf": [
     {
@@ -712,5 +875,5 @@
     }
   ],
   "title": "MONOGRAPH drug product model",
-  "x-schema-version": "1.0.0"
+  "x-schema-version": "2.0.0"
 }

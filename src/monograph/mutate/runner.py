@@ -117,13 +117,13 @@ class MutationRunner:
         with self._workspace(self._source) as root:
             env = self._env(root)
 
-            def regenerate() -> None:
-                out = self._run([self._python, "-m", "monograph.cli", "gen"], root, env)
+            def cli(*args: str) -> None:
+                out = self._run([self._python, "-m", "monograph.cli", *args], root, env)
                 if out.returncode != 0:
-                    raise MutationError(f"regeneration failed: {out.output[-300:]}")
+                    raise MutationError(f"`monograph {' '.join(args)}` failed: {out.output[-300:]}")
 
             try:
-                mutation.apply(root, regenerate)
+                mutation.apply(root, cli)
             except MutationError as exc:
                 result.apply_error = str(exc)
                 result.seconds = self._clock() - start

@@ -414,7 +414,7 @@ shape:Product
     rdfs:label "Product" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:Product-clinicalDrug, shape:Product-dosageForm, shape:Product-ingredient, shape:Product-name, shape:Product-productNdc, shape:Product-route ;
+    sh:property shape:Product-clinicalDrug, shape:Product-dosageForm, shape:Product-finished, shape:Product-ingredient, shape:Product-name, shape:Product-productNdc, shape:Product-productType, shape:Product-route ;
     sh:targetClass mono:Product .
 
 shape:Product-clinicalDrug
@@ -441,6 +441,14 @@ shape:Product-dosageForm
         sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
     ] ;
     sh:path mono:dosageForm .
+
+shape:Product-finished
+    a sh:PropertyShape ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "finished" ;
+    sh:path mono:finished .
 
 shape:Product-ingredient
     a sh:PropertyShape ;
@@ -476,10 +484,17 @@ shape:Product-productNdc
     sh:path mono:productNdc ;
     sh:pattern "^([0-9]{4}-[0-9]{4}|[0-9]{5}-[0-9]{3}|[0-9]{5}-[0-9]{4})$" .
 
+shape:Product-productType
+    a sh:PropertyShape ;
+    sh:in ( mono:ProductType-HUMAN_PRESCRIPTION_DRUG mono:ProductType-HUMAN_OTC_DRUG mono:ProductType-PLASMA_DERIVATIVE mono:ProductType-CELLULAR_THERAPY mono:ProductType-VACCINE mono:ProductType-STANDARDIZED_ALLERGENIC mono:ProductType-NON_STANDARDIZED_ALLERGENIC mono:ProductType-BULK_INGREDIENT mono:ProductType-DRUG_FOR_FURTHER_PROCESSING mono:ProductType-LICENSED_VACCINE_BULK_INTERMEDIATE ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "product type" ;
+    sh:path mono:productType .
+
 shape:Product-route
     a sh:PropertyShape ;
-    sh:in ( mono:Route-BUCCAL mono:Route-CUTANEOUS mono:Route-DENTAL mono:Route-EPIDURAL mono:Route-INTRA_ARTICULAR mono:Route-INTRADERMAL mono:Route-INTRAMUSCULAR mono:Route-INTRATHECAL mono:Route-INTRAVENOUS mono:Route-INTRAVESICAL mono:Route-INTRAVITREAL mono:Route-NASAL mono:Route-OPHTHALMIC mono:Route-ORAL mono:Route-OTIC mono:Route-PERCUTANEOUS mono:Route-RECTAL mono:Route-RESPIRATORY_INHALATION mono:Route-SUBCUTANEOUS mono:Route-SUBLINGUAL mono:Route-TOPICAL mono:Route-TRANSDERMAL mono:Route-VAGINAL ) ;
-    sh:minCount "1"^^xsd:integer ;
+    sh:in ( mono:Route-AURICULAR_OTIC mono:Route-BUCCAL mono:Route-CONJUNCTIVAL mono:Route-CUTANEOUS mono:Route-DENTAL mono:Route-ELECTRO_OSMOSIS mono:Route-ENDOCERVICAL mono:Route-ENDOSINUSIAL mono:Route-ENDOTRACHEAL mono:Route-ENTERAL mono:Route-EPIDURAL mono:Route-EXTRA_AMNIOTIC mono:Route-EXTRACORPOREAL mono:Route-HEMODIALYSIS mono:Route-INFILTRATION mono:Route-INTERSTITIAL mono:Route-INTRA_ABDOMINAL mono:Route-INTRA_AMNIOTIC mono:Route-INTRA_ARTERIAL mono:Route-INTRA_ARTICULAR mono:Route-INTRABILIARY mono:Route-INTRABRONCHIAL mono:Route-INTRABURSAL mono:Route-INTRACAMERAL mono:Route-INTRACANALICULAR mono:Route-INTRACARDIAC mono:Route-INTRACARTILAGINOUS mono:Route-INTRACAUDAL mono:Route-INTRACAVERNOUS mono:Route-INTRACAVITARY mono:Route-INTRACEREBRAL mono:Route-INTRACISTERNAL mono:Route-INTRACORNEAL mono:Route-INTRACORONAL_DENTAL mono:Route-INTRACORONARY mono:Route-INTRACORPORUS_CAVERNOSUM mono:Route-INTRACRANIAL mono:Route-INTRADERMAL mono:Route-INTRADISCAL mono:Route-INTRADUCTAL mono:Route-INTRADUODENAL mono:Route-INTRADURAL mono:Route-INTRAEPICARDIAL mono:Route-INTRAEPIDERMAL mono:Route-INTRAESOPHAGEAL mono:Route-INTRAGASTRIC mono:Route-INTRAGINGIVAL mono:Route-INTRAHEPATIC mono:Route-INTRAILEAL mono:Route-INTRALESIONAL mono:Route-INTRALINGUAL mono:Route-INTRALUMINAL mono:Route-INTRALYMPHATIC mono:Route-INTRAMAMMARY mono:Route-INTRAMEDULLARY mono:Route-INTRAMENINGEAL mono:Route-INTRAMUSCULAR mono:Route-INTRANODAL mono:Route-INTRAOCULAR mono:Route-INTRAOMENTUM mono:Route-INTRAOVARIAN mono:Route-INTRAPERICARDIAL mono:Route-INTRAPERITONEAL mono:Route-INTRAPLEURAL mono:Route-INTRAPROSTATIC mono:Route-INTRAPULMONARY mono:Route-INTRARUMINAL mono:Route-INTRASINAL mono:Route-INTRASPINAL mono:Route-INTRASYNOVIAL mono:Route-INTRATENDINOUS mono:Route-INTRATESTICULAR mono:Route-INTRATHECAL mono:Route-INTRATHORACIC mono:Route-INTRATUBULAR mono:Route-INTRATUMOR mono:Route-INTRATYMPANIC mono:Route-INTRAUTERINE mono:Route-INTRAVASCULAR mono:Route-INTRAVENOUS mono:Route-INTRAVENTRICULAR mono:Route-INTRAVESICAL mono:Route-INTRAVITREAL mono:Route-IONTOPHORESIS mono:Route-IRRIGATION mono:Route-LARYNGEAL mono:Route-NASAL mono:Route-NASOGASTRIC mono:Route-NOT_APPLICABLE mono:Route-OCCLUSIVE_DRESSING_TECHNIQUE mono:Route-OPHTHALMIC mono:Route-ORAL mono:Route-OROPHARYNGEAL mono:Route-PARENTERAL mono:Route-PERCUTANEOUS mono:Route-PERIARTICULAR mono:Route-PERIDURAL mono:Route-PERINEURAL mono:Route-PERIODONTAL mono:Route-RECTAL mono:Route-RESPIRATORY_INHALATION mono:Route-RETROBULBAR mono:Route-SOFT_TISSUE mono:Route-SUBARACHNOID mono:Route-SUBCONJUNCTIVAL mono:Route-SUBCUTANEOUS mono:Route-SUBGINGIVAL mono:Route-SUBLINGUAL mono:Route-SUBMUCOSAL mono:Route-SUBRETINAL mono:Route-SUPRACHOROIDAL mono:Route-TOPICAL mono:Route-TRANSDERMAL mono:Route-TRANSENDOCARDIAL mono:Route-TRANSMUCOSAL mono:Route-TRANSPLACENTAL mono:Route-TRANSTRACHEAL mono:Route-TRANSTYMPANIC mono:Route-URETERAL mono:Route-URETHRAL mono:Route-VAGINAL ) ;
     sh:name "route" ;
     sh:path mono:route .
 
@@ -610,6 +625,27 @@ shape:Substance-unii
     ] ;
     sh:path mono:unii ;
     sh:pattern "^[0-9A-Z]{10}$" .
+
+shape:rule-finished-rx-otc-requires-route
+    a sh:NodeShape ;
+    rdfs:label "finished-rx-otc-requires-route" ;
+    sh:message "a finished prescription or OTC product needs at least one route" ;
+    sh:or ( [
+        sh:not [
+            sh:hasValue "true"^^xsd:boolean ;
+            sh:path mono:finished
+        ]
+    ] [
+        sh:not [
+            sh:in ( mono:ProductType-HUMAN_PRESCRIPTION_DRUG mono:ProductType-HUMAN_OTC_DRUG ) ;
+            sh:minCount "1"^^xsd:integer ;
+            sh:path mono:productType
+        ]
+    ] [
+        sh:minCount "1"^^xsd:integer ;
+        sh:path mono:route
+    ] ) ;
+    sh:targetClass mono:Product .
 
 shape:rule-has-suspect
     a sh:NodeShape ;

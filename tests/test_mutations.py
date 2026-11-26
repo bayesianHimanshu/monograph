@@ -18,7 +18,7 @@ def test_every_mutation_still_applies_to_the_source(mutation: Mutation) -> None:
         before = {p: p.read_bytes() for p in (root / "src").rglob("*.py")} | {
             p: p.read_bytes() for p in (root / "generated").glob("*.*")
         }
-        mutation.apply(root, lambda: None)
+        mutation.apply(root, lambda *args: None)
         after = {p: p.read_bytes() for p in before}
         assert before != after, f"{mutation.id} changed nothing"
 

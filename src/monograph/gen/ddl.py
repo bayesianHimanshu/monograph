@@ -80,6 +80,14 @@ def column_name(f: FieldSpec) -> str:
     return f"{f.name}_iri" if f.kind is Kind.REF else f.name
 
 
+def _sql_value(value: object) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return str(value)
+    return _literal(str(value))
+
+
 def _literal(text: str) -> str:
     return "'" + text.replace("'", "''") + "'"
 
@@ -278,21 +286,23 @@ class DdlGenerator:
     def _rules(self, table: _Table, c: ClassSpec, unenforced: list[Unenforced]) -> None:
         for rule in c.rules:
             if isinstance(rule, RequiredWhen):
-                when, then = c.field(rule.when), c.field(rule.then)
+                then = c.field(rule.then)
                 if then.kind is Kind.EMBEDDED or (then.kind is Kind.REF and then.is_collection):
                     unenforced.append(
                         Unenforced(c.cls.__name__, None, f"rule:{rule.id}", "`then` lives in another table")
                     )
                     continue
-                value = _literal(str(rule.equals)) if isinstance(rule.equals, str) else str(rule.equals).lower()
                 present = (
                     f"cardinality({column_name(then)}) >= 1"
                     if then.is_collection
                     else f"{column_name(then)} IS NOT NULL"
                 )
-                table.check(
-                    f"rule_{rule.id.replace('-', '_')}", f"{column_name(when)} IS DISTINCT FROM {value} OR {present}"
-                )
+                negations = []
+                for condition in rule.when:
+                    col = column_name(c.field(condition.field))
+                    values = ", ".join(_sql_value(x) for x in condition.values)
+                    negations.append(f"{col} IS NULL OR {col} NOT IN ({values})")
+                table.check(f"rule_{rule.id.replace('-', '_')}", " OR ".join([*negations, present]))
             elif isinstance(rule, AtLeast):
                 unenforced.append(
                     Unenforced(

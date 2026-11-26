@@ -1,4 +1,4 @@
--- MONOGRAPH drug product model 1.0.0, test profile. Generated from core/models.py; do not edit.
+-- MONOGRAPH drug product model 2.0.0, test profile. Generated from core/models.py; do not edit.
 -- Run inside an empty schema. Constraint names are stable and used by the integration test.
 
 CREATE TABLE substance (
@@ -46,6 +46,8 @@ CREATE TABLE product (
     product_ndc text NOT NULL,
     name text NOT NULL,
     dosage_form text NOT NULL,
+    product_type text NOT NULL,
+    finished boolean NOT NULL,
     routes text[] NOT NULL DEFAULT '{}',
     clinical_drug_iri text REFERENCES clinical_drug (iri) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT ck_product_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
@@ -57,10 +59,11 @@ CREATE TABLE product (
     CONSTRAINT ck_product_dosage_form_charset CHECK (dosage_form !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
     CONSTRAINT ck_product_dosage_form_min_length CHECK (char_length(dosage_form) >= 1),
     CONSTRAINT ck_product_dosage_form_max_length CHECK (char_length(dosage_form) <= 100),
-    CONSTRAINT ck_product_routes_enum CHECK (routes <@ ARRAY['BUCCAL', 'CUTANEOUS', 'DENTAL', 'EPIDURAL', 'INTRA-ARTICULAR', 'INTRADERMAL', 'INTRAMUSCULAR', 'INTRATHECAL', 'INTRAVENOUS', 'INTRAVESICAL', 'INTRAVITREAL', 'NASAL', 'OPHTHALMIC', 'ORAL', 'OTIC', 'PERCUTANEOUS', 'RECTAL', 'RESPIRATORY (INHALATION)', 'SUBCUTANEOUS', 'SUBLINGUAL', 'TOPICAL', 'TRANSDERMAL', 'VAGINAL']::text[]),
-    CONSTRAINT ck_product_routes_min_count CHECK (cardinality(routes) >= 1),
+    CONSTRAINT ck_product_product_type_enum CHECK (product_type IN ('HUMAN PRESCRIPTION DRUG', 'HUMAN OTC DRUG', 'PLASMA DERIVATIVE', 'CELLULAR THERAPY', 'VACCINE', 'STANDARDIZED ALLERGENIC', 'NON-STANDARDIZED ALLERGENIC', 'BULK INGREDIENT', 'DRUG FOR FURTHER PROCESSING', 'LICENSED VACCINE BULK INTERMEDIATE')),
+    CONSTRAINT ck_product_routes_enum CHECK (routes <@ ARRAY['AURICULAR (OTIC)', 'BUCCAL', 'CONJUNCTIVAL', 'CUTANEOUS', 'DENTAL', 'ELECTRO-OSMOSIS', 'ENDOCERVICAL', 'ENDOSINUSIAL', 'ENDOTRACHEAL', 'ENTERAL', 'EPIDURAL', 'EXTRA-AMNIOTIC', 'EXTRACORPOREAL', 'HEMODIALYSIS', 'INFILTRATION', 'INTERSTITIAL', 'INTRA-ABDOMINAL', 'INTRA-AMNIOTIC', 'INTRA-ARTERIAL', 'INTRA-ARTICULAR', 'INTRABILIARY', 'INTRABRONCHIAL', 'INTRABURSAL', 'INTRACAMERAL', 'INTRACANALICULAR', 'INTRACARDIAC', 'INTRACARTILAGINOUS', 'INTRACAUDAL', 'INTRACAVERNOUS', 'INTRACAVITARY', 'INTRACEREBRAL', 'INTRACISTERNAL', 'INTRACORNEAL', 'INTRACORONAL, DENTAL', 'INTRACORONARY', 'INTRACORPORUS CAVERNOSUM', 'INTRACRANIAL', 'INTRADERMAL', 'INTRADISCAL', 'INTRADUCTAL', 'INTRADUODENAL', 'INTRADURAL', 'INTRAEPICARDIAL', 'INTRAEPIDERMAL', 'INTRAESOPHAGEAL', 'INTRAGASTRIC', 'INTRAGINGIVAL', 'INTRAHEPATIC', 'INTRAILEAL', 'INTRALESIONAL', 'INTRALINGUAL', 'INTRALUMINAL', 'INTRALYMPHATIC', 'INTRAMAMMARY', 'INTRAMEDULLARY', 'INTRAMENINGEAL', 'INTRAMUSCULAR', 'INTRANODAL', 'INTRAOCULAR', 'INTRAOMENTUM', 'INTRAOVARIAN', 'INTRAPERICARDIAL', 'INTRAPERITONEAL', 'INTRAPLEURAL', 'INTRAPROSTATIC', 'INTRAPULMONARY', 'INTRARUMINAL', 'INTRASINAL', 'INTRASPINAL', 'INTRASYNOVIAL', 'INTRATENDINOUS', 'INTRATESTICULAR', 'INTRATHECAL', 'INTRATHORACIC', 'INTRATUBULAR', 'INTRATUMOR', 'INTRATYMPANIC', 'INTRAUTERINE', 'INTRAVASCULAR', 'INTRAVENOUS', 'INTRAVENTRICULAR', 'INTRAVESICAL', 'INTRAVITREAL', 'IONTOPHORESIS', 'IRRIGATION', 'LARYNGEAL', 'NASAL', 'NASOGASTRIC', 'NOT APPLICABLE', 'OCCLUSIVE DRESSING TECHNIQUE', 'OPHTHALMIC', 'ORAL', 'OROPHARYNGEAL', 'PARENTERAL', 'PERCUTANEOUS', 'PERIARTICULAR', 'PERIDURAL', 'PERINEURAL', 'PERIODONTAL', 'RECTAL', 'RESPIRATORY (INHALATION)', 'RETROBULBAR', 'SOFT TISSUE', 'SUBARACHNOID', 'SUBCONJUNCTIVAL', 'SUBCUTANEOUS', 'SUBGINGIVAL', 'SUBLINGUAL', 'SUBMUCOSAL', 'SUBRETINAL', 'SUPRACHOROIDAL', 'TOPICAL', 'TRANSDERMAL', 'TRANSENDOCARDIAL', 'TRANSMUCOSAL', 'TRANSPLACENTAL', 'TRANSTRACHEAL', 'TRANSTYMPANIC', 'URETERAL', 'URETHRAL', 'VAGINAL']::text[]),
     CONSTRAINT ck_product_clinical_drug_iri_pattern CHECK (clinical_drug_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
-    CONSTRAINT uq_product_key UNIQUE (product_ndc)
+    CONSTRAINT uq_product_key UNIQUE (product_ndc),
+    CONSTRAINT ck_product_rule_finished_rx_otc_requires_route CHECK (finished IS NULL OR finished NOT IN (true) OR product_type IS NULL OR product_type NOT IN ('HUMAN PRESCRIPTION DRUG', 'HUMAN OTC DRUG') OR cardinality(routes) >= 1)
 );
 
 CREATE TABLE product__ingredients (
@@ -154,7 +157,7 @@ CREATE TABLE adverse_event_report (
     CONSTRAINT ck_adverse_event_report_patient_age_years_min_inclusive CHECK (patient_age_years >= 0),
     CONSTRAINT ck_adverse_event_report_patient_age_years_max_inclusive CHECK (patient_age_years <= 150),
     CONSTRAINT uq_adverse_event_report_key UNIQUE (report_id),
-    CONSTRAINT ck_adverse_event_report_rule_serious_requires_criterion CHECK (serious IS DISTINCT FROM true OR cardinality(seriousness_criteria) >= 1)
+    CONSTRAINT ck_adverse_event_report_rule_serious_requires_criterion CHECK (serious IS NULL OR serious NOT IN (true) OR cardinality(seriousness_criteria) >= 1)
 );
 
 CREATE TABLE adverse_event_report__drugs (

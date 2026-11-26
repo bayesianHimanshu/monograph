@@ -29,6 +29,7 @@ from monograph.gen.turtle import TurtleWriter
 from monograph.harness.results import ResultsWriter
 from monograph.ingest.conformance import ConformanceRun
 from monograph.ingest.openfda import ENDPOINTS, OpenFdaMapper
+from monograph.ingest.quarantine import QuarantineStore
 from monograph.rdf.mapping import RdfMapper
 from monograph.validate.agreement import AgreementChecker
 from monograph.validate.pydantic_side import PydanticValidator
@@ -139,3 +140,7 @@ def openfda_fixtures(root: Path) -> dict[str, list[dict[str, Any]]]:
         path = fixtures_dir(root) / "openfda" / f"{endpoint}.json"
         out[endpoint] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
     return out
+
+
+def quarantine_store(root: Path) -> QuarantineStore:
+    return QuarantineStore(root / "data" / "quarantine", lambda: datetime.now(UTC))

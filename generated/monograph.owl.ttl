@@ -8,8 +8,8 @@
 
 <https://example.org/monograph/ontology>
     a owl:Ontology ;
-    owl:versionIRI <https://example.org/monograph/ontology/1.0.0> ;
-    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <https://example.org/monograph/ontology/2.0.0> ;
+    owl:versionInfo "2.0.0" ;
     rdfs:label "MONOGRAPH drug product model" .
 
 mono:AdverseEventReport
@@ -101,6 +101,51 @@ mono:Product
     rdfs:label "Product" ;
     rdfs:subClassOf mono:Entity .
 
+mono:ProductType
+    a owl:Class ;
+    rdfs:comment "The FDA NDC directory product type." ;
+    rdfs:label "Product type" .
+
+mono:ProductType-BULK_INGREDIENT
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "BULK INGREDIENT" .
+
+mono:ProductType-CELLULAR_THERAPY
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "CELLULAR THERAPY" .
+
+mono:ProductType-DRUG_FOR_FURTHER_PROCESSING
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "DRUG FOR FURTHER PROCESSING" .
+
+mono:ProductType-HUMAN_OTC_DRUG
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "HUMAN OTC DRUG" .
+
+mono:ProductType-HUMAN_PRESCRIPTION_DRUG
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "HUMAN PRESCRIPTION DRUG" .
+
+mono:ProductType-LICENSED_VACCINE_BULK_INTERMEDIATE
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "LICENSED VACCINE BULK INTERMEDIATE" .
+
+mono:ProductType-NON_STANDARDIZED_ALLERGENIC
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "NON-STANDARDIZED ALLERGENIC" .
+
+mono:ProductType-PLASMA_DERIVATIVE
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "PLASMA DERIVATIVE" .
+
+mono:ProductType-STANDARDIZED_ALLERGENIC
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "STANDARDIZED ALLERGENIC" .
+
+mono:ProductType-VACCINE
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "VACCINE" .
+
 mono:Reaction
     a owl:Class ;
     rdfs:comment "A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed)." ;
@@ -132,12 +177,20 @@ mono:RecallClassification-CLASS_III
 
 mono:Route
     a owl:Class ;
-    rdfs:comment "Route of administration, using FDA SPL route names as they appear in openFDA." ;
+    rdfs:comment "Route of administration: the FDA SPL route of administration terms, with NCI Thesaurus codes. Source: https://www.fda.gov/industry/structured-product-labeling-resources/route-administration (content current as of 10/29/2021; NCI concept C38114). 121 terms." ;
     rdfs:label "Route of administration" .
+
+mono:Route-AURICULAR_OTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "AURICULAR (OTIC)" .
 
 mono:Route-BUCCAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "BUCCAL" .
+
+mono:Route-CONJUNCTIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "CONJUNCTIVAL" .
 
 mono:Route-CUTANEOUS
     a mono:Route, owl:NamedIndividual ;
@@ -147,25 +200,293 @@ mono:Route-DENTAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "DENTAL" .
 
+mono:Route-ELECTRO_OSMOSIS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ELECTRO-OSMOSIS" .
+
+mono:Route-ENDOCERVICAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENDOCERVICAL" .
+
+mono:Route-ENDOSINUSIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENDOSINUSIAL" .
+
+mono:Route-ENDOTRACHEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENDOTRACHEAL" .
+
+mono:Route-ENTERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENTERAL" .
+
 mono:Route-EPIDURAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "EPIDURAL" .
+
+mono:Route-EXTRACORPOREAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "EXTRACORPOREAL" .
+
+mono:Route-EXTRA_AMNIOTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "EXTRA-AMNIOTIC" .
+
+mono:Route-HEMODIALYSIS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "HEMODIALYSIS" .
+
+mono:Route-INFILTRATION
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INFILTRATION" .
+
+mono:Route-INTERSTITIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTERSTITIAL" .
+
+mono:Route-INTRABILIARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRABILIARY" .
+
+mono:Route-INTRABRONCHIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRABRONCHIAL" .
+
+mono:Route-INTRABURSAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRABURSAL" .
+
+mono:Route-INTRACAMERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAMERAL" .
+
+mono:Route-INTRACANALICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACANALICULAR" .
+
+mono:Route-INTRACARDIAC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACARDIAC" .
+
+mono:Route-INTRACARTILAGINOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACARTILAGINOUS" .
+
+mono:Route-INTRACAUDAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAUDAL" .
+
+mono:Route-INTRACAVERNOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAVERNOUS" .
+
+mono:Route-INTRACAVITARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAVITARY" .
+
+mono:Route-INTRACEREBRAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACEREBRAL" .
+
+mono:Route-INTRACISTERNAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACISTERNAL" .
+
+mono:Route-INTRACORNEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORNEAL" .
+
+mono:Route-INTRACORONAL_DENTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORONAL, DENTAL" .
+
+mono:Route-INTRACORONARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORONARY" .
+
+mono:Route-INTRACORPORUS_CAVERNOSUM
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORPORUS CAVERNOSUM" .
+
+mono:Route-INTRACRANIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACRANIAL" .
 
 mono:Route-INTRADERMAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "INTRADERMAL" .
 
+mono:Route-INTRADISCAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADISCAL" .
+
+mono:Route-INTRADUCTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADUCTAL" .
+
+mono:Route-INTRADUODENAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADUODENAL" .
+
+mono:Route-INTRADURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADURAL" .
+
+mono:Route-INTRAEPICARDIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAEPICARDIAL" .
+
+mono:Route-INTRAEPIDERMAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAEPIDERMAL" .
+
+mono:Route-INTRAESOPHAGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAESOPHAGEAL" .
+
+mono:Route-INTRAGASTRIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAGASTRIC" .
+
+mono:Route-INTRAGINGIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAGINGIVAL" .
+
+mono:Route-INTRAHEPATIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAHEPATIC" .
+
+mono:Route-INTRAILEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAILEAL" .
+
+mono:Route-INTRALESIONAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALESIONAL" .
+
+mono:Route-INTRALINGUAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALINGUAL" .
+
+mono:Route-INTRALUMINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALUMINAL" .
+
+mono:Route-INTRALYMPHATIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALYMPHATIC" .
+
+mono:Route-INTRAMAMMARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMAMMARY" .
+
+mono:Route-INTRAMEDULLARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMEDULLARY" .
+
+mono:Route-INTRAMENINGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMENINGEAL" .
+
 mono:Route-INTRAMUSCULAR
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "INTRAMUSCULAR" .
+
+mono:Route-INTRANODAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRANODAL" .
+
+mono:Route-INTRAOCULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAOCULAR" .
+
+mono:Route-INTRAOMENTUM
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAOMENTUM" .
+
+mono:Route-INTRAOVARIAN
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAOVARIAN" .
+
+mono:Route-INTRAPERICARDIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPERICARDIAL" .
+
+mono:Route-INTRAPERITONEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPERITONEAL" .
+
+mono:Route-INTRAPLEURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPLEURAL" .
+
+mono:Route-INTRAPROSTATIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPROSTATIC" .
+
+mono:Route-INTRAPULMONARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPULMONARY" .
+
+mono:Route-INTRARUMINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRARUMINAL" .
+
+mono:Route-INTRASINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRASINAL" .
+
+mono:Route-INTRASPINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRASPINAL" .
+
+mono:Route-INTRASYNOVIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRASYNOVIAL" .
+
+mono:Route-INTRATENDINOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATENDINOUS" .
+
+mono:Route-INTRATESTICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATESTICULAR" .
 
 mono:Route-INTRATHECAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "INTRATHECAL" .
 
+mono:Route-INTRATHORACIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATHORACIC" .
+
+mono:Route-INTRATUBULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATUBULAR" .
+
+mono:Route-INTRATUMOR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATUMOR" .
+
+mono:Route-INTRATYMPANIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATYMPANIC" .
+
+mono:Route-INTRAUTERINE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAUTERINE" .
+
+mono:Route-INTRAVASCULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVASCULAR" .
+
 mono:Route-INTRAVENOUS
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "INTRAVENOUS" .
+
+mono:Route-INTRAVENTRICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVENTRICULAR" .
 
 mono:Route-INTRAVESICAL
     a mono:Route, owl:NamedIndividual ;
@@ -175,13 +496,49 @@ mono:Route-INTRAVITREAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "INTRAVITREAL" .
 
+mono:Route-INTRA_ABDOMINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-ABDOMINAL" .
+
+mono:Route-INTRA_AMNIOTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-AMNIOTIC" .
+
+mono:Route-INTRA_ARTERIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-ARTERIAL" .
+
 mono:Route-INTRA_ARTICULAR
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "INTRA-ARTICULAR" .
 
+mono:Route-IONTOPHORESIS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "IONTOPHORESIS" .
+
+mono:Route-IRRIGATION
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "IRRIGATION" .
+
+mono:Route-LARYNGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "LARYNGEAL" .
+
 mono:Route-NASAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "NASAL" .
+
+mono:Route-NASOGASTRIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "NASOGASTRIC" .
+
+mono:Route-NOT_APPLICABLE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "NOT APPLICABLE" .
+
+mono:Route-OCCLUSIVE_DRESSING_TECHNIQUE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "OCCLUSIVE DRESSING TECHNIQUE" .
 
 mono:Route-OPHTHALMIC
     a mono:Route, owl:NamedIndividual ;
@@ -191,13 +548,33 @@ mono:Route-ORAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "ORAL" .
 
-mono:Route-OTIC
+mono:Route-OROPHARYNGEAL
     a mono:Route, owl:NamedIndividual ;
-    rdfs:label "OTIC" .
+    rdfs:label "OROPHARYNGEAL" .
+
+mono:Route-PARENTERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PARENTERAL" .
 
 mono:Route-PERCUTANEOUS
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "PERCUTANEOUS" .
+
+mono:Route-PERIARTICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERIARTICULAR" .
+
+mono:Route-PERIDURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERIDURAL" .
+
+mono:Route-PERINEURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERINEURAL" .
+
+mono:Route-PERIODONTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERIODONTAL" .
 
 mono:Route-RECTAL
     a mono:Route, owl:NamedIndividual ;
@@ -207,13 +584,45 @@ mono:Route-RESPIRATORY_INHALATION
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "RESPIRATORY (INHALATION)" .
 
+mono:Route-RETROBULBAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "RETROBULBAR" .
+
+mono:Route-SOFT_TISSUE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SOFT TISSUE" .
+
+mono:Route-SUBARACHNOID
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBARACHNOID" .
+
+mono:Route-SUBCONJUNCTIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBCONJUNCTIVAL" .
+
 mono:Route-SUBCUTANEOUS
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "SUBCUTANEOUS" .
 
+mono:Route-SUBGINGIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBGINGIVAL" .
+
 mono:Route-SUBLINGUAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "SUBLINGUAL" .
+
+mono:Route-SUBMUCOSAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBMUCOSAL" .
+
+mono:Route-SUBRETINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBRETINAL" .
+
+mono:Route-SUPRACHOROIDAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUPRACHOROIDAL" .
 
 mono:Route-TOPICAL
     a mono:Route, owl:NamedIndividual ;
@@ -222,6 +631,34 @@ mono:Route-TOPICAL
 mono:Route-TRANSDERMAL
     a mono:Route, owl:NamedIndividual ;
     rdfs:label "TRANSDERMAL" .
+
+mono:Route-TRANSENDOCARDIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSENDOCARDIAL" .
+
+mono:Route-TRANSMUCOSAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSMUCOSAL" .
+
+mono:Route-TRANSPLACENTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSPLACENTAL" .
+
+mono:Route-TRANSTRACHEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSTRACHEAL" .
+
+mono:Route-TRANSTYMPANIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSTYMPANIC" .
+
+mono:Route-URETERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "URETERAL" .
+
+mono:Route-URETHRAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "URETHRAL" .
 
 mono:Route-VAGINAL
     a mono:Route, owl:NamedIndividual ;
@@ -312,6 +749,13 @@ mono:effectiveDate
     rdfs:label "effective date" ;
     rdfs:range xsd:date .
 
+mono:finished
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Whether this is a finished product (False for bulk ingredients and intermediates)." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "finished" ;
+    rdfs:range xsd:boolean .
+
 mono:ingredient
     a owl:ObjectProperty ;
     rdfs:comment "Active ingredients, in order." ;
@@ -398,6 +842,13 @@ mono:productNdc
     rdfs:label "product NDC" ;
     rdfs:range xsd:string .
 
+mono:productType
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "NDC directory product type." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "product type" ;
+    rdfs:range mono:ProductType .
+
 mono:reaction
     a owl:ObjectProperty ;
     rdfs:comment "Reactions, in order." ;
@@ -456,7 +907,7 @@ mono:reportDate
 
 mono:route
     a owl:ObjectProperty ;
-    rdfs:comment "Routes of administration." ;
+    rdfs:comment "Routes of administration. Required for finished prescription and OTC products." ;
     rdfs:domain mono:Product ;
     rdfs:label "route" ;
     rdfs:range mono:Route .
