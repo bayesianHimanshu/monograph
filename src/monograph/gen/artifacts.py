@@ -11,6 +11,8 @@ SHACL_FILE = "monograph.shapes.ttl"
 JSON_SCHEMA_FILE = "monograph.schema.json"
 DDL_FILE = "monograph.ddl.sql"
 DDL_TEST_FILE = "monograph.test.ddl.sql"
+EXTRACTION_SCHEMA_FILE = "monograph.extraction.schema.json"
+CONTEXT_SHACL_FILE = "monograph.context.shapes.ttl"
 
 
 @dataclass(frozen=True, slots=True)

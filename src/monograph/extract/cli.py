@@ -72,6 +72,31 @@ def fetch(
     for cell, n in sorted(report.eligible_by_cell().items()):
         typer.echo(f"  {cell}: {n}")
     typer.echo(f"network calls: {client.network_calls}; frame written to {path}")
+    split_path = root / SPLIT_FILE
+    if split_path.exists():
+        _fetch_registry(root, client, cache, json.loads(split_path.read_text()))
+    else:
+        typer.echo("no split yet: run `monograph h4 split`, then `monograph h4 fetch` again for the registry data")
+
+
+def _sampled_set_ids(split_data: dict[str, Any]) -> list[str]:
+    return sorted(r["set_id"] for r in split_data["dev"] + split_data["test"])
+
+
+def _fetch_registry(root: Path, dailymed: Any, cache: Any, split_data: dict[str, Any]) -> None:
+    import os
+
+    import httpx
+
+    from monograph.extract.registry import RegistryFetcher
+    from monograph.ingest.openfda import OpenFdaClient, RawCache
+
+    with httpx.Client(timeout=60.0) as http:
+        openfda = OpenFdaClient(
+            http, RawCache(wiring.raw_dir(root)), os.environ.get("OPENFDA_API_KEY"), 0.5, time.sleep, time.monotonic
+        )
+        RegistryFetcher(openfda, dailymed, cache).fetch(_sampled_set_ids(split_data), typer.echo)
+        typer.echo(f"registry: {openfda.network_calls} openFDA calls")
 
 
 # Targeted openFDA label searches that fill the cells random DailyMed pages leave thin. Fixed queries, cached.

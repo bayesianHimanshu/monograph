@@ -1,4 +1,4 @@
--- MONOGRAPH drug product model 2.0.0, test profile. Generated from core/models.py; do not edit.
+-- MONOGRAPH drug product model 2.1.0, test profile. Generated from core/models.py; do not edit.
 -- Run inside an empty schema. Constraint names are stable and used by the integration test.
 
 CREATE TABLE substance (
@@ -212,4 +212,75 @@ CREATE TABLE recall__products (
     target_iri text NOT NULL REFERENCES product (iri) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT ck_recall__products_target_iri_pattern CHECK (target_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
     CONSTRAINT pk_recall__products PRIMARY KEY (owner_iri, target_iri)
+);
+
+CREATE TABLE label_extraction (
+    iri text PRIMARY KEY,
+    set_id text NOT NULL,
+    version bigint NOT NULL,
+    CONSTRAINT ck_label_extraction_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_label_extraction_set_id_charset CHECK (set_id !~ '[\x01-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_label_extraction_set_id_pattern CHECK (set_id ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'),
+    CONSTRAINT ck_label_extraction_version_min_inclusive CHECK (version >= 1),
+    CONSTRAINT ck_label_extraction_version_max_exclusive CHECK (version < 1000000),
+    CONSTRAINT uq_label_extraction_key UNIQUE (set_id, version)
+);
+
+CREATE TABLE label_extraction__products (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES label_extraction (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    position integer NOT NULL,
+    name text NOT NULL,
+    dosage_form text NOT NULL,
+    routes text[] NOT NULL DEFAULT '{}',
+    CONSTRAINT ck_label_extraction__products_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_label_extraction__products_position_min_inclusive CHECK (position >= 0),
+    CONSTRAINT uq_label_extraction__products_position UNIQUE (owner_iri, position),
+    CONSTRAINT ck_label_extraction__products_name_charset CHECK (name !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_label_extraction__products_name_min_length CHECK (char_length(name) >= 1),
+    CONSTRAINT ck_label_extraction__products_name_max_length CHECK (char_length(name) <= 500),
+    CONSTRAINT ck_label_extraction__products_dosage_form_enum CHECK (dosage_form IN ('AEROSOL', 'AEROSOL, FOAM', 'AEROSOL, METERED', 'AEROSOL, POWDER', 'AEROSOL, SPRAY', 'BAR, CHEWABLE', 'BEAD', 'CAPSULE', 'CAPSULE, COATED', 'CAPSULE, COATED PELLETS', 'CAPSULE, COATED, EXTENDED RELEASE', 'CAPSULE, DELAYED RELEASE', 'CAPSULE, DELAYED RELEASE PELLETS', 'CAPSULE, EXTENDED RELEASE', 'CAPSULE, FILM COATED, EXTENDED RELEASE', 'CAPSULE, GELATIN COATED', 'CAPSULE, LIQUID FILLED', 'CELLULAR SHEET', 'CHEWABLE GEL', 'CLOTH', 'CONCENTRATE', 'CREAM', 'CREAM, AUGMENTED', 'CRYSTAL', 'DISC', 'DOUCHE', 'DRESSING', 'DRUG-ELUTING CONTACT LENS', 'ELIXIR', 'EMULSION', 'ENEMA', 'EXTRACT', 'FIBER, EXTENDED RELEASE', 'FILM', 'FILM, EXTENDED RELEASE', 'FILM, SOLUBLE', 'FOR SOLUTION', 'FOR SUSPENSION', 'FOR SUSPENSION, EXTENDED RELEASE', 'GAS', 'GEL', 'GEL, DENTIFRICE', 'GEL, METERED', 'GLOBULE', 'GRANULE', 'GRANULE, DELAYED RELEASE', 'GRANULE, EFFERVESCENT', 'GRANULE, FOR SOLUTION', 'GRANULE, FOR SUSPENSION', 'GRANULE, FOR SUSPENSION, EXTENDED RELEASE', 'GUM, CHEWING', 'IMPLANT', 'INHALANT', 'INJECTABLE FOAM', 'INJECTABLE, LIPOSOMAL', 'INJECTION', 'INJECTION, EMULSION', 'INJECTION, LIPID COMPLEX', 'INJECTION, POWDER, FOR SOLUTION', 'INJECTION, POWDER, FOR SUSPENSION', 'INJECTION, POWDER, FOR SUSPENSION, EXTENDED RELEASE', 'INJECTION, POWDER, LYOPHILIZED, FOR LIPOSOMAL SUSPENSION', 'INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION', 'INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION', 'INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION, EXTENDED RELEASE', 'INJECTION, SOLUTION', 'INJECTION, SOLUTION, CONCENTRATE', 'INJECTION, SUSPENSION', 'INJECTION, SUSPENSION, EXTENDED RELEASE', 'INJECTION, SUSPENSION, LIPOSOMAL', 'INJECTION, SUSPENSION, SONICATED', 'INSERT', 'INSERT, EXTENDED RELEASE', 'INTRAUTERINE DEVICE', 'IRRIGANT', 'JELLY', 'KIT', 'LINIMENT', 'LIPSTICK', 'LIQUID', 'LIQUID, EXTENDED RELEASE', 'LOTION', 'LOTION, AUGMENTED', 'LOTION/SHAMPOO', 'LOZENGE', 'MOUTHWASH', 'NOT APPLICABLE', 'OIL', 'OINTMENT', 'OINTMENT, AUGMENTED', 'PASTE', 'PASTE, DENTIFRICE', 'PASTILLE', 'PATCH', 'PATCH, EXTENDED RELEASE', 'PATCH, EXTENDED RELEASE, ELECTRICALLY CONTROLLED', 'PELLET', 'PELLET, IMPLANTABLE', 'PELLETS, COATED, EXTENDED RELEASE', 'PILL', 'PLASTER', 'POULTICE', 'POWDER', 'POWDER, DENTIFRICE', 'POWDER, FOR SOLUTION', 'POWDER, FOR SUSPENSION', 'POWDER, METERED', 'RING', 'RINSE', 'SALVE', 'SHAMPOO', 'SHAMPOO, SUSPENSION', 'SOAP', 'SOLUTION', 'SOLUTION, CONCENTRATE', 'SOLUTION, FOR SLUSH', 'SOLUTION, GEL FORMING / DROPS', 'SOLUTION, GEL FORMING, EXTENDED RELEASE', 'SOLUTION/ DROPS', 'SPONGE', 'SPRAY', 'SPRAY, METERED', 'SPRAY, SUSPENSION', 'STICK', 'STRIP', 'SUPPOSITORY', 'SUPPOSITORY, EXTENDED RELEASE', 'SUSPENSION', 'SUSPENSION, EXTENDED RELEASE', 'SUSPENSION/ DROPS', 'SWAB', 'SYRUP', 'SYSTEM', 'TABLET', 'TABLET, CHEWABLE', 'TABLET, CHEWABLE, EXTENDED RELEASE', 'TABLET, COATED', 'TABLET, COATED PARTICLES', 'TABLET, DELAYED RELEASE', 'TABLET, DELAYED RELEASE PARTICLES', 'TABLET, EFFERVESCENT', 'TABLET, EXTENDED RELEASE', 'TABLET, FILM COATED', 'TABLET, FILM COATED, EXTENDED RELEASE', 'TABLET, FOR SOLUTION', 'TABLET, FOR SUSPENSION', 'TABLET, MULTILAYER', 'TABLET, MULTILAYER, EXTENDED RELEASE', 'TABLET, ORALLY DISINTEGRATING', 'TABLET, ORALLY DISINTEGRATING, DELAYED RELEASE', 'TABLET, SOLUBLE', 'TABLET, SUGAR COATED', 'TABLET WITH SENSOR', 'TAMPON', 'TAPE', 'TINCTURE', 'TROCHE', 'WAFER')),
+    CONSTRAINT ck_label_extraction__products_routes_enum CHECK (routes <@ ARRAY['AURICULAR (OTIC)', 'BUCCAL', 'CONJUNCTIVAL', 'CUTANEOUS', 'DENTAL', 'ELECTRO-OSMOSIS', 'ENDOCERVICAL', 'ENDOSINUSIAL', 'ENDOTRACHEAL', 'ENTERAL', 'EPIDURAL', 'EXTRA-AMNIOTIC', 'EXTRACORPOREAL', 'HEMODIALYSIS', 'INFILTRATION', 'INTERSTITIAL', 'INTRA-ABDOMINAL', 'INTRA-AMNIOTIC', 'INTRA-ARTERIAL', 'INTRA-ARTICULAR', 'INTRABILIARY', 'INTRABRONCHIAL', 'INTRABURSAL', 'INTRACAMERAL', 'INTRACANALICULAR', 'INTRACARDIAC', 'INTRACARTILAGINOUS', 'INTRACAUDAL', 'INTRACAVERNOUS', 'INTRACAVITARY', 'INTRACEREBRAL', 'INTRACISTERNAL', 'INTRACORNEAL', 'INTRACORONAL, DENTAL', 'INTRACORONARY', 'INTRACORPORUS CAVERNOSUM', 'INTRACRANIAL', 'INTRADERMAL', 'INTRADISCAL', 'INTRADUCTAL', 'INTRADUODENAL', 'INTRADURAL', 'INTRAEPICARDIAL', 'INTRAEPIDERMAL', 'INTRAESOPHAGEAL', 'INTRAGASTRIC', 'INTRAGINGIVAL', 'INTRAHEPATIC', 'INTRAILEAL', 'INTRALESIONAL', 'INTRALINGUAL', 'INTRALUMINAL', 'INTRALYMPHATIC', 'INTRAMAMMARY', 'INTRAMEDULLARY', 'INTRAMENINGEAL', 'INTRAMUSCULAR', 'INTRANODAL', 'INTRAOCULAR', 'INTRAOMENTUM', 'INTRAOVARIAN', 'INTRAPERICARDIAL', 'INTRAPERITONEAL', 'INTRAPLEURAL', 'INTRAPROSTATIC', 'INTRAPULMONARY', 'INTRARUMINAL', 'INTRASINAL', 'INTRASPINAL', 'INTRASYNOVIAL', 'INTRATENDINOUS', 'INTRATESTICULAR', 'INTRATHECAL', 'INTRATHORACIC', 'INTRATUBULAR', 'INTRATUMOR', 'INTRATYMPANIC', 'INTRAUTERINE', 'INTRAVASCULAR', 'INTRAVENOUS', 'INTRAVENTRICULAR', 'INTRAVESICAL', 'INTRAVITREAL', 'IONTOPHORESIS', 'IRRIGATION', 'LARYNGEAL', 'NASAL', 'NASOGASTRIC', 'NOT APPLICABLE', 'OCCLUSIVE DRESSING TECHNIQUE', 'OPHTHALMIC', 'ORAL', 'OROPHARYNGEAL', 'PARENTERAL', 'PERCUTANEOUS', 'PERIARTICULAR', 'PERIDURAL', 'PERINEURAL', 'PERIODONTAL', 'RECTAL', 'RESPIRATORY (INHALATION)', 'RETROBULBAR', 'SOFT TISSUE', 'SUBARACHNOID', 'SUBCONJUNCTIVAL', 'SUBCUTANEOUS', 'SUBGINGIVAL', 'SUBLINGUAL', 'SUBMUCOSAL', 'SUBRETINAL', 'SUPRACHOROIDAL', 'TOPICAL', 'TRANSDERMAL', 'TRANSENDOCARDIAL', 'TRANSMUCOSAL', 'TRANSPLACENTAL', 'TRANSTRACHEAL', 'TRANSTYMPANIC', 'URETERAL', 'URETHRAL', 'VAGINAL']::text[]),
+    CONSTRAINT ck_label_extraction__products_routes_min_count CHECK (cardinality(routes) >= 1)
+);
+
+CREATE TABLE label_extraction__products__ingredients (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES label_extraction__products (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    position integer NOT NULL,
+    substance_name text NOT NULL,
+    strength_value numeric NOT NULL,
+    strength_unit text NOT NULL,
+    basis_value numeric NOT NULL,
+    basis_unit text NOT NULL,
+    resolved_substance_iri text REFERENCES substance (iri) DEFERRABLE INITIALLY IMMEDIATE,
+    CONSTRAINT ck_label_extraction__products__ingredients_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_label_extraction__products__ingredients_position__8091bcbd9f CHECK (position >= 0),
+    CONSTRAINT uq_label_extraction__products__ingredients_position UNIQUE (owner_iri, position),
+    CONSTRAINT ck_label_extraction__products__ingredients_substance_07cd8d704c CHECK (substance_name !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_label_extraction__products__ingredients_substance_47b7553e89 CHECK (char_length(substance_name) >= 1),
+    CONSTRAINT ck_label_extraction__products__ingredients_substance_c9bb4ecf3d CHECK (char_length(substance_name) <= 500),
+    CONSTRAINT ck_label_extraction__products__ingredients_strength__09151b1b37 CHECK (strength_value NOT IN ('NaN', 'Infinity', '-Infinity')),
+    CONSTRAINT ck_label_extraction__products__ingredients_strength__6a7785ca0c CHECK (strength_value > 0),
+    CONSTRAINT ck_label_extraction__products__ingredients_strength_unit_enum CHECK (strength_unit IN ('1', '[AU]', '[Amb''a''1''U]', '[BAU]', '[arb''U]', '[CCID_50]', '[CFU]', 'Ci', 'd', '[D''ag''U]', 'dL', '[FFU]', '[FNU]', '{GC}', 'g', '[hp_C]', '{kp_C}', '[hp_M]', '[hp_Q]', '[hp_X]', 'h', '[iU]', 'kg', '[Lf]', 'L', 'uCi', 'ug', 'uL', 'umol', 'um', 'mCi', 'meq', 'mg', 'mL', 'mm', 'mmol', 'min', 'mol', 'mo', 'ng', 'nmol', '[NTU]', '[PFU]', '[PNU]', 's', 'cm2', '[TCID_50]', 'U', '[USP''U]', '{VP}', 'wk', 'a')),
+    CONSTRAINT ck_label_extraction__products__ingredients_basis_value_finite CHECK (basis_value NOT IN ('NaN', 'Infinity', '-Infinity')),
+    CONSTRAINT ck_label_extraction__products__ingredients_basis_val_c0bbedfb57 CHECK (basis_value > 0),
+    CONSTRAINT ck_label_extraction__products__ingredients_basis_unit_enum CHECK (basis_unit IN ('1', '[AU]', '[Amb''a''1''U]', '[BAU]', '[arb''U]', '[CCID_50]', '[CFU]', 'Ci', 'd', '[D''ag''U]', 'dL', '[FFU]', '[FNU]', '{GC}', 'g', '[hp_C]', '{kp_C}', '[hp_M]', '[hp_Q]', '[hp_X]', 'h', '[iU]', 'kg', '[Lf]', 'L', 'uCi', 'ug', 'uL', 'umol', 'um', 'mCi', 'meq', 'mg', 'mL', 'mm', 'mmol', 'min', 'mol', 'mo', 'ng', 'nmol', '[NTU]', '[PFU]', '[PNU]', 's', 'cm2', '[TCID_50]', 'U', '[USP''U]', '{VP}', 'wk', 'a')),
+    CONSTRAINT ck_label_extraction__products__ingredients_resolved__addec18160 CHECK (resolved_substance_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$')
+);
+
+CREATE TABLE label_extraction__products__packages (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES label_extraction__products (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    position integer NOT NULL,
+    ndc text NOT NULL,
+    resolved_package_iri text REFERENCES packaged_product (iri) DEFERRABLE INITIALLY IMMEDIATE,
+    registry_lists_product boolean,
+    CONSTRAINT ck_label_extraction__products__packages_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_label_extraction__products__packages_position_min_inclusive CHECK (position >= 0),
+    CONSTRAINT uq_label_extraction__products__packages_position UNIQUE (owner_iri, position),
+    CONSTRAINT ck_label_extraction__products__packages_ndc_charset CHECK (ndc !~ '[\x01-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_label_extraction__products__packages_ndc_pattern CHECK (ndc ~ '^([0-9]{4}-[0-9]{4}-[0-9]{2}|[0-9]{5}-[0-9]{3}-[0-9]{2}|[0-9]{5}-[0-9]{4}-[0-9])$'),
+    CONSTRAINT ck_label_extraction__products__packages_resolved_pac_fb679e35d4 CHECK (resolved_package_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_label_extraction__products__packages_rule_listed__fac0d5f639 CHECK (registry_lists_product IS NULL OR registry_lists_product NOT IN (true) OR resolved_package_iri IS NOT NULL)
 );

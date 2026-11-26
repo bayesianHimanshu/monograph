@@ -70,6 +70,19 @@ valid = {
     "drugs": [{"drug_name": "IBUPROFEN", "role": "suspect"}, {"drug_name": "IBUPROFEN", "role": "suspect"}],
     "reactions": [{"term": "Headache"}]}),
  ],
+ "LabelExtraction": [
+  ("resolved", {"set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f", "version": 3, "products": [
+    {"name": "Bayer Low Dose Aspirin", "dosage_form": "TABLET, CHEWABLE", "routes": ["ORAL"],
+     "ingredients": [{"substance_name": "aspirin", "strength_value": "81", "strength_unit": "mg", "basis_value": "1",
+                      "basis_unit": "1", "resolved_substance": sub("R16CO5Y76E")}],
+     "packages": [{"ndc": "0280-2000-10", "resolved_package": B + "packaged-product/0280-2000-10",
+                   "registry_lists_product": True}]}]}),
+  ("unresolved-unlisted", {"set_id": "9b1e6c2a-3d4f-4a5b-9c6d-7e8f9a0b1c2d", "version": 1, "products": [
+    {"name": "Acme Syrup", "dosage_form": "SYRUP", "routes": ["ORAL"],
+     "ingredients": [{"substance_name": "examplium", "strength_value": "160", "strength_unit": "mg", "basis_value": "5",
+                      "basis_unit": "mL"}],
+     "packages": [{"ndc": "12345-678-90", "registry_lists_product": False}]}]}),
+ ],
  "Recall": [
   ("class-ii", {"recall_number": "D-0123-2025", "classification": "II", "reason": "Failed dissolution specifications.",
     "report_date": "2025-02-12", "products": [prod("12345-678"), prod("12345-6789")], "recalling_firm": org("acme-pharma-inc")}),
@@ -153,6 +166,17 @@ case("AdverseEventReport", "reaction-as-string", "node", "reactions", setk("reac
 case("AdverseEventReport", "reaction-term-too-long", "max_length", "reactions.term", lambda r: r["reactions"][0].__setitem__("term", "N" * 101))
 case("AdverseEventReport", "drug-clinical-drug-urn", "ref", "drugs.clinical_drug", lambda r: r["drugs"][0].__setitem__("clinical_drug", "urn:rxcui:243670"))
 case("AdverseEventReport", "reaction-term-has-bell", "charset", "reactions.term", lambda r: r["reactions"][0].__setitem__("term", "Nausea\u0007"))
+case("LabelExtraction", "listed-package-unresolved", "rule:listed-package-resolves", "products.packages",
+     lambda r: r["products"][0]["packages"][0].pop("resolved_package"))
+case("LabelExtraction", "dosage-form-free-text", "enum", "products.dosage_form",
+     lambda r: r["products"][0].__setitem__("dosage_form", "Chewable tablet"))
+case("LabelExtraction", "unit-not-ucum", "enum", "products.ingredients.strength_unit",
+     lambda r: r["products"][0]["ingredients"][0].__setitem__("strength_unit", "MG"))
+case("LabelExtraction", "basis-zero", "min_exclusive", "products.ingredients.basis_value",
+     lambda r: r["products"][0]["ingredients"][0].__setitem__("basis_value", "0"))
+case("LabelExtraction", "ndc-without-hyphens", "pattern", "products.packages.ndc",
+     lambda r: r["products"][0]["packages"][0].__setitem__("ndc", "0280200010"))
+case("LabelExtraction", "no-products", "min_count", "products", setk("products", []))
 case("Recall", "recall-number-short", "pattern", "recall_number", setk("recall_number", "D-12-2025"))
 case("Recall", "reason-has-nul", "charset", "reason", setk("reason", "Failed\u0000 dissolution."))
 case("Recall", "classification-text", "enum", "classification", setk("classification", "Class II"))

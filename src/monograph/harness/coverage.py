@@ -85,6 +85,8 @@ class CoverageMatrix:
         if site.kind.startswith("rule:"):
             rule = next(r for r in c.rules if f"rule:{r.id}" == site.kind)
             return self._present(self._vocab.rule_shape(rule), SH.targetClass, self._vocab.cls(c.cls)), ""
+        if site.kind.startswith("extraction_only:"):
+            return NOT_ENFORCED, "extraction_only: checked in code against the reference graph (A3)"
         if site.kind.startswith("pydantic_only:"):
             declared = next(p for p in c.pydantic_only if f"pydantic_only:{p.id}" == site.kind)
             if declared.unique is not None:

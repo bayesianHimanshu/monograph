@@ -78,6 +78,7 @@ class SchemaSignature:
     closed: dict[str, bool] = field(default_factory=dict)
     ignored: dict[str, frozenset[str]] = field(default_factory=dict)
     rules: dict[str, str] = field(default_factory=dict)
+    rule_targets: dict[str, str] = field(default_factory=dict)
     residual: set[str] = field(default_factory=set)
 
     @classmethod
@@ -122,6 +123,7 @@ class SchemaSignature:
             if "#rule-" in str(shape):
                 rule_shapes.add(shape)
                 self.rules[str(shape)] = _canonical(shacl, shape)
+                self.rule_targets[str(shape)] = str(target)
                 continue
             if (shape, SH.closed, None) in shacl:
                 self.closed[str(target)] = shacl.value(shape, SH.closed) == Literal(True)
@@ -207,14 +209,25 @@ def diff(old: SchemaSignature, new: SchemaSignature) -> list[Change]:
     def add(kind: str, subject: str, detail: str, breaking: bool) -> None:
         changes.append(Change(kind, subject, detail, breaking))
 
+    def add_unless_new_class(kind: str, subject: str, detail: str, breaking: bool) -> None:
+        # A constraint on a class the previous release did not have cannot invalidate existing data.
+        if breaking and subject.split(" ", maxsplit=1)[0] in new.classes - old.classes:
+            add(kind, subject, f"{detail} (on a new class)", False)
+        else:
+            add(kind, subject, detail, breaking)
+
     _diff_vocabulary(old, new, add)
-    _diff_shapes(old, new, add)
+    _diff_shapes(old, new, add_unless_new_class)
     for rule_iri in sorted(set(old.rules) | set(new.rules)):
         o_r, n_r = old.rules.get(rule_iri), new.rules.get(rule_iri)
         if n_r is None:
             add("rule", rule_iri, "rule removed", False)
         elif o_r is None:
-            add("rule", rule_iri, "rule added", True)
+            target = new.rule_targets.get(rule_iri, "")
+            if target in new.classes - old.classes:
+                add("rule", rule_iri, "rule added (on a new class)", False)
+            else:
+                add("rule", rule_iri, "rule added", True)
         elif o_r != n_r:
             add("rule", rule_iri, "rule changed", True)
     for statement in sorted(old.residual - new.residual):

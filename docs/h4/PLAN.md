@@ -149,3 +149,17 @@ appeared in feedback and fields whose gold did not.
 8. Test runs (cost estimate first).
 9. Report.
 10. PR.
+
+## Findings while building (stages 1 and 2)
+
+* **H6 regression found:** from schema 1.0.0 the generated JSON Schema had lost every `pattern` once
+  strings became SafeIdentifier or SafeText. Nothing caught it, because the JSON Schema is drift-checked
+  but not validated and the breaking gate compares OWL and SHACL only. Fixed in 2.1.0 with a test.
+* **Registry shape.** The openFDA NDC directory's `package_ndc` is the outer package only; inner package
+  NDCs appear only in the package description text, and SPL gold lists every level. The registry adds
+  the nested NDCs. 30 of the 200 labels have no NDC directory record, so "this NDC must exist in the
+  registry" applies only when the registry lists the label's products (rule listed-package-resolves).
+* **Gold names resolve cleanly.** 2,119 of 2,124 gold active ingredient names resolve to their own UNII;
+  5 are ambiguous (one name, several UNIIs); none resolves to a different UNII.
+* **DailyMed returns 200 with the body `None`** for some set IDs, and occasionally 500. Both are recorded
+  (not cached) instead of aborting the frame.

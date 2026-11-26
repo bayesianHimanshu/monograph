@@ -14,6 +14,7 @@ constraint rejected a row.
 
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date, datetime
@@ -25,7 +26,7 @@ from pydantic import BaseModel
 from monograph.core.meta import Charset
 from monograph.core.refs import IRI_PATTERN
 from monograph.core.rules import AtLeast, RequiredWhen, UniqueWithin
-from monograph.core.spec import Card, ClassSpec, FieldSpec, Kind, SchemaError, SchemaSpec
+from monograph.core.spec import Card, ClassSpec, FieldSpec, Kind, SchemaSpec
 
 SQL_TYPE: dict[type, str] = {
     str: "text",
@@ -72,8 +73,20 @@ def table_name(model: type[BaseModel]) -> str:
     return "".join(f"_{ch.lower()}" if ch.isupper() and i else ch.lower() for i, ch in enumerate(name))
 
 
+POSTGRES_IDENTIFIER_LIMIT = 63
+
+
+def identifier(name: str) -> str:
+    """A Postgres identifier for `name`. Postgres silently truncates names over 63 bytes, which could make
+    two constraints collide, so long names keep a readable prefix and end in a hash of the full name."""
+    if len(name) <= POSTGRES_IDENTIFIER_LIMIT:
+        return name
+    digest = hashlib.sha256(name.encode("utf-8")).hexdigest()[:10]
+    return f"{name[: POSTGRES_IDENTIFIER_LIMIT - 11]}_{digest}"
+
+
 def child_table(owner: str, f: FieldSpec) -> str:
-    return f"{owner}__{f.name}"
+    return identifier(f"{owner}__{f.name}")
 
 
 def column_name(f: FieldSpec) -> str:
@@ -99,9 +112,7 @@ class _Table:
     constraints: list[str] = field(default_factory=list)
 
     def check(self, label: str, expression: str) -> None:
-        name = f"ck_{self.name}_{label}"
-        if len(name) > 63:
-            raise SchemaError(f"constraint name {name!r} exceeds the Postgres 63-character identifier limit")
+        name = identifier(f"ck_{self.name}_{label}")
         self.constraints.append(f"CONSTRAINT {name} CHECK ({expression})")
 
     def render(self) -> str:
@@ -142,8 +153,12 @@ class DdlGenerator:
         self._iri_column(table)
         extra = self._fields(table, c, unenforced)
         keys = ", ".join(column_name(c.field(k)) for k in c.meta.key)
-        table.constraints.append(f"CONSTRAINT uq_{table.name}_key UNIQUE ({keys})")
+        table.constraints.append(f"CONSTRAINT {identifier(f'uq_{table.name}_key')} UNIQUE ({keys})")
         self._rules(table, c, unenforced)
+        for e in c.extraction_only:
+            unenforced.append(
+                Unenforced(c.cls.__name__, None, f"extraction_only:{e.id}", "a graph-context check, run in code")
+            )
         for p in c.pydantic_only:
             if p.unique is not None:
                 self._unique(c, p.unique, extra)
@@ -162,7 +177,7 @@ class DdlGenerator:
         columns = ", ".join(["owner_iri", *(column_name(target.field(k)) for k in unique.keys)])
         if any(line.endswith(f"UNIQUE ({columns})") for line in child.constraints):
             return  # the keyed-set UNIQUE already says exactly this
-        child.constraints.append(f"CONSTRAINT uq_{name}_{'_'.join(unique.keys)} UNIQUE ({columns})")
+        child.constraints.append(f"CONSTRAINT {identifier(f'uq_{name}_{"_".join(unique.keys)}')} UNIQUE ({columns})")
 
     def _iri_column(self, table: _Table) -> None:
         self._check_pattern(IRI_PATTERN)
@@ -246,7 +261,7 @@ class DdlGenerator:
         t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE{self._fk}")
         t.columns.append(f"target_iri text NOT NULL REFERENCES {table_name(f.target)} (iri){self._fk}")
         t.check("target_iri_pattern", f"target_iri ~ {_literal(IRI_PATTERN)}")
-        t.constraints.append(f"CONSTRAINT pk_{t.name} PRIMARY KEY (owner_iri, target_iri)")
+        t.constraints.append(f"CONSTRAINT {identifier(f'pk_{t.name}')} PRIMARY KEY (owner_iri, target_iri)")
         self._row_counts(c, f, unenforced)
         return t
 
@@ -259,12 +274,12 @@ class DdlGenerator:
         if f.card is Card.LIST:
             t.columns.append("position integer NOT NULL")
             t.check("position_min_inclusive", "position >= 0")
-            t.constraints.append(f"CONSTRAINT uq_{t.name}_position UNIQUE (owner_iri, position)")
+            t.constraints.append(f"CONSTRAINT {identifier(f'uq_{t.name}_position')} UNIQUE (owner_iri, position)")
         elif f.card is Card.SET:
             keys = ", ".join(column_name(target.field(k)) for k in target.meta.key)
-            t.constraints.append(f"CONSTRAINT uq_{t.name}_key UNIQUE (owner_iri, {keys})")
+            t.constraints.append(f"CONSTRAINT {identifier(f'uq_{t.name}_key')} UNIQUE (owner_iri, {keys})")
         else:
-            t.constraints.append(f"CONSTRAINT uq_{t.name}_owner UNIQUE (owner_iri)")
+            t.constraints.append(f"CONSTRAINT {identifier(f'uq_{t.name}_owner')} UNIQUE (owner_iri)")
         extra = self._fields(t, target, unenforced)
         self._rules(t, target, unenforced)
         if f.card is Card.ONE:

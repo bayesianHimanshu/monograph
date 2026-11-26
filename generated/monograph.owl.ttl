@@ -8,8 +8,8 @@
 
 <https://example.org/monograph/ontology>
     a owl:Ontology ;
-    owl:versionIRI <https://example.org/monograph/ontology/2.0.0> ;
-    owl:versionInfo "2.0.0" ;
+    owl:versionIRI <https://example.org/monograph/ontology/2.1.0> ;
+    owl:versionInfo "2.1.0" ;
     rdfs:label "MONOGRAPH drug product model" .
 
 mono:AdverseEventReport
@@ -23,6 +23,643 @@ mono:ClinicalDrug
     rdfs:comment "A clinical drug concept in RxNorm, identified by its RxCUI. Several NDC products can share one clinical drug. The name is optional because openFDA carries RxCUIs without their RxNorm names." ;
     rdfs:label "Clinical drug" ;
     rdfs:subClassOf mono:Entity .
+
+mono:DosageForm
+    a owl:Class ;
+    rdfs:comment "Dosage form: the FDA SPL dosage form terms, with NCI Thesaurus codes. Source: https://www.fda.gov/industry/structured-product-labeling-resources/dosage-forms (content current as of 02/03/2022). 158 terms." ;
+    rdfs:label "Dosage form" .
+
+mono:DosageForm-AEROSOL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "AEROSOL" .
+
+mono:DosageForm-AEROSOL_FOAM
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "AEROSOL, FOAM" .
+
+mono:DosageForm-AEROSOL_METERED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "AEROSOL, METERED" .
+
+mono:DosageForm-AEROSOL_POWDER
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "AEROSOL, POWDER" .
+
+mono:DosageForm-AEROSOL_SPRAY
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "AEROSOL, SPRAY" .
+
+mono:DosageForm-BAR_CHEWABLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "BAR, CHEWABLE" .
+
+mono:DosageForm-BEAD
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "BEAD" .
+
+mono:DosageForm-CAPSULE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE" .
+
+mono:DosageForm-CAPSULE_COATED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, COATED" .
+
+mono:DosageForm-CAPSULE_COATED_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, COATED, EXTENDED RELEASE" .
+
+mono:DosageForm-CAPSULE_COATED_PELLETS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, COATED PELLETS" .
+
+mono:DosageForm-CAPSULE_DELAYED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, DELAYED RELEASE" .
+
+mono:DosageForm-CAPSULE_DELAYED_RELEASE_PELLETS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, DELAYED RELEASE PELLETS" .
+
+mono:DosageForm-CAPSULE_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, EXTENDED RELEASE" .
+
+mono:DosageForm-CAPSULE_FILM_COATED_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, FILM COATED, EXTENDED RELEASE" .
+
+mono:DosageForm-CAPSULE_GELATIN_COATED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, GELATIN COATED" .
+
+mono:DosageForm-CAPSULE_LIQUID_FILLED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CAPSULE, LIQUID FILLED" .
+
+mono:DosageForm-CELLULAR_SHEET
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CELLULAR SHEET" .
+
+mono:DosageForm-CHEWABLE_GEL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CHEWABLE GEL" .
+
+mono:DosageForm-CLOTH
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CLOTH" .
+
+mono:DosageForm-CONCENTRATE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CONCENTRATE" .
+
+mono:DosageForm-CREAM
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CREAM" .
+
+mono:DosageForm-CREAM_AUGMENTED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CREAM, AUGMENTED" .
+
+mono:DosageForm-CRYSTAL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "CRYSTAL" .
+
+mono:DosageForm-DISC
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "DISC" .
+
+mono:DosageForm-DOUCHE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "DOUCHE" .
+
+mono:DosageForm-DRESSING
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "DRESSING" .
+
+mono:DosageForm-DRUG_ELUTING_CONTACT_LENS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "DRUG-ELUTING CONTACT LENS" .
+
+mono:DosageForm-ELIXIR
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "ELIXIR" .
+
+mono:DosageForm-EMULSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "EMULSION" .
+
+mono:DosageForm-ENEMA
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "ENEMA" .
+
+mono:DosageForm-EXTRACT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "EXTRACT" .
+
+mono:DosageForm-FIBER_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FIBER, EXTENDED RELEASE" .
+
+mono:DosageForm-FILM
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FILM" .
+
+mono:DosageForm-FILM_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FILM, EXTENDED RELEASE" .
+
+mono:DosageForm-FILM_SOLUBLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FILM, SOLUBLE" .
+
+mono:DosageForm-FOR_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FOR SOLUTION" .
+
+mono:DosageForm-FOR_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FOR SUSPENSION" .
+
+mono:DosageForm-FOR_SUSPENSION_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "FOR SUSPENSION, EXTENDED RELEASE" .
+
+mono:DosageForm-GAS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GAS" .
+
+mono:DosageForm-GEL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GEL" .
+
+mono:DosageForm-GEL_DENTIFRICE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GEL, DENTIFRICE" .
+
+mono:DosageForm-GEL_METERED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GEL, METERED" .
+
+mono:DosageForm-GLOBULE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GLOBULE" .
+
+mono:DosageForm-GRANULE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GRANULE" .
+
+mono:DosageForm-GRANULE_DELAYED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GRANULE, DELAYED RELEASE" .
+
+mono:DosageForm-GRANULE_EFFERVESCENT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GRANULE, EFFERVESCENT" .
+
+mono:DosageForm-GRANULE_FOR_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GRANULE, FOR SOLUTION" .
+
+mono:DosageForm-GRANULE_FOR_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GRANULE, FOR SUSPENSION" .
+
+mono:DosageForm-GRANULE_FOR_SUSPENSION_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GRANULE, FOR SUSPENSION, EXTENDED RELEASE" .
+
+mono:DosageForm-GUM_CHEWING
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "GUM, CHEWING" .
+
+mono:DosageForm-IMPLANT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "IMPLANT" .
+
+mono:DosageForm-INHALANT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INHALANT" .
+
+mono:DosageForm-INJECTABLE_FOAM
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTABLE FOAM" .
+
+mono:DosageForm-INJECTABLE_LIPOSOMAL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTABLE, LIPOSOMAL" .
+
+mono:DosageForm-INJECTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION" .
+
+mono:DosageForm-INJECTION_EMULSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, EMULSION" .
+
+mono:DosageForm-INJECTION_LIPID_COMPLEX
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, LIPID COMPLEX" .
+
+mono:DosageForm-INJECTION_POWDER_FOR_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, FOR SOLUTION" .
+
+mono:DosageForm-INJECTION_POWDER_FOR_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, FOR SUSPENSION" .
+
+mono:DosageForm-INJECTION_POWDER_FOR_SUSPENSION_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, FOR SUSPENSION, EXTENDED RELEASE" .
+
+mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_LIPOSOMAL_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, LYOPHILIZED, FOR LIPOSOMAL SUSPENSION" .
+
+mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION" .
+
+mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION" .
+
+mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_SUSPENSION_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION, EXTENDED RELEASE" .
+
+mono:DosageForm-INJECTION_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, SOLUTION" .
+
+mono:DosageForm-INJECTION_SOLUTION_CONCENTRATE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, SOLUTION, CONCENTRATE" .
+
+mono:DosageForm-INJECTION_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, SUSPENSION" .
+
+mono:DosageForm-INJECTION_SUSPENSION_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, SUSPENSION, EXTENDED RELEASE" .
+
+mono:DosageForm-INJECTION_SUSPENSION_LIPOSOMAL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, SUSPENSION, LIPOSOMAL" .
+
+mono:DosageForm-INJECTION_SUSPENSION_SONICATED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INJECTION, SUSPENSION, SONICATED" .
+
+mono:DosageForm-INSERT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INSERT" .
+
+mono:DosageForm-INSERT_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INSERT, EXTENDED RELEASE" .
+
+mono:DosageForm-INTRAUTERINE_DEVICE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "INTRAUTERINE DEVICE" .
+
+mono:DosageForm-IRRIGANT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "IRRIGANT" .
+
+mono:DosageForm-JELLY
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "JELLY" .
+
+mono:DosageForm-KIT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "KIT" .
+
+mono:DosageForm-LINIMENT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LINIMENT" .
+
+mono:DosageForm-LIPSTICK
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LIPSTICK" .
+
+mono:DosageForm-LIQUID
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LIQUID" .
+
+mono:DosageForm-LIQUID_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LIQUID, EXTENDED RELEASE" .
+
+mono:DosageForm-LOTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LOTION" .
+
+mono:DosageForm-LOTION_AUGMENTED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LOTION, AUGMENTED" .
+
+mono:DosageForm-LOTION_SHAMPOO
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LOTION/SHAMPOO" .
+
+mono:DosageForm-LOZENGE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "LOZENGE" .
+
+mono:DosageForm-MOUTHWASH
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "MOUTHWASH" .
+
+mono:DosageForm-NOT_APPLICABLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "NOT APPLICABLE" .
+
+mono:DosageForm-OIL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "OIL" .
+
+mono:DosageForm-OINTMENT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "OINTMENT" .
+
+mono:DosageForm-OINTMENT_AUGMENTED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "OINTMENT, AUGMENTED" .
+
+mono:DosageForm-PASTE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PASTE" .
+
+mono:DosageForm-PASTE_DENTIFRICE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PASTE, DENTIFRICE" .
+
+mono:DosageForm-PASTILLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PASTILLE" .
+
+mono:DosageForm-PATCH
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PATCH" .
+
+mono:DosageForm-PATCH_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PATCH, EXTENDED RELEASE" .
+
+mono:DosageForm-PATCH_EXTENDED_RELEASE_ELECTRICALLY_CONTROLLED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PATCH, EXTENDED RELEASE, ELECTRICALLY CONTROLLED" .
+
+mono:DosageForm-PELLET
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PELLET" .
+
+mono:DosageForm-PELLETS_COATED_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PELLETS, COATED, EXTENDED RELEASE" .
+
+mono:DosageForm-PELLET_IMPLANTABLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PELLET, IMPLANTABLE" .
+
+mono:DosageForm-PILL
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PILL" .
+
+mono:DosageForm-PLASTER
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "PLASTER" .
+
+mono:DosageForm-POULTICE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "POULTICE" .
+
+mono:DosageForm-POWDER
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "POWDER" .
+
+mono:DosageForm-POWDER_DENTIFRICE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "POWDER, DENTIFRICE" .
+
+mono:DosageForm-POWDER_FOR_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "POWDER, FOR SOLUTION" .
+
+mono:DosageForm-POWDER_FOR_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "POWDER, FOR SUSPENSION" .
+
+mono:DosageForm-POWDER_METERED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "POWDER, METERED" .
+
+mono:DosageForm-RING
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "RING" .
+
+mono:DosageForm-RINSE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "RINSE" .
+
+mono:DosageForm-SALVE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SALVE" .
+
+mono:DosageForm-SHAMPOO
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SHAMPOO" .
+
+mono:DosageForm-SHAMPOO_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SHAMPOO, SUSPENSION" .
+
+mono:DosageForm-SOAP
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOAP" .
+
+mono:DosageForm-SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOLUTION" .
+
+mono:DosageForm-SOLUTION_CONCENTRATE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOLUTION, CONCENTRATE" .
+
+mono:DosageForm-SOLUTION_DROPS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOLUTION/ DROPS" .
+
+mono:DosageForm-SOLUTION_FOR_SLUSH
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOLUTION, FOR SLUSH" .
+
+mono:DosageForm-SOLUTION_GEL_FORMING_DROPS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOLUTION, GEL FORMING / DROPS" .
+
+mono:DosageForm-SOLUTION_GEL_FORMING_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SOLUTION, GEL FORMING, EXTENDED RELEASE" .
+
+mono:DosageForm-SPONGE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SPONGE" .
+
+mono:DosageForm-SPRAY
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SPRAY" .
+
+mono:DosageForm-SPRAY_METERED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SPRAY, METERED" .
+
+mono:DosageForm-SPRAY_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SPRAY, SUSPENSION" .
+
+mono:DosageForm-STICK
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "STICK" .
+
+mono:DosageForm-STRIP
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "STRIP" .
+
+mono:DosageForm-SUPPOSITORY
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SUPPOSITORY" .
+
+mono:DosageForm-SUPPOSITORY_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SUPPOSITORY, EXTENDED RELEASE" .
+
+mono:DosageForm-SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SUSPENSION" .
+
+mono:DosageForm-SUSPENSION_DROPS
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SUSPENSION/ DROPS" .
+
+mono:DosageForm-SUSPENSION_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SUSPENSION, EXTENDED RELEASE" .
+
+mono:DosageForm-SWAB
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SWAB" .
+
+mono:DosageForm-SYRUP
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SYRUP" .
+
+mono:DosageForm-SYSTEM
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "SYSTEM" .
+
+mono:DosageForm-TABLET
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET" .
+
+mono:DosageForm-TABLET_CHEWABLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, CHEWABLE" .
+
+mono:DosageForm-TABLET_CHEWABLE_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, CHEWABLE, EXTENDED RELEASE" .
+
+mono:DosageForm-TABLET_COATED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, COATED" .
+
+mono:DosageForm-TABLET_COATED_PARTICLES
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, COATED PARTICLES" .
+
+mono:DosageForm-TABLET_DELAYED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, DELAYED RELEASE" .
+
+mono:DosageForm-TABLET_DELAYED_RELEASE_PARTICLES
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, DELAYED RELEASE PARTICLES" .
+
+mono:DosageForm-TABLET_EFFERVESCENT
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, EFFERVESCENT" .
+
+mono:DosageForm-TABLET_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, EXTENDED RELEASE" .
+
+mono:DosageForm-TABLET_FILM_COATED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, FILM COATED" .
+
+mono:DosageForm-TABLET_FILM_COATED_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, FILM COATED, EXTENDED RELEASE" .
+
+mono:DosageForm-TABLET_FOR_SOLUTION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, FOR SOLUTION" .
+
+mono:DosageForm-TABLET_FOR_SUSPENSION
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, FOR SUSPENSION" .
+
+mono:DosageForm-TABLET_MULTILAYER
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, MULTILAYER" .
+
+mono:DosageForm-TABLET_MULTILAYER_EXTENDED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, MULTILAYER, EXTENDED RELEASE" .
+
+mono:DosageForm-TABLET_ORALLY_DISINTEGRATING
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, ORALLY DISINTEGRATING" .
+
+mono:DosageForm-TABLET_ORALLY_DISINTEGRATING_DELAYED_RELEASE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, ORALLY DISINTEGRATING, DELAYED RELEASE" .
+
+mono:DosageForm-TABLET_SOLUBLE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, SOLUBLE" .
+
+mono:DosageForm-TABLET_SUGAR_COATED
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET, SUGAR COATED" .
+
+mono:DosageForm-TABLET_WITH_SENSOR
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TABLET WITH SENSOR" .
+
+mono:DosageForm-TAMPON
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TAMPON" .
+
+mono:DosageForm-TAPE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TAPE" .
+
+mono:DosageForm-TINCTURE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TINCTURE" .
+
+mono:DosageForm-TROCHE
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "TROCHE" .
+
+mono:DosageForm-WAFER
+    a mono:DosageForm, owl:NamedIndividual ;
+    rdfs:label "WAFER" .
 
 mono:DrugInvolvement
     a owl:Class ;
@@ -65,6 +702,24 @@ mono:Entity
     rdfs:comment "A thing with a public identifier and its own IRI." ;
     rdfs:label "Entity" .
 
+mono:ExtractedIngredient
+    a owl:Class ;
+    rdfs:comment "An active ingredient as stated in label narrative: name, strength and the basis of the strength." ;
+    rdfs:label "Extracted ingredient" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:ExtractedPackage
+    a owl:Class ;
+    rdfs:comment "A package NDC mentioned in label narrative (for example in How Supplied)." ;
+    rdfs:label "Extracted package" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:ExtractedProduct
+    a owl:Class ;
+    rdfs:comment "One product described by a label: what it is made of, its form, its routes, its packages." ;
+    rdfs:label "Extracted product" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
 mono:Ingredient
     a owl:Class ;
     rdfs:comment "An active ingredient of a product with its strength." ;
@@ -75,6 +730,12 @@ mono:Label
     a owl:Class ;
     rdfs:comment "One version of a structured product label (SPL)." ;
     rdfs:label "Label" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:LabelExtraction
+    a owl:Class ;
+    rdfs:comment "What an extractor read from one label's narrative, plus the label it came from." ;
+    rdfs:label "Label extraction" ;
     rdfs:subClassOf mono:Entity .
 
 mono:LabelSection
@@ -712,6 +1373,233 @@ mono:Substance
     rdfs:label "Substance" ;
     rdfs:subClassOf mono:Entity .
 
+mono:UcumUnit
+    a owl:Class ;
+    rdfs:comment "Unit of measure: the UCUM codes FDA accepts in SPL. \"1\" is the unit of presentation (per tablet, per capsule, ...). Source: https://www.fda.gov/industry/structured-product-labeling-resources/units-measure (content current as of 10/24/2024). 52 units." ;
+    rdfs:label "UCUM unit" .
+
+mono:UcumUnit-ALLERGY_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[AU]" .
+
+mono:UcumUnit-AMB_A_1_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[Amb'a'1'U]" .
+
+mono:UcumUnit-ARBITRARY_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[arb'U]" .
+
+mono:UcumUnit-BIOEQUIVALENT_ALLERGY_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[BAU]" .
+
+mono:UcumUnit-CELL_CULTURE_INFECTIOUS_DOSE_50
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[CCID_50]" .
+
+mono:UcumUnit-COLONY_FORMING_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[CFU]" .
+
+mono:UcumUnit-CURIE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "Ci" .
+
+mono:UcumUnit-DAY
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "d" .
+
+mono:UcumUnit-DECILITER
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "dL" .
+
+mono:UcumUnit-D_ANTIGEN_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[D'ag'U]" .
+
+mono:UcumUnit-FOCUS_FORMING_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[FFU]" .
+
+mono:UcumUnit-FORMAZIN_TURBIDITY_UNIT
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[FNU]" .
+
+mono:UcumUnit-GENOMIC_COPIES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "{GC}" .
+
+mono:UcumUnit-GRAM
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "g" .
+
+mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_CENTESIMAL_KORSAKOVIAN_SERIES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "{kp_C}" .
+
+mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_CENTESIMAL_SERIES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[hp_C]" .
+
+mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_DECIMAL_SERIES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[hp_X]" .
+
+mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_MILLESIMAL_SERIES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[hp_M]" .
+
+mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_QUINTAMILLESIMAL_SERIES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[hp_Q]" .
+
+mono:UcumUnit-HOUR
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "h" .
+
+mono:UcumUnit-INTERNATIONAL_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[iU]" .
+
+mono:UcumUnit-KILOGRAM
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "kg" .
+
+mono:UcumUnit-LIMIT_OF_FLOCCULATION
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[Lf]" .
+
+mono:UcumUnit-LITER
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "L" .
+
+mono:UcumUnit-MICROCURIE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "uCi" .
+
+mono:UcumUnit-MICROGRAM
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "ug" .
+
+mono:UcumUnit-MICROLITER
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "uL" .
+
+mono:UcumUnit-MICROMOLE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "umol" .
+
+mono:UcumUnit-MICRON
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "um" .
+
+mono:UcumUnit-MILLICURIE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mCi" .
+
+mono:UcumUnit-MILLIEQUIVALENT
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "meq" .
+
+mono:UcumUnit-MILLIGRAM
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mg" .
+
+mono:UcumUnit-MILLILITER
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mL" .
+
+mono:UcumUnit-MILLIMETER
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mm" .
+
+mono:UcumUnit-MILLIMOLE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mmol" .
+
+mono:UcumUnit-MINUTE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "min" .
+
+mono:UcumUnit-MOLE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mol" .
+
+mono:UcumUnit-MONTH
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "mo" .
+
+mono:UcumUnit-NANOGRAM
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "ng" .
+
+mono:UcumUnit-NANOMOLE
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "nmol" .
+
+mono:UcumUnit-NEPHELOMETRIC_TURBIDITY_UNIT
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[NTU]" .
+
+mono:UcumUnit-PLAQUE_FORMING_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[PFU]" .
+
+mono:UcumUnit-PROTEIN_NITROGEN_UNITS
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[PNU]" .
+
+mono:UcumUnit-SECOND
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "s" .
+
+mono:UcumUnit-SQUARE_CENTIMETER
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "cm2" .
+
+mono:UcumUnit-TISSUE_CULTURE_INFECTIOUS_DOSE_50
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[TCID_50]" .
+
+mono:UcumUnit-UNITED_STATES_PHARMACOPEIA_UNIT
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "[USP'U]" .
+
+mono:UcumUnit-UNIT_CATALYTIC_ACTIVITY
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "U" .
+
+mono:UcumUnit-UNIT_OF_PRESENTATION
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "1" .
+
+mono:UcumUnit-VIRAL_PARTICLES
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "{VP}" .
+
+mono:UcumUnit-WEEK
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "wk" .
+
+mono:UcumUnit-YEAR
+    a mono:UcumUnit, owl:NamedIndividual ;
+    rdfs:label "a" .
+
+mono:basisUnit
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Unit of the basis: mL in 'per 5 mL', '1' for per tablet or capsule." ;
+    rdfs:domain mono:ExtractedIngredient ;
+    rdfs:label "basis unit (UCUM)" ;
+    rdfs:range mono:UcumUnit .
+
+mono:basisValue
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Amount the strength refers to, for example 5 in 'per 5 mL'; 1 for per unit." ;
+    rdfs:domain mono:ExtractedIngredient ;
+    rdfs:label "basis value" ;
+    rdfs:range xsd:decimal .
+
 mono:clinicalDrug
     a owl:FunctionalProperty, owl:ObjectProperty ;
     rdfs:domain [
@@ -749,6 +1637,34 @@ mono:effectiveDate
     rdfs:label "effective date" ;
     rdfs:range xsd:date .
 
+mono:extractedDosageForm
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Dosage form." ;
+    rdfs:domain mono:ExtractedProduct ;
+    rdfs:label "dosage form (SPL term)" ;
+    rdfs:range mono:DosageForm .
+
+mono:extractedIngredient
+    a owl:ObjectProperty ;
+    rdfs:comment "Active ingredients with strengths, in label order." ;
+    rdfs:domain mono:ExtractedProduct ;
+    rdfs:label "extracted ingredient" ;
+    rdfs:range mono:ExtractedIngredient .
+
+mono:extractedPackage
+    a owl:ObjectProperty ;
+    rdfs:comment "Package NDCs the label lists for this product." ;
+    rdfs:domain mono:ExtractedProduct ;
+    rdfs:label "extracted package" ;
+    rdfs:range mono:ExtractedPackage .
+
+mono:extractedProduct
+    a owl:ObjectProperty ;
+    rdfs:comment "Products the label describes." ;
+    rdfs:domain mono:LabelExtraction ;
+    rdfs:label "extracted product" ;
+    rdfs:range mono:ExtractedProduct .
+
 mono:finished
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "Whether this is a finished product (False for bulk ingredients and intermediates)." ;
@@ -765,8 +1681,10 @@ mono:ingredient
 
 mono:labelVersion
     a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:comment "SPL version." ;
-    rdfs:domain mono:Label ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:Label mono:LabelExtraction )
+    ] ;
     rdfs:label "label version" ;
     rdfs:range xsd:integer .
 
@@ -802,7 +1720,7 @@ mono:name
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain [
         a owl:Class ;
-        owl:unionOf ( mono:ClinicalDrug mono:Organization mono:Product mono:Substance )
+        owl:unionOf ( mono:ClinicalDrug mono:ExtractedProduct mono:Organization mono:Product mono:Substance )
     ] ;
     rdfs:label "name" ;
     rdfs:range xsd:string .
@@ -810,7 +1728,10 @@ mono:name
 mono:ndc
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "Package NDC in 4-4-2, 5-3-2 or 5-4-1 form." ;
-    rdfs:domain mono:PackagedProduct ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:ExtractedPackage mono:PackagedProduct )
+    ] ;
     rdfs:label "NDC" ;
     rdfs:range xsd:string .
 
@@ -898,6 +1819,13 @@ mono:receiptDate
     rdfs:label "receipt date" ;
     rdfs:range xsd:date .
 
+mono:registryListsProduct
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "True when the registry knows this label's products, so its packages must resolve." ;
+    rdfs:domain mono:ExtractedPackage ;
+    rdfs:label "registry lists the label's products" ;
+    rdfs:range xsd:boolean .
+
 mono:reportDate
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "Enforcement report date." ;
@@ -905,10 +1833,26 @@ mono:reportDate
     rdfs:label "report date" ;
     rdfs:range xsd:date .
 
+mono:resolvedPackage
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The PackagedProduct with this NDC in the reference graph." ;
+    rdfs:domain mono:ExtractedPackage ;
+    rdfs:label "resolved package" ;
+    rdfs:range mono:PackagedProduct .
+
+mono:resolvedSubstance
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The Substance this name resolves to in the reference graph." ;
+    rdfs:domain mono:ExtractedIngredient ;
+    rdfs:label "resolved substance" ;
+    rdfs:range mono:Substance .
+
 mono:route
     a owl:ObjectProperty ;
-    rdfs:comment "Routes of administration. Required for finished prescription and OTC products." ;
-    rdfs:domain mono:Product ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:ExtractedProduct mono:Product )
+    ] ;
     rdfs:label "route" ;
     rdfs:range mono:Route .
 
@@ -963,8 +1907,10 @@ mono:seriousnessCriterion
 
 mono:setId
     a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:comment "SPL set ID, a lowercase UUID." ;
-    rdfs:domain mono:Label ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:Label mono:LabelExtraction )
+    ] ;
     rdfs:label "SPL set ID" ;
     rdfs:range xsd:string .
 
@@ -982,6 +1928,13 @@ mono:sourceSystem
     rdfs:label "source system" ;
     rdfs:range mono:SourceSystem .
 
+mono:strengthUcumUnit
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Unit of the strength." ;
+    rdfs:domain mono:ExtractedIngredient ;
+    rdfs:label "strength unit (UCUM)" ;
+    rdfs:range mono:UcumUnit .
+
 mono:strengthUnit
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "Unit of the strength, for example mg/1." ;
@@ -992,7 +1945,10 @@ mono:strengthUnit
 mono:strengthValue
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "Numeric strength." ;
-    rdfs:domain mono:Ingredient ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:ExtractedIngredient mono:Ingredient )
+    ] ;
     rdfs:label "strength value" ;
     rdfs:range xsd:decimal .
 
@@ -1002,6 +1958,13 @@ mono:substance
     rdfs:domain mono:Ingredient ;
     rdfs:label "substance" ;
     rdfs:range mono:Substance .
+
+mono:substanceName
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Substance name exactly as the label states it." ;
+    rdfs:domain mono:ExtractedIngredient ;
+    rdfs:label "substance name" ;
+    rdfs:range xsd:string .
 
 mono:unii
     a owl:DatatypeProperty, owl:FunctionalProperty ;
