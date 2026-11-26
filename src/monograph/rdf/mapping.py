@@ -72,7 +72,7 @@ class RdfMapper:
             return _MISSING_KEY
         return quote(str(value), safe="")
 
-    def _child_iri(self, parent: URIRef, f: FieldSpec, child: Any, index: int | None) -> URIRef:
+    def child_iri(self, parent: str, f: FieldSpec, child: Any, index: int | None) -> URIRef:
         prefix = f"{parent}/{f.prop.name}"
         if f.card is Card.LIST:
             return URIRef(f"{prefix}/{index}")
@@ -111,7 +111,7 @@ class RdfMapper:
         if f.kind is Kind.EMBEDDED:
             assert f.target is not None
             if isinstance(value, f.target):
-                child = self._child_iri(node, f, value, index)
+                child = self.child_iri(node, f, value, index)
                 g.add((node, predicate, child))
                 self._emit(g, child, value, stubs)
             else:

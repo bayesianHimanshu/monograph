@@ -116,3 +116,16 @@ def test_turtle_writer_round_trips_through_rdflib(files: dict[str, str]) -> None
     g = _graph(files[SHACL_FILE])
     again = _graph(wiring.turtle_writer(V).write(g))
     assert isomorphic(g, again)
+
+
+def test_ddl_lists_what_postgres_cannot_enforce(spec: SchemaSpec) -> None:
+    from monograph.gen.ddl import DdlGenerator
+    from monograph.gen.regex import check_pattern
+
+    result = DdlGenerator(spec, check_pattern).generate()
+    kinds = {(u.cls, u.kind) for u in result.unenforced}
+    assert ("AdverseEventReport", "rule:has-primary-suspect") in kinds
+    assert ("AdverseEventReport", "min_count") in kinds
+    assert ("Label", "pydantic_only:label-effective-date-not-future") in kinds
+    assert "ck_adverse_event_report_rule_serious_requires_criterion" in result.sql
+    assert "ck_product_routes_min_count" in result.sql
