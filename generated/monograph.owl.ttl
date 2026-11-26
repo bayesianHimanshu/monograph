@@ -8,8 +8,8 @@
 
 <https://example.org/monograph/ontology>
     a owl:Ontology ;
-    owl:versionIRI <https://example.org/monograph/ontology/2.1.0> ;
-    owl:versionInfo "2.1.0" ;
+    owl:versionIRI <https://example.org/monograph/ontology/2.1.1> ;
+    owl:versionInfo "2.1.1" ;
     rdfs:label "MONOGRAPH drug product model" .
 
 mono:AdverseEventReport

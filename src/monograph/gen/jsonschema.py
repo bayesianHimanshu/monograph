@@ -9,6 +9,7 @@ properties (`x-rdf-class`, `x-rdf-property`) and the rule projections (`if`/`the
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel
@@ -17,6 +18,7 @@ from pydantic.json_schema import models_json_schema
 from monograph.core.rules import AtLeast, RequiredWhen, RuleValue
 from monograph.core.spec import ClassSpec, FieldSpec, Kind, SchemaSpec
 from monograph.core.vocab import Vocabulary
+from monograph.gen.shacl import forbidden_class
 
 
 class JsonSchemaGenerator:
@@ -135,5 +137,15 @@ def _apply_constraints(prop: dict[str, Any], f: FieldSpec) -> None:
         if value is not None:
             target[key] = value
     for key, bound in (("minimum", k.ge), ("maximum", k.le), ("exclusiveMinimum", k.gt), ("exclusiveMaximum", k.lt)):
-        if bound is not None and f.scalar is int:
+        if bound is None:
+            continue
+        if f.scalar is int:
             target[key] = int(bound)
+        elif f.scalar is Decimal:
+            # Pydantic accepts a Decimal as a JSON number or a numeric string. Bounds can only be stated for the
+            # number branch; a bound on a string-encoded number is a declared JSON Schema leak.
+            for branch in target.get("anyOf", [target]):
+                if branch.get("type") == "number":
+                    branch[key] = float(bound) if bound != int(bound) else int(bound)
+    if k.charset is not None:
+        target["not"] = {"pattern": forbidden_class(k.charset)}

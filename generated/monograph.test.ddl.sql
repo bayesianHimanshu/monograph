@@ -1,4 +1,4 @@
--- MONOGRAPH drug product model 2.1.0, test profile. Generated from core/models.py; do not edit.
+-- MONOGRAPH drug product model 2.1.1, test profile. Generated from core/models.py; do not edit.
 -- Run inside an empty schema. Constraint names are stable and used by the integration test.
 
 CREATE TABLE substance (

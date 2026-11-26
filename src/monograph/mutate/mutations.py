@@ -162,6 +162,16 @@ def _m12(root: Path, cli: Cli) -> None:
     cli("gen")
 
 
+JSONSCHEMA_GEN = Path("src/monograph/gen/jsonschema.py")
+
+
+def _m13(root: Path, cli: Cli) -> None:
+    # Reproduces the H6.1 regression: the generator itself stops writing `pattern`, and the artifacts are
+    # regenerated, so the drift check stays green.
+    replace_once(root, JSONSCHEMA_GEN, '        ("pattern", k.pattern),\n', "")
+    cli("gen")
+
+
 MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M1", "Hand-edit generated SHACL to loosen a pattern", "drift", _m1),
     Mutation("M2", "Add a field to a model without regenerating", "drift", _m2),
@@ -175,6 +185,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M10", "Break the instance mapping for one property", "agreement|tests", _m10),
     Mutation("M11", "Hand-edit the test-profile DDL to make a foreign key non-deferrable", "drift", _m11),
     Mutation("M12", "Bump the major version without a release snapshot", "breaking", _m12),
+    Mutation("M13", "JSON Schema generator drops every pattern (regenerated)", "agreement|tests", _m13),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

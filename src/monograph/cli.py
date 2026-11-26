@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 from typing import Annotated
@@ -345,6 +346,19 @@ def _agreement(root: Path) -> bool:
     for d in report.disagreements:
         failures += 1
         typer.echo(f"agreement: real {d['class']} {d['source']}: Pydantic and SHACL disagree", err=True)
+    from monograph.gen.artifacts import JSON_SCHEMA_FILE
+    from monograph.validate.jsonschema_side import DECLARED_LEAKS, JsonSchemaValidator
+
+    schema = JsonSchemaValidator(json.loads((wiring.generated_dir(root) / JSON_SCHEMA_FILE).read_text()))
+    for f in loader.valid():
+        if errors := schema.errors_for(f.cls.__name__, f.record):
+            failures += 1
+            typer.echo(f"agreement: JSON Schema rejects valid {f.name}: {errors[0]}", err=True)
+    for f in loader.invalid():
+        if not schema.errors_for(f.cls.__name__, f.record) and f.name not in DECLARED_LEAKS:
+            failures += 1
+            typer.echo(f"agreement: JSON Schema accepts invalid {f.name} ({f.violates})", err=True)
+    typer.echo("agreement: fixtures checked against the generated JSON Schema")
     groups = (("valid", loader.valid()), ("invalid", loader.invalid()), ("probe", loader.probes()))
     for group, fixtures in groups:
         for f in fixtures:
