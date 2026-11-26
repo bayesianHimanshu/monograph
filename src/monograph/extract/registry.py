@@ -37,6 +37,11 @@ class RegistryFetcher:
         for n, set_id in enumerate(set_ids, 1):
             self._openfda.page("ndc", 0, 100, search=ndc_query(set_id))
             self._openfda.page("label", 0, 1, search=label_query(set_id))
+            path = self._spl_cache.listing_path(f"ndcs-{set_id}", 100, 1)
+            if not path.exists():
+                data = self._dailymed.get_json(f"{BASE}/spls/{set_id}/ndcs.json", {"pagesize": "100"})
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(data, sort_keys=True))
             if n % 50 == 0:
                 log(f"registry: {n}/{len(set_ids)} labels")
         page, total = 1, None
@@ -72,13 +77,17 @@ def load_reference(
     candidates = []
     ndc_records: list[dict[str, Any]] = list(raw.all("ndc"))
     label_records: list[dict[str, Any]] = list(raw.all("label"))
+    label_uniis: dict[str, set[str]] = {}
     for set_id in set_ids:
         ndc_page = raw.read("ndc", 0, 100, search=ndc_query(set_id))
         label_page = raw.read("label", 0, 1, search=label_query(set_id))
-        if ndc_page is None or label_page is None:
+        listing = spl_cache.listing_path(f"ndcs-{set_id}", 100, 1)
+        if ndc_page is None or label_page is None or not listing.exists():
             raise FileNotFoundError(f"registry cache missing for {set_id}; run `monograph h4 fetch`")
         ndc_records += ndc_page
         label_records += label_page
+        label_uniis[set_id] = {str(u) for r in ndc_page + label_page for u in (r.get("openfda") or {}).get("unii", [])}
+        candidates += list(dailymed_ndcs(set_id, json.loads(listing.read_text())))
     for record in ndc_records:
         mapped = openfda.ndc(record)
         candidates += mapped + list(nested_packages(mapped, record)) + list(label_links(record))
@@ -101,6 +110,7 @@ def load_reference(
         ]
     reference.add_substances(sources)
     reference.add_candidates(candidates)
+    reference.label_uniis = {k: frozenset(v) for k, v in label_uniis.items()}
     return reference
 
 
@@ -132,6 +142,21 @@ def label_links(record: dict[str, Any]) -> Iterator[Candidate]:
         if product_ndc:
             products = [f"{DEFAULT_BASE}product/{product_ndc}"]
             yield Candidate("Label", {"set_id": str(set_id).lower(), "products": products}, "ndc", ("label link",))
+
+
+def dailymed_ndcs(set_id: str, listing: dict[str, Any]) -> Iterator[Candidate]:
+    """DailyMed's NDC index for an SPL: each NDC becomes a PackagedProduct of the product named by its first
+    two segments, and the label is linked to those products. Package NDCs only (three segments)."""
+    products: set[str] = set()
+    for item in (listing.get("data") or {}).get("ndcs", []):
+        ndc = str(item.get("ndc", ""))
+        if _NDC_IN_TEXT.fullmatch(ndc) is None:
+            continue
+        product = f"{DEFAULT_BASE}product/{ndc.rsplit('-', 1)[0]}"
+        products.add(product)
+        yield Candidate("PackagedProduct", {"ndc": ndc, "product": product}, "dailymed-ndcs", ("dailymed ndc index",))
+    if products:
+        yield Candidate("Label", {"set_id": set_id, "products": sorted(products)}, "dailymed-ndcs", ("ndc index",))
 
 
 def spl_documents(spl_dir: Path, set_ids: Sequence[str]) -> list[SplDocument]:

@@ -169,3 +169,22 @@ def test_graph_context_validation(reference: ReferenceGraph) -> None:
     assert "resolvedSubstance" in "".join(_context_verdict(reference, _extraction("asprin", "0280-2000-10")))
     package = _context_verdict(reference, _extraction("aspirin", "0280-2000-99"))
     assert package  # the registry lists this label's products, and 0280-2000-99 is not among them
+
+
+def test_label_context_breaks_ties_between_same_named_substances(reference: ReferenceGraph) -> None:
+    resolver = SubstanceResolver(reference, V)
+    assert resolver.resolve("samename").status is ResolutionStatus.AMBIGUOUS
+    reference.label_uniis["ctx-label"] = frozenset({"BBBBBBBBBB"})
+    bound = SubstanceResolver(reference, V).for_label("ctx-label")
+    assert bound.resolve("samename").iri == "https://example.org/monograph/substance/BBBBBBBBBB"
+    assert bound.resolve("unknown name").status is ResolutionStatus.UNKNOWN  # context never invents a match
+
+
+def test_dailymed_ndc_index_links_label_products() -> None:
+    from monograph.extract.registry import dailymed_ndcs
+
+    listing = {"data": {"ndcs": [{"ndc": "68462-465-72"}, {"ndc": "68462-466-99"}, {"ndc": "bad"}]}}
+    candidates = list(dailymed_ndcs("sid", listing))
+    assert [c.cls for c in candidates] == ["PackagedProduct", "PackagedProduct", "Label"]
+    assert candidates[0].record["product"].endswith("/product/68462-465")
+    assert len(candidates[-1].record["products"]) == 2

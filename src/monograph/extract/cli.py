@@ -264,3 +264,19 @@ def _estimate(root: Path, models: list[str], arms: list[str]) -> Any:
                 raise typer.Exit(code=_fail(f"no dev runs for {m} {a}; run dev first so the cost can be estimated"))
             total += sum(seen, Decimal(0)) / len(seen) * n_test
     return total
+
+
+@h4_app.command("score")
+def score(
+    split: Annotated[str, typer.Option(help="dev or test.")],
+    root: Root = Path(),
+) -> None:
+    """Score the latest records of a split against SPL gold and append the scores to results/h4."""
+    from monograph.extract.scoring_run import ScoreRun
+    from monograph.extract.setup import build_context
+    from monograph.harness.results import read_results
+
+    ctx = build_context(root)
+    frame = json.loads((root / FRAME_FILE).read_text())
+    writer = wiring.results_writer(root, "H4")
+    ScoreRun(ctx, writer, typer.echo).run(list(read_results(root / "results" / "h4")), split, frame["h6_gap_lookup"])

@@ -19,6 +19,7 @@ Resolution reads the graph:
 
 from __future__ import annotations
 
+import copy
 import difflib
 import re
 import unicodedata
@@ -86,6 +87,9 @@ class ReferenceGraph:
         self._instantiator = Instantiator(spec)
         self.graph = Graph()
         self.skipped: list[tuple[str, str]] = []  # (candidate class, reason) for records that could not map
+        # UNIIs the registry attaches to each label's products (openFDA `openfda.unii` on the label's own NDC
+        # and label records). Used only to break ties between substances that share a name.
+        self.label_uniis: dict[str, frozenset[str]] = {}
 
     def add_substances(self, sources: Iterable[SubstanceSource]) -> None:
         names: dict[str, list[str]] = defaultdict(list)
@@ -151,6 +155,8 @@ class ReferenceGraph:
 class SubstanceResolver:
     def __init__(self, reference: ReferenceGraph, vocab: Vocabulary, max_candidates: int = 5) -> None:
         self._max = max_candidates
+        self.label_uniis = reference.label_uniis
+        self._default_context: frozenset[str] = frozenset()
         index: dict[str, set[str]] = defaultdict(set)
         g = reference.graph
         for node in g.subjects(RDF.type, vocab.cls(Substance)):
@@ -160,9 +166,23 @@ class SubstanceResolver:
         self._index = {k: frozenset(v) for k, v in index.items()}
         self._names = sorted(self._index)
 
-    def resolve(self, name: str) -> Resolution:
+    def for_label(self, set_id: str) -> SubstanceResolver:
+        """The same resolver, breaking name ties with this label's registry UNIIs by default."""
+        bound = copy.copy(self)
+        bound._default_context = self.label_uniis.get(set_id, frozenset())
+        return bound
+
+    def resolve(self, name: str, context_uniis: frozenset[str] = frozenset()) -> Resolution:
+        """Exact normalized-name match. When several substances share the name, the one UNII among them
+        that the registry attaches to this label's products wins; otherwise the name stays ambiguous.
+        Context never resolves a name that matches nothing."""
         key = normalize_name(name)
         hits = self._index.get(key, frozenset())
+        context_uniis = context_uniis or self._default_context
+        if len(hits) > 1 and context_uniis:
+            in_context = frozenset(h for h in hits if h.rsplit("/", 1)[-1] in context_uniis)
+            if len(in_context) == 1:
+                hits = in_context
         if len(hits) == 1:
             return Resolution(ResolutionStatus.RESOLVED, next(iter(hits)), ())
         candidates = tuple(difflib.get_close_matches(key, self._names, n=self._max, cutoff=0.6))
@@ -198,6 +218,7 @@ def resolve_extraction(
 
     registry_lists_label: whether the reference graph links this label to any product; only then must
     its package NDCs resolve (rule listed-package-resolves)."""
+    substances = substances.for_label(extraction.set_id)
     found_substances: list[tuple[str, Resolution]] = []
     found_packages: list[tuple[str, str | None]] = []
     products = []
