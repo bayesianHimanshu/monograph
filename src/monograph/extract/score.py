@@ -22,8 +22,8 @@ Definitions (pre-registered in docs/h4/PREREG.md; this module is the executable 
   extracted NDC that matches no PackagedProduct when the registry lists the label's products.
 * Hallucinated value: an extracted substance name, strength value, basis value or NDC that appears
   neither in the input text nor in gold. Enum fields (dosage form, route, units) are classifications,
-  not copied text, and are not checked. Basis 1 with unit "1" is the implicit per-unit basis and is not
-  checked.
+  not copied text, and are not checked. Basis 1 is the implicit basis (per unit, or per 1 mL in "mg/mL")
+  and is not checked; basis 100 is not checked when the text prints that strength as a percentage.
 * Exact match: tuples equal, every gold product aligned with the right dosage form and routes, the same
   number of products, and the extracted NDC set equal to the gold NDCs that the narrative prints.
 * Refusal rate: the share of records whose final response stopped with `refusal` (no fallback model).
@@ -231,6 +231,18 @@ def align(
 _NUMBER = re.compile(r"(?<![\d.])\d+(?:[.,]\d+)?")
 
 
+def _printed_as_percent(strength: Any, text: str) -> bool:
+    """Whether the text prints this strength value as a percentage ("5%", "5.0 %", "5 percent")."""
+    value = _dec(strength)
+    if value is None:
+        return False
+    for match in re.finditer(r"(\d+(?:\.\d+)?)\s*(?:%|percent\b)", text):
+        printed = _dec(match.group(1))
+        if printed is not None and printed.normalize() == value.normalize():
+            return True
+    return False
+
+
 def _numbers(text: str) -> set[Decimal]:
     out = set()
     for token in _NUMBER.findall(text):
@@ -424,8 +436,10 @@ class _LabelScoring(LabelScorer):
                     value = _dec(i.get(key))
                     if value is None:
                         continue
-                    if key == "basis_value" and value == 1 and i.get("basis_unit") == "1":
-                        continue
+                    if key == "basis_value" and value == 1:
+                        continue  # the implicit basis: per unit, or "mg/mL" read as per 1 mL
+                    if key == "basis_value" and value == 100 and _printed_as_percent(i.get("strength_value"), text):
+                        continue  # "5%" written as 5 g per 100 g or per 100 mL, as the prompt asks
                     self._value(
                         s, value.normalize() in text_numbers or value.normalize() in gold_numbers, f"{key} {value}"
                     )

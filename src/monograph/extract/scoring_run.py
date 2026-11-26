@@ -29,10 +29,23 @@ Key = tuple[str, str, str]  # model, arm, set_id
 
 
 def latest(
-    results: Iterable[dict[str, Any]], split: str
+    results: Iterable[dict[str, Any]], split: str, system_hash: str | None = None
 ) -> tuple[dict[Key, dict[str, Any]], dict[Key, list[dict[str, Any]]]]:
-    """The latest record per (model, arm, label) for the split, and the rounds of that same run."""
-    rows = sorted((r for r in results if r["details"].get("split") == split), key=lambda r: r["timestamp"])
+    """The latest record per (model, arm, label) for the split, and the rounds of that same run. With
+    `system_hash`, only records made with that system prompt count."""
+    rows = sorted(
+        (
+            r
+            for r in results
+            if r["details"].get("split") == split
+            and (
+                system_hash is None
+                or r["metric"] != "h4.record"
+                or r["details"].get("system_prompt_sha256") == system_hash
+            )
+        ),
+        key=lambda r: r["timestamp"],
+    )
     records: dict[Key, dict[str, Any]] = {}
     for r in rows:
         if r["metric"] == "h4.record":
@@ -64,7 +77,7 @@ class ScoreRun:
         label_known = {sid: bool(ctx.reference.label_products(sid)) for sid in rows}
         ndc_known = set(ctx.checker._ndcs._index)  # the registry's NDCs
         scorer = LabelScorer(ctx.substances, label_known, ndc_known)
-        records, rounds = latest(results, split)
+        records, rounds = latest(results, split, ctx.prompts.system_hash)
         by_config: dict[tuple[str, str], list[Any]] = defaultdict(list)
         attribution: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
         gap: dict[tuple[str, str], dict[str, bool]] = defaultdict(dict)

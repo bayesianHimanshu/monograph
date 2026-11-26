@@ -264,3 +264,23 @@ def test_repeated_kit_parts_state_one_fact(cipro_resolver: SubstanceResolver) ->
     doc = _one_strength_doc("Tablets of 500 mg.")
     kit = replace(doc, products=(doc.products[0], doc.products[0]))
     assert _score(kit, {"products": [_tablet(500)]}, cipro_resolver).f1 == 1.0
+
+
+def test_percent_basis_is_not_a_hallucination() -> None:
+    from monograph.extract.score import _printed_as_percent
+
+    assert _printed_as_percent("5", "Minoxidil 5% topical solution")
+    assert _printed_as_percent(Decimal("7.5"), "Octinoxate 7.5 %")
+    assert not _printed_as_percent("5", "Minoxidil 50 mg per mL")
+    assert not _printed_as_percent("5", "contains 15% alcohol")
+
+
+def test_scoring_ignores_records_of_another_prompt() -> None:
+    from monograph.extract.scoring_run import latest
+
+    def rec(ts: str, prompt: str) -> dict[str, Any]:
+        details = {"split": "dev", "model": "m", "arm": "A0", "set_id": "s", "system_prompt_sha256": prompt}
+        return {"metric": "h4.record", "timestamp": ts, "run_id": ts, "value": "ok", "details": details}
+
+    records, _ = latest([rec("1", "old"), rec("2", "new"), rec("3", "old")], "dev", "new")
+    assert records[("m", "A0", "s")]["timestamp"] == "2"

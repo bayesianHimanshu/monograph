@@ -253,8 +253,13 @@ def _estimate(root: Path, models: list[str], arms: list[str]) -> Any:
     from collections import defaultdict
     from decimal import Decimal
 
+    from monograph.extract.setup import build_context
+
+    current = build_context(root).prompts.system_hash
     costs: dict[tuple[str, str], list[Decimal]] = defaultdict(list)
     for r in _existing_records(root, "dev"):
+        if r["details"].get("system_prompt_sha256") != current:
+            continue  # dev runs of an earlier prompt
         costs[(r["details"]["model"], r["details"]["arm"])].append(Decimal(r["details"]["cost_usd"]))
     n_test = len(json.loads((root / SPLIT_FILE).read_text())["test"])
     total = Decimal(0)
