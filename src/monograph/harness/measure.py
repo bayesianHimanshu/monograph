@@ -16,10 +16,11 @@ from pydantic import BaseModel
 from rdflib import Graph
 
 from monograph.core.instances import Instantiator
-from monograph.core.regex import RegexSubsetError
+from monograph.core.regex import RegexSubsetError, analyze_pattern
 from monograph.core.spec import SchemaSpec
 from monograph.gen.artifacts import ArtifactBuilder
 from monograph.gen.ddl import DdlResult
+from monograph.harness.coverage import CoverageMatrix, CoverageRow
 from monograph.harness.property_run import PropertyAgreementRun
 from monograph.harness.results import ResultsWriter
 from monograph.ingest.conformance import ConformanceReport
@@ -124,6 +125,7 @@ def record_mutations(writer: ResultsWriter, results: Sequence[MutationResult]) -
 
 def record_postgres(writer: ResultsWriter, ddl: DdlResult, matrix: PgMatrix | None, skipped: str | None) -> None:
     unenforced = [{"class": u.cls, "field": u.field, "kind": u.kind, "reason": u.reason} for u in ddl.unenforced]
+    profile = "test" if "test profile" in ddl.sql.splitlines()[0] else "default"
     if matrix is None:
         writer.write("postgres.matrix", None, {"skipped": skipped, "unenforced_by_ddl": unenforced})
         return
@@ -149,6 +151,7 @@ def record_postgres(writer: ResultsWriter, ddl: DdlResult, matrix: PgMatrix | No
                 {"probe": name, "rejected": not v.accepted, "by": v.constraint or v.error} for name, v in matrix.probes
             ],
             "unenforced_by_ddl": unenforced,
+            "ddl_profile": profile,
         },
     )
 
@@ -271,7 +274,7 @@ class Measurement:
             },
         )
 
-    def leaks(self, lint: LintReport, ddl: DdlResult, check_pattern: Callable[[str], None]) -> None:
+    def leaks(self, lint: LintReport, ddl: DdlResult) -> None:
         self._writer.write(
             "leaks.pydantic_only",
             len(lint.declared),
@@ -291,18 +294,61 @@ class Measurement:
                 ]
             },
         )
-        catalog = []
+        catalog: list[dict[str, Any]] = []
         for purpose, pattern in IDIOMATIC_PATTERNS:
             try:
-                check_pattern(pattern)
-                catalog.append({"purpose": purpose, "pattern": pattern, "accepted": True, "reason": None})
+                analysis = analyze_pattern(pattern)
+                catalog.append(
+                    {
+                        "purpose": purpose,
+                        "pattern": pattern,
+                        "accepted": True,
+                        "canonical": analysis.canonical,
+                        "needed_canonicalization": analysis.canonical != pattern,
+                        "reason": None,
+                    }
+                )
             except RegexSubsetError as exc:
-                catalog.append({"purpose": purpose, "pattern": pattern, "accepted": False, "reason": exc.reason})
+                catalog.append(
+                    {
+                        "purpose": purpose,
+                        "pattern": pattern,
+                        "accepted": False,
+                        "canonical": None,
+                        "needed_canonicalization": False,
+                        "reason": exc.reason,
+                    }
+                )
+        accepted = sum(bool(c["accepted"]) for c in catalog)
         self._writer.write(
             "leaks.regex_subset",
-            sum(not c["accepted"] for c in catalog),
-            {"idiomatic_patterns": catalog, "model_patterns_in_subset": True},
+            len(catalog) - accepted,
+            {
+                "idiomatic_patterns": catalog,
+                "accepted": accepted,
+                "accepted_without_canonicalization": sum(
+                    bool(c["accepted"]) and not c["needed_canonicalization"] for c in catalog
+                ),
+                "total": len(catalog),
+            },
         )
+
+    def coverage(self, matrix: CoverageMatrix) -> None:
+        rows = matrix.rows()
+        totals = CoverageMatrix.totals(rows)
+        self._writer.write(
+            "coverage.matrix",
+            totals,
+            {"rows": [_row_dict(r) for r in rows], "constraints": len(rows)},
+        )
+
+    def changelog(self, changes: dict[str, tuple[tuple[str, str, str], ...]]) -> None:
+        for version, entries in changes.items():
+            self._writer.write(
+                "model.changes",
+                version,
+                {"version": version, "changes": [{"id": i, "finding": f, "correction": c} for i, f, c in entries]},
+            )
 
     def validator_findings(self, probes: Sequence[ProbeResult]) -> None:
         self._writer.write(
@@ -360,3 +406,7 @@ class Measurement:
             round(statistics.median(analyze_runs) + sum(medians.values()), 4),
             {"analyze": round(statistics.median(analyze_runs), 4), "per_artifact": medians, "repeats": repeats},
         )
+
+
+def _row_dict(row: CoverageRow) -> dict[str, str]:
+    return {name: getattr(row, name) for name in CoverageRow.__slots__}

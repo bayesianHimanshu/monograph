@@ -113,7 +113,7 @@ def test_committed_release_matches_current_schema() -> None:
         wiring.build_spec().version, FILES[OWL_FILE], FILES[SHACL_FILE]
     )
     assert report.ok
-    assert report.release == "0.1.0"
+    assert report.release == wiring.build_spec().version  # the current version has been released
 
 
 def test_added_negated_constraint_is_breaking() -> None:

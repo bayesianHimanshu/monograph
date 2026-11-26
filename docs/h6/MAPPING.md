@@ -32,7 +32,9 @@ property name may be used by several classes only with the same kind and range (
 
 | Python type | OWL | SHACL property shape | Postgres |
 |---|---|---|---|
-| `str` | `owl:DatatypeProperty`, range `xsd:string` | `sh:datatype xsd:string` | `text` |
+| `SafeIdentifier` (a `str` with no control characters) | `owl:DatatypeProperty`, range `xsd:string` | `sh:datatype xsd:string ; sh:not [ sh:pattern "[U+0000-U+001F U+007F-U+009F]" ]` | `text` plus `CHECK (x !~ '[\x01-\x1f\x7f-\x9f]')`; NUL is rejected by the text type |
+| `SafeText` (a `str` with no control characters except tab, LF, CR) | same | same, with tab, LF and CR left out of the class | same, with `\x09`, `\x0a`, `\x0d` left out |
+| plain `str` | rejected: every string must say which charset it allows | | |
 | `int` | range `xsd:integer` | `sh:datatype xsd:integer` | `bigint` |
 | `Decimal` | range `xsd:decimal` | `sh:datatype xsd:decimal` | `numeric` plus `CHECK (x NOT IN ('NaN','Infinity','-Infinity'))`, because xsd:decimal has no such values |
 | `bool` | range `xsd:boolean` | `sh:datatype xsd:boolean` | `boolean` |
@@ -40,7 +42,7 @@ property name may be used by several classes only with the same kind and range (
 | `AwareDatetime` | range `xsd:dateTime` | `sh:datatype xsd:dateTime` plus `sh:pattern "(Z\|[+\-][0-9]{2}:[0-9]{2})$"`, since xsd:dateTime alone allows naive values | `timestamptz` (cannot reject naive input) |
 | `float`, naive `datetime`, `dict`, `Any`, other unions | rejected | | |
 | `StrEnum` with `__ont__ = OntEnum(...)` | `owl:ObjectProperty`, range the enum class | `sh:in ( mono:Enum-MEMBER ... )` | `text CHECK (x IN (...))`, or `text[]` with `CHECK (x <@ ARRAY[...])` for sets |
-| `Ref[T]` | `owl:ObjectProperty`, range `mono:T` | `sh:nodeKind sh:IRI ; sh:class mono:T ; sh:pattern <IRI pattern>` | `<field>_iri text REFERENCES t (iri) DEFERRABLE` plus the IRI pattern as CHECK |
+| `Ref[T]` | `owl:ObjectProperty`, range `mono:T` | `sh:nodeKind sh:IRI ; sh:class mono:T ; sh:pattern <IRI pattern> ; sh:not [ identifier charset ]` | `<field>_iri text REFERENCES t (iri) DEFERRABLE` plus the IRI pattern as CHECK |
 | embedded value model | `owl:ObjectProperty`, range `mono:T` | `sh:nodeKind sh:IRI ; sh:class mono:T ; sh:node shape:T` | child table `<owner>__<field>` |
 
 Enum members become `mono:Enum-NAME a owl:NamedIndividual, mono:Enum ; rdfs:label "value"`.
@@ -63,16 +65,20 @@ and `frozenset` when `OntClass.key` is set. Collections of plain scalars are not
 
 | Pydantic | SHACL | Postgres |
 |---|---|---|
-| `pattern` (must be in the safe subset) | `sh:pattern` | `CHECK (x ~ 'pattern')` |
+| `pattern`, written `Field(pattern=safe(...))` | `sh:pattern`, plus `sh:maxLength` when the pattern is fully anchored and bounded (the longest match), which a correct engine finds redundant and which closes pySHACL's final-newline gap | `CHECK (x ~ 'pattern')` |
 | `min_length`, `max_length` on `str` | `sh:minLength`, `sh:maxLength` | `CHECK (char_length(x) >= n)` and `<=` |
 | `ge`, `le`, `gt`, `lt` on `int` or `Decimal` | `sh:minInclusive`, `sh:maxInclusive`, `sh:minExclusive`, `sh:maxExclusive` | `CHECK (x >= n)` and so on |
 | anything else (`multiple_of`, `max_digits`, `strict`, an `Annotated` validator) | rejected by the analyzer, or by the lint if it is a validator | |
 
 ### Safe regex subset
 
-See `gen/regex.py`. Patterns outside it fail generation with a position and a reason. Inside the
-subset, one divergence is known and measured: pySHACL evaluates `sh:pattern` with Python `re`, where
-`$` also matches before a final newline.
+See `core/regex.py`. `safe()` checks a pattern and returns its canonical form, in which `\d` becomes
+`[0-9]` (`0-9` inside a class). Every target, Pydantic included, reads the canonical text, because
+`\d` matches any Unicode digit in Rust, Python and XPath. The analyzer rejects a pattern that is not
+already canonical, so a raw `\d` cannot reach Pydantic. Other constructs outside the subset fail with a
+position and a reason. pySHACL evaluates `sh:pattern` with Python `re`, where `$` also matches before a
+final newline; the charset `sh:not` and the implied `sh:maxLength` close that gap without changing
+the patterns.
 
 ## Cross-field rules
 
@@ -81,6 +87,8 @@ subset, one divergence is known and measured: pySHACL evaluates `sh:pattern` wit
 | `RequiredWhen(when, equals, then)` | rule engine validator | `shape:rule-<id> sh:or ( [ sh:not [ sh:path when ; sh:hasValue v ] ] [ sh:path then ; sh:minCount 1 ] )` | `CHECK (when IS DISTINCT FROM v OR then present)` when both are columns of one table | `if` / `then` |
 | `AtLeast(field, where, equals, n)` | rule engine validator | `shape:rule-<id> sh:property [ sh:path field ; sh:qualifiedValueShape [ sh:property [ sh:path where ; sh:hasValue v ] ] ; sh:qualifiedMinCount n ]` | not enforceable (counts child rows) | `contains` / `minContains` |
 | `@pydantic_only(id, reason)` validator | the validator | none | none | none |
+| `@pydantic_only(id, reason, unique=UniqueWithin(field, keys))` | the validator | none (indirect when the keys are the item key: duplicates mint one IRI) | `UNIQUE (owner_iri, key columns)` on the child table | none |
+| `AtLeast` with several `values` | rule engine validator | the qualified shape uses `sh:in ( ... ) ; sh:minCount 1` instead of `sh:hasValue` | not enforceable | `contains` with `enum` |
 
 ## Instances (`rdf/mapping.py`)
 
@@ -103,6 +111,12 @@ validation no stubs are added, so `sh:class` checks that referents exist.
 
 Reading back (`from_graph`) requires every triple about a node to map to a field; anything else is an
 error, which is what makes the round trip a real test.
+
+## DDL profiles
+
+`generated/monograph.ddl.sql` (default profile) has plain foreign keys. `generated/monograph.test.ddl.sql`
+(test profile) makes every foreign key `DEFERRABLE INITIALLY IMMEDIATE`, which the integration probe
+needs to replace a row inside a savepoint. Both are drift-checked; they differ only in that clause.
 
 ## JSON Schema
 

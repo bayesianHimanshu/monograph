@@ -195,7 +195,9 @@ def measure(
     from monograph.core.instances import Instantiator
     from monograph.core.meta import DEFAULT_BASE
     from monograph.core.regex import check_pattern
+    from monograph.core.version import CHANGES
     from monograph.gen.ddl import DdlGenerator, DdlProfile
+    from monograph.harness.coverage import CoverageMatrix
     from monograph.harness.measure import Measurement, record_conformance, record_postgres
     from monograph.harness.property_run import PropertyAgreementRun
     from monograph.ingest.openfda import ENDPOINTS, RawCache
@@ -242,7 +244,9 @@ def measure(
     m.round_trip(real_valid)
     m.dataset_integrity(wiring.shapes_graph(root))
     ddl = DdlGenerator(spec, check_pattern, DdlProfile.TEST).generate()
-    m.leaks(ValidatorLinter(models.MODELS, models).run(), ddl, check_pattern)
+    m.leaks(ValidatorLinter(models.MODELS, models).run(), DdlGenerator(spec, check_pattern).generate())
+    m.coverage(CoverageMatrix(spec, wiring.shapes_graph(root), DdlGenerator(spec, check_pattern).generate(), vocab))
+    m.changelog(CHANGES)
     m.validator_findings(all_probes())
 
     dsn = os.environ.get("MONOGRAPH_PG_DSN", "postgresql://monograph:monograph@localhost:55432/monograph")
