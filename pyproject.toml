@@ -5,6 +5,7 @@ description = "MONOGRAPH H6: one Pydantic schema projected to OWL, SHACL, JSON S
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "anthropic>=2.14.0",
     "httpx>=0.28",
     "hypothesis>=6.100",
     "psycopg[binary]>=3.2",

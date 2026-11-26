@@ -1,0 +1,1266 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="07b867c8-568e-4556-86c9-2e86050c7b1b"/>
+   <code code="34391-3" codeSystem="2.16.840.1.113883.6.1" displayName="HUMAN PRESCRIPTION DRUG LABEL"/>
+   <title>These highlights do not include all the information needed to use TRANEXAMIC ACID INJECTION safely and effectively. See full prescribing information for TRANEXAMIC ACID INJECTION. <br/>
+      <br/>TRANEXAMIC ACID injection, for intravenous use <br/>Initial U.S. Approval: 1986
+</title>
+   <effectiveTime value="20260928"/>
+   <setId root="0277db2d-7c81-4cd0-ac19-fa12b5721428"/>
+   <versionNumber value="2"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="080579617" root="1.3.6.1.4.1.519.1"/>
+            <name>Sagent Pharmaceuticals</name>
+            <assignedEntity>
+               <assignedOrganization/>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section ID="dcl-dpl">
+               <id root="2e65408d-57e9-4801-af80-1b64f2500da4"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL PRODUCT DATA ELEMENTS SECTION"/>
+               <effectiveTime value="20230620"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="25021-415" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>Tranexamic Acid</name>
+                        <formCode code="C42945" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="INJECTION, SOLUTION"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>Tranexamic Acid</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="100" unit="mg"/>
+                              <denominator value="1" unit="mL"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="6T84R30KC1" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>Tranexamic Acid</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="6T84R30KC1" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>Tranexamic Acid</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="059QF0KO0R" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>Water</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="10" unit="mL"/>
+                              <denominator value="1" unit="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43226" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="VIAL"/>
+                              <asContent>
+                                 <quantity>
+                                    <numerator value="10" unit="1"/>
+                                    <denominator value="1" unit="1"/>
+                                 </quantity>
+                                 <containerPackagedProduct>
+                                    <code code="25021-415-10" codeSystem="2.16.840.1.113883.6.69"/>
+                                    <formCode code="C43182" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CARTON"/>
+                                 </containerPackagedProduct>
+                                 <subjectOf>
+                                    <marketingAct>
+                                       <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                                       <statusCode code="active"/>
+                                       <effectiveTime>
+                                          <low value="20230715"/>
+                                       </effectiveTime>
+                                    </marketingAct>
+                                 </subjectOf>
+                              </asContent>
+                           </containerPackagedProduct>
+                           <subjectOf>
+                              <characteristic>
+                                 <code code="SPLCMBPRDTP" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                                 <value code="C112160" codeSystem="2.16.840.1.113883.3.26.1.1" xsi:type="CV" displayName="Type 0: Not a Combination Product"/>
+                              </characteristic>
+                           </subjectOf>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20230715"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <subjectOf>
+                        <approval>
+                           <id extension="ANDA207239" root="2.16.840.1.113883.3.150"/>
+                           <code code="C73584" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ANDA"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38276" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="INTRAVENOUS"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section ID="s0">
+               <id root="19673c10-15ca-4e8b-bf48-2c7a1c72d523"/>
+               <code code="43683-2" codeSystem="2.16.840.1.113883.6.1" displayName="RECENT MAJOR CHANGES SECTION"/>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <table width="100%" styleCode="Noautorules">
+                           <col width="80.000%" align="left"/>
+                           <col width="20.000%" align="left"/>
+                           <tbody>
+                              <tr>
+                                 <td align="justify" valign="top">Boxed Warning
+
+</td>
+                                 <td align="right" valign="top">08/2025
+</td>
+                              </tr>
+                              <tr>
+                                 <td align="justify" valign="top">Dosage and Administration (<linkHtml href="#s3">2</linkHtml>)
+</td>
+                                 <td align="right" valign="top">08/2025
+</td>
+                              </tr>
+                              <tr>
+                                 <td align="justify" valign="top">Contraindications (<linkHtml href="#s7">4</linkHtml>)
+</td>
+                                 <td align="right" valign="top">08/2025
+</td>
+                              </tr>
+                              <tr>
+                                 <td align="justify" valign="top">Warnings and Precautions (<linkHtml href="#s8">5</linkHtml>)
+</td>
+                                 <td align="right" valign="top">08/2025
+</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="s1">
+               <id root="4f989442-ebb9-4c55-be16-fd4d0a097ce2"/>
+               <code code="34066-1" codeSystem="2.16.840.1.113883.6.1" displayName="BOXED WARNING SECTION"/>
+               <title>
+                  <content styleCode="xmChange"/>WARNING: RISK OF MEDICATION ERRORS DUE TO INCORRECT ROUTE OF ADMINISTRATION
+</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="xmChange"/>
+                     <content styleCode="bold">Tranexamic acid is for intravenous use only. Serious, including fatal, adverse reactions including seizures and cardiac arrythmias have occurred when tranexamic acid was inadvertently administered via the neuraxial route </content>
+                     <content styleCode="bold italics">[see Warnings and Precautions (<linkHtml href="#s9">5.1</linkHtml>)].</content>
+                  </paragraph>
+               </text>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">WARNING: RISK OF MEDICATION ERRORS DUE TO INCORRECT ROUTE OF ADMINISTRATION
+</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold italics">See full prescribing information for complete boxed warning.</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Tranexamic acid is for intravenous use only. Serious, including fatal, adverse reactions including seizures and cardiac arrythmias have occurred when tranexamic acid was inadvertently administered intrathecally via the neuraxial route. (<linkHtml href="#s9">5.1</linkHtml>)</content>
+                        </paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="s2">
+               <id root="109380b2-7805-4270-bc47-c8455dc4eab1"/>
+               <code code="34067-9" codeSystem="2.16.840.1.113883.6.1" displayName="INDICATIONS &amp; USAGE SECTION"/>
+               <title>1 INDICATIONS AND USAGE
+</title>
+               <text>
+                  <paragraph>Tranexamic acid injection is indicated in patients with hemophilia for short-term use (2 to 8 days) to reduce or prevent hemorrhage and reduce the need for replacement therapy during and following tooth extraction.
+</paragraph>
+               </text>
+               <effectiveTime value="20230620"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>Tranexamic acid is an antifibrinolytic indicated in patients with hemophilia for short-term use (2 to 8 days) to reduce or prevent hemorrhage and reduce the need for replacement therapy during and following tooth extraction. (<linkHtml href="#s2">1</linkHtml>)
+</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="s3">
+               <id root="c2a3122d-e3b5-4b25-82c9-94543d0c9283"/>
+               <code code="34068-7" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE &amp; ADMINISTRATION SECTION"/>
+               <title>2 DOSAGE AND ADMINISTRATION
+</title>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list listType="unordered" styleCode="Disc">
+                           <item>Before Extraction: Administer 10 mg/kg actual body weight of tranexamic acid injection intravenously with replacement therapy as a single-dose. (<linkHtml href="#s4">2.1</linkHtml>)
+</item>
+                           <item>After Extraction: Administer 10 mg/kg actual body weight of tranexamic acid injection intravenously 3 to 4 times daily for 2 to 8 days. (<linkHtml href="#s4">2.1</linkHtml>)
+</item>
+                           <item>Infuse undiluted solution no more than 1 mL/minute to avoid hypotension. (<linkHtml href="#e5">2.3</linkHtml>)
+</item>
+                           <item>Reduce the dosage for patients with renal impairment. (<linkHtml href="#s5">2.2</linkHtml>, <linkHtml href="#s30">8.6</linkHtml>)
+</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="s4">
+                     <id root="09e07eda-0b22-4a6b-9258-ef2e38ca41dc"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>
+                        <content styleCode="xmChange"/>2.1    Recommended Dosage
+</title>
+                     <text>
+                        <paragraph>
+                           <content styleCode="xmChange"/>The recommended dose of tranexamic acid injection is 10 mg/kg actual body weight administered as a single intravenous dose immediately before tooth extractions. Following tooth extraction, tranexamic acid injection may be administered at a dose of 10 mg/kg actual body weight intravenously 3 to 4 times daily for 2 to 8 days. 
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s5">
+                     <id root="58eed688-f4a3-46a9-bca7-90946a1e8609"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>2.2    Recommended Dosage for Patients With Varying Degrees of Renal Impairment<sup>*</sup>
+                     </title>
+                     <text>
+                        <paragraph>For patients with moderate to severe impaired renal function, the following dosages are recommended:
+</paragraph>
+                        <table ID="t1" width="100%">
+                           <caption>Table 1: Recommended Dosage in Patients With Varying Degrees of Renal Impairment
+</caption>
+                           <col width="40.600%" align="left"/>
+                           <col width="59.400%" align="left"/>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="2" align="left" valign="top">
+                                    <paragraph styleCode="footnote">* Dose reduction is recommended for all doses, both before and after tooth extraction.
+</paragraph>
+                                 </td>
+                              </tr>
+                           </tfoot>
+                           <tbody>
+                              <tr>
+                                 <td align="left" valign="top" styleCode="Toprule Botrule Lrule Rrule">
+                                    <content styleCode="xmChange"/>
+                                    <content styleCode="bold">Serum Creatinine (mg/dL)</content>
+                                 </td>
+                                 <td align="left" valign="top" styleCode="Toprule Botrule Rrule">
+                                    <content styleCode="bold">Tranexamic Acid Injection Dosage</content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="left" valign="top" styleCode="Botrule Lrule Rrule">
+                                    <content styleCode="xmChange"/>1.36 mg/dL to 2.83 mg/dL
+</td>
+                                 <td align="left" valign="top" styleCode="Botrule Rrule">10 mg/kg intravenously twice daily
+</td>
+                              </tr>
+                              <tr>
+                                 <td align="left" valign="top" styleCode="Botrule Lrule Rrule">
+                                    <content styleCode="xmChange"/>2.83 mg/dL to 5.66 mg/dL 
+</td>
+                                 <td align="left" valign="top" styleCode="Botrule Rrule">10 mg/kg intravenously daily
+</td>
+                              </tr>
+                              <tr>
+                                 <td align="left" valign="middle" styleCode="Botrule Lrule Rrule">
+                                    <content styleCode="xmChange"/>&gt;5.66 mg/dL
+</td>
+                                 <td align="left" valign="top" styleCode="Botrule Rrule">10 mg/kg intravenously every 48 hours<br/>or<br/>5 mg/kg intravenously every 24 hours
+</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="e5">
+                     <id root="40af3881-90ee-40ac-b564-d203500bb4b9"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>
+                        <content styleCode="xmChange"/>2.3 Preparation and Administration
+</title>
+                     <text>
+                        <paragraph>
+                           <content styleCode="xmChange"/>Tranexamic acid injection is for intravenous administration only.
+</paragraph>
+                        <paragraph>
+                           <content styleCode="xmChange"/>Tranexamic acid injection can be administered undiluted or as a diluted solution.
+</paragraph>
+                        <list listType="unordered" styleCode="Disc">
+                           <item>
+                              <content styleCode="xmChange"/>Use aseptic technique to prepare tranexamic acid injection.
+</item>
+                           <item>
+                              <content styleCode="xmChange"/>Parenteral drug products should be inspected visually for particulate matter and discoloration prior to administration, whenever solution and container permit. Tranexamic acid injection is a clear and colorless solution. Discard the vial if particulate matter is observed.
+</item>
+                           <item>
+                              <content styleCode="xmChange"/>Calculate the dose (mg) based on the patient's actual body weight and the total volume (mL) of tranexamic acid injection solution required.
+</item>
+                        </list>
+                        <paragraph>
+                           <content styleCode="bold">
+                              <content styleCode="xmChange"/>If diluting tranexamic acid injection,</content> follow the instructions below:
+</paragraph>
+                        <list listType="unordered" styleCode="Disc">
+                           <item>
+                              <content styleCode="xmChange"/>From the diluent infusion bag, withdraw a volume equal to the volume of the tranexamic acid injection solution required for the patient's dose.
+</item>
+                           <item>
+                              <content styleCode="xmChange"/>Withdraw the required volume of tranexamic acid injection solution from the vial and dilute with a compatible diluent (see below) to make a final concentration of 10 mg/mL or 20 mg/mL. Discard any unused portion left in the vial.<list listType="unordered" styleCode="Circle">
+                                 <item>
+                                    <content styleCode="xmChange"/>For intravenous infusion, tranexamic acid injection may be mixed with most solutions for infusion such as electrolyte solutions, carbohydrate solutions, amino acid solutions, and Dextran solutions.
+</item>
+                                 <item>
+                                    <content styleCode="xmChange"/>Heparin may be added to tranexamic acid injection.
+</item>
+                                 <item>
+                                    <content styleCode="xmChange"/>Tranexamic acid injection should NOT be mixed with blood.
+</item>
+                                 <item>
+                                    <content styleCode="xmChange"/>The drug is a synthetic amino acid and should NOT be mixed with solutions containing penicillin.
+</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="xmChange"/>Gently invert the infusion bag to mix the diluted solution. DO NOT SHAKE.
+</item>
+                           <item>
+                              <content styleCode="xmChange"/>If not used immediately, store the diluted tranexamic acid injection infusion solution at room temperature 20ºC to 25°C (68ºF to 77°F) for up to 4 hours.
+</item>
+                        </list>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                     <component>
+                        <section ID="e6">
+                           <id root="3862a18f-5410-4888-92d3-6c529011e966"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="xmChange"/>
+                                 <content styleCode="underline">Administration</content>
+                              </paragraph>
+                              <paragraph>
+                                 <content styleCode="xmChange"/>Infuse undiluted solution no more than 1 mL/minute to avoid hypotension <content styleCode="italics">[see Adverse Reactions (<linkHtml href="#s16">6.2</linkHtml>)].</content>
+                              </paragraph>
+                              <paragraph>
+                                 <content styleCode="xmChange"/>Administer the undiluted and diluted solutions intravenously according to <linkHtml href="#t2">Table 2</linkHtml>.
+</paragraph>
+                              <table ID="t2" width="100%">
+                                 <caption>Table 2: Administration Rates for Undiluted and Diluted Solutions
+</caption>
+                                 <col width="26.075%" align="left"/>
+                                 <col width="26.075%" align="left"/>
+                                 <col width="23.925%" align="left"/>
+                                 <col width="23.925%" align="left"/>
+                                 <tbody>
+                                    <tr>
+                                       <td align="left" valign="middle" styleCode="Toprule Botrule Lrule Rrule"/>
+                                       <td align="left" valign="middle" styleCode="Toprule Botrule Rrule">
+                                          <content styleCode="xmChange"/>
+                                          <content styleCode="bold">Undiluted solution</content>
+                                       </td>
+                                       <td colspan="2" align="center" valign="middle" styleCode="Toprule Botrule Rrule">
+                                          <content styleCode="bold">Diluted solution</content>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td align="left" valign="middle" styleCode="Botrule Lrule Rrule">
+                                          <content styleCode="xmChange"/>Final concentration
+</td>
+                                       <td align="left" valign="middle" styleCode="Botrule Rrule">100 mg/mL
+</td>
+                                       <td align="center" valign="middle" styleCode="Botrule Rrule">10 mg/mL
+</td>
+                                       <td align="center" valign="middle" styleCode="Botrule Rrule">20 mg/mL
+</td>
+                                    </tr>
+                                    <tr>
+                                       <td align="left" valign="middle" styleCode="Botrule Lrule Rrule">
+                                          <content styleCode="xmChange"/>Administration rate
+</td>
+                                       <td align="left" valign="middle" styleCode="Botrule Rrule">0.5 mL/minute (no more than<br/>1 mL/minute)
+</td>
+                                       <td align="center" valign="middle" styleCode="Botrule Rrule">5 mL/minute
+</td>
+                                       <td align="center" valign="middle" styleCode="Botrule Rrule">2.5 mL/minute
+</td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </text>
+                           <effectiveTime value="20250929"/>
+                        </section>
+                     </component>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s6">
+               <id root="46d23489-ee5d-4578-bb01-7ef181248900"/>
+               <code code="43678-2" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE FORMS &amp; STRENGTHS SECTION"/>
+               <title>3 DOSAGE FORMS AND STRENGTHS
+</title>
+               <text>
+                  <paragraph>Injection: 1,000 mg per 10 mL (100 mg per mL) clear and colorless solution in single-dose vials.
+</paragraph>
+               </text>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list listType="unordered" styleCode="Disc">
+                           <item>Injection: 1,000 mg per 10 mL (100 mg per mL) in single-dose vials. (<linkHtml href="#s6">3</linkHtml>)
+</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="s7">
+               <id root="ca5280bb-585f-4aa2-972f-debd9a94af35"/>
+               <code code="34070-3" codeSystem="2.16.840.1.113883.6.1" displayName="CONTRAINDICATIONS SECTION"/>
+               <title>4 CONTRAINDICATIONS
+</title>
+               <text>
+                  <paragraph>Tranexamic acid injection is contraindicated:
+</paragraph>
+                  <list listType="unordered" styleCode="Disc">
+                     <item>As a neuraxial (i.e., intrathecal, epidural) injection <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s9">5.1</linkHtml>)].</content>
+                     </item>
+                     <item>In patients with subarachnoid hemorrhage. Anecdotal experience indicates that cerebral edema and cerebral infarction may be caused by tranexamic acid injection in such patients.
+</item>
+                     <item>In patients with active intravascular clotting <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s10">5.2</linkHtml>)]</content>.
+</item>
+                     <item>In patients with hypersensitivity to tranexamic acid or any of the ingredients <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s12">5.4</linkHtml>)]</content>.
+</item>
+                  </list>
+               </text>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list listType="unordered" styleCode="Disc">
+                           <item>As a neuraxial (i.e., intrathecal, epidural) injection. (<linkHtml href="#s7">4</linkHtml>)
+</item>
+                           <item>In patients with subarachnoid hemorrhage, due to risk of cerebral edema and cerebral infarction. (<linkHtml href="#s7">4</linkHtml>)
+</item>
+                           <item>In patients with active intravascular clotting. (<linkHtml href="#s7">4</linkHtml>)
+</item>
+                           <item>In patients with severe hypersensitivity reactions to tranexamic acid or any of the ingredients. (<linkHtml href="#s7">4</linkHtml>)
+</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="s8">
+               <id root="caece1d1-c213-40a1-9a1b-ab3423dfbf2d"/>
+               <code code="43685-7" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS AND PRECAUTIONS SECTION"/>
+               <title>5 WARNINGS AND PRECAUTIONS
+</title>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list listType="unordered" styleCode="Disc">
+                           <item>Risk of Thrombosis with Concomitant Use of Factor IX: Avoid concomitant use. (<linkHtml href="#s10">5.2</linkHtml>)
+</item>
+                           <item>Seizures: Inadvertent injection into neuraxial system may result in seizures. (<linkHtml href="#s11">5.3</linkHtml>)
+</item>
+                           <item>Hypersensitivity Reactions: In case of severe reaction, discontinue use and seek immediate medical attention. (<linkHtml href="#s12">5.4</linkHtml>)
+</item>
+                           <item>Visual Disturbances: Visual or ocular adverse effects may occur. Discontinue use if visual or ocular symptoms occur. (<linkHtml href="#s13">5.5</linkHtml>)
+</item>
+                           <item>Dizziness: Advise patients not to drive if dizziness occurs. (<linkHtml href="#s14">5.6</linkHtml>)
+</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="s9">
+                     <id root="55663d12-0d46-4fe7-809d-4601cc45bf21"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.1    Risk of Medication Errors Due to Incorrect Route of Administration
+</title>
+                     <text>
+                        <paragraph>Tranexamic acid injection is for intravenous use only. Serious, including fatal, adverse reactions including seizures and cardiac arrythmias have occurred when tranexamic acid injection was inadvertently administered via the neuraxial route.
+</paragraph>
+                        <paragraph>Confirm the correct route of administration for tranexamic acid injection and avoid confusion with other injectable solutions that might be administered at the same time as tranexamic acid injection. Clearly label syringes containing tranexamic acid injection with the intravenous route of administration.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s10">
+                     <id root="16df0084-c7a7-4a2b-9b0d-b2cce5bb0630"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.2    Thromboembolic Risk
+</title>
+                     <text>
+                        <paragraph>Tranexamic acid is contraindicated in patients with active intravascular clotting.
+</paragraph>
+                        <paragraph>Tranexamic acid is an antifibrinolytic and may increase the risk of thromboembolic events. Venous and arterial thrombosis or thromboembolism has been reported in patients treated with tranexamic acid. Avoid concomitant use of tranexamic acid and medical products that are pro-thrombotic, as the risk of thrombosis may be increased. These medications include but are not limited to, Factor IX Complex concentrates, Anti-inhibitor Coagulant concentrates, and hormonal contraceptives <content styleCode="italics">[see Drug Interactions (<linkHtml href="#s18">7.1</linkHtml>), Use in Specific Populations (<linkHtml href="#s27">8.3</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s11">
+                     <id root="25bfc0de-1e14-4ef5-843d-f9a0f9d4afec"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.3    Seizures
+</title>
+                     <text>
+                        <paragraph>
+                           <content styleCode="xmChange"/>Tranexamic acid may cause seizures, including focal and generalized seizures. The most common setting for tranexamic acid-induced seizures has been during cardiovascular surgery (a setting in which tranexamic acid is not FDA-approved and which uses doses of up to 10-fold higher than the recommended human dose and in patients inadvertently given tranexamic acid via the neuraxial route). Tranexamic acid is contraindicated for neuraxial administration (i.e., epidural, intrathecal). Consider dose reduction during surgery and dose adjustments for patients with clinical conditions such as renal dysfunction. Closely monitor the patient during surgery. Consider electroencephalogram (EEG) monitoring for patients with history of seizures or who experience myoclonic movements, twitching, or show evidence of focal seizures. Discontinue tranexamic acid if seizures occur.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s12">
+                     <id root="4d052494-3f37-40e1-9713-87f8a096be4e"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.4    Hypersensitivity Reactions
+</title>
+                     <text>
+                        <paragraph>Cases of hypersensitivity reactions, including anaphylactic reactions, have occurred with use of intravenous tranexamic acid. Discontinue treatment with tranexamic acid if serious reaction occurs, provide appropriate medical management, and do not restart treatment. Tranexamic acid is contraindicated in patients with a history of hypersensitivity to tranexamic acid.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s13">
+                     <id root="8c7f9529-4ee8-4bf6-9183-2d42a5ca0cc0"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.5    Visual Disturbances
+</title>
+                     <text>
+                        <paragraph>Although not seen in humans, focal areas of retinal degeneration have been observed in cats and dogs following oral or intravenous tranexamic acid at doses between 250 to 1600 mg/kg/day (1.6 to 22 times the recommended usual human dose based on body surface area) from 6 days to 1 year. No retinal changes have been observed in eye examinations of patients treated with tranexamic acid for up to 8 years. Patients expected to be treated for greater than 3 months may consider ophthalmic monitoring including visual acuity and optical coherence tomography at regular intervals.
+</paragraph>
+                        <paragraph>Discontinue tranexamic acid if changes in ophthalmological examination occurs.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s14">
+                     <id root="c292f513-0281-4b10-9449-f4b204488c3d"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.6    Dizziness
+</title>
+                     <text>
+                        <paragraph>Tranexamic acid may cause dizziness. Concomitant use of other drugs that may also cause dizziness may worsen this effect. Advise patients to avoid driving or using machines until they know how tranexamic acid affects them.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s15">
+               <id root="89a1ce68-e3fc-4423-8827-7bfd05b61831"/>
+               <code code="34084-4" codeSystem="2.16.840.1.113883.6.1" displayName="ADVERSE REACTIONS SECTION"/>
+               <title>6 ADVERSE REACTIONS
+</title>
+               <text>
+                  <paragraph>The following clinically significant adverse reactions are described elsewhere in the labeling:
+</paragraph>
+                  <list listType="unordered" styleCode="Disc">
+                     <item>Risk of Medication Errors Due to Incorrect Route of Administration <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s9">5.1</linkHtml>)]</content>
+                     </item>
+                     <item>Thromboembolic Risk <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s10">5.2</linkHtml>)]</content>
+                     </item>
+                     <item>Seizures <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s11">5.3</linkHtml>)]</content>
+                     </item>
+                     <item>Hypersensitivity Reactions <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s12">5.4</linkHtml>)]</content>
+                     </item>
+                     <item>Visual Disturbances <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s13">5.5</linkHtml>)]</content>
+                     </item>
+                     <item>Dizziness <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s14">5.6</linkHtml>)]</content>
+                     </item>
+                  </list>
+               </text>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>Most common adverse reactions are nausea, vomiting, diarrhea, allergic dermatitis, giddiness, hypotension, and thromboembolic events. (<linkHtml href="#s15">6</linkHtml>)
+</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">To report SUSPECTED ADVERSE REACTIONS, contact Sagent Pharmaceuticals at 1-866-625-1618 or FDA at 1-800-FDA-1088 or
+</content>
+                           <content styleCode="bold underline">www.fda.gov/medwatch</content>.
+</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="s16">
+                     <id root="137fe88f-003d-4748-8bc0-6294574f2fac"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>6.2    Postmarketing Experience
+</title>
+                     <text>
+                        <paragraph>The following adverse reactions have been identified during postapproval use of tranexamic acid. Because these reactions are reported voluntarily from a population of uncertain size, it is not always possible to reliably estimate their frequency or establish a causal relationship to drug exposure.
+</paragraph>
+                        <paragraph>Gastrointestinal disturbances (nausea, vomiting, diarrhea) may occur and may resolve with dose-reduction. Allergic dermatitis and giddiness have been reported. Hypotension has been reported when intravenous injection is too rapid.
+</paragraph>
+                        <paragraph>Thromboembolic events (e.g., deep vein thrombosis, pulmonary embolism, cerebral thrombosis, acute renal cortical necrosis, and central retinal artery, vein obstruction and cases associated with concomitant use of combination hormonal contraceptives) have been rarely reported in patients receiving tranexamic acid for indications other than hemorrhage prevention in patients with hemophilia. Convulsion, chromatopsia, and visual impairment have also been reported.
+</paragraph>
+                        <paragraph>Anaphylaxis or anaphylactoid reactions have been reported that are suggestive of a causal relationship.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s17">
+               <id root="1a2b2ad8-d645-4f98-aff5-03a68fb84333"/>
+               <code code="34073-7" codeSystem="2.16.840.1.113883.6.1" displayName="DRUG INTERACTIONS SECTION"/>
+               <title>7 DRUG INTERACTIONS
+</title>
+               <effectiveTime value="20250929"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>Prothrombotic Medical Products: Avoid concomitant use, can further increase the risk of thromboembolic adverse reactions associated with tranexamic acid. (<linkHtml href="#s10">5.2</linkHtml>, <linkHtml href="#s18">7.1</linkHtml>, <linkHtml href="#s27">8.3</linkHtml>)
+</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="s18">
+                     <id root="be853462-bf61-4994-9dc5-39f81ff8823e"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>7.1    Prothrombotic Medical Products
+</title>
+                     <text>
+                        <paragraph>Avoid concomitant use of tranexamic acid with medical products that are prothrombotic because concomitant use can further increase the risk of thromboembolic adverse reactions associated with tranexamic acid <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s10">5.2</linkHtml>), Use in Specific Populations (<linkHtml href="#s27">8.3</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s19">
+               <id root="28dbd2bd-1ce8-4009-9fcd-013427dad1e9"/>
+               <code code="43684-0" codeSystem="2.16.840.1.113883.6.1" displayName="USE IN SPECIFIC POPULATIONS SECTION"/>
+               <title>8 USE IN SPECIFIC POPULATIONS
+</title>
+               <effectiveTime value="20250929"/>
+               <component>
+                  <section ID="s20">
+                     <id root="bfdd081b-e67e-45f1-8587-c3e462e7ee55"/>
+                     <code code="42228-7" codeSystem="2.16.840.1.113883.6.1" displayName="PREGNANCY SECTION"/>
+                     <title>8.1    Pregnancy
+</title>
+                     <effectiveTime value="20250929"/>
+                     <component>
+                        <section ID="s21">
+                           <id root="9ec69440-847e-4f4b-8e98-48998753d3d3"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Risk Summary</content>
+                              </paragraph>
+                              <paragraph>Available data from published studies, case series and case reports with tranexamic acid use in pregnant women in the second and third trimester and at the time of delivery have not clarified whether there is a drug-associated risk of miscarriage or adverse maternal or fetal outcomes. There are 2 (0.02%) infant cases with structural abnormalities that resulted in death when tranexamic acid was used during conception or the first trimester of pregnancy; however, due to other confounding factors the risk of major birth defects with use of tranexamic acid during pregnancy is not clear. Tranexamic acid is known to pass the placenta and appears in cord blood at concentrations approximately equal to maternal concentration <content styleCode="italics">(see Data)</content>.
+</paragraph>
+                              <paragraph>Reproduction studies performed in mice, rats, and rabbits have not revealed any adverse effects on the fetus due to tranexamic acid administered during organogenesis. Doses examined were multiples of up to 3 times (mouse), 6 times (rat), and 3 times (rabbit) the maximum human dose based on body surface area in the mouse, rat, and rabbit, respectively <content styleCode="italics">(see Data)</content>.
+</paragraph>
+                              <paragraph>The estimated background risk for major birth defects and miscarriage for the indicated population is unknown. All pregnancies have a background risk of birth defect, loss, or other adverse outcomes. In the U.S. general population, the estimated background risk of major birth defects and miscarriage in the clinically recognized pregnancies is 2 to 4% and 15 to 20%, respectively.
+</paragraph>
+                              <paragraph>It is not known whether tranexamic acid use in pregnant women may cause a drug-associated risk of miscarriage or adverse maternal or fetal outcomes. For decisions regarding the use of tranexamic acid during pregnancy, the potential risk of tranexamic acid administration on the fetus should always be considered along with the mother's clinical need for tranexamic acid; an accurate risk-benefit evaluation should drive the treating physician's decision.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                     <component>
+                        <section ID="s22">
+                           <id root="9414274b-2cd4-4a96-894d-b2883c1f7135"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Data</content>
+                              </paragraph>
+                           </text>
+                           <effectiveTime value="20250929"/>
+                           <component>
+                              <section ID="s23">
+                                 <id root="dfa12339-94e2-4796-a6fb-0caece28068e"/>
+                                 <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                                 <text>
+                                    <paragraph>
+                                       <content styleCode="italics">Human Data</content>
+                                    </paragraph>
+                                    <paragraph>Tranexamic acid passes through the placenta. The concentration in cord blood after an intravenous injection of 10 mg/kg to pregnant women is about 30 mg/L, as high as in the maternal blood.
+</paragraph>
+                                    <paragraph>There were 13 clinical studies that described fetal and/or neonatal functional issues such as low Apgar score, neonatal sepsis, cephalohematoma and 9 clinical studies that discussed alterations to growth including low birth weight and preterm birth at 22 to 36 weeks of gestation in fetuses and infants exposed to tranexamic acid in-utero.
+</paragraph>
+                                 </text>
+                                 <effectiveTime value="20250929"/>
+                              </section>
+                           </component>
+                           <component>
+                              <section ID="s24">
+                                 <id root="2ec4c63c-12ef-46bb-a6ec-371eb5b1c57b"/>
+                                 <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                                 <text>
+                                    <paragraph>
+                                       <content styleCode="italics">Animal Data</content>
+                                    </paragraph>
+                                    <paragraph>In embryo-fetal development studies, tranexamic acid was administered to pregnant mice from Gestation Day (GD) 6 through GD 12 and rats from GD 9 through GD 14 at daily doses of 0.3 or 1.5 g/kg. There was no evidence of adverse developmental outcomes in mice and rats at multiple of 3 and 6 times the maximum recommended human dose based on body surface area in the mouse and rat, respectively.
+</paragraph>
+                                    <paragraph>In rabbits, tranexamic acid was administered intravenously at doses of 50, 100, or 200 mg/kg/day or orally at doses of 100, 200, or 400 mg/kg/day from GD 6 through GD 18. There was no evidence of adverse developmental outcomes at dose multiples of 2 or 3 times, respectively, the maximum recommended human dose based on body surface area. Intravenous doses of 200 mg/kg/day showed slightly retarded weight gain in pregnant rabbits.
+</paragraph>
+                                 </text>
+                                 <effectiveTime value="20250929"/>
+                              </section>
+                           </component>
+                        </section>
+                     </component>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s25">
+                     <id root="360c7095-2724-4c0b-b464-4e691c48f2cd"/>
+                     <code code="77290-5" codeSystem="2.16.840.1.113883.6.1" displayName="LACTATION SECTION"/>
+                     <title>8.2    Lactation
+</title>
+                     <effectiveTime value="20230620"/>
+                     <component>
+                        <section ID="s26">
+                           <id root="67fa046a-fad9-4b2a-84ac-fe53d52daef6"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Risk Summary</content>
+                              </paragraph>
+                              <paragraph>Published literature reports the presence of tranexamic acid in human milk. There are no data on the effects of tranexamic acid on the breastfed child or the effects on milk production. The developmental and health benefits of breastfeeding should be considered along with the mother's clinical need for tranexamic acid and any potential adverse effects on the breastfed child from tranexamic acid or from the underlying maternal condition.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s27">
+                     <id root="aecb8c11-b774-42d8-af9a-d23d24864703"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>8.3    Females and Males of Reproductive Potential
+</title>
+                     <text>
+                        <paragraph>
+                           <content styleCode="underline">Contraception</content>
+                        </paragraph>
+                        <paragraph>Concomitant use of tranexamic acid, which is an antifibrinolytic, with hormonal contraceptives may increase the risk for thromboembolic adverse reactions. Advise patients to use an effective alternative (nonhormonal) contraceptive method <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s10">5.2</linkHtml>), Drug Interactions (<linkHtml href="#s18">7.1</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s28">
+                     <id root="35562b38-4e9f-4c7b-9c16-7b4e1d5510b5"/>
+                     <code code="34081-0" codeSystem="2.16.840.1.113883.6.1" displayName="PEDIATRIC USE SECTION"/>
+                     <title>8.4    Pediatric Use
+</title>
+                     <text>
+                        <paragraph>There are limited data concerning the use of tranexamic acid in pediatric patients with hemophilia who are undergoing tooth extraction. The limited data suggest that there are no significant pharmacokinetic differences between adults and pediatric patients.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s29">
+                     <id root="f80039da-4827-4e2f-b538-b3c3b26d394f"/>
+                     <code code="34082-8" codeSystem="2.16.840.1.113883.6.1" displayName="GERIATRIC USE SECTION"/>
+                     <title>8.5    Geriatric Use
+</title>
+                     <text>
+                        <paragraph>Clinical studies of tranexamic acid did not include sufficient numbers of subjects aged 65 and over to determine whether they respond differently from younger subjects. Other reported clinical experience has not identified differences in responses between the elderly and younger patients.
+</paragraph>
+                        <paragraph>This drug is known to be substantially excreted by the kidney, and the risk of toxic reactions to this drug may be greater in patients with impaired renal function. Because elderly patients are more likely to have decreased renal function, care should be taken in dose selection, and it may be useful to monitor renal function <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#s5">2.2</linkHtml>), Clinical Pharmacology (<linkHtml href="#s36">12.3</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s30">
+                     <id root="67a14fae-7bdf-4dd5-b2e5-93c9e5275082"/>
+                     <code code="88828-9" codeSystem="2.16.840.1.113883.6.1" displayName="RENAL IMPAIRMENT SUBSECTION"/>
+                     <title>8.6    Renal Impairment
+</title>
+                     <text>
+                        <paragraph>Reduce the dosage of tranexamic acid in patients with renal impairment, based on the patient's serum creatinine <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#s5">2.2</linkHtml>), Clinical Pharmacology (<linkHtml href="#s36">12.3</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s31">
+               <id root="828ebaf9-450f-48f3-9032-2e532af042fb"/>
+               <code code="34088-5" codeSystem="2.16.840.1.113883.6.1" displayName="OVERDOSAGE SECTION"/>
+               <title>10 OVERDOSAGE
+</title>
+               <text>
+                  <paragraph>Cases of overdosage of tranexamic acid have been reported. Based on these reports, symptoms of overdosage may be gastrointestinal, e.g., nausea, vomiting, diarrhea; hypotensive, e.g., orthostatic symptoms; thromboembolic, e.g., arterial, venous, embolic; neurologic, e.g., visual impairment, convulsions, headache, mental status changes; myoclonus; and rash.
+</paragraph>
+               </text>
+               <effectiveTime value="20230620"/>
+            </section>
+         </component>
+         <component>
+            <section ID="s32">
+               <id root="fd342769-6c84-455c-ae7e-54d1a79875f4"/>
+               <code code="34089-3" codeSystem="2.16.840.1.113883.6.1" displayName="DESCRIPTION SECTION"/>
+               <title>11 DESCRIPTION
+</title>
+               <text>
+                  <paragraph>Tranexamic acid is trans-4-(aminomethyl)cyclohexanecarboxylic acid, an antifibrinolytic agent. Tranexamic acid, USP is a white crystalline powder. The structural formula is
+</paragraph>
+                  <renderMultiMedia ID="f01" referencedObject="mm01"/>
+                  <paragraph>Empirical Formula: C<sub>8</sub>H<sub>15</sub>NO<sub>2</sub>                     Molecular Weight: 157.2
+</paragraph>
+                  <paragraph>Each mL of the sterile solution for intravenous injection contains 100 mg tranexamic acid, USP and Water for Injection to 1 mL. The aqueous solution for injection has a pH of 6.5 to 8.0.
+</paragraph>
+               </text>
+               <effectiveTime value="20250929"/>
+               <component>
+                  <observationMedia ID="mm01">
+                     <text>structural formula
+</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="tra17-0001-01.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s33">
+               <id root="d45cf164-b722-47b3-829b-3f7e8832d556"/>
+               <code code="34090-1" codeSystem="2.16.840.1.113883.6.1" displayName="CLINICAL PHARMACOLOGY SECTION"/>
+               <title>12 CLINICAL PHARMACOLOGY
+</title>
+               <effectiveTime value="20230620"/>
+               <component>
+                  <section ID="s34">
+                     <id root="ff8ed7d2-cdab-41fb-b805-0f7580d2a0d6"/>
+                     <code code="43679-0" codeSystem="2.16.840.1.113883.6.1" displayName="MECHANISM OF ACTION SECTION"/>
+                     <title>12.1    Mechanism of Action
+</title>
+                     <text>
+                        <paragraph>Tranexamic acid is a synthetic lysine amino acid derivative, which diminishes the dissolution of hemostatic fibrin by plasmin. In the presence of tranexamic acid, the lysine receptor binding sites of plasmin for fibrin are occupied, preventing binding to fibrin monomers, thus preserving and stabilizing fibrin's matrix structure.
+</paragraph>
+                        <paragraph>The antifibrinolytic effects of tranexamic acid are mediated by reversible interactions at multiple binding sites within plasminogen. Native human plasminogen contains 4 to 5 lysine binding sites with low affinity for tranexamic acid (Kd = 750 μmol/L) and 1 with high affinity (Kd = 1.1 μmol/L). The high affinity lysine site of plasminogen is involved in its binding to fibrin. Saturation of the high affinity binding site with tranexamic acid displaces plasminogen from the surface of fibrin. Although plasmin may be formed by conformational changes in plasminogen, binding to and dissolution of the fibrin matrix is inhibited.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s35">
+                     <id root="9800ecbc-bf52-46a4-8d7a-1d5417a279a0"/>
+                     <code code="43681-6" codeSystem="2.16.840.1.113883.6.1" displayName="PHARMACODYNAMICS SECTION"/>
+                     <title>12.2    Pharmacodynamics
+</title>
+                     <text>
+                        <paragraph>Tranexamic acid, in concentrations of 1 mg/mL and 10 mg/mL prolongs the thrombin time. An antifibrinolytic concentration of tranexamic acid remains in different tissues for about 17 hours, and in the serum, up to 7 or 8 hours.
+</paragraph>
+                        <paragraph>Tranexamic acid in concentrations up to 10 mg/mL blood has no influence on the platelet count, the coagulation time or various coagulation factors in whole blood or citrated blood from healthy subjects.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s36">
+                     <id root="03cbd423-ddcb-43cf-9a2f-8eefa73d9239"/>
+                     <code code="43682-4" codeSystem="2.16.840.1.113883.6.1" displayName="PHARMACOKINETICS SECTION"/>
+                     <title>12.3    Pharmacokinetics
+</title>
+                     <effectiveTime value="20230620"/>
+                     <component>
+                        <section ID="s37">
+                           <id root="a30676b8-fe6c-4af2-8de6-1c743d3c99b6"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Distribution</content>
+                              </paragraph>
+                              <paragraph>The initial volume of distribution is about 9 to 12 liters. The plasma protein binding of tranexamic acid is about 3% at therapeutic plasma levels and seems to be fully accounted for by its binding to plasminogen. Tranexamic acid does not bind to serum albumin.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                     <component>
+                        <section ID="s38">
+                           <id root="c345168e-946b-47b2-ab11-e1e53e171ae5"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Elimination</content>
+                              </paragraph>
+                              <paragraph>After an intravenous dose of 1 g, the plasma concentration time curve shows a triexponential decay with a half-life of about 2 hours for the terminal elimination phase.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                     <component>
+                        <section ID="s39">
+                           <id root="3b618eae-c4a2-4b7c-8ff5-a5d79e94ae5e"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="italics">Excretion</content>
+                              </paragraph>
+                              <paragraph>Urinary excretion is the main route of elimination via glomerular filtration. Overall renal clearance is equal to overall plasma clearance (110 to 116 mL/min), and more than 95% of the dose is excreted in the urine as unchanged drug. Excretion of tranexamic acid is about 90% at 24 hours after intravenous administration of 10 mg/kg body weight.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                     <component>
+                        <section ID="s40">
+                           <id root="82d940a9-8d82-4f33-9fdf-2a0da444cb8b"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Specific Populations</content>
+                              </paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                     <component>
+                        <section ID="s41">
+                           <id root="3d1ec906-f9bc-41fc-8619-ee0687ccaf56"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="italics">Patients with Renal Impairment</content>
+                              </paragraph>
+                              <paragraph>The blood levels of tranexamic acid are increased in patients with renal insufficiency. Urinary excretion following a single intravenous injection of tranexamic acid declines as renal function decreases. Following a single 10 mg/kg intravenous injection of tranexamic acid, the 24-hour urinary fractions of tranexamic acid with serum creatinine concentrations 1.4 to 2.8, 2.8 to 5.7, and greater than 5.7 mg/dL were 51, 39, and 19%, respectively. The 24-hour tranexamic acid plasma concentrations for these patients demonstrated a direct relationship to the degree of renal impairment. Therefore, dose adjustment is needed in patients with renal impairment <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#s5">2.2</linkHtml>), Use in Specific Populations (<linkHtml href="#s30">8.6</linkHtml>)]</content>.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                     <component>
+                        <section ID="s42">
+                           <id root="642e9597-7734-4e49-83d9-d18f6ed4f92b"/>
+                           <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                           <text>
+                              <paragraph>
+                                 <content styleCode="underline">Drug Interaction Studies</content>
+                              </paragraph>
+                              <paragraph>No studies of interactions between tranexamic acid and other drugs have been conducted.
+</paragraph>
+                           </text>
+                           <effectiveTime value="20230620"/>
+                        </section>
+                     </component>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s43">
+               <id root="fc19d6fd-80d4-4e39-8e15-fa4900e66295"/>
+               <code code="43680-8" codeSystem="2.16.840.1.113883.6.1" displayName="NONCLINICAL TOXICOLOGY SECTION"/>
+               <title>13 NONCLINICAL TOXICOLOGY
+</title>
+               <effectiveTime value="20230620"/>
+               <component>
+                  <section ID="s44">
+                     <id root="b619d164-333f-4c17-9db5-762764469cc6"/>
+                     <code code="34083-6" codeSystem="2.16.840.1.113883.6.1" displayName="CARCINOGENESIS &amp; MUTAGENESIS &amp; IMPAIRMENT OF FERTILITY SECTION"/>
+                     <title>13.1    Carcinogenesis, Mutagenesis, Impairment of Fertility
+</title>
+                     <text>
+                        <paragraph>Tranexamic acid was not carcinogenic in a 2-year study in rats and mice at oral doses up to 3 and     5.3 g/kg/day, which are approximately 12 and 11 times the maximum recommended human dose based on body surface area, respectively.
+</paragraph>
+                        <paragraph>Tranexamic acid was not genotoxic in the reverse mutation bacterial (Ames) test, and <content styleCode="italics">in vitro</content> and     <content styleCode="italics">in vivo</content> cytogenetic test.
+</paragraph>
+                        <paragraph>In a fertility and early embryonic development study, tranexamic acid was administered to male rats as 0.3% and 1% of drug in diet (average doses of 222 and 856 mg/kg/day) or to female rats at dose levels of 0.3% and 1.2% of drug in diet. Tranexamic acid had no effect on fertility or reproductive function of male or female rats at dose multiples of 4 or 5 times the maximum recommended human dose based on body surface area, respectively.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s45">
+                     <id root="fda9012a-f60a-44fd-bdd0-669ddf5b94d1"/>
+                     <code code="34091-9" codeSystem="2.16.840.1.113883.6.1" displayName="ANIMAL PHARMACOLOGY &amp; OR TOXICOLOGY SECTION"/>
+                     <title>13.2    Animal Toxicology and/or Pharmacology
+</title>
+                     <text>
+                        <paragraph>Nonclinical studies have shown a retinal toxicity associated with tranexamic acid. Toxicity is characterized by retinal atrophy commencing with changes to the retinal pigmented epithelium and progressing to retinal detachment in cats. The toxicity appears to be dose related, and changes are partially reversible at lower doses. Effects were observed in dogs at oral doses of 800 mg/kg/day and higher (multiple of 11 times the maximum human dose based on body surface area), and in cats at 250 mg/kg/day for 14 days (multiple of 1.6 times the maximum human dose based on body surface area). Some fully reversible changes in pigmentation were observed in cats at doses of                         125 mg/kg/day (multiple of 0.8 times the maximum human dose based on body surface area). Studies suggest that the underlying mechanism may be related to a transient retinal ischemia at high exposures, linked to the known sympathomimetic effect of high plasma exposures of tranexamic acid.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s46">
+               <id root="a47aeec1-2806-478b-ac82-c2f0715992f4"/>
+               <code code="34069-5" codeSystem="2.16.840.1.113883.6.1" displayName="HOW SUPPLIED SECTION"/>
+               <title>16 HOW SUPPLIED/STORAGE AND HANDLING
+</title>
+               <text>
+                  <paragraph>Tranexamic Acid Injection, USP is a clear, colorless solution supplied as follows:
+</paragraph>
+                  <table width="100%" styleCode="Noautorules">
+                     <col width="33.333%" align="left"/>
+                     <col width="33.333%" align="left"/>
+                     <col width="33.333%" align="left"/>
+                     <tbody>
+                        <tr>
+                           <td align="justify" valign="top">
+                              <content styleCode="bold">NDC</content>
+                           </td>
+                           <td align="justify" valign="top">
+                              <content styleCode="bold">Tranexamic Acid Injection, USP (100 mg per mL)</content>
+                           </td>
+                           <td align="justify" valign="top">
+                              <content styleCode="bold">Package Factor</content>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td align="justify" valign="top">25021-415-10
+</td>
+                           <td align="justify" valign="top">1,000 mg per 10 mL Single-Dose Vial
+</td>
+                           <td align="justify" valign="top">10 vials per carton
+</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </text>
+               <effectiveTime value="20230620"/>
+               <component>
+                  <section ID="s47">
+                     <id root="0bfd706b-c4d3-4787-864d-b20a51637ac9"/>
+                     <code code="44425-7" codeSystem="2.16.840.1.113883.6.1" displayName="STORAGE AND HANDLING SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">Storage Conditions</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Store at 20º to 25°C (68º to 77°F); excursions permitted to 15° to 30°C (59° to 86°F). [See USP Controlled Room Temperature.]</content>
+                        </paragraph>
+                        <paragraph>Discard unused portion.
+</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Sterile, Nonpyrogenic, Preservative-free.<br/>The container closure is not made with natural rubber latex.</content>
+                        </paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s48">
+               <id root="4f367275-6a0e-45f7-a236-18976e76c608"/>
+               <code code="34076-0" codeSystem="2.16.840.1.113883.6.1" displayName="INFORMATION FOR PATIENTS SECTION"/>
+               <title>17 PATIENT COUNSELING INFORMATION
+</title>
+               <effectiveTime value="20250929"/>
+               <component>
+                  <section ID="s49">
+                     <id root="c2453d15-0d35-4dff-99b8-cd080f66111c"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="underline">Thromboembolic Risk</content>
+                        </paragraph>
+                        <paragraph>Inform patients that tranexamic acid injection may increase the risk of venous and arterial thrombosis or thromboembolism and to contact their healthcare provider for any signs or symptoms suggestive of thromboembolism.
+</paragraph>
+                        <paragraph>Advise patients using hormonal contraception that combined use with tranexamic acid injection may increase the risk for thromboembolic adverse reactions and to use effective alternative (nonhormonal) contraception during therapy with tranexamic acid injection <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s10">5.2</linkHtml>), Drug Interactions (<linkHtml href="#s18">7.1</linkHtml>), Use in Specific Populations (<linkHtml href="#s27">8.3</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s50">
+                     <id root="ca705866-7065-4afa-835b-915dfeab0161"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="underline">Seizures</content>
+                        </paragraph>
+                        <paragraph>Inform patients that tranexamic acid injection may cause seizures and to contact their healthcare provider for any signs or symptoms suggestive of seizures <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s11">5.3</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s51">
+                     <id root="12903e90-4be8-47e1-a34b-9013b5ab48c2"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="underline">Hypersensitivity Reactions</content>
+                        </paragraph>
+                        <paragraph>Inform patients that tranexamic acid injection may cause hypersensitivity reactions and to contact their healthcare provider for any signs or symptoms of hypersensitivity reactions <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s12">5.4</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s52">
+                     <id root="ca9ba09c-d636-404e-aa38-576a85d674aa"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="underline">Visual Disturbances</content>
+                        </paragraph>
+                        <paragraph>Inform patients that tranexamic acid injection can cause visual disturbance and that they should report any eye symptoms or change in their vision to their healthcare provider and to follow-up with an ophthalmologist for a complete ophthalmologic evaluation, including dilated retinal examination of the retina <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s13">5.5</linkHtml>)]</content>.
+</paragraph>
+                     </text>
+                     <effectiveTime value="20230620"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="s53">
+                     <id root="eecba740-0408-409e-9b4b-377179963ac3"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="underline">Risk of Driving and Operating Machinery</content>
+                        </paragraph>
+                        <paragraph>Inform patients that tranexamic acid injection may cause dizziness, and that the patient should be cautioned about driving, operating machinery, or performing hazardous tasks while taking tranexamic acid injection <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#s14">5.6</linkHtml>)]</content>.
+</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">sagent</content>
+                           <sup>®</sup>
+                        </paragraph>
+                        <paragraph>Mfd. for SAGENT Pharmaceuticals<br/>Schaumburg, IL 60173 (USA)<br/>Made in India<br/>©2025 Sagent Pharmaceuticals
+</paragraph>
+                        <paragraph>Revised: September 2025</paragraph>
+                     </text>
+                     <effectiveTime value="20250929"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="s54">
+               <id root="b79bbb9a-da89-4fa6-80b3-ae886fb8c79a"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <text>
+                  <paragraph>PACKAGE LABEL – PRINCIPAL DISPLAY PANEL – Vial Label
+</paragraph>
+                  <paragraph>NDC 25021-415-10
+</paragraph>
+                  <paragraph>Rx only
+</paragraph>
+                  <paragraph>Tranexamic Acid Injection, USP
+</paragraph>
+                  <paragraph>1,000 mg per 10 mL
+</paragraph>
+                  <paragraph>(100 mg per mL)
+</paragraph>
+                  <paragraph>For Intravenous Use Only
+</paragraph>
+                  <paragraph>10 mL Single-Dose Vial
+</paragraph>
+                  <renderMultiMedia ID="f02" referencedObject="mm02"/>
+               </text>
+               <effectiveTime value="20250929"/>
+               <component>
+                  <observationMedia ID="mm02">
+                     <text>PACKAGE LABEL – PRINCIPAL DISPLAY PANEL – Vial Label
+</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="tra17-0001-02.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>

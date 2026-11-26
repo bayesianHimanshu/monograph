@@ -452,5 +452,9 @@ def ingest_fixtures(
         typer.echo(f"{endpoint}: {len(records)} records -> {path}")
 
 
+from monograph.extract.cli import h4_app  # noqa: E402
+
+app.add_typer(h4_app, name="h4")
+
 if __name__ == "__main__":
     app()
