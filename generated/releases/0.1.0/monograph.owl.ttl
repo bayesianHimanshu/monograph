@@ -1,0 +1,528 @@
+@prefix mono: <https://example.org/monograph/ontology#> .
+@prefix shape: <https://example.org/monograph/shapes#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.org/monograph/ontology>
+    a owl:Ontology ;
+    owl:versionIRI <https://example.org/monograph/ontology/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:label "MONOGRAPH drug product model" .
+
+mono:AdverseEventReport
+    a owl:Class ;
+    rdfs:comment "A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA." ;
+    rdfs:label "Adverse event report" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:DrugInvolvement
+    a owl:Class ;
+    rdfs:comment "A drug mentioned in an adverse event report, as reported." ;
+    rdfs:label "Drug involvement" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:DrugRole
+    a owl:Class ;
+    rdfs:comment "The role a drug played in an adverse event report. `suspect` is E2B characterization 1 when the source does not say which suspect is primary." ;
+    rdfs:label "Drug role" .
+
+mono:DrugRole-CONCOMITANT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "concomitant" .
+
+mono:DrugRole-INTERACTING
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "interacting" .
+
+mono:DrugRole-PRIMARY_SUSPECT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "primary suspect" .
+
+mono:DrugRole-SECONDARY_SUSPECT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "secondary suspect" .
+
+mono:DrugRole-SUSPECT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "suspect" .
+
+mono:EmbeddedValue
+    a owl:Class ;
+    rdfs:comment "A value that only exists inside its parent entity. Its IRI derives from the parent's IRI." ;
+    rdfs:label "Embedded value" .
+
+mono:Entity
+    a owl:Class ;
+    rdfs:comment "A thing with a public identifier and its own IRI." ;
+    rdfs:label "Entity" .
+
+mono:Ingredient
+    a owl:Class ;
+    rdfs:comment "An active ingredient of a product with its strength." ;
+    rdfs:label "Ingredient" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:Label
+    a owl:Class ;
+    rdfs:comment "One version of a structured product label (SPL)." ;
+    rdfs:label "Label" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:LabelSection
+    a owl:Class ;
+    rdfs:comment "One LOINC-coded section of a structured product label." ;
+    rdfs:label "Label section" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:Organization
+    a owl:Class ;
+    rdfs:comment "A company acting as manufacturer, labeler or recalling firm." ;
+    rdfs:label "Organization" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:PackagedProduct
+    a owl:Class ;
+    rdfs:comment "A package of a product, identified by its 10-digit hyphenated NDC." ;
+    rdfs:label "Packaged product" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:Product
+    a owl:Class ;
+    rdfs:comment "A clinical drug product identified by its RxNorm concept (RxCUI)." ;
+    rdfs:label "Product" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:Reaction
+    a owl:Class ;
+    rdfs:comment "A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed)." ;
+    rdfs:label "Reaction" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:Recall
+    a owl:Class ;
+    rdfs:comment "A drug recall from the FDA enforcement report." ;
+    rdfs:label "Recall" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:RecallClassification
+    a owl:Class ;
+    rdfs:comment "FDA recall classification, from I (most serious) to III." ;
+    rdfs:label "Recall classification" .
+
+mono:RecallClassification-CLASS_I
+    a mono:RecallClassification, owl:NamedIndividual ;
+    rdfs:label "I" .
+
+mono:RecallClassification-CLASS_II
+    a mono:RecallClassification, owl:NamedIndividual ;
+    rdfs:label "II" .
+
+mono:RecallClassification-CLASS_III
+    a mono:RecallClassification, owl:NamedIndividual ;
+    rdfs:label "III" .
+
+mono:Route
+    a owl:Class ;
+    rdfs:comment "Route of administration, using FDA SPL route names as they appear in openFDA." ;
+    rdfs:label "Route of administration" .
+
+mono:Route-BUCCAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "BUCCAL" .
+
+mono:Route-CUTANEOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "CUTANEOUS" .
+
+mono:Route-DENTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "DENTAL" .
+
+mono:Route-EPIDURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "EPIDURAL" .
+
+mono:Route-INTRADERMAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADERMAL" .
+
+mono:Route-INTRAMUSCULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMUSCULAR" .
+
+mono:Route-INTRATHECAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATHECAL" .
+
+mono:Route-INTRAVENOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVENOUS" .
+
+mono:Route-INTRAVESICAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVESICAL" .
+
+mono:Route-INTRAVITREAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVITREAL" .
+
+mono:Route-INTRA_ARTICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-ARTICULAR" .
+
+mono:Route-NASAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "NASAL" .
+
+mono:Route-OPHTHALMIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "OPHTHALMIC" .
+
+mono:Route-ORAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ORAL" .
+
+mono:Route-OTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "OTIC" .
+
+mono:Route-PERCUTANEOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERCUTANEOUS" .
+
+mono:Route-RECTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "RECTAL" .
+
+mono:Route-RESPIRATORY_INHALATION
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "RESPIRATORY (INHALATION)" .
+
+mono:Route-SUBCUTANEOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBCUTANEOUS" .
+
+mono:Route-SUBLINGUAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBLINGUAL" .
+
+mono:Route-TOPICAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TOPICAL" .
+
+mono:Route-TRANSDERMAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSDERMAL" .
+
+mono:Route-VAGINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "VAGINAL" .
+
+mono:SeriousnessCriterion
+    a owl:Class ;
+    rdfs:comment "Why a report is classified as serious (ICH E2B seriousness criteria)." ;
+    rdfs:label "Seriousness criterion" .
+
+mono:SeriousnessCriterion-CONGENITAL_ANOMALY
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "congenital anomaly" .
+
+mono:SeriousnessCriterion-DEATH
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "death" .
+
+mono:SeriousnessCriterion-DISABLING
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "disabling" .
+
+mono:SeriousnessCriterion-HOSPITALIZATION
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "hospitalization" .
+
+mono:SeriousnessCriterion-LIFE_THREATENING
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "life threatening" .
+
+mono:SeriousnessCriterion-OTHER
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "other" .
+
+mono:Substance
+    a owl:Class ;
+    rdfs:comment "A chemical or biological substance identified by its FDA Unique Ingredient Identifier." ;
+    rdfs:label "Substance" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:dosageForm
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Dosage form as written in the source." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "dosage form" ;
+    rdfs:range xsd:string .
+
+mono:drugInvolvement
+    a owl:ObjectProperty ;
+    rdfs:comment "Drugs, in reported order." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "drug involvement" ;
+    rdfs:range mono:DrugInvolvement .
+
+mono:drugRole
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Role in the report." ;
+    rdfs:domain mono:DrugInvolvement ;
+    rdfs:label "drug role" ;
+    rdfs:range mono:DrugRole .
+
+mono:effectiveDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "SPL effective time." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "effective date" ;
+    rdfs:range xsd:date .
+
+mono:ingredient
+    a owl:ObjectProperty ;
+    rdfs:comment "Active ingredients, in order." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "ingredient" ;
+    rdfs:range mono:Ingredient .
+
+mono:labelVersion
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "SPL version." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "label version" ;
+    rdfs:range xsd:integer .
+
+mono:labeler
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The labeler firm." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "labeler" ;
+    rdfs:range mono:Organization .
+
+mono:labelsProduct
+    a owl:ObjectProperty ;
+    rdfs:comment "Products." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "labels product" ;
+    rdfs:range mono:Product .
+
+mono:loincCode
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "LOINC code." ;
+    rdfs:domain mono:LabelSection ;
+    rdfs:label "LOINC code" ;
+    rdfs:range xsd:string .
+
+mono:meddraPreferredTerm
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "MedDRA PT text (at most 100 characters)." ;
+    rdfs:domain mono:Reaction ;
+    rdfs:label "MedDRA preferred term" ;
+    rdfs:range xsd:string .
+
+mono:name
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Preferred name." ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:Organization mono:Product mono:Substance )
+    ] ;
+    rdfs:label "name" ;
+    rdfs:range xsd:string .
+
+mono:ndc
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Package NDC in 4-4-2, 5-3-2 or 5-4-1 form." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "NDC" ;
+    rdfs:range xsd:string .
+
+mono:packageDescription
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Package description as written in the source." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "package description" ;
+    rdfs:range xsd:string .
+
+mono:patientAgeYears
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Patient age at onset, in years." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "patient age in years" ;
+    rdfs:range xsd:decimal .
+
+mono:product
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:DrugInvolvement mono:PackagedProduct )
+    ] ;
+    rdfs:label "product" ;
+    rdfs:range mono:Product .
+
+mono:reaction
+    a owl:ObjectProperty ;
+    rdfs:comment "Reactions, in order." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "reaction" ;
+    rdfs:range mono:Reaction .
+
+mono:recallClassification
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Class." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "classification" ;
+    rdfs:range mono:RecallClassification .
+
+mono:recallNumber
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "FDA recall number, for example D-0123-2025." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "recall number" ;
+    rdfs:range xsd:string .
+
+mono:recallReason
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Reason for the recall." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "reason" ;
+    rdfs:range xsd:string .
+
+mono:recallingFirm
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The recalling firm." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "recalling firm" ;
+    rdfs:range mono:Organization .
+
+mono:recallsProduct
+    a owl:ObjectProperty ;
+    rdfs:comment "Products." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "recalls product" ;
+    rdfs:range mono:Product .
+
+mono:receiptDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Date FDA received the report." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "receipt date" ;
+    rdfs:range xsd:date .
+
+mono:reportDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Enforcement report date." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "report date" ;
+    rdfs:range xsd:date .
+
+mono:route
+    a owl:ObjectProperty ;
+    rdfs:comment "Routes of administration." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "route" ;
+    rdfs:range mono:Route .
+
+mono:rxcui
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "RxNorm CUI." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "RxCUI" ;
+    rdfs:range xsd:string .
+
+mono:safetyReportId
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Safety report ID." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "safety report ID" ;
+    rdfs:range xsd:string .
+
+mono:section
+    a owl:ObjectProperty ;
+    rdfs:comment "Coded sections." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "section" ;
+    rdfs:range mono:LabelSection .
+
+mono:sectionText
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Plain text." ;
+    rdfs:domain mono:LabelSection ;
+    rdfs:label "section text" ;
+    rdfs:range xsd:string .
+
+mono:sectionTitle
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Title." ;
+    rdfs:domain mono:LabelSection ;
+    rdfs:label "section title" ;
+    rdfs:range xsd:string .
+
+mono:serious
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Whether the report is serious." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "serious" ;
+    rdfs:range xsd:boolean .
+
+mono:seriousnessCriterion
+    a owl:ObjectProperty ;
+    rdfs:comment "Seriousness criteria met." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "seriousness criterion" ;
+    rdfs:range mono:SeriousnessCriterion .
+
+mono:setId
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "SPL set ID, a lowercase UUID." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "SPL set ID" ;
+    rdfs:range xsd:string .
+
+mono:slug
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Stable key: the normalized name, lowercase, words joined by hyphens." ;
+    rdfs:domain mono:Organization ;
+    rdfs:label "slug" ;
+    rdfs:range xsd:string .
+
+mono:strengthUnit
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Unit of the strength, for example mg/1." ;
+    rdfs:domain mono:Ingredient ;
+    rdfs:label "strength unit" ;
+    rdfs:range xsd:string .
+
+mono:strengthValue
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Numeric strength." ;
+    rdfs:domain mono:Ingredient ;
+    rdfs:label "strength value" ;
+    rdfs:range xsd:decimal .
+
+mono:substance
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The substance." ;
+    rdfs:domain mono:Ingredient ;
+    rdfs:label "substance" ;
+    rdfs:range mono:Substance .
+
+mono:unii
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "FDA UNII code." ;
+    rdfs:domain mono:Substance ;
+    rdfs:label "UNII" ;
+    rdfs:range xsd:string .
+
+mono:verbatimDrugName
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Drug name exactly as reported." ;
+    rdfs:domain mono:DrugInvolvement ;
+    rdfs:label "verbatim drug name" ;
+    rdfs:range xsd:string .

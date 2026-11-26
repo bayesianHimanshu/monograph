@@ -1,0 +1,653 @@
+{
+  "$defs": {
+    "AdverseEventReport": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$comment": "rule serious-requires-criterion: a serious report needs at least one seriousness criterion",
+          "if": {
+            "properties": {
+              "serious": {
+                "const": true
+              }
+            },
+            "required": [
+              "serious"
+            ]
+          },
+          "then": {
+            "properties": {
+              "seriousness_criteria": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "seriousness_criteria"
+            ]
+          }
+        },
+        {
+          "$comment": "rule has-primary-suspect: a report needs at least one primary suspect drug",
+          "properties": {
+            "drugs": {
+              "contains": {
+                "properties": {
+                  "role": {
+                    "const": "primary suspect"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              },
+              "minContains": 1
+            }
+          }
+        }
+      ],
+      "description": "A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA.",
+      "properties": {
+        "drugs": {
+          "description": "Drugs, in reported order.",
+          "items": {
+            "$ref": "#/$defs/DrugInvolvement"
+          },
+          "minItems": 1,
+          "title": "Drugs",
+          "type": "array",
+          "x-rdf-property": "https://example.org/monograph/ontology#drugInvolvement"
+        },
+        "patient_age_years": {
+          "anyOf": [
+            {
+              "maximum": 150.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Patient age at onset, in years.",
+          "title": "Patient Age Years",
+          "x-rdf-property": "https://example.org/monograph/ontology#patientAgeYears"
+        },
+        "reactions": {
+          "description": "Reactions, in order.",
+          "items": {
+            "$ref": "#/$defs/Reaction"
+          },
+          "minItems": 1,
+          "title": "Reactions",
+          "type": "array",
+          "x-rdf-property": "https://example.org/monograph/ontology#reaction"
+        },
+        "receipt_date": {
+          "description": "Date FDA received the report.",
+          "format": "date",
+          "title": "Receipt Date",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#receiptDate"
+        },
+        "report_id": {
+          "description": "Safety report ID.",
+          "pattern": "^[0-9]{1,12}$",
+          "title": "Report Id",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#safetyReportId"
+        },
+        "serious": {
+          "description": "Whether the report is serious.",
+          "title": "Serious",
+          "type": "boolean",
+          "x-rdf-property": "https://example.org/monograph/ontology#serious"
+        },
+        "seriousness_criteria": {
+          "default": [],
+          "description": "Seriousness criteria met.",
+          "items": {
+            "$ref": "#/$defs/SeriousnessCriterion"
+          },
+          "maxItems": 6,
+          "title": "Seriousness Criteria",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#seriousnessCriterion"
+        }
+      },
+      "required": [
+        "report_id",
+        "receipt_date",
+        "serious",
+        "drugs",
+        "reactions"
+      ],
+      "title": "AdverseEventReport",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#AdverseEventReport"
+    },
+    "DrugInvolvement": {
+      "additionalProperties": false,
+      "description": "A drug mentioned in an adverse event report, as reported.",
+      "properties": {
+        "drug_name": {
+          "description": "Drug name exactly as reported.",
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Drug Name",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#verbatimDrugName"
+        },
+        "product": {
+          "anyOf": [
+            {
+              "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The product, when the source resolves the name to exactly one RxCUI.",
+          "title": "Product",
+          "x-rdf-property": "https://example.org/monograph/ontology#product"
+        },
+        "role": {
+          "$ref": "#/$defs/DrugRole",
+          "description": "Role in the report.",
+          "x-rdf-property": "https://example.org/monograph/ontology#drugRole"
+        }
+      },
+      "required": [
+        "drug_name",
+        "role"
+      ],
+      "title": "DrugInvolvement",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#DrugInvolvement"
+    },
+    "DrugRole": {
+      "description": "The role a drug played in an adverse event report.\n\n`suspect` is E2B characterization 1 when the source does not say which suspect is primary.",
+      "enum": [
+        "primary suspect",
+        "secondary suspect",
+        "suspect",
+        "concomitant",
+        "interacting"
+      ],
+      "title": "DrugRole",
+      "type": "string"
+    },
+    "Ingredient": {
+      "additionalProperties": false,
+      "description": "An active ingredient of a product with its strength.",
+      "properties": {
+        "strength_unit": {
+          "description": "Unit of the strength, for example mg/1.",
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "Strength Unit",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#strengthUnit"
+        },
+        "strength_value": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Numeric strength.",
+          "title": "Strength Value",
+          "x-rdf-property": "https://example.org/monograph/ontology#strengthValue"
+        },
+        "substance": {
+          "description": "The substance.",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Substance",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#substance"
+        }
+      },
+      "required": [
+        "substance",
+        "strength_value",
+        "strength_unit"
+      ],
+      "title": "Ingredient",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Ingredient"
+    },
+    "Label": {
+      "additionalProperties": false,
+      "description": "One version of a structured product label (SPL).",
+      "properties": {
+        "effective_date": {
+          "description": "SPL effective time.",
+          "format": "date",
+          "title": "Effective Date",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#effectiveDate"
+        },
+        "products": {
+          "default": [],
+          "description": "Products.",
+          "items": {
+            "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+            "type": "string"
+          },
+          "title": "Products",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#labelsProduct"
+        },
+        "sections": {
+          "default": [],
+          "description": "Coded sections.",
+          "items": {
+            "$ref": "#/$defs/LabelSection"
+          },
+          "title": "Sections",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#section"
+        },
+        "set_id": {
+          "description": "SPL set ID, a lowercase UUID.",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "title": "Set Id",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#setId"
+        },
+        "version": {
+          "description": "SPL version.",
+          "exclusiveMaximum": 1000000,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer",
+          "x-rdf-property": "https://example.org/monograph/ontology#labelVersion"
+        }
+      },
+      "required": [
+        "set_id",
+        "version",
+        "effective_date"
+      ],
+      "title": "Label",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Label"
+    },
+    "LabelSection": {
+      "additionalProperties": false,
+      "description": "One LOINC-coded section of a structured product label.",
+      "properties": {
+        "code": {
+          "description": "LOINC code.",
+          "pattern": "^[0-9]{1,7}-[0-9]$",
+          "title": "Code",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#loincCode"
+        },
+        "text": {
+          "description": "Plain text.",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#sectionText"
+        },
+        "title": {
+          "description": "Title.",
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#sectionTitle"
+        }
+      },
+      "required": [
+        "code",
+        "title",
+        "text"
+      ],
+      "title": "LabelSection",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#LabelSection"
+    },
+    "Organization": {
+      "additionalProperties": false,
+      "description": "A company acting as manufacturer, labeler or recalling firm.",
+      "properties": {
+        "name": {
+          "description": "Preferred name.",
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#name"
+        },
+        "slug": {
+          "description": "Stable key: the normalized name, lowercase, words joined by hyphens.",
+          "maxLength": 120,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "title": "Slug",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#slug"
+        }
+      },
+      "required": [
+        "slug",
+        "name"
+      ],
+      "title": "Organization",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Organization"
+    },
+    "PackagedProduct": {
+      "additionalProperties": false,
+      "description": "A package of a product, identified by its 10-digit hyphenated NDC.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Package description as written in the source.",
+          "title": "Description",
+          "x-rdf-property": "https://example.org/monograph/ontology#packageDescription"
+        },
+        "labeler": {
+          "description": "The labeler firm.",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Labeler",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#labeler"
+        },
+        "ndc": {
+          "description": "Package NDC in 4-4-2, 5-3-2 or 5-4-1 form.",
+          "pattern": "^([0-9]{4}-[0-9]{4}-[0-9]{2}|[0-9]{5}-[0-9]{3}-[0-9]{2}|[0-9]{5}-[0-9]{4}-[0-9])$",
+          "title": "Ndc",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#ndc"
+        },
+        "product": {
+          "description": "The packaged product.",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Product",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#product"
+        }
+      },
+      "required": [
+        "ndc",
+        "product",
+        "labeler"
+      ],
+      "title": "PackagedProduct",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#PackagedProduct"
+    },
+    "Product": {
+      "additionalProperties": false,
+      "description": "A clinical drug product identified by its RxNorm concept (RxCUI).",
+      "properties": {
+        "dosage_form": {
+          "description": "Dosage form as written in the source.",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Dosage Form",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#dosageForm"
+        },
+        "ingredients": {
+          "default": [],
+          "description": "Active ingredients, in order.",
+          "items": {
+            "$ref": "#/$defs/Ingredient"
+          },
+          "title": "Ingredients",
+          "type": "array",
+          "x-rdf-property": "https://example.org/monograph/ontology#ingredient"
+        },
+        "name": {
+          "description": "Preferred name.",
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#name"
+        },
+        "routes": {
+          "description": "Routes of administration.",
+          "items": {
+            "$ref": "#/$defs/Route"
+          },
+          "minItems": 1,
+          "title": "Routes",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#route"
+        },
+        "rxcui": {
+          "description": "RxNorm CUI.",
+          "pattern": "^[0-9]{1,8}$",
+          "title": "Rxcui",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#rxcui"
+        }
+      },
+      "required": [
+        "rxcui",
+        "name",
+        "dosage_form",
+        "routes"
+      ],
+      "title": "Product",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Product"
+    },
+    "Reaction": {
+      "additionalProperties": false,
+      "description": "A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed).",
+      "properties": {
+        "term": {
+          "description": "MedDRA PT text (at most 100 characters).",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Term",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#meddraPreferredTerm"
+        }
+      },
+      "required": [
+        "term"
+      ],
+      "title": "Reaction",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Reaction"
+    },
+    "Recall": {
+      "additionalProperties": false,
+      "description": "A drug recall from the FDA enforcement report.",
+      "properties": {
+        "classification": {
+          "$ref": "#/$defs/RecallClassification",
+          "description": "Class.",
+          "x-rdf-property": "https://example.org/monograph/ontology#recallClassification"
+        },
+        "products": {
+          "default": [],
+          "description": "Products.",
+          "items": {
+            "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+            "type": "string"
+          },
+          "title": "Products",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#recallsProduct"
+        },
+        "reason": {
+          "description": "Reason for the recall.",
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#recallReason"
+        },
+        "recall_number": {
+          "description": "FDA recall number, for example D-0123-2025.",
+          "pattern": "^D-[0-9]{4}-[0-9]{4}$",
+          "title": "Recall Number",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#recallNumber"
+        },
+        "recalling_firm": {
+          "description": "The recalling firm.",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Recalling Firm",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#recallingFirm"
+        },
+        "report_date": {
+          "description": "Enforcement report date.",
+          "format": "date",
+          "title": "Report Date",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#reportDate"
+        }
+      },
+      "required": [
+        "recall_number",
+        "classification",
+        "reason",
+        "report_date",
+        "recalling_firm"
+      ],
+      "title": "Recall",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Recall"
+    },
+    "RecallClassification": {
+      "description": "FDA recall classification, from I (most serious) to III.",
+      "enum": [
+        "I",
+        "II",
+        "III"
+      ],
+      "title": "RecallClassification",
+      "type": "string"
+    },
+    "Route": {
+      "description": "Route of administration, using FDA SPL route names as they appear in openFDA.",
+      "enum": [
+        "BUCCAL",
+        "CUTANEOUS",
+        "DENTAL",
+        "EPIDURAL",
+        "INTRA-ARTICULAR",
+        "INTRADERMAL",
+        "INTRAMUSCULAR",
+        "INTRATHECAL",
+        "INTRAVENOUS",
+        "INTRAVESICAL",
+        "INTRAVITREAL",
+        "NASAL",
+        "OPHTHALMIC",
+        "ORAL",
+        "OTIC",
+        "PERCUTANEOUS",
+        "RECTAL",
+        "RESPIRATORY (INHALATION)",
+        "SUBCUTANEOUS",
+        "SUBLINGUAL",
+        "TOPICAL",
+        "TRANSDERMAL",
+        "VAGINAL"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "SeriousnessCriterion": {
+      "description": "Why a report is classified as serious (ICH E2B seriousness criteria).",
+      "enum": [
+        "death",
+        "life threatening",
+        "hospitalization",
+        "disabling",
+        "congenital anomaly",
+        "other"
+      ],
+      "title": "SeriousnessCriterion",
+      "type": "string"
+    },
+    "Substance": {
+      "additionalProperties": false,
+      "description": "A chemical or biological substance identified by its FDA Unique Ingredient Identifier.",
+      "properties": {
+        "name": {
+          "description": "Preferred name.",
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#name"
+        },
+        "unii": {
+          "description": "FDA UNII code.",
+          "pattern": "^[0-9A-Z]{10}$",
+          "title": "Unii",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#unii"
+        }
+      },
+      "required": [
+        "unii",
+        "name"
+      ],
+      "title": "Substance",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#Substance"
+    }
+  },
+  "$id": "https://example.org/monograph/schema/0.1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/Substance"
+    },
+    {
+      "$ref": "#/$defs/Organization"
+    },
+    {
+      "$ref": "#/$defs/Product"
+    },
+    {
+      "$ref": "#/$defs/PackagedProduct"
+    },
+    {
+      "$ref": "#/$defs/Label"
+    },
+    {
+      "$ref": "#/$defs/AdverseEventReport"
+    },
+    {
+      "$ref": "#/$defs/Recall"
+    }
+  ],
+  "title": "MONOGRAPH drug product model",
+  "x-schema-version": "0.1.0"
+}

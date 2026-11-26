@@ -72,6 +72,113 @@ def check_drift(root: Root = Path()) -> None:
     typer.echo("drift check ok")
 
 
+def _breaking(root: Path) -> bool:
+    from monograph.core.version import SCHEMA_VERSION
+    from monograph.gen.artifacts import OWL_FILE, SHACL_FILE
+    from monograph.validate.compat import CompatChecker
+
+    files = wiring.artifact_builder(wiring.build_spec(), Vocabulary()).build().files
+    checker = CompatChecker(wiring.generated_dir(root) / "releases", OWL_FILE, SHACL_FILE)
+    report = checker.check(SCHEMA_VERSION, files[OWL_FILE], files[SHACL_FILE])
+    for change in report.changes:
+        label = "BREAKING" if change.breaking else "additive"
+        typer.echo(f"breaking-change: {label}: {change.kind}: {change.subject}: {change.detail}")
+    typer.echo(
+        f"breaking-change: release {report.release}, current {report.current}, "
+        f"{len(report.changes)} changes, {len(report.breaking)} breaking"
+    )
+    if report.problem:
+        typer.echo(f"breaking-change: {report.problem}", err=True)
+    return report.ok
+
+
+@check_app.command("breaking")
+def check_breaking(root: Root = Path()) -> None:
+    """Fail if OWL/SHACL changed incompatibly since the last release without a major version bump."""
+    try:
+        ok = _breaking(root)
+    except (SchemaError, RegexSubsetError) as exc:
+        raise _fail(f"generation: {exc}") from exc
+    if not ok:
+        raise _fail("breaking-change check")
+    typer.echo("breaking-change check ok")
+
+
+@check_app.command("all")
+def check_all(root: Root = Path()) -> None:
+    """Run drift, breaking-change, lint and agreement, and report every failure."""
+    from monograph.core import models
+    from monograph.validate.lint import ValidatorLinter
+
+    failed = []
+    try:
+        if not _drift(root):
+            failed.append("drift")
+        if not _breaking(root):
+            failed.append("breaking")
+    except (SchemaError, RegexSubsetError) as exc:
+        typer.echo(f"generation: {exc}", err=True)
+        failed.append("generation")
+    if not ValidatorLinter(models.MODELS, models).run().ok:
+        failed.append("lint")
+    if not _agreement(root):
+        failed.append("agreement")
+    if failed:
+        raise _fail(f"gates failed: {', '.join(failed)}")
+    typer.echo("all gates ok")
+
+
+@app.command()
+def mutate(
+    root: Root = Path(),
+    only: Annotated[list[str] | None, typer.Option("--only", help="Run only these mutation IDs.")] = None,
+    record: Annotated[bool, typer.Option(help="Append the results to results/h6.")] = True,
+) -> None:
+    """Run the mutation suite: copy the repo, break one thing, run every gate, record what caught it."""
+    import sys
+    import time
+
+    from monograph.harness.measure import record_mutations
+    from monograph.mutate.mutations import BASELINE, MUTATIONS
+    from monograph.mutate.runner import MutationRunner, default_gates, subprocess_runner
+
+    runner = MutationRunner(
+        root.resolve(), default_gates(sys.executable), subprocess_runner, time.perf_counter, sys.executable
+    )
+    selected = [m for m in (BASELINE, *MUTATIONS) if not only or m.id in only]
+    results = []
+    for mutation in selected:
+        result = runner.run(mutation)
+        results.append(result)
+        caught = ", ".join(result.failed_gates) or "nothing"
+        verdict = "as expected" if result.as_expected else "UNEXPECTED"
+        typer.echo(f"{result.id}: {result.title}: caught by {caught} ({verdict}, {result.seconds:.1f}s)")
+        if result.apply_error:
+            typer.echo(f"    could not apply: {result.apply_error}", err=True)
+    if record:
+        record_mutations(wiring.results_writer(root), results)
+    if not all(r.as_expected for r in results):
+        raise _fail("some mutations were not caught by their expected gate")
+
+
+@app.command()
+def release(root: Root = Path()) -> None:
+    """Snapshot generated/ into generated/releases/<SCHEMA_VERSION>/. Refuses to overwrite a release."""
+    import shutil
+
+    from monograph.core.version import SCHEMA_VERSION
+
+    if not _drift(root):
+        raise _fail("generated/ is out of date; run `monograph gen` first")
+    target = wiring.generated_dir(root) / "releases" / SCHEMA_VERSION
+    if target.exists():
+        raise _fail(f"release {SCHEMA_VERSION} already exists; releases are immutable")
+    target.mkdir(parents=True)
+    for path in sorted(wiring.generated_dir(root).glob("monograph.*")):
+        shutil.copy2(path, target / path.name)
+    typer.echo(f"released {SCHEMA_VERSION} to {target}")
+
+
 @check_app.command("lint")
 def check_lint() -> None:
     """Fail if a validator is neither generated from a rule nor declared pydantic_only."""
