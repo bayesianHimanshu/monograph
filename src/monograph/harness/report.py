@@ -374,7 +374,8 @@ class ReportBuilder:
         if not d:
             return [*out, "Nothing recorded.", ""]
         out += [
-            f"{self._value('ingest.quarantine')} records failed SafeIdentifier or SafeText. They are stored unchanged"
+            f"{self._value('ingest.quarantine')} record{'s' if self._value('ingest.quarantine') != 1 else ''} failed"
+            " SafeIdentifier or SafeText. Quarantined records are stored unchanged"
             " in data/quarantine/ with the reason and are never sanitized.",
             "",
         ]
