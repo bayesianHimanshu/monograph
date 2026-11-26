@@ -8,3 +8,5 @@ __pycache__/
 data/raw/*
 !data/raw/.gitkeep
 dist/
+data/h4/
+data/quarantine/
