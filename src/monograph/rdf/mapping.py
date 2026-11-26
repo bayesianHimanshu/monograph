@@ -34,7 +34,7 @@ from monograph.core.refs import Ref
 from monograph.core.spec import Card, ClassSpec, FieldSpec, Kind, SchemaSpec
 from monograph.core.vocab import Vocabulary
 
-_MISSING_KEY = "~missing"
+MISSING_KEY = "~missing"  # IRI segment for an absent key value; such records are never deduplicated
 
 
 class MappingError(ValueError):
@@ -69,7 +69,7 @@ class RdfMapper:
     def _key_part(self, instance: BaseModel, key: str) -> str:
         value = instance.__dict__.get(key)
         if value is None:
-            return _MISSING_KEY
+            return MISSING_KEY
         return quote(str(value), safe="")
 
     def child_iri(self, parent: str, f: FieldSpec, child: Any, index: int | None) -> URIRef:

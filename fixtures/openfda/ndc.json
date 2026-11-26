@@ -1,0 +1,667 @@
+[
+ {
+  "active_ingredients": [
+   {
+    "name": "EPOETIN",
+    "strength": "4000 [iU]/mL"
+   }
+  ],
+  "application_number": "BLA125545",
+  "brand_name": "RETACRIT",
+  "brand_name_base": "RETACRIT",
+  "dosage_form": "INJECTION, SOLUTION",
+  "finished": true,
+  "generic_name": "epoetin alfa-epbx",
+  "labeler_name": "Pfizer Laboratories Div Pfizer Inc",
+  "listing_expiration_date": "20271231",
+  "marketing_category": "BLA",
+  "marketing_start_date": "20180618",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Pfizer Laboratories Div Pfizer Inc"
+   ],
+   "rxcui": [
+    "2047591",
+    "2047596",
+    "2047600",
+    "2047602",
+    "2047606",
+    "2047608",
+    "2047612",
+    "2047614",
+    "2047621",
+    "2047623",
+    "2463731",
+    "2463733",
+    "2463735",
+    "2463737"
+   ],
+   "spl_set_id": [
+    "3af26b0d-8ad0-44e1-a538-8bdb5ab39374"
+   ],
+   "unii": [
+    "64FS3BFH5W"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "10 VIAL, SINGLE-DOSE in 1 CARTON (0069-1307-10)  / 1 mL in 1 VIAL, SINGLE-DOSE (0069-1307-01)",
+    "marketing_start_date": "20180618",
+    "package_ndc": "0069-1307-10",
+    "sample": false
+   }
+  ],
+  "pharm_class": [
+   "Erythropoiesis-stimulating Agent [EPC]",
+   "Erythropoietin [CS]",
+   "Increased Erythroid Cell Production [PE]"
+  ],
+  "product_id": "0069-1307_a2e74269-0093-454f-963e-35c7c2f4f1ba",
+  "product_ndc": "0069-1307",
+  "product_type": "HUMAN PRESCRIPTION DRUG",
+  "route": [
+   "INTRAVENOUS",
+   "SUBCUTANEOUS"
+  ],
+  "spl_id": "a2e74269-0093-454f-963e-35c7c2f4f1ba"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "TAMSULOSIN HYDROCHLORIDE",
+    "strength": ".4 mg/1"
+   }
+  ],
+  "application_number": "ANDA202433",
+  "brand_name": "Tamsulosin Hydrochloride",
+  "brand_name_base": "Tamsulosin Hydrochloride",
+  "dosage_form": "CAPSULE",
+  "finished": true,
+  "generic_name": "Tamsulosin Hydrochloride",
+  "labeler_name": "NCS HealthCare of KY, LLC dba Vangard Labs",
+  "listing_expiration_date": "20271231",
+  "marketing_category": "ANDA",
+  "marketing_start_date": "20130430",
+  "openfda": {
+   "manufacturer_name": [
+    "NCS HealthCare of KY, LLC dba Vangard Labs"
+   ],
+   "rxcui": [
+    "863669"
+   ],
+   "spl_set_id": [
+    "503d080c-9db3-434a-add6-c7d0e5a0ab2e"
+   ],
+   "unii": [
+    "11SV1951MR"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "15 CAPSULE in 1 BLISTER PACK (0615-8055-05)",
+    "marketing_start_date": "20130430",
+    "package_ndc": "0615-8055-05",
+    "sample": false
+   },
+   {
+    "description": "7 CAPSULE in 1 BLISTER PACK (0615-8055-07)",
+    "marketing_start_date": "20180927",
+    "package_ndc": "0615-8055-07",
+    "sample": false
+   },
+   {
+    "description": "14 CAPSULE in 1 BLISTER PACK (0615-8055-14)",
+    "marketing_start_date": "20230824",
+    "package_ndc": "0615-8055-14",
+    "sample": false
+   },
+   {
+    "description": "28 CAPSULE in 1 BLISTER PACK (0615-8055-28)",
+    "marketing_start_date": "20240425",
+    "package_ndc": "0615-8055-28",
+    "sample": false
+   },
+   {
+    "description": "6 BLISTER PACK in 1 BOX, UNIT-DOSE (0615-8055-30)  / 5 CAPSULE in 1 BLISTER PACK",
+    "marketing_start_date": "20190328",
+    "package_ndc": "0615-8055-30",
+    "sample": false
+   },
+   {
+    "description": "30 CAPSULE in 1 BLISTER PACK (0615-8055-39)",
+    "marketing_start_date": "20130430",
+    "package_ndc": "0615-8055-39",
+    "sample": false
+   }
+  ],
+  "pharm_class": [
+   "Adrenergic alpha-Antagonists [MoA]",
+   "alpha-Adrenergic Blocker [EPC]"
+  ],
+  "product_id": "0615-8055_b5eec9b2-57b2-44f8-8117-3af64069e4d2",
+  "product_ndc": "0615-8055",
+  "product_type": "HUMAN PRESCRIPTION DRUG",
+  "route": [
+   "ORAL"
+  ],
+  "spl_id": "b5eec9b2-57b2-44f8-8117-3af64069e4d2"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "ISOPROPYL ALCOHOL",
+    "strength": "70 mL/100mL"
+   }
+  ],
+  "application_number": "505G(a)(3)",
+  "brand_name": "First Aid Only Hand Sanitizing Wipe",
+  "brand_name_base": "First Aid Only Hand Sanitizing Wipe",
+  "dosage_form": "SWAB",
+  "finished": true,
+  "generic_name": "Isopropyl Alcohol",
+  "labeler_name": "Acme United Corporation",
+  "listing_expiration_date": "20261231",
+  "marketing_category": "OTC MONOGRAPH DRUG",
+  "marketing_start_date": "20230831",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Acme United Corporation"
+   ],
+   "rxcui": [
+    "797544"
+   ],
+   "spl_set_id": [
+    "03ec9021-816f-970c-e063-6294a90a6732"
+   ],
+   "unii": [
+    "ND2M416302"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "1 mL in 1 PACKET (0924-0301-00)",
+    "marketing_start_date": "20230831",
+    "package_ndc": "0924-0301-00",
+    "sample": false
+   },
+   {
+    "description": "100 PACKET in 1 BOX (0924-0301-04)  / 1 mL in 1 PACKET",
+    "marketing_start_date": "20230831",
+    "package_ndc": "0924-0301-04",
+    "sample": false
+   },
+   {
+    "description": "200 PACKET in 1 BOX (0924-0301-05)  / 1 mL in 1 PACKET",
+    "marketing_start_date": "20230831",
+    "package_ndc": "0924-0301-05",
+    "sample": false
+   }
+  ],
+  "product_id": "0924-0301_27d88cfa-6cd2-403e-e063-6394a90a8088",
+  "product_ndc": "0924-0301",
+  "product_type": "HUMAN OTC DRUG",
+  "route": [
+   "TOPICAL"
+  ],
+  "spl_id": "27d88cfa-6cd2-403e-e063-6394a90a8088"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "BENZALKONIUM CHLORIDE",
+    "strength": "1.3 mg/mL"
+   }
+  ],
+  "application_number": "M003",
+  "brand_name": "Target Up and Up 2-in-1 Hand Sanitizer",
+  "brand_name_base": "Target Up and Up 2-in-1 Hand Sanitizer",
+  "dosage_form": "LOTION",
+  "finished": true,
+  "generic_name": "BENZETHONIUM CHLORIDE",
+  "labeler_name": "TARGET CORPORATION",
+  "listing_expiration_date": "20271231",
+  "marketing_category": "OTC MONOGRAPH DRUG",
+  "marketing_start_date": "20210517",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "TARGET CORPORATION"
+   ],
+   "rxcui": [
+    "1046442"
+   ],
+   "spl_set_id": [
+    "e069c9e6-024d-5482-e053-2995a90a767d"
+   ],
+   "unii": [
+    "F5UM2KM3W7"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "150 mL in 1 TUBE (11673-147-15)",
+    "marketing_start_date": "20210517",
+    "package_ndc": "11673-147-15",
+    "sample": false
+   }
+  ],
+  "product_id": "11673-147_247633d1-82ea-2c46-e063-6394a90ac41b",
+  "product_ndc": "11673-147",
+  "product_type": "HUMAN OTC DRUG",
+  "route": [
+   "TOPICAL"
+  ],
+  "spl_id": "247633d1-82ea-2c46-e063-6394a90ac41b"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "OXYGEN",
+    "strength": "240 L/240L"
+   }
+  ],
+  "brand_name": "Oxygen Size C",
+  "brand_name_base": "Oxygen Size C",
+  "dosage_form": "GAS",
+  "finished": true,
+  "generic_name": "Oxygen",
+  "labeler_name": "Anesthesia Service, Inc.",
+  "listing_expiration_date": "20261231",
+  "marketing_category": "UNAPPROVED MEDICAL GAS",
+  "marketing_start_date": "19560101",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Anesthesia Service, Inc."
+   ],
+   "rxcui": [
+    "542304"
+   ],
+   "spl_set_id": [
+    "22cb91e0-ba76-3032-e054-00144ff8d46c"
+   ],
+   "unii": [
+    "S88TT14065"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "1 L in 1 CYLINDER (19218-0002-2)",
+    "marketing_start_date": "19560101",
+    "package_ndc": "19218-0002-2",
+    "sample": false
+   }
+  ],
+  "product_id": "19218-0002_450f66e2-d5c2-6306-e063-6394a90aa95b",
+  "product_ndc": "19218-0002",
+  "product_type": "HUMAN PRESCRIPTION DRUG",
+  "route": [
+   "RESPIRATORY (INHALATION)"
+  ],
+  "spl_id": "450f66e2-d5c2-6306-e063-6394a90aa95b"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "OLOPATADINE HYDROCHLORIDE",
+    "strength": "1 mg/mL"
+   }
+  ],
+  "application_number": "ANDA204812",
+  "brand_name": "OLOPATADINE HYDROCHLORIDE",
+  "brand_name_base": "OLOPATADINE HYDROCHLORIDE",
+  "dosage_form": "SOLUTION",
+  "finished": true,
+  "generic_name": "OLOPATADINE HYDROCHLORIDE",
+  "labeler_name": "Kroger Company",
+  "listing_expiration_date": "20261231",
+  "marketing_category": "ANDA",
+  "marketing_start_date": "20200715",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Kroger Company"
+   ],
+   "rxcui": [
+    "1111339"
+   ],
+   "spl_set_id": [
+    "f8993bc2-0fb3-4802-8187-3677d0e58026"
+   ],
+   "unii": [
+    "2XG66W44KF"
+   ],
+   "upc": [
+    "0041260011580"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "1 BOTTLE, PLASTIC in 1 CARTON (30142-064-64)  / 5 mL in 1 BOTTLE, PLASTIC",
+    "marketing_start_date": "20200715",
+    "package_ndc": "30142-064-64",
+    "sample": false
+   }
+  ],
+  "pharm_class": [
+   "Decreased Histamine Release [PE]",
+   "Histamine H1 Receptor Antagonists [MoA]",
+   "Histamine-1 Receptor Inhibitor [EPC]"
+  ],
+  "product_id": "30142-064_54a3db8b-8ddb-468b-aa0f-8cad61ee643c",
+  "product_ndc": "30142-064",
+  "product_type": "HUMAN OTC DRUG",
+  "route": [
+   "OPHTHALMIC"
+  ],
+  "spl_id": "54a3db8b-8ddb-468b-aa0f-8cad61ee643c"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "ACITRETIN",
+    "strength": "1 kg/kg"
+   }
+  ],
+  "brand_name_base": null,
+  "dosage_form": "POWDER",
+  "finished": false,
+  "generic_name": "Acitretin",
+  "labeler_name": "Chongqing Huapont Shengchem Pharmaceutical Co., Ltd.",
+  "listing_expiration_date": "20271231",
+  "marketing_category": "BULK INGREDIENT FOR HUMAN PRESCRIPTION COMPOUNDING",
+  "marketing_start_date": "20251101",
+  "openfda": {},
+  "packaging": [
+   {
+    "description": ".1 kg in 1 BAG (48943-0040-1)",
+    "marketing_start_date": "01-NOV-25",
+    "package_ndc": "48943-0040-1"
+   },
+   {
+    "description": "1 kg in 1 BAG (48943-0040-2)",
+    "marketing_start_date": "01-NOV-25",
+    "package_ndc": "48943-0040-2"
+   },
+   {
+    "description": "5 kg in 1 BAG (48943-0040-3)",
+    "marketing_start_date": "01-NOV-25",
+    "package_ndc": "48943-0040-3"
+   }
+  ],
+  "product_id": "48943-0040_443960ac-8992-9b1f-e063-6294a90ac29e",
+  "product_ndc": "48943-0040",
+  "product_type": "BULK INGREDIENT",
+  "spl_id": "443960ac-8992-9b1f-e063-6294a90ac29e"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "ENSULIZOLE",
+    "strength": "27 g/kg"
+   },
+   {
+    "name": "ZINC OXIDE",
+    "strength": "53 g/kg"
+   },
+   {
+    "name": "OCTISALATE",
+    "strength": "30 g/kg"
+   },
+   {
+    "name": "OCTINOXATE",
+    "strength": "65 g/kg"
+   }
+  ],
+  "brand_name_base": null,
+  "dosage_form": "EMULSION",
+  "finished": false,
+  "generic_name": "TOM FORD ARCHITECTURE RADIANCE HYDRATING FOUNDATION BROAD SPECTRUM SPF 50",
+  "labeler_name": "TOM FORD BEAUTY DIST",
+  "listing_expiration_date": "20261231",
+  "marketing_category": "DRUG FOR FURTHER PROCESSING",
+  "marketing_start_date": "20241204",
+  "openfda": {},
+  "packaging": [
+   {
+    "description": "200 kg in 1 DRUM (76398-902-55)",
+    "marketing_start_date": "04-DEC-24",
+    "package_ndc": "76398-902-55"
+   }
+  ],
+  "product_id": "76398-902_284e5b78-5cec-c3cd-e063-6394a90aaaeb",
+  "product_ndc": "76398-902",
+  "product_type": "DRUG FOR FURTHER PROCESSING",
+  "spl_id": "284e5b78-5cec-c3cd-e063-6394a90aaaeb"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "DICLOFENAC SODIUM",
+    "strength": "30 mg/g"
+   }
+  ],
+  "application_number": "ANDA212351",
+  "brand_name": "Diclofenac Sodium",
+  "brand_name_base": "Diclofenac Sodium",
+  "dosage_form": "GEL",
+  "finished": true,
+  "generic_name": "Diclofenac Sodium Topical",
+  "labeler_name": "Advanced Rx Pharmacy of Tennessee, LLC",
+  "listing_expiration_date": "20261231",
+  "marketing_category": "ANDA",
+  "marketing_start_date": "20230519",
+  "openfda": {
+   "manufacturer_name": [
+    "Advanced Rx Pharmacy of Tennessee, LLC"
+   ],
+   "rxcui": [
+    "855642"
+   ],
+   "spl_set_id": [
+    "fc0e6a51-bec3-f7ee-e053-6394a90ada9a"
+   ],
+   "unii": [
+    "QTG126297Q"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "1 TUBE in 1 CARTON (80425-0338-1)  / 100 g in 1 TUBE",
+    "marketing_start_date": "20230519",
+    "package_ndc": "80425-0338-1",
+    "sample": false
+   }
+  ],
+  "pharm_class": [
+   "Anti-Inflammatory Agents",
+   "Non-Steroidal [CS]",
+   "Cyclooxygenase Inhibitors [MoA]",
+   "Decreased Prostaglandin Production [PE]",
+   "Nonsteroidal Anti-inflammatory Drug [EPC]"
+  ],
+  "product_id": "80425-0338_2a9ba8f4-6cf2-e827-e063-6394a90a0300",
+  "product_ndc": "80425-0338",
+  "product_type": "HUMAN PRESCRIPTION DRUG",
+  "route": [
+   "TOPICAL"
+  ],
+  "spl_id": "2a9ba8f4-6cf2-e827-e063-6394a90a0300"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "ISOPROPYL ALCOHOL",
+    "strength": "70 mL/100mL"
+   }
+  ],
+  "application_number": "M003",
+  "brand_name": "Isopropyl Alcohol",
+  "brand_name_base": "Isopropyl Alcohol",
+  "dosage_form": "LIQUID",
+  "finished": true,
+  "generic_name": "Isopropyl Alcohol",
+  "labeler_name": "GoBrands, Inc.",
+  "listing_expiration_date": "20271231",
+  "marketing_category": "OTC MONOGRAPH DRUG",
+  "marketing_start_date": "20240124",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "GoBrands, Inc."
+   ],
+   "rxcui": [
+    "808520"
+   ],
+   "spl_set_id": [
+    "0fb3db50-4132-07dc-e063-6294a90a8168"
+   ],
+   "unii": [
+    "ND2M416302"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "473 mL in 1 BOTTLE, PLASTIC (82501-0810-1)",
+    "marketing_start_date": "20240124",
+    "package_ndc": "82501-0810-1",
+    "sample": false
+   }
+  ],
+  "product_id": "82501-0810_4a03b772-40ac-b2b5-e063-6394a90ac12a",
+  "product_ndc": "82501-0810",
+  "product_type": "HUMAN OTC DRUG",
+  "route": [
+   "TOPICAL"
+  ],
+  "spl_id": "4a03b772-40ac-b2b5-e063-6394a90ac12a"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "CALCIUM CARBONATE",
+    "strength": "1000 mg/1"
+   }
+  ],
+  "application_number": "M001",
+  "brand_name": "MGC Health Calcium Carbonate Antacid Assorted Berries",
+  "brand_name_base": "MGC Health Calcium Carbonate Antacid",
+  "brand_name_suffix": "Assorted Berries",
+  "dosage_form": "TABLET",
+  "finished": true,
+  "generic_name": "Calcium Carbonate",
+  "labeler_name": "Medical Group Care LLC",
+  "listing_expiration_date": "20271231",
+  "marketing_category": "OTC MONOGRAPH DRUG",
+  "marketing_start_date": "20250812",
+  "openfda": {
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Medical Group Care LLC"
+   ],
+   "rxcui": [
+    "308892"
+   ],
+   "spl_set_id": [
+    "47e1c7c7-4f3b-c04b-e063-6394a90a775f"
+   ],
+   "unii": [
+    "H0G9379FGK"
+   ],
+   "upc": [
+    "0383173003437"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "160 TABLET in 1 PACKAGE (83173-137-16)",
+    "marketing_start_date": "20250812",
+    "package_ndc": "83173-137-16",
+    "sample": false
+   }
+  ],
+  "pharm_class": [
+   "Blood Coagulation Factor [EPC]",
+   "Calcium [CS]",
+   "Cations",
+   "Divalent [CS]",
+   "Increased Coagulation Factor Activity [PE]",
+   "Phosphate Binder [EPC]",
+   "Phosphate Chelating Activity [MoA]"
+  ],
+  "product_id": "83173-137_47e1c7ce-78d5-ce27-e063-6294a90a178f",
+  "product_ndc": "83173-137",
+  "product_type": "HUMAN OTC DRUG",
+  "route": [
+   "ORAL"
+  ],
+  "spl_id": "47e1c7ce-78d5-ce27-e063-6294a90a178f"
+ },
+ {
+  "active_ingredients": [
+   {
+    "name": "ROCURONIUM BROMIDE",
+    "strength": "10 mg/mL"
+   }
+  ],
+  "application_number": "ANDA216234",
+  "brand_name": "ROCURONIUM BROMIDE",
+  "brand_name_base": "ROCURONIUM BROMIDE",
+  "dosage_form": "INJECTION, SOLUTION",
+  "finished": true,
+  "generic_name": "ROCURONIUM BROMIDE",
+  "labeler_name": "ProPharma Distribution",
+  "listing_expiration_date": "20261231",
+  "marketing_category": "ANDA",
+  "marketing_start_date": "20241003",
+  "openfda": {
+   "manufacturer_name": [
+    "ProPharma Distribution"
+   ],
+   "rxcui": [
+    "1234995"
+   ],
+   "spl_set_id": [
+    "42da65ee-2402-7b51-e063-6394a90a46b7"
+   ],
+   "unii": [
+    "I65MW4OFHZ"
+   ]
+  },
+  "packaging": [
+   {
+    "description": "10 mL in 1 VIAL, MULTI-DOSE (84549-131-10)",
+    "marketing_start_date": "20251010",
+    "package_ndc": "84549-131-10",
+    "sample": false
+   }
+  ],
+  "pharm_class": [
+   "Neuromuscular Nondepolarizing Blockade [PE]",
+   "Nondepolarizing Neuromuscular Blocker [EPC]"
+  ],
+  "product_id": "84549-131_42da65ee-2403-7b51-e063-6394a90a46b7",
+  "product_ndc": "84549-131",
+  "product_type": "HUMAN PRESCRIPTION DRUG",
+  "route": [
+   "INTRAVENOUS"
+  ],
+  "spl_id": "42da65ee-2403-7b51-e063-6394a90a46b7"
+ }
+]

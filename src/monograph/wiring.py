@@ -5,12 +5,15 @@ Nothing here is cached at module level; every call builds fresh objects.
 
 from __future__ import annotations
 
+import json
 import time
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
+from typing import Any
 
 from rdflib import OWL, RDF, RDFS, XSD, Graph
 
+from monograph.core.instances import Instantiator
 from monograph.core.meta import DEFAULT_BASE
 from monograph.core.models import MODELS
 from monograph.core.spec import SchemaSpec, analyze
@@ -23,6 +26,9 @@ from monograph.gen.owl import OwlGenerator
 from monograph.gen.regex import check_pattern
 from monograph.gen.shacl import SH, ShaclGenerator
 from monograph.gen.turtle import TurtleWriter
+from monograph.harness.results import ResultsWriter
+from monograph.ingest.conformance import ConformanceRun
+from monograph.ingest.openfda import ENDPOINTS, OpenFdaMapper
 from monograph.rdf.mapping import RdfMapper
 from monograph.validate.agreement import AgreementChecker
 from monograph.validate.pydantic_side import PydanticValidator
@@ -83,3 +89,47 @@ def mapper(spec: SchemaSpec, vocab: Vocabulary, base: str = DEFAULT_BASE) -> Rdf
 def agreement_checker(spec: SchemaSpec, root: Path, today: date) -> AgreementChecker:
     vocab = Vocabulary()
     return AgreementChecker(PydanticValidator(today), ShaclValidator(shapes_graph(root), mapper(spec, vocab)))
+
+
+def raw_dir(root: Path) -> Path:
+    return root / "data" / "raw"
+
+
+def results_dir(root: Path) -> Path:
+    return root / "results" / "h6"
+
+
+def git_sha(root: Path) -> str:
+    import subprocess
+
+    try:
+        out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+    dirty = subprocess.run(
+        ["git", "status", "--porcelain"], cwd=root, capture_output=True, text=True, check=False
+    ).stdout
+    return out.stdout.strip() + ("-dirty" if dirty.strip() else "")
+
+
+def results_writer(root: Path) -> ResultsWriter:
+    import uuid
+
+    return ResultsWriter(
+        results_dir(root), uuid.uuid4().hex[:12], git_sha(root), SCHEMA_VERSION, lambda: datetime.now(UTC)
+    )
+
+
+def conformance_run(spec: SchemaSpec, root: Path) -> ConformanceRun:
+    vocab = Vocabulary()
+    return ConformanceRun(
+        spec, OpenFdaMapper(), Instantiator(spec), mapper(spec, vocab), agreement_checker(spec, root, today())
+    )
+
+
+def openfda_fixtures(root: Path) -> dict[str, list[dict[str, Any]]]:
+    out: dict[str, list[dict[str, Any]]] = {}
+    for endpoint in ENDPOINTS:
+        path = fixtures_dir(root) / "openfda" / f"{endpoint}.json"
+        out[endpoint] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+    return out

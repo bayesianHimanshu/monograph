@@ -1,0 +1,2620 @@
+[
+ {
+  "companynumb": "1289378",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "patient": {
+   "drug": [
+    {
+     "drugadministrationroute": "042",
+     "drugauthorizationnumb": "021858",
+     "drugbatchnumb": "H6200HO3",
+     "drugcharacterization": "1",
+     "drugdosagetext": "3 MG, 1 IN 3 M, INTRAVENOUS (NOT OTHERWISE SPECIFIED)",
+     "drugindication": "OSTEOPOROSIS",
+     "drugstartdate": "20130913",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "3",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "BONIVA"
+    }
+   ],
+   "patientonsetage": "77",
+   "patientonsetageunit": "801",
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Vomiting",
+     "reactionmeddraversionpt": "17.0"
+    },
+    {
+     "reactionmeddrapt": "Diarrhoea",
+     "reactionmeddraversionpt": "17.0"
+    },
+    {
+     "reactionmeddrapt": "Arthralgia",
+     "reactionmeddraversionpt": "17.0"
+    },
+    {
+     "reactionmeddrapt": "Headache",
+     "reactionmeddraversionpt": "17.0"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140306",
+  "receiptdateformat": "102",
+  "receivedate": "20140306",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "1289378",
+   "duplicatesource": "GENENTECH"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003300",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "1",
+  "seriousnessdisabling": "1",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2012-0059171",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "10 MG, UNK",
+     "drugindication": "PRODUCT USED FOR UNKNOWN INDICATION",
+     "drugstartdate": "20111014",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "10",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "activesubstance": {
+      "activesubstancename": "TREPROSTINIL"
+     },
+     "drugcharacterization": "1",
+     "drugrecurreadministration": "3",
+     "medicinalproduct": "TYVASO",
+     "openfda": {
+      "application_number": [
+       "NDA022387"
+      ],
+      "brand_name": [
+       "TYVASO"
+      ],
+      "generic_name": [
+       "TREPROSTINIL"
+      ],
+      "manufacturer_name": [
+       "United Therapeutics Corporation"
+      ],
+      "nui": [
+       "N0000175416",
+       "M0017817",
+       "N0000009909"
+      ],
+      "package_ndc": [
+       "66302-206-01",
+       "66302-206-02",
+       "66302-206-03",
+       "66302-206-04"
+      ],
+      "pharm_class_cs": [
+       "Prostaglandins I [CS]"
+      ],
+      "pharm_class_epc": [
+       "Prostacycline Vasodilator [EPC]"
+      ],
+      "pharm_class_pe": [
+       "Vasodilation [PE]"
+      ],
+      "product_ndc": [
+       "66302-206"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "857795",
+       "857799"
+      ],
+      "spl_id": [
+       "78a0b514-481a-4ea9-8ec6-8b60acdf2158"
+      ],
+      "spl_set_id": [
+       "cbc31ab1-a80f-4b50-a3b1-39910b0fb609"
+      ],
+      "substance_name": [
+       "TREPROSTINIL"
+      ],
+      "unii": [
+       "RUM6K67ESG"
+      ]
+     }
+    }
+   ],
+   "patientagegroup": "6",
+   "patientonsetage": "68",
+   "patientonsetageunit": "801",
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Cough",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Throat irritation",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20150812",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2012-0059171",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003306",
+  "safetyreportversion": "2",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20151125",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2012-0059281",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "1",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "022081",
+     "drugbatchnumb": "FWKM",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "5 MG, UNK",
+     "drugenddate": "20120601",
+     "drugenddateformat": "102",
+     "drugindication": "PRODUCT USED FOR UNKNOWN INDICATION",
+     "drugstartdate": "20120528",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "5",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    }
+   ],
+   "patientagegroup": "6",
+   "patientonsetage": "82",
+   "patientonsetageunit": "801",
+   "patientsex": "1",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Dyspnoea",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "1"
+    }
+   ],
+   "summary": {
+    "narrativeincludeclinical": "CASE EVENT DATE: 20120601"
+   }
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20150812",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2012-0059281",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003358",
+  "safetyreportversion": "2",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20151125",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2012-0061242",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "10 MG, UNK",
+     "drugindication": "PULMONARY ARTERIAL HYPERTENSION",
+     "drugstartdate": "20111017",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "10",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    }
+   ],
+   "patientagegroup": "5",
+   "patientonsetage": "19",
+   "patientonsetageunit": "801",
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Dyspnoea",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Dyspnoea exertional",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Oedema",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20150812",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2012-0061242",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003388",
+  "safetyreportversion": "3",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20151125",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2012-0063417",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "activesubstance": {
+      "activesubstancename": "SILDENAFIL CITRATE"
+     },
+     "drugcharacterization": "2",
+     "drugrecurreadministration": "3",
+     "medicinalproduct": "REVATIO",
+     "openfda": {
+      "application_number": [
+       "NDA021845",
+       "NDA203109",
+       "NDA022473"
+      ],
+      "brand_name": [
+       "REVATIO"
+      ],
+      "generic_name": [
+       "SILDENAFIL CITRATE"
+      ],
+      "manufacturer_name": [
+       "PFIZER LABORATORIES DIV PFIZER INC",
+       "Viatris Specialty LLC"
+      ],
+      "package_ndc": [
+       "0069-4190-68",
+       "0069-0338-01",
+       "0069-0336-21",
+       "58151-402-77",
+       "58151-395-31",
+       "58151-385-35"
+      ],
+      "product_ndc": [
+       "0069-4190",
+       "0069-0338",
+       "0069-0336",
+       "58151-385",
+       "58151-402",
+       "58151-395"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL",
+       "INTRAVENOUS"
+      ],
+      "rxcui": [
+       "577033",
+       "581645",
+       "882527",
+       "882530",
+       "1307427",
+       "1307431"
+      ],
+      "spl_id": [
+       "9fcb9918-6486-4715-8733-d5ff24a2679d",
+       "51ddbcc2-2d9a-4b24-a02f-d97e2ae060a6"
+      ],
+      "spl_set_id": [
+       "f158fe10-d5dc-4432-b2c9-fc665401291b",
+       "3bb9363e-b28d-4019-8aae-539233dca214"
+      ],
+      "substance_name": [
+       "SILDENAFIL CITRATE"
+      ],
+      "unii": [
+       "BW9B0ZE037"
+      ]
+     }
+    },
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "022081",
+     "drugbatchnumb": "GMBG",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "5 MG, QD",
+     "drugindication": "PULMONARY ARTERIAL HYPERTENSION",
+     "drugintervaldosagedefinition": "804",
+     "drugintervaldosageunitnumb": "1",
+     "drugseparatedosagenumb": "1",
+     "drugstartdate": "20120928",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "5",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    }
+   ],
+   "patientagegroup": "6",
+   "patientonsetage": "82",
+   "patientonsetageunit": "801",
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Rash",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "1",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20150812",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2012-0063417",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003422",
+  "safetyreportversion": "3",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20151125",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2012-0063211",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "CHRONIC OBSTRUCTIVE PULMONARY DISEASE",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "OBESITY",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "5 MG, UNK",
+     "drugindication": "PULMONARY HYPERTENSION",
+     "drugstartdate": "20120928",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "5",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "SLEEP APNOEA SYNDROME",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "PICKWICKIAN SYNDROME",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    }
+   ],
+   "patientagegroup": "5",
+   "patientonsetage": "64",
+   "patientonsetageunit": "801",
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Peripheral swelling",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20150812",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2012-0063211",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003434",
+  "safetyreportversion": "3",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20151125",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2012-0061732",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "4",
+     "activesubstance": {
+      "activesubstancename": "AMBRISENTAN"
+     },
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "10 MG, UNK",
+     "drugindication": "PRODUCT USED FOR UNKNOWN INDICATION",
+     "drugstartdate": "20110413",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "10",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    }
+   ],
+   "patientagegroup": "6",
+   "patientonsetage": "67",
+   "patientonsetageunit": "801",
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Pain",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Depression",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Asthenia",
+     "reactionmeddraversionpt": "18.1",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20150812",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2012-0061732",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003478",
+  "safetyreportversion": "2",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20151125",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-ELI_LILLY_AND_COMPANY-US201403001790",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "1",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "5",
+     "drugadministrationroute": "065",
+     "drugauthorizationnumb": "018780",
+     "drugbatchnumb": "C235110C",
+     "drugcharacterization": "1",
+     "drugdosageform": "INJECTION",
+     "drugindication": "PRODUCT USED FOR UNKNOWN INDICATION",
+     "medicinalproduct": "HUMULIN 30% REGULAR, 70% NPH"
+    }
+   ],
+   "patientsex": "1",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Blindness",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "3"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-ELI_LILLY_AND_COMPANY-US201403001790",
+   "duplicatesource": "ELI LILLY AND CO"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003507",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "1",
+  "seriousnessother": "1",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-ABBVIE-13P-163-1153832-00",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "2",
+     "drugauthorizationnumb": "018723",
+     "drugbatchnumb": "UNKNOWN",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "PRODUCT USED FOR UNKNOWN INDICATION",
+     "medicinalproduct": "DEPAKOTE",
+     "openfda": {
+      "application_number": [
+       "NDA021168",
+       "NDA018723",
+       "NDA019680"
+      ],
+      "brand_name": [
+       "DEPAKOTE ER",
+       "DEPAKOTE",
+       "DEPAKOTE SPRINKLES"
+      ],
+      "generic_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "manufacturer_name": [
+       "AbbVie Inc."
+      ],
+      "package_ndc": [
+       "0074-3826-13",
+       "0074-3826-11",
+       "0074-7401-13",
+       "0074-7126-13",
+       "0074-7126-53",
+       "0074-7126-11",
+       "0074-7126-72",
+       "0074-7402-13",
+       "0074-6212-13",
+       "0074-6214-13",
+       "0074-6214-53",
+       "0074-6215-13",
+       "0074-6215-53",
+       "0074-7325-13",
+       "0074-7327-13",
+       "0074-7326-13",
+       "0074-6114-13",
+       "0074-6114-11"
+      ],
+      "product_ndc": [
+       "0074-7401",
+       "0074-3826",
+       "0074-7126",
+       "0074-7402",
+       "0074-7325",
+       "0074-6212",
+       "0074-6214",
+       "0074-6215",
+       "0074-7327",
+       "0074-7326",
+       "0074-6114"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "1099563",
+       "1099565",
+       "1099569",
+       "1099571",
+       "1099625",
+       "1099626",
+       "1099678",
+       "1099679",
+       "1099870",
+       "1099871",
+       "1099596",
+       "1099598"
+      ],
+      "spl_id": [
+       "0ee65b66-ead3-44ef-911f-14965b067903",
+       "7cc3a0b3-93f8-4825-88e1-bf6ddb0db23d",
+       "d038b7e9-b014-4771-93be-90aeeaece03d"
+      ],
+      "spl_set_id": [
+       "0dc024ce-efc8-4690-7cb5-639c728fccac",
+       "08a65cf4-7749-4ceb-6895-8f4805e2b01f",
+       "4619aff4-0f80-444f-858d-42e4137aa809"
+      ],
+      "substance_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "unii": [
+       "644VL95AO6"
+      ]
+     }
+    },
+    {
+     "actiondrug": "2",
+     "drugauthorizationnumb": "018723",
+     "drugbatchnumb": "UNKNOWN",
+     "drugcharacterization": "1",
+     "medicinalproduct": "DEPAKOTE",
+     "openfda": {
+      "application_number": [
+       "NDA021168",
+       "NDA018723",
+       "NDA019680"
+      ],
+      "brand_name": [
+       "DEPAKOTE ER",
+       "DEPAKOTE",
+       "DEPAKOTE SPRINKLES"
+      ],
+      "generic_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "manufacturer_name": [
+       "AbbVie Inc."
+      ],
+      "package_ndc": [
+       "0074-3826-13",
+       "0074-3826-11",
+       "0074-7401-13",
+       "0074-7126-13",
+       "0074-7126-53",
+       "0074-7126-11",
+       "0074-7126-72",
+       "0074-7402-13",
+       "0074-6212-13",
+       "0074-6214-13",
+       "0074-6214-53",
+       "0074-6215-13",
+       "0074-6215-53",
+       "0074-7325-13",
+       "0074-7327-13",
+       "0074-7326-13",
+       "0074-6114-13",
+       "0074-6114-11"
+      ],
+      "product_ndc": [
+       "0074-7401",
+       "0074-3826",
+       "0074-7126",
+       "0074-7402",
+       "0074-7325",
+       "0074-6212",
+       "0074-6214",
+       "0074-6215",
+       "0074-7327",
+       "0074-7326",
+       "0074-6114"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "1099563",
+       "1099565",
+       "1099569",
+       "1099571",
+       "1099625",
+       "1099626",
+       "1099678",
+       "1099679",
+       "1099870",
+       "1099871",
+       "1099596",
+       "1099598"
+      ],
+      "spl_id": [
+       "0ee65b66-ead3-44ef-911f-14965b067903",
+       "7cc3a0b3-93f8-4825-88e1-bf6ddb0db23d",
+       "d038b7e9-b014-4771-93be-90aeeaece03d"
+      ],
+      "spl_set_id": [
+       "0dc024ce-efc8-4690-7cb5-639c728fccac",
+       "08a65cf4-7749-4ceb-6895-8f4805e2b01f",
+       "4619aff4-0f80-444f-858d-42e4137aa809"
+      ],
+      "substance_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "unii": [
+       "644VL95AO6"
+      ]
+     }
+    }
+   ],
+   "patientsex": "1",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Balance disorder",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Drug level increased",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "1",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-ABBVIE-13P-163-1153832-00",
+   "duplicatesource": "ABBVIE"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003544",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "CA-ABBVIE-14P-028-1211803-00",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "1",
+  "occurcountry": "CA",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "4",
+     "drugauthorizationnumb": "020517",
+     "drugbatchnumb": "UNKNOWN",
+     "drugcharacterization": "1",
+     "drugdosageform": "INJECTION",
+     "drugenddate": "20131230",
+     "drugenddateformat": "102",
+     "drugindication": "PROSTATE CANCER",
+     "drugstartdate": "20050628",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "30",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LUPRON DEPOT",
+     "openfda": {
+      "application_number": [
+       "NDA020708",
+       "NDA020011",
+       "NDA020517",
+       "NDA019732"
+      ],
+      "brand_name": [
+       "LUPRON DEPOT"
+      ],
+      "generic_name": [
+       "LEUPROLIDE ACETATE"
+      ],
+      "manufacturer_name": [
+       "AbbVie Inc."
+      ],
+      "package_ndc": [
+       "0074-3663-03",
+       "0074-3641-03",
+       "0074-3641-71",
+       "0074-3473-03",
+       "0074-3473-55",
+       "0074-9945-01",
+       "0074-0009-01",
+       "0074-3683-03",
+       "0074-3683-55",
+       "0074-9930-01",
+       "0074-3642-03",
+       "0074-3642-55",
+       "0074-9907-01",
+       "0074-3346-03",
+       "0074-3346-55",
+       "0074-9922-01"
+      ],
+      "product_ndc": [
+       "0074-3663",
+       "0074-3641",
+       "0074-3346",
+       "0074-3473",
+       "0074-3683",
+       "0074-3642"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "rxcui": [
+       "1115472",
+       "1115473",
+       "797544",
+       "1115457",
+       "1115459",
+       "1115257",
+       "1115259",
+       "1115462",
+       "1115464",
+       "1115467",
+       "1115468",
+       "1946521",
+       "1946522"
+      ],
+      "spl_id": [
+       "fef36994-8fde-4b22-99a9-aa850c147eee",
+       "691f9b76-b15b-47c9-8df9-8ebe91999b45",
+       "d7c452f3-aedd-4c8b-9e8e-46690c56a29c"
+      ],
+      "spl_set_id": [
+       "60aad237-e1da-4705-cbbb-b3ca79e89ad8",
+       "00c486b0-bd7b-4898-834d-8c656e5e73cb",
+       "cbc8f94e-7330-4465-05ad-16d64493a5dd"
+      ]
+     }
+    }
+   ],
+   "patientonsetage": "84",
+   "patientonsetageunit": "801",
+   "patientsex": "1",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Death",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "5"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "COUNTRY NOT SPECIFIED"
+  },
+  "primarysourcecountry": "CA",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "CA-ABBVIE-14P-028-1211803-00",
+   "duplicatesource": "ABBVIE"
+  },
+  "reporttype": "2",
+  "safetyreportid": "10003545",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "1",
+  "seriousnessdeath": "1",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-ABBVIE-13P-163-1133089-00",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "5",
+     "drugauthorizationnumb": "018723",
+     "drugbatchnumb": "UNKNOWN",
+     "drugcharacterization": "1",
+     "drugindication": "PRODUCT USED FOR UNKNOWN INDICATION",
+     "medicinalproduct": "DEPAKOTE",
+     "openfda": {
+      "application_number": [
+       "NDA021168",
+       "NDA018723",
+       "NDA019680"
+      ],
+      "brand_name": [
+       "DEPAKOTE ER",
+       "DEPAKOTE",
+       "DEPAKOTE SPRINKLES"
+      ],
+      "generic_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "manufacturer_name": [
+       "AbbVie Inc."
+      ],
+      "package_ndc": [
+       "0074-3826-13",
+       "0074-3826-11",
+       "0074-7401-13",
+       "0074-7126-13",
+       "0074-7126-53",
+       "0074-7126-11",
+       "0074-7126-72",
+       "0074-7402-13",
+       "0074-6212-13",
+       "0074-6214-13",
+       "0074-6214-53",
+       "0074-6215-13",
+       "0074-6215-53",
+       "0074-7325-13",
+       "0074-7327-13",
+       "0074-7326-13",
+       "0074-6114-13",
+       "0074-6114-11"
+      ],
+      "product_ndc": [
+       "0074-7401",
+       "0074-3826",
+       "0074-7126",
+       "0074-7402",
+       "0074-7325",
+       "0074-6212",
+       "0074-6214",
+       "0074-6215",
+       "0074-7327",
+       "0074-7326",
+       "0074-6114"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "1099563",
+       "1099565",
+       "1099569",
+       "1099571",
+       "1099625",
+       "1099626",
+       "1099678",
+       "1099679",
+       "1099870",
+       "1099871",
+       "1099596",
+       "1099598"
+      ],
+      "spl_id": [
+       "0ee65b66-ead3-44ef-911f-14965b067903",
+       "7cc3a0b3-93f8-4825-88e1-bf6ddb0db23d",
+       "d038b7e9-b014-4771-93be-90aeeaece03d"
+      ],
+      "spl_set_id": [
+       "0dc024ce-efc8-4690-7cb5-639c728fccac",
+       "08a65cf4-7749-4ceb-6895-8f4805e2b01f",
+       "4619aff4-0f80-444f-858d-42e4137aa809"
+      ],
+      "substance_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "unii": [
+       "644VL95AO6"
+      ]
+     }
+    }
+   ],
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Platelet count decreased",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "1",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-ABBVIE-13P-163-1133089-00",
+   "duplicatesource": "ABBVIE"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003587",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "PHHY2014AR030134",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "1",
+  "occurcountry": "AR",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "5",
+     "drugadministrationroute": "048",
+     "drugauthorizationnumb": "021283",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "160 MG, DAILY",
+     "drugrecurreadministration": "3",
+     "drugstructuredosagenumb": "160",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "DIOVAN",
+     "openfda": {
+      "application_number": [
+       "NDA021283"
+      ],
+      "brand_name": [
+       "DIOVAN"
+      ],
+      "generic_name": [
+       "VALSARTAN"
+      ],
+      "manufacturer_name": [
+       "Novartis Pharmaceuticals Corporation"
+      ],
+      "nui": [
+       "N0000000070",
+       "N0000175561"
+      ],
+      "package_ndc": [
+       "0078-0423-15",
+       "0078-0358-34",
+       "0078-1245-34",
+       "0078-0359-34",
+       "0078-1252-34",
+       "0078-0360-34",
+       "0078-1259-34"
+      ],
+      "pharm_class_epc": [
+       "Angiotensin 2 Receptor Blocker [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Angiotensin 2 Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "0078-0358",
+       "0078-0423",
+       "0078-1245",
+       "0078-0359",
+       "0078-1252",
+       "0078-0360",
+       "0078-1259"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "349199",
+       "349200",
+       "349201",
+       "349483",
+       "351761",
+       "351762",
+       "352001",
+       "352274"
+      ],
+      "spl_id": [
+       "8b57e357-5cfb-49a6-a600-59ce118fd1e9"
+      ],
+      "spl_set_id": [
+       "5ddba454-f3e6-43c2-a7a6-58365d297213"
+      ],
+      "substance_name": [
+       "VALSARTAN"
+      ],
+      "unii": [
+       "80M03YXJ7I"
+      ]
+     }
+    }
+   ],
+   "patientsex": "1",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Neoplasm malignant",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "5"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "COUNTRY NOT SPECIFIED"
+  },
+  "primarysourcecountry": "AR",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "PHHY2014AR030134",
+   "duplicatesource": "NOVARTIS"
+  },
+  "reporttype": "2",
+  "safetyreportid": "10003625",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "1",
+  "seriousnessdeath": "1",
+  "seriousnessother": "1",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-ABBVIE-13P-163-1101504-00",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "drugauthorizationnumb": "018723",
+     "drugbatchnumb": "UNKNOWN",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "CONVULSION",
+     "medicinalproduct": "DEPAKOTE",
+     "openfda": {
+      "application_number": [
+       "NDA021168",
+       "NDA018723",
+       "NDA019680"
+      ],
+      "brand_name": [
+       "DEPAKOTE ER",
+       "DEPAKOTE",
+       "DEPAKOTE SPRINKLES"
+      ],
+      "generic_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "manufacturer_name": [
+       "AbbVie Inc."
+      ],
+      "package_ndc": [
+       "0074-3826-13",
+       "0074-3826-11",
+       "0074-7401-13",
+       "0074-7126-13",
+       "0074-7126-53",
+       "0074-7126-11",
+       "0074-7126-72",
+       "0074-7402-13",
+       "0074-6212-13",
+       "0074-6214-13",
+       "0074-6214-53",
+       "0074-6215-13",
+       "0074-6215-53",
+       "0074-7325-13",
+       "0074-7327-13",
+       "0074-7326-13",
+       "0074-6114-13",
+       "0074-6114-11"
+      ],
+      "product_ndc": [
+       "0074-7401",
+       "0074-3826",
+       "0074-7126",
+       "0074-7402",
+       "0074-7325",
+       "0074-6212",
+       "0074-6214",
+       "0074-6215",
+       "0074-7327",
+       "0074-7326",
+       "0074-6114"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "1099563",
+       "1099565",
+       "1099569",
+       "1099571",
+       "1099625",
+       "1099626",
+       "1099678",
+       "1099679",
+       "1099870",
+       "1099871",
+       "1099596",
+       "1099598"
+      ],
+      "spl_id": [
+       "0ee65b66-ead3-44ef-911f-14965b067903",
+       "7cc3a0b3-93f8-4825-88e1-bf6ddb0db23d",
+       "d038b7e9-b014-4771-93be-90aeeaece03d"
+      ],
+      "spl_set_id": [
+       "0dc024ce-efc8-4690-7cb5-639c728fccac",
+       "08a65cf4-7749-4ceb-6895-8f4805e2b01f",
+       "4619aff4-0f80-444f-858d-42e4137aa809"
+      ],
+      "substance_name": [
+       "DIVALPROEX SODIUM"
+      ],
+      "unii": [
+       "644VL95AO6"
+      ]
+     }
+    }
+   ],
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Dizziness",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "1"
+    },
+    {
+     "reactionmeddrapt": "Lethargy",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "1"
+    },
+    {
+     "reactionmeddrapt": "Gait disturbance",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "1"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "COUNTRY NOT SPECIFIED"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-ABBVIE-13P-163-1101504-00",
+   "duplicatesource": "ABBVIE"
+  },
+  "reporttype": "2",
+  "safetyreportid": "10003668",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-GILEAD-2014-0091264",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "1",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "4",
+     "drugadministrationroute": "065",
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugdosagetext": "5 MG, QD",
+     "drugindication": "PULMONARY HYPERTENSION",
+     "drugintervaldosagedefinition": "804",
+     "drugintervaldosageunitnumb": "1",
+     "drugseparatedosagenumb": "1",
+     "drugstartdate": "20110914",
+     "drugstartdateformat": "102",
+     "drugstructuredosagenumb": "5",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "actiondrug": "4",
+     "drugauthorizationnumb": "022081",
+     "drugcharacterization": "1",
+     "drugdosageform": "TABLET",
+     "drugindication": "SCLERODERMA",
+     "medicinalproduct": "LETAIRIS",
+     "openfda": {
+      "application_number": [
+       "NDA022081"
+      ],
+      "brand_name": [
+       "LETAIRIS"
+      ],
+      "generic_name": [
+       "AMBRISENTAN"
+      ],
+      "manufacturer_name": [
+       "Gilead Sciences, Inc."
+      ],
+      "nui": [
+       "N0000175581",
+       "N0000175364"
+      ],
+      "package_ndc": [
+       "61958-0801-2",
+       "61958-0801-3",
+       "61958-0801-1",
+       "61958-0801-5",
+       "61958-0801-4",
+       "61958-0801-6",
+       "61958-0802-2",
+       "61958-0802-3",
+       "61958-0802-1",
+       "61958-0802-5"
+      ],
+      "pharm_class_epc": [
+       "Endothelin Receptor Antagonist [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Endothelin Receptor Antagonists [MoA]"
+      ],
+      "product_ndc": [
+       "61958-0801",
+       "61958-0802"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "722116",
+       "722120",
+       "722122",
+       "722124"
+      ],
+      "spl_id": [
+       "2808f55e-aed5-40c7-832b-630e1408951c"
+      ],
+      "spl_set_id": [
+       "725d4e73-6c83-477a-adc6-0ae4a133a844"
+      ],
+      "substance_name": [
+       "AMBRISENTAN"
+      ],
+      "unii": [
+       "HW6NV07QEC"
+      ]
+     }
+    },
+    {
+     "drugcharacterization": "2",
+     "drugrecurreadministration": "3",
+     "medicinalproduct": "ADCIRCA",
+     "openfda": {
+      "application_number": [
+       "NDA022332"
+      ],
+      "brand_name": [
+       "ADCIRCA"
+      ],
+      "generic_name": [
+       "TADALAFIL"
+      ],
+      "manufacturer_name": [
+       "United Therapeutics Corporation"
+      ],
+      "nui": [
+       "N0000175599",
+       "N0000020026"
+      ],
+      "package_ndc": [
+       "66302-467-60"
+      ],
+      "pharm_class_epc": [
+       "Phosphodiesterase 5 Inhibitor [EPC]"
+      ],
+      "pharm_class_moa": [
+       "Phosphodiesterase 5 Inhibitors [MoA]"
+      ],
+      "product_ndc": [
+       "66302-467"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "ORAL"
+      ],
+      "rxcui": [
+       "849866",
+       "2123194"
+      ],
+      "spl_id": [
+       "76c30323-0981-499c-b552-1a43f01c89c8"
+      ],
+      "spl_set_id": [
+       "ff61b237-be8e-461b-8114-78c52a8ad0ae"
+      ],
+      "substance_name": [
+       "TADALAFIL"
+      ],
+      "unii": [
+       "742SXX0ICT"
+      ]
+     }
+    }
+   ],
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Fall",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Head injury",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Arthralgia",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Urinary tract infection",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "1",
+   "reportercountry": "US"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-GILEAD-2014-0091264",
+   "duplicatesource": "GILEAD"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003679",
+  "safetyreportversion": "2",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "1",
+  "seriousnesshospitalization": "1",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "US-TEVA-467374USA",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "2",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "1",
+     "drugauthorizationnumb": "022249",
+     "drugcharacterization": "1",
+     "drugdosageform": "SOLUTION FOR INJECTION",
+     "drugdosagetext": "28 DAY CYCLE",
+     "drugindication": "CHRONIC LYMPHOCYTIC LEUKAEMIA",
+     "drugstructuredosagenumb": "100",
+     "drugstructuredosageunit": "009",
+     "medicinalproduct": "TREANDA",
+     "openfda": {
+      "application_number": [
+       "NDA022249"
+      ],
+      "brand_name": [
+       "TREANDA"
+      ],
+      "generic_name": [
+       "BENDAMUSTINE HYDROCHLORIDE"
+      ],
+      "manufacturer_name": [
+       "Cephalon, LLC"
+      ],
+      "package_ndc": [
+       "63459-395-02",
+       "63459-396-02",
+       "63459-390-08",
+       "63459-391-20"
+      ],
+      "product_ndc": [
+       "63459-390",
+       "63459-395",
+       "63459-396",
+       "63459-391"
+      ],
+      "product_type": [
+       "HUMAN PRESCRIPTION DRUG"
+      ],
+      "route": [
+       "INTRAVENOUS"
+      ],
+      "rxcui": [
+       "1805001",
+       "1805004",
+       "1805007",
+       "1805009",
+       "1805011",
+       "1805012",
+       "1805015",
+       "1805016"
+      ],
+      "spl_id": [
+       "6f14f826-ae33-48f7-8a5a-413412030c2d"
+      ],
+      "spl_set_id": [
+       "39d53698-57fa-7c99-fc5b-f52a55684826"
+      ],
+      "substance_name": [
+       "BENDAMUSTINE HYDROCHLORIDE"
+      ],
+      "unii": [
+       "981Y8SX18M"
+      ]
+     }
+    }
+   ],
+   "patientsex": "1",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Neuropathy peripheral",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "1",
+   "reportercountry": "COUNTRY NOT SPECIFIED"
+  },
+  "receiptdate": "20140312",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "US-TEVA-467374USA",
+   "duplicatesource": "TEVA"
+  },
+  "reporttype": "1",
+  "safetyreportid": "10003700",
+  "safetyreportversion": "1",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "2",
+  "transmissiondate": "20141002",
+  "transmissiondateformat": "102"
+ },
+ {
+  "companynumb": "PHEH2014US004969",
+  "duplicate": "1",
+  "fulfillexpeditecriteria": "1",
+  "occurcountry": "US",
+  "patient": {
+   "drug": [
+    {
+     "actiondrug": "5",
+     "drugadministrationroute": "062",
+     "drugauthorizationnumb": "022083",
+     "drugbatchnumb": "491210",
+     "drugcharacterization": "1",
+     "drugdosageform": "Trans-therapeutic-system",
+     "drugdosagetext": "9.5 MG, QD",
+     "drugintervaldosagedefinition": "804",
+     "drugintervaldosageunitnumb": "1",
+     "drugrecurreadministration": "3",
+     "drugseparatedosagenumb": "1",
+     "drugstructuredosagenumb": "9.5",
+     "drugstructuredosageunit": "003",
+     "medicinalproduct": "EXELON PATCH"
+    }
+   ],
+   "patientsex": "2",
+   "reaction": [
+    {
+     "reactionmeddrapt": "Dementia Alzheimer^s type",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Hip fracture",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    },
+    {
+     "reactionmeddrapt": "Cerebrovascular accident",
+     "reactionmeddraversionpt": "17.0",
+     "reactionoutcome": "6"
+    }
+   ]
+  },
+  "primarysource": {
+   "qualification": "5",
+   "reportercountry": "COUNTRY NOT SPECIFIED"
+  },
+  "primarysourcecountry": "US",
+  "receiptdate": "20140607",
+  "receiptdateformat": "102",
+  "receivedate": "20140312",
+  "receivedateformat": "102",
+  "receiver": {
+   "receiverorganization": "FDA",
+   "receivertype": "6"
+  },
+  "reportduplicate": {
+   "duplicatenumb": "PHEH2014US004969",
+   "duplicatesource": "NOVARTIS"
+  },
+  "reporttype": "2",
+  "safetyreportid": "10003750",
+  "safetyreportversion": "2",
+  "sender": {
+   "senderorganization": "FDA-Public Use",
+   "sendertype": "2"
+  },
+  "serious": "1",
+  "seriousnessother": "1",
+  "transmissiondate": "20141212",
+  "transmissiondateformat": "102"
+ }
+]

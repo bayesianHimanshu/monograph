@@ -1,0 +1,451 @@
+[
+ {
+  "address_1": "115 S 40th Ave",
+  "address_2": "N/A",
+  "center_classification_date": "20221102",
+  "city": "Hattiesburg",
+  "classification": "Class II",
+  "code_info": "Lot: 55786, BUD: 12/31/2022",
+  "country": "United States",
+  "distribution_pattern": "AL, LA, MS, and TN",
+  "event_id": "90982",
+  "initial_firm_notification": "Telephone",
+  "openfda": {},
+  "postal_code": "39402-6600",
+  "product_description": "MEDROXYPROGESTERONE ACETATE 300 MG/ML Suspension, 10 mL vial, Rx only, Vital Care Compounder, 115 S. 40th Ave., Hattiesburg, MS  39402",
+  "product_quantity": "40 vials",
+  "product_type": "Drugs",
+  "reason_for_recall": "Lack of Assurance of Sterility: FDA inspection found the recalled products were produced in a manner than cannot guarantee the sterility of the products purported to be sterile.",
+  "recall_initiation_date": "20221007",
+  "recall_number": "D-0037-2023",
+  "recalling_firm": "Pharmacy Plus, Inc. dba Vital Care Compounder",
+  "report_date": "20221109",
+  "state": "MS",
+  "status": "Ongoing",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "1 Reagent Ln",
+  "address_2": "N/A",
+  "center_classification_date": "20230118",
+  "city": "Fair Lawn",
+  "classification": "Class II",
+  "code_info": "Lot Numbers: 202160, 202162, 202324, 202368, 202369, 202593, 202594, 202835, 202862, 202863, 202865, 202836, 202864, 203061, 203098, 203099, 203100, 203101, 203102, 203236, 203237, 203239, 203337,  203338, 203335, 203336",
+  "country": "United States",
+  "distribution_pattern": "Nationwide in the USA",
+  "event_id": "91427",
+  "initial_firm_notification": "Two or more of the following: Email, Fax, Letter, Press Release, Telephone, Visit",
+  "openfda": {},
+  "postal_code": "07410-2802",
+  "product_description": "Hand Sanitizer, HSANI500ML, (Isopropyl Alcohol), 75% v/v, packaged in a) 500 mL bottle and b) 6 x 500 mL bottles per case, Thermo Fisher Scientific: Janssen Pharmaceuticalaan 3a, 2440 Geel - Belgium, 1 Reagent Lane, Fair Lawn, NJ 07410.",
+  "product_quantity": "a) 1077 bottles, b) 52 cases",
+  "product_type": "Drugs",
+  "reason_for_recall": "CGMP Deviations: Voluntary recall of all hand sanitizer distributed after March 31, 2022, due to FDA issued guidance to cease placing hand sanitizer product, produced under temporary approval, into the market after March 31, 2022.",
+  "recall_initiation_date": "20230117",
+  "recall_number": "D-0163-2023",
+  "recalling_firm": "Fisher Scientific Co., LLC",
+  "report_date": "20230125",
+  "state": "NJ",
+  "status": "Ongoing",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "F-4 F-12, Malegaon M.I.D.C., Sinnar",
+  "address_2": "N/A",
+  "center_classification_date": "20181214",
+  "city": "Sinnar, Nashik District",
+  "classification": "Class II",
+  "code_info": "Lot numbers:    3084860  3084861    3084862    3093804    3084862    3084863",
+  "country": "India",
+  "distribution_pattern": "Product was distributed throughout the United States to several major distributors, including Puerto Rico.",
+  "event_id": "81707",
+  "initial_firm_notification": "Press Release",
+  "openfda": {
+   "application_number": [
+    "ANDA078020"
+   ],
+   "brand_name": [
+    "VALSARTAN AND HYDROCHLOROTHIAZIDE"
+   ],
+   "generic_name": [
+    "VALSARTAN AND HYDROCHLOROTHIAZIDE"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Mylan Pharmaceuticals Inc."
+   ],
+   "nui": [
+    "N0000000070",
+    "N0000175561",
+    "N0000175359",
+    "N0000175419",
+    "M0471776"
+   ],
+   "package_ndc": [
+    "0378-6321-77",
+    "0378-6321-05",
+    "0378-6322-77",
+    "0378-6322-05",
+    "0378-6323-77",
+    "0378-6323-05",
+    "0378-6324-77",
+    "0378-6324-05",
+    "0378-6325-77",
+    "0378-6325-05"
+   ],
+   "pharm_class_cs": [
+    "Thiazides [CS]"
+   ],
+   "pharm_class_epc": [
+    "Angiotensin 2 Receptor Blocker [EPC]",
+    "Thiazide Diuretic [EPC]"
+   ],
+   "pharm_class_moa": [
+    "Angiotensin 2 Receptor Antagonists [MoA]"
+   ],
+   "pharm_class_pe": [
+    "Increased Diuresis [PE]"
+   ],
+   "product_ndc": [
+    "0378-6321",
+    "0378-6322",
+    "0378-6323",
+    "0378-6324",
+    "0378-6325"
+   ],
+   "product_type": [
+    "HUMAN PRESCRIPTION DRUG"
+   ],
+   "route": [
+    "ORAL"
+   ],
+   "rxcui": [
+    "200284",
+    "200285",
+    "349353",
+    "636042",
+    "636045"
+   ],
+   "spl_id": [
+    "16044239-373d-4b04-9a4d-fd4232a93b6c"
+   ],
+   "spl_set_id": [
+    "3ba1f9f9-0037-4522-8605-e27dc8552b5b"
+   ],
+   "substance_name": [
+    "VALSARTAN",
+    "HYDROCHLOROTHIAZIDE"
+   ],
+   "unii": [
+    "80M03YXJ7I",
+    "0J48LPH2TH"
+   ],
+   "upc": [
+    "0303786323777"
+   ]
+  },
+  "postal_code": "N/A",
+  "product_description": "Valsartan and Hydrochlorothiazide Tablets, USP 320/25 mg, (a) 90-count bottle (NDC 0378-6325-77), (b) 500-count bottles (NDC 0378-6325-05), Rx Only, Made in India, Manufactured for: Mylan Pharmaceuticals, Inc., Morgantown, WV 26505 U.S.A.",
+  "product_quantity": "32,284 HDPE bottles",
+  "product_type": "Drugs",
+  "reason_for_recall": "GCMP Deviations: FDA analysis confirmed presence of trace amounts of an impurity, N-nitrosodiethylamine (NDEA) found in the API used to manufacture the product.",
+  "recall_initiation_date": "20181204",
+  "recall_number": "D-0332-2019",
+  "recalling_firm": "Mylan Laboratories Limited, (Nashik FDF)",
+  "report_date": "20181219",
+  "state": "N/A",
+  "status": "Ongoing",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "300 Northfield Rd",
+  "address_2": "N/A",
+  "center_classification_date": "20121101",
+  "city": "Bedford",
+  "classification": "Class II",
+  "code_info": "Lot #, 2017619 (Bedford), Mfr Item # 0967-57-2017619, NDC, 55390-009-01, Exp. Date 11/2012; Lot# 2017620, Exp. Date 1/2013, NDC #55390-009-01; Lot #, 2017621 (Bedford), Mfr Item # 0967-57-2017621, NDC, 55390-009-01, Exp Date 01/2013; Lot #2038374, exp. 2/2013, NDC #55390-009-01; Lot #2038374A, exp. 2/2013, NDC #55390-826-01 Note: 2038374A (packaged using Novaplus labeling) is a sublot of 2038374 (packaged using Bedford labeling); Lot #, 2038375 (Bedford), Mfr Item # 0967-57-2038375, NDC, 55390-009-01, Exp Date 03/2013; Lot #, 2065418 (Bedford), Mfr Item # 0967-57-2065418, NDC, 55390-009-01, Exp Date 06/2013; Lot #, 2067176 (Bedford), Mfr Item # 0967-57-2067176, NDC, 55390-009-01, Exp Date, 06/2013; Lot #, 2067177 (Bedford), Mfr Item # 0967-57-2067177, NDC, 55390-009-01, Exp Date 06/2013 & Lot #, 2067178A (Novaplus), Mfr Item # 0967-57-2067178A, NDC, 55390-826-01, Exp Date, 06/2013.",
+  "country": "United States",
+  "distribution_pattern": "Nationwide and Puerto Rico.",
+  "event_id": "62490",
+  "initial_firm_notification": "Two or more of the following: Email, Fax, Letter, Press Release, Telephone, Visit",
+  "more_code_info": "",
+  "openfda": {},
+  "postal_code": "44146",
+  "product_description": "Leucovorin Calcium Injection USP, single use vials, 10mg/mL; 50mL, Rx only, Manufactured by: Ben Venue Labs, Inc., Bedford, OH 44146, NDC# 55390-009-01(Bedford); NDC# 55390-826-01(Novaplus)",
+  "product_quantity": "226,010 vials",
+  "product_type": "Drugs",
+  "reason_for_recall": "Presence of Particulate Matter: visible crystalline particulates and the discovery of crystalline particulate in a retain sample.",
+  "recall_initiation_date": "20120705",
+  "recall_number": "D-036-2013",
+  "recalling_firm": "Ben Venue Laboratories Inc",
+  "report_date": "20121107",
+  "state": "OH",
+  "status": "Terminated",
+  "termination_date": "20130830",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "19 Concord St",
+  "address_2": "",
+  "center_classification_date": "20230308",
+  "city": "Norwalk",
+  "classification": "Class II",
+  "code_info": "Lot #: 1E346A, Exp. Date Nov-23; 2E304A, Exp. Date Oct-24",
+  "country": "United States",
+  "distribution_pattern": "Nationwide within the United States",
+  "event_id": "91719",
+  "initial_firm_notification": "Letter",
+  "more_code_info": "",
+  "openfda": {},
+  "postal_code": "06854-3706",
+  "product_description": "Unguentine Original Maximum Strength Pain Relieving/Antiseptic Ointment (Camphor 3.0%, Phenol 2.5%, Tannic Acid 2.2%, Oxide 6.6%), packaged in 1 oz. (28.3g) metal tubes, Distributed by: Oakhurst Company Levittown, NY 11756",
+  "product_quantity": "",
+  "product_type": "Drugs",
+  "reason_for_recall": "CGMP DEVIATIONS",
+  "recall_initiation_date": "20230224",
+  "recall_number": "D-0452-2023",
+  "recalling_firm": "Ecometics, Inc.",
+  "report_date": "20230315",
+  "state": "CT",
+  "status": "Terminated",
+  "termination_date": "20230621",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "750 Corporate Dr",
+  "address_2": "N/A",
+  "center_classification_date": "20200105",
+  "city": "Mahwah",
+  "classification": "Class II",
+  "code_info": "7701069A  7701070A  7701084A  7701085A  7701087A  7701094A  7701095A  7701140A  7701141A  7701142A  7701157A  7701162A  7701182A  7701217A  7701218A  7701219A  7701236A  7701237A  7701220A  7701456A  7701470A  7701520A  7701671A  7701696A  7701697A  7701698A  7701797A  7701928A  7701929A  7701942A  7701943A  7702065A  7702066A  7702067A  7702095A  7702096A  7702097A  7702098A  7702188A  7702189A  7702190A  7702196A  7702197A  7702198A  7702199A  7702348A  7702338A  7702347A  7702349A  7702350A  7702391A  7702392A  7702546A  7702547A  7702548A  7702616A  7702617A  7702618A  7702619A  7702620A  7702763A  7702764A  7702851A  7702852A  7702853A  7702854A  7702855A  7702868A  7702869A  7702870A  7702871A  7702920A  7703054A  7703055A  7703056A  7703057A  7703058A  7703206A  7703208A  7703454A  7703455A  7703456A  7703486A  7703487A  7703488A  7703489A  7703490A  7703945A  7703946A  7703947A  7704111A  7704112A  7704113A  7704234A  7704235A  7704236A  7704237A  7704285A  7704286A  7704287A  7704288A  7704370A  7704371A  7704428A  7704429A  7704430A  7704431A  7704814A  7704838A  7704839A  7704840A  7704935A  7704936A  7704992A  7704996A  7704997A  7704998A  7704999A  7705037A  7705298A  7705299A  7705300A  7705301A  7705302A  7705303A  7705546A  7705584A  7705544A  7705545A  7705572A  7705585A  19190456  19190472  19190490  19191934  19191942  19191959  19192504",
+  "country": "United States",
+  "distribution_pattern": "Natiowide",
+  "event_id": "84516",
+  "initial_firm_notification": "Press Release",
+  "openfda": {},
+  "postal_code": "07430-2009",
+  "product_description": "Glenmark Ranitidine Tablets USP 300 mg Rx Only 250 Tablets Manufactured by: Glenmark Pharmaceuticals Ltd. Colvale-Bandez, Goa 403513, India Manufactured for: Glenmark Pharmaceuticals Inc., USA Mahwah, NJ   NDC 68462-249-20",
+  "product_quantity": "500,960 bottles",
+  "product_type": "Drugs",
+  "reason_for_recall": "CGMP Deviations: Presence of NDMA impurity detected in product.",
+  "recall_initiation_date": "20191217",
+  "recall_number": "D-0643-2020",
+  "recalling_firm": "Glenmark Pharmaceuticals Inc., USA",
+  "report_date": "20200115",
+  "state": "NJ",
+  "status": "Ongoing",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "5605 Centerpoint Ct Ste A",
+  "address_2": "N/A",
+  "center_classification_date": "20230601",
+  "city": "Gurnee",
+  "classification": "Class II",
+  "code_info": "All Lots",
+  "country": "United States",
+  "distribution_pattern": "Nationwide in the USA and Puerto Rico",
+  "event_id": "91788",
+  "initial_firm_notification": "Letter",
+  "openfda": {},
+  "postal_code": "60031-5278",
+  "product_description": "Levofloxacin Injection 500mg/20 mL (25 mg/mL), For Intravenous Infusion, packaged in a) 20mL vials and b) 30 mL vials, Rx Only, Manufactured by: Akorn, Inc., Lake Forest, IL 60045.  ALL NDCs",
+  "product_quantity": "N/A",
+  "product_type": "Drugs",
+  "reason_for_recall": "CGMP Deviations: Firm went out of business and could no longer continue stability studies.",
+  "recall_initiation_date": "20230426",
+  "recall_number": "D-0818-2023",
+  "recalling_firm": "Akorn, Inc.",
+  "report_date": "20230607",
+  "state": "IL",
+  "status": "Ongoing",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "207 Kiley Dr",
+  "address_2": "N/A",
+  "center_classification_date": "20190401",
+  "city": "Salisbury",
+  "classification": "Class II",
+  "code_info": "Lot #: PA217060A, Exp 05/2020",
+  "country": "United States",
+  "distribution_pattern": "Nationwide in the USA.",
+  "event_id": "82523",
+  "initial_firm_notification": "Letter",
+  "openfda": {},
+  "postal_code": "21801-2249",
+  "product_description": "Pantoprazole Sodium Delayed-Release Tablets, USP, 40 mg*, 90-count bottle, Rx Only, Manufactured by: Jubilant Generics Ltd., Roorkee - 247661, India; Marketed by: Jubilant Cadista Pharmaceuticals Inc., Salisbury, MD  21801; NDC 59746-284-90.",
+  "product_quantity": "12,960 bottles",
+  "product_type": "Drugs",
+  "reason_for_recall": "Discoloration: Expansion of an earlier recall due to the presence of dark brown discoloration on the edges of the tablets.",
+  "recall_initiation_date": "20190329",
+  "recall_number": "D-1074-2019",
+  "recalling_firm": "Jubilant Cadista Pharmaceuticals, Inc.",
+  "report_date": "20190410",
+  "state": "MD",
+  "status": "Terminated",
+  "termination_date": "20190920",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "50 Horseblock Rd",
+  "address_2": "N/A",
+  "center_classification_date": "20200424",
+  "city": "Brookhaven",
+  "classification": "Class II",
+  "code_info": "06598004A 04/2020  06599001A 12/2020  06599002A 12/2020",
+  "country": "United States",
+  "distribution_pattern": "Nationwide",
+  "event_id": "85386",
+  "initial_firm_notification": "Press Release",
+  "openfda": {
+   "application_number": [
+    "ANDA090576"
+   ],
+   "brand_name": [
+    "NIZATIDINE"
+   ],
+   "generic_name": [
+    "NIZATIDINE"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Amneal Pharmaceuticals LLC"
+   ],
+   "nui": [
+    "N0000000151",
+    "N0000175784"
+   ],
+   "package_ndc": [
+    "60846-301-15"
+   ],
+   "pharm_class_epc": [
+    "Histamine-2 Receptor Antagonist [EPC]"
+   ],
+   "pharm_class_moa": [
+    "Histamine H2 Receptor Antagonists [MoA]"
+   ],
+   "product_ndc": [
+    "60846-301"
+   ],
+   "product_type": [
+    "HUMAN PRESCRIPTION DRUG"
+   ],
+   "route": [
+    "ORAL"
+   ],
+   "rxcui": [
+    "476872"
+   ],
+   "spl_id": [
+    "aedc4160-2165-451e-8a3b-26d3bb911242"
+   ],
+   "spl_set_id": [
+    "39e62997-8781-449a-e054-00144ff88e88"
+   ],
+   "substance_name": [
+    "NIZATIDINE"
+   ],
+   "unii": [
+    "P41PML4GHR"
+   ]
+  },
+  "postal_code": "11719-9509",
+  "product_description": "Nizatidine Oral Solution, 15 mg/mL (75 mg/5mL) USP 480 mL bottles, Rx Only Distributed by: Gemini Laboratories, LLC Bridgewater, NJ 08807 NDC 60846-301-15",
+  "product_quantity": "11258 bottles",
+  "product_type": "Drugs",
+  "reason_for_recall": "CGMP Deviations: potential N-Nitrosodimethylamine (NDMA) amounts above levels established by the FDA.",
+  "recall_initiation_date": "20200415",
+  "recall_number": "D-1253-2020",
+  "recalling_firm": "Amneal Pharmaceuticals of New York, LLC",
+  "report_date": "20200506",
+  "state": "NY",
+  "status": "Terminated",
+  "termination_date": "20210908",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "6216 Highland Place Way Ste 101-A",
+  "address_2": "",
+  "center_classification_date": "20150915",
+  "city": "Knoxville",
+  "classification": "Class II",
+  "code_info": "All lots distributed between November 2014 and May 2015;  04162015@25, 6/15/2015",
+  "country": "United States",
+  "distribution_pattern": "Nationwide",
+  "event_id": "71371",
+  "initial_firm_notification": "Telephone",
+  "more_code_info": "",
+  "openfda": {},
+  "postal_code": "37919-4068",
+  "product_description": "HCG 1,250 IU/ml Injection, Multi-Dose Vial, Sterile, Refrigerate The Compounding Pharmacy of America, Knoxville, TN",
+  "product_quantity": "55 ml total",
+  "product_type": "Drugs",
+  "reason_for_recall": "Lack of Assurance of Sterility; FDA inspection identified GMP violations potentially impacting product quality and sterility",
+  "recall_initiation_date": "20150602",
+  "recall_number": "D-1523-2015",
+  "recalling_firm": "The Compounding Pharmacy of America",
+  "report_date": "20150923",
+  "state": "TN",
+  "status": "Terminated",
+  "termination_date": "20160210",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "16275 Aviation Loop Dr",
+  "address_2": "N/A",
+  "center_classification_date": "20130604",
+  "city": "Brooksville",
+  "classification": "Class II",
+  "code_info": "Lot# 11EQ007 Exp 04/13; Lot# 12BQ001  Exp. 01/14..",
+  "country": "United States",
+  "distribution_pattern": "FL, MS, SC, LA  and TX",
+  "event_id": "64188",
+  "initial_firm_notification": "Letter",
+  "openfda": {},
+  "postal_code": "34604-6805",
+  "product_description": "CPM / PSE DM Drops, Antihistamine, Cough Suppressant  Decongestant, 1 fl oz. bottle, OTC, Manufactured for: Trigen Laboratories, Sayreville, NJ,08872 NDC 13811-072-30",
+  "product_quantity": "26,315 - 30 mL bottles.",
+  "product_type": "Drugs",
+  "reason_for_recall": "CGMP Deviations: Products are underdosed or have an incorrect dosage regime.",
+  "recall_initiation_date": "20130130",
+  "recall_number": "D-534-2013",
+  "recalling_firm": "TG United, Inc.",
+  "report_date": "20130612",
+  "state": "FL",
+  "status": "Terminated",
+  "termination_date": "20160930",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ },
+ {
+  "address_1": "184 Front St E",
+  "address_2": "unit 801",
+  "center_classification_date": "20150420",
+  "city": "Toronto",
+  "classification": "Class II",
+  "code_info": "All lots repackaged and distributed between 01/05/12 to 02/12/15",
+  "country": "Canada",
+  "distribution_pattern": "Nationwide to compounding pharmacies and research organizations.",
+  "event_id": "70452",
+  "initial_firm_notification": "Two or more of the following: Email, Fax, Letter, Press Release, Telephone, Visit",
+  "more_code_info": "",
+  "openfda": {},
+  "postal_code": "N/A",
+  "product_description": "Lidocaine HCl active pharmaceutical ingredient packaged in varying grams or kg in bags or drums, Attix Pharmaceuticals, 184 Front Street East, Unit 801, Toronto, Ontario M5A 4N3, Canada",
+  "product_quantity": "33300 grams",
+  "product_type": "Drugs",
+  "reason_for_recall": "Penicillin Cross Contamination: All lots of all products repackaged and distributed between 01/05/12 and 02/12/15 are being recalled because they were repackaged in a facility with penicillin products without adequate separation which could introduce the potential for cross contamination with penicillin.",
+  "recall_initiation_date": "20141114",
+  "recall_number": "D-762-2015",
+  "recalling_firm": "Attix Pharmaceuticals",
+  "report_date": "20150429",
+  "state": "",
+  "status": "Terminated",
+  "termination_date": "20151007",
+  "voluntary_mandated": "Voluntary: Firm initiated"
+ }
+]

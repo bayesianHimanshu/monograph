@@ -1,0 +1,708 @@
+[
+ {
+  "active_ingredient": [
+   "Active Ingredient(s) Lidocaine 4%"
+  ],
+  "dosage_and_administration": [
+   "Directions Adults and children 2 years old and older Clean the affected area Apply to affected area not more than 3 to 4 times daily Remove residue if desired Children under 2 years old: Consult a doctor"
+  ],
+  "effective_time": "20230709",
+  "id": "0011c61b-e3ce-d909-e063-6394a90a6ac2",
+  "inactive_ingredient": [
+   "Inactive ingredients Acrylates/C10-30 Alkyl Acrylate Crosspolymer, Alcohol, Aloe Barbadensis Leaf Juice, Cetearyl Alcohol, Ceteth-10 Phosphate, Cyclopentasiloxane, Denatonium Benzoate,Dicetyl Phosphate, Dimethicone, Dimethicone/Vinyl Dimethicone Crosspolymer, Disodium EDTA, Ethylhexylglycerin, Gyceryl Stearate, lsohexadecane, Hydroxyethyl Acrylate/Sodium Acryloyldimethyl Taurate Copolymer, Maltodextrin, Phenoxyethanol, Simmondsia Chinensis(Jojoba) Seed Oil, Steareth-21, Tocopheryl Acetate, Water."
+  ],
+  "indications_and_usage": [
+   "Use For the temporary relief of pain"
+  ],
+  "keep_out_of_reach_of_children": [
+   "Keep out of reach of children. If swallowed, get medical help, or contact a Poison Control Center right away +1 800-222-1222"
+  ],
+  "openfda": {},
+  "package_label_principal_display_panel": [
+   "Package Label - Principal Display Panel 2 OZ Cream, NDC: 83371-112-11 Label 57mL"
+  ],
+  "purpose": [
+   "Purpose Topical Anesthetic"
+  ],
+  "questions": [
+   "Call (754) 248 - 2548"
+  ],
+  "set_id": "0011c61b-e3cd-d909-e063-6394a90a6ac2",
+  "spl_product_data_elements": [
+   "Numbed As FXXK Topical Anesthetic Cream STEARETH-21 LIDOCAINE LIDOCAINE ISOHEXADECANE ALCOHOL 95% PHENOXYETHANOL CYCLOMETHICONE 5 CETOSTEARYL ALCOHOL GLYCERYL MONOSTEARATE .ALPHA.-TOCOPHEROL ACETATE, DL- HYDROXYETHYL ACRYLATE/SODIUM ACRYLOYLDIMETHYL TAURATE COPOLYMER (45000 MPA.S AT 1%) DIMETHICONE WATER ETHYLHEXYLGLYCERIN DENATONIUM BENZOATE ANHYDROUS JOJOBA OIL EDETATE DISODIUM ANHYDROUS ALOE VERA LEAF DIHEXADECYL PHOSPHATE CETETH-10 PHOSPHATE DIMETHICONE/VINYL DIMETHICONE CROSSPOLYMER (SOFT PARTICLE) MALTODEXTRIN"
+  ],
+  "stop_use": [
+   "Stop Use and Ask a Doctor if the condition worsens ■ symptoms persist for more than seven days or clear up and occur again within a few days. Rash or irritation develops, persists, or increases. If pregnant or breastfeeding, ask a health professional before use."
+  ],
+  "storage_and_handling": [
+   "Other information Store at 15 to 30°C (59 to 86°F) Tamper Evident: DO NOT USE IF SEAL ON TUBE IS PUNCTURED OR MISSING"
+  ],
+  "version": "1",
+  "warnings": [
+   "Warnings For external use only. Avoid contact with eyes. Not for prolonged use. Do not use in large quantities, particularly over raw surfaces or blistered areas."
+  ]
+ },
+ {
+  "active_ingredient": [
+   "",
+   ""
+  ],
+  "ask_doctor": [
+   ""
+  ],
+  "dosage_and_administration": [
+   ""
+  ],
+  "dosage_forms_and_strengths": [
+   ""
+  ],
+  "effective_time": "20230710",
+  "id": "002ce4f0-e919-6409-e063-6394a90a99ed",
+  "inactive_ingredient": [
+   ""
+  ],
+  "indications_and_usage": [
+   ""
+  ],
+  "instructions_for_use": [
+   ""
+  ],
+  "keep_out_of_reach_of_children": [
+   ""
+  ],
+  "openfda": {
+   "brand_name": [
+    "Aluminium Fluoratum"
+   ],
+   "generic_name": [
+    "ALUMINIUM FLUORATUM"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Hahnemann Laboratories, INC."
+   ],
+   "package_ndc": [
+    "37662-3561-1",
+    "37662-3561-2",
+    "37662-3561-3",
+    "37662-3560-1",
+    "37662-3560-2",
+    "37662-3560-3",
+    "37662-3566-1",
+    "37662-3566-2",
+    "37662-3566-3",
+    "37662-3566-4",
+    "37662-3563-1",
+    "37662-3563-2",
+    "37662-3563-3",
+    "37662-3563-4",
+    "37662-3564-1",
+    "37662-3564-2",
+    "37662-3564-3",
+    "37662-3564-4",
+    "37662-3567-1",
+    "37662-3567-2",
+    "37662-3567-3",
+    "37662-3567-4",
+    "37662-3562-1",
+    "37662-3562-2",
+    "37662-3562-3",
+    "37662-3562-4",
+    "37662-3565-1",
+    "37662-3565-2",
+    "37662-3565-3",
+    "37662-3565-4"
+   ],
+   "product_ndc": [
+    "37662-3560",
+    "37662-3561",
+    "37662-3566",
+    "37662-3563",
+    "37662-3564",
+    "37662-3567",
+    "37662-3562",
+    "37662-3565"
+   ],
+   "product_type": [
+    "HUMAN OTC DRUG"
+   ],
+   "route": [
+    "ORAL"
+   ],
+   "spl_id": [
+    "002ce4f0-e919-6409-e063-6394a90a99ed"
+   ],
+   "spl_set_id": [
+    "002ce4f0-e918-6409-e063-6394a90a99ed"
+   ],
+   "substance_name": [
+    "ALUMINUM FLUORIDE"
+   ],
+   "unii": [
+    "Z77H3IKW94"
+   ]
+  },
+  "package_label_principal_display_panel": [
+   "Aluminium Fluoratum 6C 5g Aluminium Fluoratum 6C 30g Aluminium Fluoratum 6C 100g Aluminium Fluoratum 12C 5g Aluminium Fluoratum 12C 30g Aluminium Fluoratum 12C 100g Aluminium Fluoratum 30C 1g Aluminium Fluoratum 30C 5g Aluminium Fluoratum 30C 30g Aluminium Fluoratum 30C 100g Aluminium Fluoratum 100C 1g Aluminium Fluoratum 100C 5g Aluminium Fluoratum 100C 30g Aluminium Fluoratum 100C 100g Aluminium Fluoratum 200C 1g Aluminium Fluoratum 200C 5g Aluminium Fluoratum 200C 30g Aluminium Fluoratum 200C 100g Aluminium Fluoratum 500C 1g Aluminium Fluoratum 500C 5g Aluminium Fluoratum 500C 30g Aluminium Fluoratum 500C 100g Aluminium Fluoratum 1M 1g Aluminium Fluoratum 1M 5g Aluminium Fluoratum 1M 30g Aluminium Fluoratum 1M 100g Aluminium Fluoratum 10M 1g Aluminium Fluoratum 10M 5g Aluminium Fluoratum 10M 30g Aluminium Fluoratum 10M 100g"
+  ],
+  "pregnancy_or_breast_feeding": [
+   ""
+  ],
+  "purpose": [
+   ""
+  ],
+  "questions": [
+   ""
+  ],
+  "route": [
+   ""
+  ],
+  "set_id": "002ce4f0-e918-6409-e063-6394a90a99ed",
+  "spl_product_data_elements": [
+   "Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE Aluminium Fluoratum Aluminium Fluoratum SUCROSE ALUMINUM FLUORIDE ALUMINUM FLUORIDE"
+  ],
+  "version": "1",
+  "warnings": [
+   ""
+  ]
+ },
+ {
+  "active_ingredient": [
+   "Active ingredients Octinoxate 4.50 % Titanium Dioxide 4.23 % Purpose Sunscreen"
+  ],
+  "do_not_use": [
+   "Do not use on damaged or broken skin."
+  ],
+  "dosage_and_administration": [
+   "Directions Apply liberally 15 minutes before sun exposure. Reapply at least every 2 hours. Use a water-resistant sunscreen if swimming or sweating. Spending time in the sun increases your risk of skin cancer and early skin aging. To decrease this risk, regularly use a sunscreen with a broad spectrum SPF of 15 or higher and other sun protection measures including: Sun Protection Measures. limit time in the sun, especially from 10 a.m. - 2 p.m. wear long-sleeve shirts, pants, hats, and sunglasses. Children under 6 months of age: ask a doctor."
+  ],
+  "effective_time": "20240806",
+  "id": "1f013e61-f171-2ae2-e063-6294a90adcf1",
+  "inactive_ingredient": [
+   "Inactive ingredients AQUA (WATER) • ALCOHOL • METHYL TRIMETHICONE • ISODODECANE • PHENYL TRIMETHICONE • GLYCERIN • PEG-9 POLYDIMETHYLSILOXYETHYL DIMETHICONE • TRIMETHTHYL PENTAPHENYL TRISILOXANE • ACRYLATES/DIMETHICONE COPOLYMER DIMETHICONE • BUTYLENE GLYCOL • CETYL DIMETHICONE • DISTEARDIMONIUM HECTORITE • CELLULOSE • CETYL PEG/PPG-10/1 DIMETHICONE • SODIUM MYRISTOYL GLUTAMATE • PARFUM (FRAGRANCE) • PROPYLENE CARBONATE • CHLORPHENESIN • VP/VA COPOLYMER • ALUMINA • STEARIC ACID • ALUMINUM HYDROXIDE • HIBISCUS SABDARIFFA FLOWER EXTRACT • TROMETHAMINE • TOCOPHEROL • TROPAEOLUM MAJUS FLOWER/LEAF/STEM EXTRACT • HEXADECENE • HYDROLYZED VIOLA TRICOLOR EXTRACT • 1,2-HEXANEDIOL • CAPRYLYL GLYCOL • IRIS FLORENTINA ROOT EXTRACT • SODIUM BENZOATE • POTASSIUM SORBATE • PENTAERYTHRITYL TETRA DI-BUTYL HYDROXYHYDROCINNAMATE. [MAY CONTAIN : CI 77491, CI 77492, CI 77499 (IRON OXIDES), CI 77891 (TITANIUM DIOXIDE)]. N° 15857/Z"
+  ],
+  "indications_and_usage": [
+   "Uses Helps prevent sunburn. If used as directed with other sun protection measures ( ), decreases the risk of skin cancer and early skin aging caused by the sun. see Directions"
+  ],
+  "keep_out_of_reach_of_children": [
+   "Keep out of reach of children. If swallowed, get medical help or contact a Poison Control Center right away."
+  ],
+  "openfda": {
+   "application_number": [
+    "M020"
+   ],
+   "brand_name": [
+    "FOREVER SKIN GLOW 24h wear radiant foundation Perfection and hydration Concentrated floral skincare with suncreen Broad spectrum SPF 15 00"
+   ],
+   "generic_name": [
+    "OCTISALATE, TITANIUM DIOXIDE"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Parfums Christian Dior"
+   ],
+   "package_ndc": [
+    "61957-3141-0",
+    "61957-3141-1",
+    "61957-3141-7"
+   ],
+   "product_ndc": [
+    "61957-3141"
+   ],
+   "product_type": [
+    "HUMAN OTC DRUG"
+   ],
+   "route": [
+    "TOPICAL"
+   ],
+   "spl_id": [
+    "1f013e61-f171-2ae2-e063-6294a90adcf1"
+   ],
+   "spl_set_id": [
+    "0018573d-922b-4642-9513-63481e9131d5"
+   ],
+   "substance_name": [
+    "OCTISALATE",
+    "TITANIUM DIOXIDE"
+   ],
+   "unii": [
+    "4X49Y0596W",
+    "15FIX9V2JP"
+   ],
+   "upc": [
+    "3348901592024",
+    "3348901720953"
+   ]
+  },
+  "package_label_principal_display_panel": [
+   "Package Labeling:30ml 30mlLabel0 30mlLabel",
+   "Package Labeling:20ml 20mlLabel0 20mlLabel02",
+   "Package Labelling: 0.7ml Label12.jpg"
+  ],
+  "purpose": [
+   "Purpose Sunscreen"
+  ],
+  "set_id": "0018573d-922b-4642-9513-63481e9131d5",
+  "spl_product_data_elements": [
+   "FOREVER SKIN GLOW 24h wear radiant foundation Perfection and hydration Concentrated floral skincare with suncreen Broad spectrum SPF 15 00 OCTISALATE, TITANIUM DIOXIDE WATER ALCOHOL METHYL TRIMETHICONE ISODODECANE PHENYL TRIMETHICONE GLYCERIN PEG-9 POLYDIMETHYLSILOXYETHYL DIMETHICONE TRIMETHYL PENTAPHENYL TRISILOXANE BUTYLENE GLYCOL DISTEARDIMONIUM HECTORITE POWDERED CELLULOSE SODIUM MYRISTOYL GLUTAMATE PROPYLENE CARBONATE CHLORPHENESIN COPOVIDONE K25-31 ALUMINUM OXIDE STEARIC ACID ALUMINUM HYDROXIDE HIBISCUS SABDARIFFA FLOWER TROMETHAMINE TOCOPHEROL TROPAEOLUM MAJUS FLOWERING TOP HEXADECENE (MIXED ISOMERS) 1,2-HEXANEDIOL CAPRYLYL GLYCOL IRIS X GERMANICA NOTHOVAR. FLORENTINA ROOT SODIUM BENZOATE POTASSIUM SORBATE PENTAERYTHRITOL TETRAKIS(3-(3,5-DI-TERT-BUTYL-4-HYDROXYPHENYL)PROPIONATE) OCTISALATE OCTISALATE TITANIUM DIOXIDE TITANIUM DIOXIDE"
+  ],
+  "spl_unclassified_section": [
+   "Drug Facts",
+   "Other information Protect the product in this container from excessive heat and direct sun."
+  ],
+  "stop_use": [
+   "Stop use and ask a doctor if rash occurs."
+  ],
+  "version": "4",
+  "warnings": [
+   "Warnings For external use only. Do not use on damaged or broken skin. When using this product, keep out of eyes. Rinse with water to remove. Stop use and ask a doctor if rash occurs. Keep out of reach of children. If swallowed, get medical help or contact a Poison Control Center right away."
+  ],
+  "when_using": [
+   "When using this product, keep out of eyes. Rinse with water to remove."
+  ]
+ },
+ {
+  "active_ingredient": [
+   "Active ingredient Aluminum Chlorohydrate 10% (anhydrous) Purpose Antiperspirant"
+  ],
+  "ask_doctor": [
+   "Ask a doctor before use if you have kidney disease"
+  ],
+  "do_not_use": [
+   "Do not use on broken skin"
+  ],
+  "dosage_and_administration": [
+   "Directions • apply to underarms only • hold can about 6 inches away from underarm and spray."
+  ],
+  "effective_time": "20250218",
+  "id": "2e70f4b3-7b97-af33-e063-6294a90a1186",
+  "inactive_ingredient": [
+   "Inactive ingredients: Isobutane, Cyclopentasiloxane, Hydrofluorocarbon 152 A, Propane, Dimethicone, Propylene Carbonate, Disteardimonium Hectorite, Butane, Ethylene Brassylate."
+  ],
+  "indications_and_usage": [
+   "Use reduces underarm wetness"
+  ],
+  "keep_out_of_reach_of_children": [
+   "Keep out of reach of children. lf swallowed, get medical help or contact a Poison Control Center right away."
+  ],
+  "openfda": {
+   "application_number": [
+    "M019"
+   ],
+   "brand_name": [
+    "Sure Complete Confidence Antiperspirant Deodorant Aerosol, Unscented"
+   ],
+   "generic_name": [
+    "ALUMINUM CHLOROHYDRATE"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Sodalis USA, LLC"
+   ],
+   "package_ndc": [
+    "81277-011-01"
+   ],
+   "product_ndc": [
+    "81277-011"
+   ],
+   "product_type": [
+    "HUMAN OTC DRUG"
+   ],
+   "route": [
+    "TOPICAL"
+   ],
+   "spl_id": [
+    "2e70f4b3-7b97-af33-e063-6294a90a1186"
+   ],
+   "spl_set_id": [
+    "000a4912-a633-46b4-9aff-725fdeeef7c0"
+   ],
+   "substance_name": [
+    "ALUMINUM CHLOROHYDRATE"
+   ],
+   "unii": [
+    "HPN8MZW13M"
+   ],
+   "upc": [
+    "0012345678905"
+   ]
+  },
+  "package_label_principal_display_panel": [
+   "Package Labeling: Outer Package2 Inner Package2"
+  ],
+  "purpose": [
+   "Purpose Antiperspirant"
+  ],
+  "questions": [
+   "Questions? 1-800-575-7960 www.suredeodorant.com"
+  ],
+  "set_id": "000a4912-a633-46b4-9aff-725fdeeef7c0",
+  "spl_product_data_elements": [
+   "Sure Complete Confidence Antiperspirant Deodorant Aerosol, Unscented ALUMINUM CHLOROHYDRATE ISOBUTANE CYCLOPENTASILOXANE 1,1-DIFLUOROETHANE PROPANE DIMETHICONE PROPYLENE CARBONATE DISTEARDIMONIUM HECTORITE BUTANE ETHYLENE BRASSYLATE ALUMINUM CHLOROHYDRATE ALUMINUM CHLOROHYDRATE"
+  ],
+  "spl_unclassified_section": [
+   "Drug Facts"
+  ],
+  "stop_use": [
+   "Stop use if rash or irritation occurs"
+  ],
+  "version": "1",
+  "warnings": [
+   "Warnings For external use only. Flammable • do not spray near flame or while smoking • contents under pressure • do not crush, puncture or incinerate • do not store at temperature above 120°F Do not use on broken skin Ask a doctor before use if you have kidney disease When using this product • keep away from face and mouth to avoid breathing it • avoid spraying in eyes • use only as directed; intentional misuse by deliberately concentrating and inhaling the contents can be harmful or fatal Stop use if rash or irritation occurs Keep out of reach of children. lf swallowed, get medical help or contact a Poison Control Center right away."
+  ],
+  "when_using": [
+   "When using this product • keep away from face and mouth to avoid breathing it • avoid spraying in eyes • use only as directed; intentional misuse by deliberately concentrating and inhaling the contents can be harmful or fatal"
+  ]
+ },
+ {
+  "active_ingredient": [
+   "Drug Facts Active ingredients (in each 5 mL teaspoonful) Diphenhydramine HCl 12.5 mg"
+  ],
+  "ask_doctor_or_pharmacist": [
+   "Ask a doctor or pharmacist before use if the child is taking sedatives or tranquillizers"
+  ],
+  "dosage_and_administration": [
+   "Directions ■ if needed, take every 4-6 hours ■ do not take more than 6 doses in 24-hours children under 4 years of age Do not use children 4 to under 6 years of age Do not use unless directed by a doctor children 6 to under 12 years of age 1 to 2 teaspoonfuls (5 ml to 10 ml)"
+  ],
+  "dosage_and_administration_table": [
+   "<table width=\"60%\"><caption/><tbody><tr><td> children under 4 years of age</td><td> Do not use</td></tr><tr><td> children 4 to under 6 years of age</td><td> Do not use unless directed by a  doctor</td></tr><tr><td> children 6 to under 12 years of age</td><td> 1 to 2 teaspoonfuls (5 ml to 10 ml)</td></tr></tbody></table>"
+  ],
+  "effective_time": "20250122",
+  "id": "448524ca-2fda-44ab-b1f8-edf8db006713",
+  "inactive_ingredient": [
+   "Inactive ingredients citric acid, D&C red # 33, FD&C Red #40, flavor, glycerin, poloxamer 407, purified water, sodium benzoate, sodium chloride, sodium citrate, sucrose"
+  ],
+  "indications_and_usage": [
+   "Uses temporarily relieves these symptoms due to hay fever or other respiratory allergies: ■ sneezing ■ itching of the nose or throat ■ runny nose ■ itchy watery eyes ■temporarily relieves these symptoms due to the common cold: ■ sneezing ■ runny nose"
+  ],
+  "keep_out_of_reach_of_children": [
+   "Keep out of reach of children. In case of overdose, get medical help or contact a Poison Control Center right away, (1-800-222-1222)"
+  ],
+  "openfda": {
+   "application_number": [
+    "M012"
+   ],
+   "brand_name": [
+    "Childrens Allergy Relief"
+   ],
+   "generic_name": [
+    "DIPHENHYDRAMINE HCL"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Best Choice"
+   ],
+   "package_ndc": [
+    "63941-505-26"
+   ],
+   "product_ndc": [
+    "63941-505"
+   ],
+   "product_type": [
+    "HUMAN OTC DRUG"
+   ],
+   "route": [
+    "ORAL"
+   ],
+   "rxcui": [
+    "1049906"
+   ],
+   "spl_id": [
+    "448524ca-2fda-44ab-b1f8-edf8db006713"
+   ],
+   "spl_set_id": [
+    "0035e6a4-b3ef-4e0b-aa7f-7453dd065f4d"
+   ],
+   "substance_name": [
+    "DIPHENHYDRAMINE HCL"
+   ],
+   "unii": [
+    "TC2D6JAD40"
+   ]
+  },
+  "other_safety_information": [
+   "Other information ■ Keep carton for full directions for use ■ Each teaspoonful contains: sodium 10 mg ■ store at 20 - 25º C (68 - 77\" F) ■ dosage cup provided"
+  ],
+  "package_label_principal_display_panel": [
+   "----------- Product Label: Best Choice ® Children's Allergy Relief Best Choice ® Children's Allergy Relief Diphenhydramine HCl Oral Solution Antihistamine Cherry Flavor 8 FL OZ (237 mL) * This product is not manufactured or distributed by McNeil PPC, Inc., distributor of Benadryl® Allergy Liquid. PROUDLY DISTRIBUTED BY: VALU MERCHANDISERS, CO. 5000 KANSAS AVE, KANSAS CITY, KS 66106 Carton Bottle res 505-26 Crtn 505-26 Botl"
+  ],
+  "purpose": [
+   "Purpose Antihistamine"
+  ],
+  "questions": [
+   "Questions? Call weekdays from 9:30 AM to 4:30 PM EST at 1-877-798-5944"
+  ],
+  "set_id": "0035e6a4-b3ef-4e0b-aa7f-7453dd065f4d",
+  "spl_product_data_elements": [
+   "Childrens Allergy Relief DIPHENHYDRAMINE HCL DIPHENHYDRAMINE HCL DIPHENHYDRAMINE CITRIC ACID D&C RED NO. 33 FD&C RED NO. 40 GLYCERIN POLOXAMER 407 WATER SODIUM BENZOATE SODIUM CHLORIDE SODIUM CITRATE SUCROSE"
+  ],
+  "version": "1",
+  "warnings": [
+   "Warnings Do not use ■ with any other product containing diphenhydramine, even one used on skin ■ to make a child sleepy Ask a doctor before use if the child has ■ glaucoma ■ a breathing problem such as chronic bronchitis"
+  ],
+  "when_using": [
+   "When using this product ■ marked drowsiness may occur ■ excitability may occur, especially in children ■ sedatives and tranquilizers may increase drowsiness"
+  ]
+ },
+ {
+  "active_ingredient": [
+   "ACTIVE INGREDIENT Ethyl Alcohol, 70% v/v"
+  ],
+  "ask_doctor": [
+   ""
+  ],
+  "ask_doctor_or_pharmacist": [
+   ""
+  ],
+  "do_not_use": [
+   "Do not use in the eyes."
+  ],
+  "dosage_and_administration": [
+   "DIRECTIONS Place a palmful of product in one hand Spread on both hands and rub into skin until dry (approx. 1-2 min.) Place a smaller amount into one hand Spread over hands to wrist and rub into skin until dry (approx. 30 sec.)"
+  ],
+  "effective_time": "20091123",
+  "id": "457094d1-02ad-411f-a2ad-fbf42845eafc",
+  "inactive_ingredient": [
+   "INACTIVE INGREDIENTS aloe vera gel, carbomer 940, denatonium benzoate, fragrance, PEG-1450, tert-butyl alcohol, triethanolamine, water"
+  ],
+  "indications_and_usage": [
+   "USES For handwashing when water is not available to decrease bacteria on the skin after changing diapers after assisting ill persons before contact with a person under medical care or treatment recommended for repeated use"
+  ],
+  "keep_out_of_reach_of_children": [
+   "Keep out of reach of children If swallowed, get medical help or contact a Poison Control Center right away."
+  ],
+  "openfda": {},
+  "package_label_principal_display_panel": [
+   "LABEL INFORMATION Triad® Cat. No. 10-8628 NDC 50730-8628-7 Antiseptic Hand Gel Reduces the risk of bacterial contamination and infection Helps meet CDC, OSHA and APIC Guidelines for Hand Hygiene Contains Aloe Vera Gel Triad Group, Inc. 700 West North Shore Drive Hartland, WI 53029 MADE IN USA www.triad-group.net 128 fl. oz. (3.79L) label"
+  ],
+  "pregnancy_or_breast_feeding": [
+   ""
+  ],
+  "purpose": [
+   "PURPOSE Antiseptic"
+  ],
+  "questions": [
+   ""
+  ],
+  "set_id": "002453e8-0d4b-4e81-ba0e-046447ac2ba8",
+  "spl_product_data_elements": [
+   "Antiseptic Hand Gel ethyl alcohol alcohol alcohol aloe vera leaf carbomer homopolymer type c denatonium benzoate polyethylene glycol 1450 tert-butyl alcohol trolamine water"
+  ],
+  "spl_unclassified_section": [
+   ""
+  ],
+  "stop_use": [
+   "Stop use and ask a doctor if irritation and redness develop. if condition persists for more than 72 hours"
+  ],
+  "storage_and_handling": [
+   "OTHER INFORMATION Store at room temperature: 15°- 30° C (59° - 86° F)"
+  ],
+  "version": "1",
+  "warnings": [
+   "WARNINGS For external use only. Flammable, keep away from fire or flame. Do not use in the eyes. Stop use and ask a doctor if irritation and redness develop. if condition persists for more than 72 hours Keep out of reach of children If swallowed, get medical help or contact a Poison Control Center right away.",
+   ""
+  ],
+  "when_using": [
+   ""
+  ]
+ },
+ {
+  "active_ingredient": [
+   "Active ingredient Salicylic acid 2%"
+  ],
+  "adverse_reactions": [
+   "ADVERSE REACTION Information: 1-888-287-1915 or Walmart.com/help DISTRIBUTED BY: Walmart Inc., Bentonville, AR 72716 PLASTIC TUBE Do Not Recycle how2recycle.info Made in the USA with domestic and imported ingredients. Factory Certified"
+  ],
+  "dosage_and_administration": [
+   "Directions wet face, apply to hand, massage face gently. Rinse well. Use up to twice daily. avoid contact with eyes. If contact occurs, flush thoroughly with water."
+  ],
+  "effective_time": "20260227",
+  "id": "4bd4ee97-13c9-f02c-e063-6394a90a5ee6",
+  "inactive_ingredient": [
+   "Inactive ingredients water, sodium cocoyl isethionate, cetearyl alcohol, laureth-3, glycerin, coconut acid, sodium isethionate, sodium hydroxide, fragrance, Lavandula stoechas extract, Helichrysum italicum extract, Cistus monspeliensis extract, disodium EDTA"
+  ],
+  "indications_and_usage": [
+   "Use for the treatment of acne"
+  ],
+  "keep_out_of_reach_of_children": [
+   "Keep out of reach of children. If swallowed, get medical help or contact a Poison Control Center right away."
+  ],
+  "openfda": {
+   "application_number": [
+    "M006"
+   ],
+   "brand_name": [
+    "Quick Action"
+   ],
+   "generic_name": [
+    "SALICYLIC ACID"
+   ],
+   "is_original_packager": [
+    true
+   ],
+   "manufacturer_name": [
+    "Walmart Inc."
+   ],
+   "package_ndc": [
+    "49035-934-83"
+   ],
+   "product_ndc": [
+    "49035-934"
+   ],
+   "product_type": [
+    "HUMAN OTC DRUG"
+   ],
+   "route": [
+    "TOPICAL"
+   ],
+   "rxcui": [
+    "562600"
+   ],
+   "spl_id": [
+    "4bd4ee97-13c9-f02c-e063-6394a90a5ee6"
+   ],
+   "spl_set_id": [
+    "00025ea5-d15f-49d2-a52a-6c1bd8c6a033"
+   ],
+   "substance_name": [
+    "SALICYLIC ACID"
+   ],
+   "unii": [
+    "O414PZ4LPZ"
+   ]
+  },
+  "package_label_principal_display_panel": [
+   "principal display panel NDC 49035-934-83 equate™ COMPARE TO CLEARASIL ® ULTRA RAPID ACTION DAILY FACE WASH* QUICK ACTION DAILY FACE WASH 2% Salicylic Acid Acne Treatment Dermatologist Tested Noticeably clearer skin Clears dirt, oil and bacteria from pores 6.78 FL OZ (200 mL) image description"
+  ],
+  "purpose": [
+   "Purpose Acne medication"
+  ],
+  "questions": [
+   "Questions or comments? 1-888-287-1915"
+  ],
+  "set_id": "00025ea5-d15f-49d2-a52a-6c1bd8c6a033",
+  "spl_product_data_elements": [
+   "Quick Action Salicylic acid WATER SODIUM COCOYL ISETHIONATE CETOSTEARYL ALCOHOL LAURETH-3 GLYCERIN COCONUT ACID SODIUM ISETHIONATE SODIUM HYDROXIDE LAVANDULA ANGUSTIFOLIA FLOWERING TOP HELICHRYSUM ITALICUM FLOWER CISTUS MONSPELIENSIS WHOLE EDETATE DISODIUM ANHYDROUS SALICYLIC ACID SALICYLIC ACID"
+  ],
+  "spl_unclassified_section": [
+   "Claims Paraben-free Noticeably clearer skin Dermatologist tested",
+   "Disclaimer *This product is not manufactured or distributed by RB HEALTH (US) LLC, distributor of Clearasil ® Ultra Rapid Action Daily Face Wash."
+  ],
+  "version": "16",
+  "warnings": [
+   "Warnings For external use only"
+  ],
+  "when_using": [
+   "When using this product skin irritation and dryness is more likely to occur if you use another topical acne medication at the same time. If irritation occurs, only use one topical acne medication at a time."
+  ]
+ },
+ {
+  "adverse_reactions": [
+   "ADVERSE REACTIONS Adverse reactions, if they occur, are usually observed at the beginning of therapy and generally disappear on continued medication or upon decreasing the dose. In a sample of about 3,500 anxious patients, the most frequent adverse reaction to lorazepam is sedation (15.9%), followed by dizziness (6.9%), weakness (4.2%), and unsteadiness (3.4%). Less frequent adverse reactions are disorientation, depression, nausea, change in appetite, headache, sleep disturbance, agitation, dermatological symptoms, eye-function disturbance, together with various gastrointestinal symptoms and autonomic manifestations. The incidence of sedation and unsteadiness increased with age. Small decreases in blood pressure have been noted but are not clinically significant, probably being related to the relief of anxiety produced by lorazepam. Transient amnesia or memory impairment has been reported in association with the use of benzodiazepines."
+  ],
+  "clinical_pharmacology": [
+   "CLINICAL PHARMACOLOGY Studies in healthy volunteers show that in single high doses lorazepam has a tranquilizing action on the central nervous system with no appreciable effect on the respiratory or cardiovascular systems. Lorazepam is readily absorbed with an absolute bioavailability of 90 percent. Peak concentrations in plasma occur approximately 2 hours following administration. The peak plasma level of lorazepam from a 2 mg dose is approximately 20 ng/ml. The mean half-life of unconjugated lorazepam in human plasma is about 12 hours and for its major metabolite, lorazepam glucuronide, about 18 hours. At clinically relevant concentrations, lorazepam is approximately 85% bound to plasma proteins. Lorazepam is rapidly conjugated at its 3-hydroxy group into lorazepam glucuronide which is then excreted in the urine. Lorazepam glucuronide has no demonstrable CNS activity in animals. The plasma levels of lorazepam are proportional to the dose given. There is no evidence of accumulation of lorazepam on administration up to six months. Studies comparing young and elderly subjects have shown that the pharmacokinetics of lorazepam remain unaltered with advancing age."
+  ],
+  "contraindications": [
+   "CONTRAINDICATIONS Lorazepam is contraindicated in patients with known sensitivity to the benzodiazepines or with acute narrow-angle glaucoma."
+  ],
+  "description": [
+   "DESCRIPTION Lorazepam, an antianxiety agent, has the chemical formula, (±)-7-Chloro-5-( o -chlorophenyl)-1,3-dihydro-3-hydroxy-2 H -1,4-benzodiazepin-2-one: It is a nearly white powder almost insoluble in water. Each lorazepam tablet, to be taken orally, contains 0.5 mg, 1 mg or 2 mg of lorazepam. This product contains the following inactive ingredients: lactose, magnesium stearate, microcrystalline cellulose and polacrilin potassium. image of chemical structure"
+  ],
+  "dosage_and_administration": [
+   "DOSAGE AND ADMINISTRATION Lorazepam is administered orally. For optimal results, dose, frequency of administration, and duration of therapy should be individualized according to patient response. To facilitate this, 0.5 mg, 1 mg, and 2 mg tablets are available. The usual range is 2 to 6 mg/day given in divided doses, the largest dose being taken before bedtime, but the daily dosage may vary from 1 to 10 mg/day. For anxiety, most patients require an initial dose of 2 to 3 mg/day given b.i.d. or t.i.d. For insomnia due to anxiety or transient situational stress, a single daily dose of 2 to 4 mg may be given, usually at bedtime. For elderly or debilitated patients, an initial dosage of 1 to 2 mg/day in divided doses is recommended, to be adjusted as needed and tolerated. The dosage of lorazepam should be increased gradually when needed to help avoid adverse effects. When higher dosage is indicated, the evening dose should be increased before the daytime doses."
+  ],
+  "drug_abuse_and_dependence": [
+   "DRUG ABUSE AND DEPENDENCE Withdrawal symptoms, similar in character to those noted with barbiturates and alcohol (convulsions, tremor, abdominal and muscle cramps, vomiting, and sweating), have occurred following abrupt discontinuance of lorazepam. The more severe withdrawal symptoms have usually been limited to those patients who received excessive doses over an extended period of time. Generally milder withdrawal symptoms (e.g., dysphoria and insomnia) have been reported following abrupt discontinuance of benzodiazepines taken continuously at therapeutic levels for several months. Consequently, after extended therapy, abrupt discontinuation should generally be avoided and a gradual dosage-tapering schedule followed. Addiction-prone individuals (such as drug addicts or alcoholics) should be under careful surveillance when receiving lorazepam or other psychotropic agents because of the predisposition of such patients to habituation and dependence. Lorazepam tablets are classified by the Drug Enforcement Administration as a Schedule IV controlled substance."
+  ],
+  "effective_time": "20100507",
+  "how_supplied": [
+   "HOW SUPPLIED Lorazepam tablets are available in the following dosage strengths: 0.5 mg: white, scored, round flat faced beveled edge, debossed with 240 over 0.5 on one side and WATSON on the other side, supplied in: Bottles of 10 NDC 54868-2145-0 Bottles of 20 NDC 54868-2145-2 Bottles of 30 NDC 54868-2145-3 Bottles of 50 NDC 54868-2145-5 Bottles of 60 NDC 54868-2145-6 Bottles of 90 NDC 54868-2145-9 Bottles of 100 NDC 54868-2145-4 1 mg: white, scored, round flat faced beveled edge, debossed with 241 over 1 on one side and WATSON on the other side, supplied in: Bottles of 03 NDC 54868-1338-6 Bottles of 10 NDC 54868-1338-7 Bottles of 15 NDC 54868-1338-0 Bottles of 20 NDC 54868-1338-1 Bottles of 30 NDC 54868-1338-3 Bottles of 60 NDC 54868-1338-4 Bottles of 90 NDC 54868-1338-8 Bottles of 100 NDC 54868-1338-2 Bottles of 120 NDC 54868-1338-9 2 mg: white, scored, round flat faced beveled edge, debossed with 242 over 2 on one side and WATSON on the other side, supplied in: Bottles of 30 NDC 54868-0061-3 Bottles of 60 NDC 54868-0061-5 Bottles of 90 NDC 54868-0061-4 Bottles of 100 NDC 54868-0061-2 Bottles of 120 NDC 54868-0061-6 Store at controlled room temperature 15°-30°C (59°-86°F). [See USP.] Dispense in a tight, light-resistant container as defined in the USP. Watson Laboratories, Inc. Corona, CA 92880 USA 30223-3 Rev: February 2004 Repackaging and Relabeling by: Physicians Total Care, Inc. Tulsa, OK 74146"
+  ],
+  "how_supplied_table": [
+   "<table ID=\"id3c39467-71b9-495a-8fd7-9da2b0cb4e93\" width=\"30%\"> <tbody> <tr> <td>Bottles of 10  </td> <td>NDC 54868-2145-0  </td> </tr> <tr> <td>Bottles of 20  </td> <td>NDC 54868-2145-2  </td> </tr> <tr> <td>Bottles of 30  </td> <td>NDC 54868-2145-3  </td> </tr> <tr> <td>Bottles of 50  </td> <td>NDC 54868-2145-5  </td> </tr> <tr> <td>Bottles of 60  </td> <td>NDC 54868-2145-6  </td> </tr> <tr> <td>Bottles of 90  </td> <td>NDC 54868-2145-9  </td> </tr> <tr> <td>Bottles of 100  </td> <td>NDC 54868-2145-4  </td> </tr> </tbody> </table>",
+   "<table ID=\"i20bc2842-acc8-4c94-89dd-6bd0e911f218\" width=\"30%\"> <tbody> <tr> <td>Bottles of 03  </td> <td>NDC 54868-1338-6  </td> </tr> <tr> <td>Bottles of 10  </td> <td>NDC 54868-1338-7  </td> </tr> <tr> <td>Bottles of 15  </td> <td>NDC 54868-1338-0  </td> </tr> <tr> <td>Bottles of 20  </td> <td>NDC 54868-1338-1  </td> </tr> <tr> <td>Bottles of 30  </td> <td>NDC 54868-1338-3  </td> </tr> <tr> <td>Bottles of 60  </td> <td>NDC 54868-1338-4  </td> </tr> <tr> <td>Bottles of 90  </td> <td>NDC 54868-1338-8  </td> </tr> <tr> <td>Bottles of 100  </td> <td>NDC 54868-1338-2  </td> </tr> <tr> <td>Bottles of 120  </td> <td>NDC 54868-1338-9  </td> </tr> </tbody> </table>",
+   "<table ID=\"i4131c33b-22cc-440d-8cb8-428d6f2652f3\" width=\"30%\"> <tbody> <tr> <td>Bottles of 30  </td> <td>NDC 54868-0061-3  </td> </tr> <tr> <td>Bottles of 60  </td> <td>NDC 54868-0061-5  </td> </tr> <tr> <td>Bottles of 90  </td> <td>NDC 54868-0061-4  </td> </tr> <tr> <td>Bottles of 100  </td> <td>NDC 54868-0061-2  </td> </tr> <tr> <td>Bottles of 120  </td> <td>NDC 54868-0061-6  </td> </tr> </tbody> </table>"
+  ],
+  "id": "7c5b3625-4922-4296-b34b-5336b0ca2099",
+  "indications_and_usage": [
+   "INDICATIONS AND USAGE Lorazepam is indicated for the management of anxiety disorders or for the short-term relief of the symptoms of anxiety or anxiety associated with depressive symptoms. Anxiety or tension associated with the stress of everyday life usually does not require treatment with an anxiolytic. The effectiveness of lorazepam in long-term use, that is, more than 4 months, has not been assessed by systematic clinical studies. The physician should periodically reassess the usefulness of the drug for the individual patient."
+  ],
+  "openfda": {},
+  "overdosage": [
+   "OVERDOSAGE In the management of overdosage with any drug, it should be borne in mind that multiple agents may have been taken. Manifestations of lorazepam overdosage include somnolence, confusion, and coma. Induced vomiting and/or gastric lavage should be undertaken, followed by general supportive care, monitoring of vital signs, and close observation of the patient. Hypotension, though unlikely, usually may be controlled with norepinephrine bitartrate injection. The usefulness of dialysis has not been determined. Flumazenil, a specific benzodiazepine receptor antagonist, is indicated for the complete or partial reversal of the sedative effects of benzodiazepines and may be used in situations when an overdose with a benzodiazepine is known or suspected. Prior to the administration of flumazenil, necessary measures should be instituted to secure airway, ventilation, and intravenous access. Flumazenil is intended as an adjunct to, not as a substitute for, proper management of benzodiazepine overdose. Patients treated with flumazenil should be monitored for re-sedation, respiratory depression, and other residual benzodiazepine effects for an appropriate period after treatment. The prescriber should be aware of a risk of seizure in association with flumazenil treatment, particularly in long-term benzodiazepine users and in cyclic antidepressant overdose. The complete flumazenil package insert including CONTRAINDICATIONS, WARNINGS, and PRECAUTIONS should be consulted prior to use."
+  ],
+  "package_label_principal_display_panel": [
+   "PRINCIPAL DISPLAY PANEL Lorazepam tablets 0.5 mg 1 mg 2 mg image of 0.5 mg package label image of 1 mg package label image of 2 mg package label"
+  ],
+  "precautions": [
+   "PRECAUTIONS In patients with depression accompanying anxiety, a possibility for suicide should be borne in mind. For elderly or debilitated patients, the initial daily dosage should not exceed 2 mg in order to avoid oversedation. Lorazepam dosage should be terminated gradually, since abrupt withdrawal of any antianxiety agent may result in symptoms similar to those for which patients are being treated: anxiety, agitation, irritability, tension, insomnia, and occasional convulsions. The usual precautions for treating patients with impaired renal or hepatic function should be observed. In patients where gastrointestinal or cardiovascular disorders coexist with anxiety, it should be noted that lorazepam has not been shown to be of significant benefit in treating the gastrointestinal or cardiovascular component. Esophageal dilation occurred in rats treated with lorazepam for more than one year at 6 mg/kg/day. The no-effect dose was 1.25 mg/kg/day (approximately 6 times the maximum human therapeutic dose of 10 mg per day). The effect was reversible only when the treatment was withdrawn within two months of first observation of the phenomenon. The clinical significance of this is unknown. However, use of lorazepam for prolonged periods and in geriatric patients requires caution and there should be frequent monitoring for symptoms of upper G.l. disease. Safety and effectiveness of lorazepam in children of less than 12 years have not been established. INFORMATION FOR PATIENTS To assure the safe and effective use of lorazepam, patients should be informed that, since benzodiazepines may produce psychological and physical dependence, it is advisable that they consult with their physician before either increasing the dose or abruptly discontinuing this drug. ESSENTIAL LABORATORY TESTS Some patients on lorazepam have developed leukopenia, and some have had elevations of LDH. As with other benzodiazepines, periodic blood counts and liver-function tests are recommended for patients on long-term therapy. CLINICALLY SIGNIFICANT DRUG INTERACTIONS The benzodiazepines, including lorazepam, produce CNS-depressant effects when administered with such medications as barbiturates or alcohol. CARCINOGENESIS AND MUTAGENESIS No evidence of carcinogenic potential emerged in rats during an 18-month study with lorazepam. No studies regarding mutagenesis have been performed. PREGNANCY Reproductive studies in animals were performed in mice, rats, and two strains of rabbits. Occasional anomalies (reduction of tarsals, tibia, metatarsals, malrotated limbs, gastroschisis, malformed skull, and microphthalmia) were seen in drug-treated rabbits without relationship to dosage. Although all of these anomalies were not present in the concurrent control group, they have been reported to occur randomly in historical controls. At doses of 40 mg/kg and higher, there was evidence of fetal resorption and increased fetal loss in rabbits which was not seen at lower doses. The clinical significance of the above findings is not known. However, an increased risk of congenital malformations associated with the use of minor tranquilizers (chlordiazepoxide, diazepam, and meprobamate) during the first trimester of pregnancy has been suggested in several studies. Because the use of these drugs is rarely a matter of urgency, the use of lorazepam during this period should almost always be avoided. The possibility that a woman of childbearing potential may be pregnant at the time of institution of therapy should be considered. Patients should be advised that if they become pregnant, they should communicate with their physician about the desirability of discontinuing the drug. In humans, blood levels obtained from umbilical cord blood indicate placental transfer of lorazepam and lorazepam glucuronide. NURSING MOTHERS It is not known whether oral lorazepam is excreted in human milk like the other benzodiazepine tranquilizers. As a general rule, nursing should not be undertaken while a patient is on a drug since many drugs are excreted in human milk."
+  ],
+  "set_id": "0007892c-8c17-400d-b820-020aa32f433b",
+  "spl_product_data_elements": [
+   "Lorazepam Lorazepam LORAZEPAM LORAZEPAM LACTOSE MAGNESIUM STEARATE CELLULOSE, MICROCRYSTALLINE POLACRILIN POTASSIUM Round 240;0;5;WATSON Lorazepam Lorazepam LORAZEPAM LORAZEPAM LACTOSE MAGNESIUM STEARATE CELLULOSE, MICROCRYSTALLINE POLACRILIN POTASSIUM Round 241;1;WATSON Lorazepam Lorazepam LORAZEPAM LORAZEPAM LACTOSE MAGNESIUM STEARATE CELLULOSE, MICROCRYSTALLINE POLACRILIN POTASSIUM Round 242;2;WATSON"
+  ],
+  "version": "3",
+  "warnings": [
+   "WARNINGS Lorazepam is not recommended for use in patients with a primary depressive disorder of psychosis. As with all patients on CNS-acting drugs, patients receiving lorazepam should be warned not to operate dangerous machinery or motor vehicles and that their tolerance for alcohol and other CNS depressants will be diminished."
+  ]
+ },
+ {
+  "effective_time": "20120405",
+  "id": "ab5153c1-a823-4f23-bd98-e818db369e65",
+  "openfda": {},
+  "package_label_principal_display_panel": [
+   "PACKAGE LABEL.PRINCIPAL DISPLAY PANEL NDC 0069-9321-22 2mL Single Dose Vial fludarabine phosphate injection USP 50 mg/2 mL (25 mg/mL) CAUTION: Cytotoxic Agent Sterile Refrigerate For IV Use Only Rx Only container label"
+  ],
+  "set_id": "001b31b5-f933-4525-b68c-a0410557674a",
+  "spl_product_data_elements": [
+   "Fludarabine Phosphate Fludarabine Phosphate FLUDARABINE PHOSPHATE FLUDARABINE MANNITOL SODIUM HYDROXIDE Clear solution"
+  ],
+  "version": "1"
+ },
+ {
+  "active_ingredient": [
+   "ACTIVE INGREDIENTS LITHIUM BROM"
+  ],
+  "dosage_and_administration": [
+   "DIRECTIONS Adults: Dissolve 3 to 5 under the tongue three times a day or as directed by Lic. Practitioner. Take at greater intervals as condition subsides. Children: Dissolve 3 to 5 under the tongue three times a day or as directed by Lic. Practitioner. Take at greater intervals as condition subsides."
+  ],
+  "effective_time": "20220425",
+  "id": "dd80166d-cac5-3261-e053-2995a90aa412",
+  "inactive_ingredient": [
+   "INACTIVE INGREDIENTS Sucrose/Lactose"
+  ],
+  "indications_and_usage": [
+   "INDICATIONS Indications: LITHIUM BROM Sleeplessness"
+  ],
+  "keep_out_of_reach_of_children": [
+   "KEEP OUT OF REACH OF CHILDREN Keep this and all medicines out of reach of children."
+  ],
+  "openfda": {},
+  "package_label_principal_display_panel": [
+   "PRINCIPAL DISPLAY PANEL The OTC potency range of LITHIUM BROM is 3x–30x, 2c–30c, 200c, 1m, 10m, 50m, and CM. Availability is subject to change. All WHP single remedies are made to order; thus, the labels are printed on the same label stock as the orders are filled. ‘Bottle Size’ and ‘Potency’ vary on the label depending on customer choice. Standard bottle sizes for pellet-form remedies are 2 dram, 4 dram, 1 ounce, 2 ounce, and 4 ounce. Label"
+  ],
+  "purpose": [
+   "USES To relieve the symptoms of sleeplessness."
+  ],
+  "recent_major_changes": [
+   "Changes Indications: LITHIUM BROM Insomnia -changes to- Indications: LITHIUM BROM Sleeplessness"
+  ],
+  "set_id": "001cc8c5-3b3b-456f-8b62-46da8202ea49",
+  "spl_product_data_elements": [
+   "Lithium bromatum LITHIUM BROMIDE SUCROSE LACTOSE LITHIUM BROMIDE LITHIUM CATION white"
+  ],
+  "version": "3",
+  "warnings": [
+   "STOP USE AND ASK DOCTOR If symptoms persist/worsen or if pregnant/nursing, stop use and consult your practitioner."
+  ]
+ }
+]
