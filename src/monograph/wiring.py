@@ -106,8 +106,13 @@ def git_sha(root: Path) -> str:
         out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True, check=True)
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
+    # Results and the report are outputs, not inputs: appending to them does not make the source dirty.
     dirty = subprocess.run(
-        ["git", "status", "--porcelain"], cwd=root, capture_output=True, text=True, check=False
+        ["git", "status", "--porcelain", "--", ".", ":!results", ":!docs/h6/RESULTS.md"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
     ).stdout
     return out.stdout.strip() + ("-dirty" if dirty.strip() else "")
 
