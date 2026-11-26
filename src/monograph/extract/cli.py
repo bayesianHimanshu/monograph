@@ -195,7 +195,7 @@ def _existing_records(root: Path, split: str) -> list[dict[str, Any]]:
 
 @h4_app.command("run")
 def run(
-    arm: Annotated[str, typer.Option(help="A0, A1, A2, A3 or all.")],
+    arm: Annotated[str, typer.Option(help="A0, A1, A2, A3, A3+ or all.")],
     model: Annotated[str, typer.Option(help="A pinned model ID or all.")],
     split: Annotated[str, typer.Option(help="dev or test.")],
     root: Root = Path(),
@@ -208,7 +208,8 @@ def run(
 
     import anthropic
 
-    from monograph.extract.config import ARMS, COST_APPROVAL_THRESHOLD_USD, MODELS
+    from monograph.extract.config import ALL_ARMS as ARMS
+    from monograph.extract.config import COST_APPROVAL_THRESHOLD_USD, MODELS
     from monograph.extract.llm import AnthropicClient, CachedClient, ResponseCache
     from monograph.extract.runner import SplitRunner
     from monograph.extract.setup import build_context, extractor

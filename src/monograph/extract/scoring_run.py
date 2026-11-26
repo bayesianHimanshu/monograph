@@ -6,7 +6,7 @@ from collections import defaultdict
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from monograph.extract.config import ARMS, MODELS
+from monograph.extract.config import ARMS, MODELS, UPPER_BOUND_ARMS
 from monograph.extract.score import (
     LabelScorer,
     aggregate,
@@ -98,7 +98,16 @@ class ScoreRun:
                 self._writer.write(
                     "h4.aggregate",
                     agg.get("mean_f1"),
-                    {"model": model, "arm": arm, "split": split, "group": group, "usable": ok, "checks": checks, **agg},
+                    {
+                        "model": model,
+                        "arm": arm,
+                        "split": split,
+                        "group": group,
+                        "usable": ok,
+                        "checks": checks,
+                        "upper_bound_only": arm in UPPER_BOUND_ARMS,
+                        **agg,
+                    },
                 )
             totals: dict[str, Any] = defaultdict(int)
             merged: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
@@ -132,7 +141,7 @@ class ScoreRun:
                 },
             )
         for model in MODELS:
-            for a, b in (("A1", "A0"), ("A2", "A1"), ("A3", "A2"), ("A3", "A1")):
+            for a, b in (("A1", "A0"), ("A2", "A1"), ("A3", "A2"), ("A3", "A1"), ("A3+", "A3")):
                 if (model, a) in f1_by and (model, b) in f1_by:
                     diff = bootstrap_difference(f1_by[(model, a)], f1_by[(model, b)], SEED)
                     self._writer.write(

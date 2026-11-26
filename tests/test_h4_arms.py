@@ -130,7 +130,7 @@ def test_a3_reports_registry_mismatches(context: GraphContextChecker, spec: Sche
     result, client = _run([_answer(ndc="0280-2000-99"), _answer(ingredients=2), _answer()], "A3", context, spec)
     kinds = [[i["source"] for i in r.issues] for r in result.rounds]
     assert kinds[0] == ["shacl"]
-    assert "0280-2000-10" in client.requests[1].messages[-1].text  # registry candidates are offered
+    assert "0280-2000-10" not in client.requests[1].messages[-1].text  # never the label's own NDCs under A3
     assert kinds[1] == ["extraction_only:ingredient-count-matches-product"]
     assert result.status == "ok"
 

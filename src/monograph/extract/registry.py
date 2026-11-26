@@ -78,6 +78,8 @@ def load_reference(
     ndc_records: list[dict[str, Any]] = list(raw.all("ndc"))
     label_records: list[dict[str, Any]] = list(raw.all("label"))
     label_uniis: dict[str, set[str]] = {}
+    ndc_provenance: list[tuple[str, str | None]] = []
+    substance_links: dict[str, list[str | None]] = {}
     for set_id in set_ids:
         ndc_page = raw.read("ndc", 0, 100, search=ndc_query(set_id))
         label_page = raw.read("label", 0, 1, search=label_query(set_id))
@@ -87,10 +89,21 @@ def load_reference(
         ndc_records += ndc_page
         label_records += label_page
         label_uniis[set_id] = {str(u) for r in ndc_page + label_page for u in (r.get("openfda") or {}).get("unii", [])}
-        candidates += list(dailymed_ndcs(set_id, json.loads(listing.read_text())))
+        from_index = list(dailymed_ndcs(set_id, json.loads(listing.read_text())))
+        candidates += from_index
+        ndc_provenance += [(str(c.record["ndc"]), set_id) for c in from_index if c.cls == "PackagedProduct"]
     for record in ndc_records:
         mapped = openfda.ndc(record)
-        candidates += mapped + list(nested_packages(mapped, record)) + list(label_links(record))
+        nested = list(nested_packages(mapped, record))
+        candidates += mapped + nested + list(label_links(record))
+        links: list[str | None] = [str(s).lower() for s in (record.get("openfda") or {}).get("spl_set_id", [])] or [
+            None
+        ]
+        for c in mapped + nested:
+            if c.cls == "PackagedProduct":
+                ndc_provenance += [(str(c.record.get("ndc")), link) for link in links]
+            elif c.cls == "Substance":
+                substance_links.setdefault(c.record["unii"] + "|" + str(c.record.get("name")), []).extend(links)
     for product_ndc, linked in sorted(dailymed_links.items()):  # DailyMed's NDC index (H6 gap products)
         for set_id in linked:
             products = [f"{DEFAULT_BASE}product/{product_ndc}"]
@@ -111,6 +124,8 @@ def load_reference(
     reference.add_substances(sources)
     reference.add_candidates(candidates)
     reference.label_uniis = {k: frozenset(v) for k, v in label_uniis.items()}
+    for ndc, link in ndc_provenance:
+        reference.link_ndc(ndc, link)
     return reference
 
 

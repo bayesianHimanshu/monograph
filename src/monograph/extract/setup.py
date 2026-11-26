@@ -18,7 +18,7 @@ from monograph.extract.config import MAX_REPAIR_ROUNDS, SETTINGS
 from monograph.extract.llm import LlmClient
 from monograph.extract.prompts import PromptSet, load_prompts
 from monograph.extract.registry import load_reference, spl_documents
-from monograph.extract.repair.shacl_feedback import GraphContextChecker
+from monograph.extract.repair.shacl_feedback import CandidatePolicy, GraphContextChecker
 from monograph.extract.resolve import NdcResolver, ReferenceGraph, SubstanceResolver
 from monograph.extract.sources.dailymed import SplCache, SplDocument
 from monograph.gen.artifacts import CONTEXT_SHACL_FILE, EXTRACTION_SCHEMA_FILE
@@ -37,6 +37,7 @@ class H4Context:
     docs: dict[str, SplDocument]
     reference: ReferenceGraph
     checker: GraphContextChecker
+    checker_label: GraphContextChecker  # A3+: label-derived candidates
     substances: SubstanceResolver
     prompts: PromptSet
 
@@ -64,9 +65,12 @@ def build_context(root: Path) -> H4Context:
     )
     substances = SubstanceResolver(reference, vocab)
     shapes = Graph().parse(wiring.generated_dir(root) / CONTEXT_SHACL_FILE, format="turtle")
-    checker = GraphContextChecker(reference, substances, NdcResolver(reference, vocab), shapes, mapper)
+    ndcs = NdcResolver(reference, vocab)
+    checker = GraphContextChecker(reference, substances, ndcs, shapes, mapper, CandidatePolicy.INDEPENDENT)
+    checker_label = GraphContextChecker(reference, substances, ndcs, shapes, mapper, CandidatePolicy.LABEL)
     schema = json.loads((wiring.generated_dir(root) / EXTRACTION_SCHEMA_FILE).read_text())
-    return H4Context(spec, split, docs, reference, checker, substances, load_prompts(PROMPT_VERSION, schema))
+    prompts = load_prompts(PROMPT_VERSION, schema)
+    return H4Context(spec, split, docs, reference, checker, checker_label, substances, prompts)
 
 
 def extractor(ctx: H4Context, client: LlmClient, model: str) -> Extractor:

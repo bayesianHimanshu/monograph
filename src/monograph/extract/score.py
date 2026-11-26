@@ -17,6 +17,7 @@ Definitions (pre-registered in docs/h4/PREREG.md; this module is the executable 
   checked.
 * Exact match: tuples equal, every gold product aligned with the right dosage form and routes, the same
   number of products, and the extracted NDC set equal to the gold NDCs that the narrative prints.
+* Refusal rate: the share of records whose final response stopped with `refusal` (no fallback model).
 * Usable configuration (headline test labels): mean per-label F1 >= 0.95, dosage form accuracy >= 0.97,
   route accuracy >= 0.97, unresolvable rate <= 0.01, hallucination rate <= 0.005.
 """
@@ -393,6 +394,8 @@ def aggregate(scores: Sequence[LabelScore]) -> dict[str, Any]:
         "violation_free_rate": sum(s.violation_free for s in scores) / len(scores),
         "status": dict(Counter(s.status for s in scores)),
         "truncated": sum(s.status == "truncated" for s in scores),
+        "refusal_rate": sum(s.status == "refused" for s in scores) / len(scores),
+        "truncation_rate": sum(s.status == "truncated" for s in scores) / len(scores),
         "mean_repair_rounds": statistics.fmean(s.repair_rounds for s in scores),
         "repair_rounds": dict(Counter(s.repair_rounds for s in scores)),
         "usage": usage,
@@ -416,19 +419,18 @@ def usable(agg: Mapping[str, Any]) -> tuple[bool, dict[str, bool]]:
 
 
 def verdict(usable_by: Mapping[tuple[str, str], bool], models: Iterable[str]) -> str:
-    """The brief's rule, with the pre-registered precedence for when both conditions are true.
+    """The pre-registered decision rule. Only arms A0 to A3 count; A3+ is an upper bound outside it.
 
     fails:        A1 or A2 is usable for every model (record-local repair is enough everywhere);
-    holds:        for at least one model, A3 is usable and A1 is not;
+    holds:        for at least one model, A3 is usable and A2 is not;
     partly holds: otherwise.
 
-    "fails" is evaluated first: if both hold, a model whose A1 is not usable but whose A2 is reached the
-    threshold through deterministic repair, without graph context.
+    "fails" is evaluated first.
     """
     models = list(models)
     if all(usable_by.get((m, "A1"), False) or usable_by.get((m, "A2"), False) for m in models):
         return "fails"
-    if any(usable_by.get((m, "A3"), False) and not usable_by.get((m, "A1"), False) for m in models):
+    if any(usable_by.get((m, "A3"), False) and not usable_by.get((m, "A2"), False) for m in models):
         return "holds"
     return "partly holds"
 

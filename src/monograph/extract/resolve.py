@@ -62,6 +62,7 @@ class SubstanceSource:
     unii: str
     name: str
     origin: str  # dailymed-uniis | openfda | spl
+    set_id: str | None = None  # the label this source is linked to; None for label-independent sources
 
 
 class ResolutionStatus(StrEnum):
@@ -90,12 +91,17 @@ class ReferenceGraph:
         # UNIIs the registry attaches to each label's products (openFDA `openfda.unii` on the label's own NDC
         # and label records). Used only to break ties between substances that share a name.
         self.label_uniis: dict[str, frozenset[str]] = {}
+        # Provenance, for feedback candidates: which labels' sources contributed each normalized substance name
+        # and each NDC. None stands for a source linked to no label (for example DailyMed's moiety list).
+        self.name_links: dict[str, set[str | None]] = defaultdict(set)
+        self.ndc_links: dict[str, set[str | None]] = defaultdict(set)
 
     def add_substances(self, sources: Iterable[SubstanceSource]) -> None:
         names: dict[str, list[str]] = defaultdict(list)
         for s in sources:
             if re.fullmatch(r"[0-9A-Z]{10}", s.unii) and s.name.strip():
                 names[s.unii].append(s.name.strip())
+                self.name_links[normalize_name(s.name)].add(s.set_id)
         for unii in sorted(names):
             ordered = sorted(set(names[unii]), key=lambda n: (len(n), n))
             iri = URIRef(self._mapper.iri_of(Substance.model_construct(unii=unii, name=ordered[0])))
@@ -140,6 +146,17 @@ class ReferenceGraph:
                     out[str(ndc)] = str(package)
         return dict(sorted(out.items()))
 
+    def link_ndc(self, ndc: str, set_id: str | None) -> None:
+        self.ndc_links[ndc].add(set_id)
+
+    def independent_ndcs(self, set_id: str, like: str) -> tuple[str, ...]:
+        """Registry NDCs with the same labeler code as `like`, each known from at least one source that is not
+        linked to the label `set_id`. Never anything taken only from that label's own records."""
+        labeler = like.split("-", 1)[0]
+        return tuple(
+            sorted(ndc for ndc, links in self.ndc_links.items() if ndc.split("-", 1)[0] == labeler and links - {set_id})
+        )
+
     def product_of_package(self, package_iri: str) -> str | None:
         value = self.graph.value(URIRef(package_iri), URIRef(self._vocab.ns + "product"))
         return None if value is None else str(value)
@@ -156,6 +173,7 @@ class SubstanceResolver:
     def __init__(self, reference: ReferenceGraph, vocab: Vocabulary, max_candidates: int = 5) -> None:
         self._max = max_candidates
         self.label_uniis = reference.label_uniis
+        self._name_links = reference.name_links
         self._default_context: frozenset[str] = frozenset()
         index: dict[str, set[str]] = defaultdict(set)
         g = reference.graph
@@ -171,6 +189,17 @@ class SubstanceResolver:
         bound = copy.copy(self)
         bound._default_context = self.label_uniis.get(set_id, frozenset())
         return bound
+
+    def candidates(self, name: str, exclude_set_id: str | None = None) -> tuple[str, ...]:
+        """Nearest names in the graph. With `exclude_set_id`, only names that some source not linked to that
+        label also contributes, so a label's own ingredient list can never be offered back for it."""
+        key = normalize_name(name)
+        names = (
+            self._names
+            if exclude_set_id is None
+            else [n for n in self._names if self._name_links.get(n, set()) - {exclude_set_id}]
+        )
+        return tuple(difflib.get_close_matches(key, names, n=self._max, cutoff=0.6))
 
     def resolve(self, name: str, context_uniis: frozenset[str] = frozenset()) -> Resolution:
         """Exact normalized-name match. When several substances share the name, the one UNII among them
@@ -243,10 +272,11 @@ def resolve_extraction(
 
 
 def substance_sources_from_spls(documents: Sequence[Any]) -> list[SubstanceSource]:
-    """Every ingredient (active and inactive) declared in the structured part of the given SPLs."""
+    """Every ingredient (active and inactive) declared in the structured part of the given SPLs, each linked
+    to its label so it is never offered back as a candidate for that label."""
     out = []
     for doc in documents:
         for product in doc.products:
-            out += [SubstanceSource(i.unii, i.name, "spl") for i in product.active if i.unii]
-            out += [SubstanceSource(unii, name, "spl") for unii, name in product.inactive]
+            out += [SubstanceSource(i.unii, i.name, "spl", doc.set_id) for i in product.active if i.unii]
+            out += [SubstanceSource(unii, name, "spl", doc.set_id) for unii, name in product.inactive]
     return out

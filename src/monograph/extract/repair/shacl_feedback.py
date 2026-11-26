@@ -11,6 +11,7 @@ import re
 from collections import Counter
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
+from enum import StrEnum
 
 import pyshacl
 from rdflib import RDF, Graph
@@ -39,7 +40,22 @@ class ContextIssue:
     candidates: tuple[str, ...] = field(default=())
 
 
-ExtractionOnlyCheck = Callable[[ResolvedExtraction, ReferenceGraph], list[ContextIssue]]
+class CandidatePolicy(StrEnum):
+    """Where the "allowed values" in feedback may come from.
+
+    INDEPENDENT (arm A3): only sources not linked to the label being extracted, such as other labels'
+        records from the same labeler and DailyMed's moiety list; never the label's own SPL, its DailyMed
+        NDC list or its own NDC directory records. Messages state that a value does not resolve or does not
+        belong, without registry facts taken from the label (such as its ingredient count).
+    LABEL (arm A3+): candidates from the label's own registry records. They can contain gold, so A3+ is
+        reported only as an upper bound, outside the verdict.
+    """
+
+    INDEPENDENT = "independent"
+    LABEL = "label"
+
+
+ExtractionOnlyCheck = Callable[[ResolvedExtraction, ReferenceGraph, CandidatePolicy], list[ContextIssue]]
 
 
 def _location(iri: str) -> str:
@@ -49,11 +65,13 @@ def _location(iri: str) -> str:
     return ".".join(f"{names[p]}[{i}]" for p, i in parts) or "label"
 
 
-def _package_matches_label(resolved: ResolvedExtraction, reference: ReferenceGraph) -> list[ContextIssue]:
-    label_products = reference.label_products(resolved.extraction.set_id)
+def _package_matches_label(
+    resolved: ResolvedExtraction, reference: ReferenceGraph, policy: CandidatePolicy
+) -> list[ContextIssue]:
+    set_id = resolved.extraction.set_id
+    label_products = reference.label_products(set_id)
     if not label_products:
         return []  # the registry does not know this label's products, so membership cannot be checked
-    allowed = tuple(reference.packages_of(label_products))
     issues = []
     for p_index, product in enumerate(resolved.extraction.products):
         for k_index, package in enumerate(product.packages):
@@ -68,13 +86,21 @@ def _package_matches_label(resolved: ResolvedExtraction, reference: ReferenceGra
                         "ndc",
                         "this NDC belongs to a product that this label does not describe",
                         package.ndc,
-                        allowed,
+                        _ndc_candidates(reference, set_id, package.ndc, policy),
                     )
                 )
     return issues
 
 
-def _ingredient_count(resolved: ResolvedExtraction, reference: ReferenceGraph) -> list[ContextIssue]:
+def _ndc_candidates(reference: ReferenceGraph, set_id: str, ndc: str, policy: CandidatePolicy) -> tuple[str, ...]:
+    if policy is CandidatePolicy.LABEL:
+        return tuple(reference.packages_of(reference.label_products(set_id)))
+    return tuple(n for n in reference.independent_ndcs(set_id, ndc) if n != ndc)
+
+
+def _ingredient_count(
+    resolved: ResolvedExtraction, reference: ReferenceGraph, policy: CandidatePolicy
+) -> list[ContextIssue]:
     issues = []
     for p_index, product in enumerate(resolved.extraction.products):
         owners = Counter(
@@ -93,8 +119,13 @@ def _ingredient_count(resolved: ResolvedExtraction, reference: ReferenceGraph) -
                     "extraction_only:ingredient-count-matches-product",
                     f"products[{p_index}]",
                     "ingredients",
-                    f"the registry lists {expected} active ingredient(s) for this product's packages,"
-                    f" the answer has {len(product.ingredients)}",
+                    (
+                        f"the registry lists {expected} active ingredient(s) for this product's packages,"
+                        f" the answer has {len(product.ingredients)}"
+                        if policy is CandidatePolicy.LABEL
+                        else "the number of active ingredients does not match the registry's record for this"
+                        " product's packages"
+                    ),
                     str(len(product.ingredients)),
                 )
             )
@@ -116,8 +147,10 @@ class GraphContextChecker:
         ndcs: NdcResolver,
         context_shapes: Graph,
         mapper: RdfMapper,
+        policy: CandidatePolicy = CandidatePolicy.INDEPENDENT,
         checks: dict[str, ExtractionOnlyCheck] = EXTRACTION_ONLY_CHECKS,
     ) -> None:
+        self.policy = policy
         self._reference = reference
         self._substances = substances
         self._ndcs = ndcs
@@ -133,7 +166,7 @@ class GraphContextChecker:
         merged += self._mapper.to_graph(resolved.extraction)
         issues = self._shacl(merged, resolved)
         for check in self._checks.values():
-            issues += check(resolved, self._reference)
+            issues += check(resolved, self._reference, self.policy)
         return resolved, issues
 
     def _shacl(self, merged: Graph, resolved: ResolvedExtraction) -> list[ContextIssue]:
@@ -142,8 +175,10 @@ class GraphContextChecker:
             return []
         assert isinstance(report, Graph)
         names = {name: res for name, res in resolved.substances}
-        out = []
+        out: set[ContextIssue] = set()
         for result in report.subjects(RDF.type, SH.ValidationResult):
+            if report.value(result, SH.sourceConstraintComponent) == SH.NodeConstraintComponent:
+                continue  # a parent's summary of nested results, which are reported on their own
             focus = str(report.value(result, SH.focusNode))
             path = report.value(result, SH.resultPath)
             path_name = str(path).rsplit("#", 1)[-1] if path is not None else ""
@@ -155,18 +190,19 @@ class GraphContextChecker:
             if path_name == "resolvedSubstance":
                 name = self._ingredient_name(resolved, location)
                 offending = name
-                if name in names:
+                if name is not None and self.policy is CandidatePolicy.LABEL and name in names:
                     candidates = names[name].candidates
+                elif name is not None:
+                    candidates = self._substances.candidates(name, exclude_set_id=resolved.extraction.set_id)
                 message = "this substance name does not resolve to exactly one substance in the reference graph"
             elif "listed-package-resolves" in str(report.value(result, SH.sourceShape)):
                 offending = self._package_ndc(resolved, location)
-                candidates = tuple(
-                    self._reference.packages_of(self._reference.label_products(resolved.extraction.set_id))
-                )
+                candidates = _ndc_candidates(self._reference, resolved.extraction.set_id, offending or "", self.policy)
+                path_name = "ndc"
                 message = "this NDC is not a package of the products the registry lists for this label"
             else:
                 candidates = self._allowed(report.value(result, SH.sourceShape))
-            out.append(ContextIssue("shacl", location, path_name, message, offending, candidates))
+            out.add(ContextIssue("shacl", location, path_name, message, offending, candidates))
         return sorted(out, key=lambda i: (i.location, i.path, i.message))
 
     def _allowed(self, shape: Node | None) -> tuple[str, ...]:

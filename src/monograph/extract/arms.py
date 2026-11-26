@@ -3,7 +3,9 @@
 A0  first extraction only
 A1  A0, then the Pydantic loop (record-local repair)
 A2  A1, then deterministic repair (no LLM call)
-A3  A2, then the graph-context loop (SHACL on the extraction merged into the reference graph)
+A3  A2, then the graph-context loop (SHACL on the extraction merged into the reference graph); feedback
+    candidates come only from sources independent of the label
+A3+ A3 with candidates from the label's own registry records (can contain gold): an upper bound only
 
 Each loop is capped at MAX_REPAIR_ROUNDS model calls after the first extraction. Every model call is a
 logged round. Arms share their common prefix of requests, so through the response cache the shared
@@ -20,7 +22,7 @@ from typing import Any
 
 from monograph.core.instances import Instantiator
 from monograph.core.models import LabelExtraction
-from monograph.extract.config import ARMS, Settings
+from monograph.extract.config import ALL_ARMS, Settings
 from monograph.extract.llm import LlmClient, LlmRequest, LlmResponse, Message, Usage
 from monograph.extract.prompts import PromptSet, user_message
 from monograph.extract.repair.deterministic import Fix, repair
@@ -99,6 +101,7 @@ class Extractor:
         instantiator: Instantiator,
         context: GraphContextChecker,
         max_rounds: int,
+        context_label_candidates: GraphContextChecker | None = None,
     ) -> None:
         self._client = client
         self._prompts = prompts
@@ -107,23 +110,29 @@ class Extractor:
         self._pydantic = pydantic
         self._instantiator = instantiator
         self._context = context
+        self._context_plus = context_label_candidates
         self._max_rounds = max_rounds
 
     # ------------------------------------------------------------------------------------------ run
 
     def run(self, doc: SplDocument, arm: str) -> RecordResult:
-        if arm not in ARMS:
+        if arm not in ALL_ARMS:
             raise ValueError(f"unknown arm {arm!r}")
+        if arm == "A3+" and self._context_plus is None:
+            raise ValueError("A3+ needs a context checker with label-derived candidates")
         messages = [Message("user", user_message(narrative_text(doc)))]
         rounds: list[Round] = []
         last = self._call(messages, rounds, "first", None)
 
-        if arm in ("A1", "A2", "A3"):
+        if arm in ("A1", "A2", "A3", "A3+"):
             last = self._pydantic_loop(doc, messages, rounds, last)
-        if arm in ("A2", "A3"):
+        if arm in ("A2", "A3", "A3+"):
             self._deterministic(rounds[-1])
         if arm == "A3":
-            last = self._graph_loop(doc, messages, rounds, last)
+            last = self._graph_loop(doc, messages, rounds, last, self._context)
+        if arm == "A3+":
+            assert self._context_plus is not None
+            last = self._graph_loop(doc, messages, rounds, last, self._context_plus)
         return self._finish(doc, arm, rounds, last)
 
     # ---------------------------------------------------------------------------------------- steps
@@ -194,7 +203,12 @@ class Extractor:
         current.fixes += [_fix(f) for f in fixes]
 
     def _graph_loop(
-        self, doc: SplDocument, messages: list[Message], rounds: list[Round], last: LlmResponse
+        self,
+        doc: SplDocument,
+        messages: list[Message],
+        rounds: list[Round],
+        last: LlmResponse,
+        context: GraphContextChecker,
     ) -> LlmResponse:
         for _ in range(self._max_rounds):
             current = rounds[-1]
@@ -203,7 +217,7 @@ class Extractor:
             if model is None:
                 feedback = pydantic_feedback(violations, current.parse_error)
             else:
-                _, issues = self._context.check(model)
+                _, issues = context.check(model)
                 current.issues = [_issue(i) for i in issues]
                 if not issues:
                     break

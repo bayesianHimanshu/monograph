@@ -145,8 +145,11 @@ def test_usability_and_verdict_rules() -> None:
     s, h = "claude-sonnet-5-5", "claude-haiku-5-5"
     base = {(m, a): False for m in (s, h) for a in ("A0", "A1", "A2", "A3")}
     assert verdict(base | {(h, "A3"): True}, (s, h)) == "holds"
-    assert verdict(base | {(s, "A1"): True, (h, "A2"): True, (h, "A3"): True}, (s, h)) == "fails"
-    assert verdict(base | {(s, "A1"): True, (s, "A3"): True}, (s, h)) == "partly holds"
+    assert verdict(base | {(h, "A2"): True, (h, "A3"): True}, (s, h)) == "partly holds"  # A2 already usable
+    assert verdict(base | {(s, "A1"): True, (h, "A2"): True, (h, "A3"): True}, (s, h)) == "fails"  # fails first
+    sonnet_all = {(s, "A1"): True, (s, "A2"): True, (s, "A3"): True}
+    assert verdict(base | sonnet_all, (s, h)) == "partly holds"  # A3 usable, but so is A2, and Haiku never
+    assert verdict(base | {(s, "A3+"): True, (h, "A3+"): True}, (s, h)) == "partly holds"  # A3+ never counts
 
 
 def test_aggregate_and_paired_bootstrap(resolver: SubstanceResolver) -> None:

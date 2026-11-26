@@ -10,7 +10,9 @@ SONNET = "claude-sonnet-5-5"
 HAIKU = "claude-haiku-5-5"
 MODELS: tuple[str, ...] = (SONNET, HAIKU)
 
-ARMS: tuple[str, ...] = ("A0", "A1", "A2", "A3")
+ARMS: tuple[str, ...] = ("A0", "A1", "A2", "A3")  # the arms the verdict is decided on
+UPPER_BOUND_ARMS: tuple[str, ...] = ("A3+",)  # A3 with label-derived candidates: an upper bound, outside the verdict
+ALL_ARMS: tuple[str, ...] = ARMS + UPPER_BOUND_ARMS
 MAX_REPAIR_ROUNDS = 3  # per repair loop, after the first extraction
 
 
