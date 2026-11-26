@@ -145,11 +145,12 @@ def git_sha(root: Path) -> str:
     return out.stdout.strip() + ("-dirty" if dirty.strip() else "")
 
 
-def results_writer(root: Path) -> ResultsWriter:
+def results_writer(root: Path, experiment: str = "H6") -> ResultsWriter:
     import uuid
 
+    directory = root / "results" / experiment.lower()
     return ResultsWriter(
-        results_dir(root), uuid.uuid4().hex[:12], git_sha(root), SCHEMA_VERSION, lambda: datetime.now(UTC)
+        directory, uuid.uuid4().hex[:12], git_sha(root), SCHEMA_VERSION, lambda: datetime.now(UTC), experiment
     )
 
 

@@ -172,3 +172,95 @@ def split_cmd(
 def _fail(message: str) -> int:
     typer.echo(f"FAIL: {message}", err=True)
     return 1
+
+
+def _prereg_committed(root: Path) -> bool:
+    import subprocess
+
+    path = "docs/h4/PREREG.md"
+    tracked = subprocess.run(["git", "ls-files", "--error-unmatch", path], cwd=root, capture_output=True, check=False)
+    clean = subprocess.run(["git", "diff", "--quiet", "HEAD", "--", path], cwd=root, check=False)
+    return tracked.returncode == 0 and clean.returncode == 0
+
+
+def _existing_records(root: Path, split: str) -> list[dict[str, Any]]:
+    from monograph.harness.results import read_results
+
+    return [
+        r
+        for r in read_results(root / "results" / "h4")
+        if r["metric"] == "h4.record" and r["details"]["split"] == split
+    ]
+
+
+@h4_app.command("run")
+def run(
+    arm: Annotated[str, typer.Option(help="A0, A1, A2, A3 or all.")],
+    model: Annotated[str, typer.Option(help="A pinned model ID or all.")],
+    split: Annotated[str, typer.Option(help="dev or test.")],
+    root: Root = Path(),
+    approve_cost: Annotated[float, typer.Option(help="USD you approve for a test run above the threshold.")] = 0.0,
+    deviation: Annotated[str | None, typer.Option(help="Reason for re-running test after PREREG.")] = None,
+    limit: Annotated[int | None, typer.Option(help="Only the first N labels (dev iteration).")] = None,
+) -> None:
+    """Run arms over a split. Every round and record is appended to results/h4."""
+    from decimal import Decimal
+
+    import anthropic
+
+    from monograph.extract.config import ARMS, COST_APPROVAL_THRESHOLD_USD, MODELS
+    from monograph.extract.llm import AnthropicClient, CachedClient, ResponseCache
+    from monograph.extract.runner import SplitRunner
+    from monograph.extract.setup import build_context, extractor
+
+    arms = list(ARMS) if arm == "all" else [arm]
+    models = list(MODELS) if model == "all" else [model]
+    if any(a not in ARMS for a in arms) or any(m not in MODELS for m in models) or split not in ("dev", "test"):
+        raise typer.Exit(code=_fail(f"unknown arm, model or split; arms {ARMS}, models {MODELS}, splits dev/test"))
+    if split == "test":
+        if not _prereg_committed(root):
+            raise typer.Exit(code=_fail("docs/h4/PREREG.md must be committed and unchanged before a test run"))
+        done = {(r["details"]["model"], r["details"]["arm"]) for r in _existing_records(root, "test")}
+        repeat = [(m, a) for m in models for a in arms if (m, a) in done]
+        if repeat and deviation is None:
+            raise typer.Exit(code=_fail(f"test already scored for {repeat}; pass --deviation with the reason"))
+        estimate = _estimate(root, models, arms)
+        typer.echo(f"cost estimate for this test run: ${estimate:.2f} (from dev runs, shared rounds counted per arm)")
+        if estimate > COST_APPROVAL_THRESHOLD_USD and Decimal(str(approve_cost)) < estimate:
+            raise typer.Exit(code=_fail(f"estimate exceeds ${COST_APPROVAL_THRESHOLD_USD}; rerun with --approve-cost"))
+    ctx = build_context(root)
+    docs = ctx.documents(split)[:limit] if limit else ctx.documents(split)
+    writer = wiring.results_writer(root, "H4")
+    client = CachedClient(
+        AnthropicClient(anthropic.Anthropic(max_retries=4)), ResponseCache(root / "data" / "h4" / "responses")
+    )
+    if deviation is not None:
+        writer.write("h4.deviation", deviation, {"split": split, "models": models, "arms": arms})
+    for m in models:
+        for a in arms:
+            SplitRunner(extractor(ctx, client, m), writer, ctx.prompts, _settings()).run(docs, a, split, typer.echo)
+    typer.echo(f"network calls: {client.network_calls}")
+
+
+def _settings() -> Any:
+    from monograph.extract.config import SETTINGS
+
+    return SETTINGS
+
+
+def _estimate(root: Path, models: list[str], arms: list[str]) -> Any:
+    from collections import defaultdict
+    from decimal import Decimal
+
+    costs: dict[tuple[str, str], list[Decimal]] = defaultdict(list)
+    for r in _existing_records(root, "dev"):
+        costs[(r["details"]["model"], r["details"]["arm"])].append(Decimal(r["details"]["cost_usd"]))
+    n_test = len(json.loads((root / SPLIT_FILE).read_text())["test"])
+    total = Decimal(0)
+    for m in models:
+        for a in arms:
+            seen = costs.get((m, a))
+            if not seen:
+                raise typer.Exit(code=_fail(f"no dev runs for {m} {a}; run dev first so the cost can be estimated"))
+            total += sum(seen, Decimal(0)) / len(seen) * n_test
+    return total
