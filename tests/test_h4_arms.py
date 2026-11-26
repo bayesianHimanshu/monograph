@@ -206,3 +206,12 @@ def test_model_round_trip_for_extraction(spec: SchemaSpec) -> None:
     )
     assert model.products[0].ingredients[0].strength_unit == "mg"
     assert ROOT.exists()
+
+
+def test_the_wired_extractor_runs_every_arm() -> None:
+    """setup.extractor must wire the A3+ checker; a missing one only showed up in the dev run."""
+    import inspect
+
+    from monograph.extract import setup
+
+    assert "ctx.checker_label" in inspect.getsource(setup.extractor)

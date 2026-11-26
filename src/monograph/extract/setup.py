@@ -83,4 +83,5 @@ def extractor(ctx: H4Context, client: LlmClient, model: str) -> Extractor:
         Instantiator(ctx.spec),
         ctx.checker,
         MAX_REPAIR_ROUNDS,
+        ctx.checker_label,
     )

@@ -61,7 +61,7 @@ def test_report_renders_verdict_and_pov() -> None:
     assert "A3+ (upper bound)" in text
     assert text.rstrip().splitlines()[-1].startswith("* Does graph-context repair")
     assert "## What this means for the PoV" in text
-    assert "—" not in text
+    assert chr(0x2014) not in text  # no em-dashes
 
 
 def test_report_without_scoring_run() -> None:
