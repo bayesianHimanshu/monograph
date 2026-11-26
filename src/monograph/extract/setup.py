@@ -27,7 +27,7 @@ from monograph.validate.pydantic_side import PydanticValidator
 
 SPLIT_FILE = Path("fixtures/h4/split.json")
 FRAME_FILE = Path("fixtures/h4/frame.json")
-PROMPT_VERSION = "v2"
+PROMPT_VERSION = "v3"
 
 
 @dataclass
