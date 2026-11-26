@@ -1,0 +1,22 @@
+[
+  {
+    "id": "slug-has-space",
+    "violates": "pattern",
+    "field": "slug",
+    "expect": "agree_invalid",
+    "record": {
+      "slug": "Bayer Healthcare",
+      "name": "Bayer HealthCare LLC"
+    }
+  },
+  {
+    "id": "slug-too-long",
+    "violates": "max_length",
+    "field": "slug",
+    "expect": "agree_invalid",
+    "record": {
+      "slug": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "Bayer HealthCare LLC"
+    }
+  }
+]

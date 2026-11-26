@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Annotated
 
@@ -13,6 +14,8 @@ from monograph.core.vocab import Vocabulary
 from monograph.gen.artifacts import write_artifacts
 from monograph.gen.regex import RegexSubsetError
 from monograph.validate.drift import DriftChecker
+
+logging.getLogger("rdflib").setLevel(logging.ERROR)  # invalid IRIs in negative tests are expected
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help="MONOGRAPH H6 tooling.")
 
@@ -67,6 +70,48 @@ def check_drift(root: Root = Path()) -> None:
     if not ok:
         raise _fail("drift check")
     typer.echo("drift check ok")
+
+
+@check_app.command("lint")
+def check_lint() -> None:
+    """Fail if a validator is neither generated from a rule nor declared pydantic_only."""
+    from monograph.core import models
+    from monograph.validate.lint import ValidatorLinter
+
+    report = ValidatorLinter(models.MODELS, models).run()
+    for problem in report.problems:
+        typer.echo(f"lint: {problem.cls}.{problem.validator}: {problem.problem}", err=True)
+    if not report.ok:
+        raise _fail("validator lint")
+    typer.echo(f"validator lint ok: {len(report.rule_engines)} rule engine, {len(report.declared)} pydantic_only")
+
+
+def _agreement(root: Path) -> bool:
+    from monograph.core.instances import Instantiator
+    from monograph.validate.fixtures import FixtureLoader
+
+    spec = wiring.build_spec()
+    checker = wiring.agreement_checker(spec, root, wiring.today())
+    instantiator = Instantiator(spec)
+    loader = FixtureLoader(spec, wiring.fixtures_dir(root))
+    failures = 0
+    groups = (("valid", loader.valid()), ("invalid", loader.invalid()), ("probe", loader.probes()))
+    for group, fixtures in groups:
+        for f in fixtures:
+            outcome = checker.check(instantiator.instantiate(f.cls, f.record)).outcome
+            if outcome.value != f.expect:
+                failures += 1
+                typer.echo(f"agreement: {group} {f.name}: expected {f.expect}, got {outcome.value}", err=True)
+        typer.echo(f"agreement: {len(fixtures)} {group} fixtures checked")
+    return failures == 0
+
+
+@check_app.command("agreement")
+def check_agreement(root: Root = Path()) -> None:
+    """Fail if Pydantic and SHACL verdicts differ from what each fixture expects."""
+    if not _agreement(root):
+        raise _fail("agreement check")
+    typer.echo("agreement check ok")
 
 
 if __name__ == "__main__":

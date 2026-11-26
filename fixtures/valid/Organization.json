@@ -1,0 +1,16 @@
+[
+  {
+    "id": "bayer",
+    "record": {
+      "slug": "bayer-healthcare-llc",
+      "name": "Bayer HealthCare LLC"
+    }
+  },
+  {
+    "id": "acme",
+    "record": {
+      "slug": "acme-pharma-inc",
+      "name": "Acme Pharma, Inc."
+    }
+  }
+]

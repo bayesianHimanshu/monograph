@@ -1,0 +1,23 @@
+[
+  {
+    "id": "aspirin",
+    "record": {
+      "unii": "R16CO5Y76E",
+      "name": "ASPIRIN"
+    }
+  },
+  {
+    "id": "acetaminophen",
+    "record": {
+      "unii": "362O9ITL9D",
+      "name": "ACETAMINOPHEN"
+    }
+  },
+  {
+    "id": "ibuprofen",
+    "record": {
+      "unii": "WK2XYI10QM",
+      "name": "IBUPROFEN"
+    }
+  }
+]

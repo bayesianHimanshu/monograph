@@ -1,0 +1,443 @@
+[
+  {
+    "id": "serious-without-criterion",
+    "violates": "rule:serious-requires-criterion",
+    "field": "seriousness_criteria",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "no-primary-suspect",
+    "violates": "rule:has-primary-suspect",
+    "field": "drugs",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "secondary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "report-id-prefixed",
+    "violates": "pattern",
+    "field": "report_id",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "US-123",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "no-reactions",
+    "violates": "min_count",
+    "field": "reactions",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": []
+    }
+  },
+  {
+    "id": "seven-criteria",
+    "violates": "max_count",
+    "field": "seriousness_criteria",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "death",
+        "life threatening",
+        "hospitalization",
+        "disabling",
+        "congenital anomaly",
+        "other",
+        "unknown"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    },
+    "note": "The enum has six members, so a seventh criterion is also an enum violation."
+  },
+  {
+    "id": "age-151",
+    "violates": "max_inclusive",
+    "field": "patient_age_years",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "151",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "age-negative",
+    "violates": "min_inclusive",
+    "field": "patient_age_years",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "-1",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "serious-as-string",
+    "violates": "datatype",
+    "field": "serious",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": "true",
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "unknown-role",
+    "violates": "enum",
+    "field": "drugs.role",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "suspect drug"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "reaction-as-string",
+    "violates": "node",
+    "field": "reactions",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        "Nausea"
+      ]
+    }
+  },
+  {
+    "id": "reaction-term-too-long",
+    "violates": "max_length",
+    "field": "reactions.term",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "drug-product-urn",
+    "violates": "ref",
+    "field": "drugs.product",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "urn:rxcui:243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,189 @@
+[
+  {
+    "id": "rxcui-letters",
+    "violates": "pattern",
+    "field": "rxcui",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "RX123",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "no-routes",
+    "violates": "min_count",
+    "field": "routes",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "unknown-route",
+    "violates": "enum",
+    "field": "routes",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORALLY"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ingredient-missing-unit",
+    "violates": "node",
+    "field": "ingredients",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ingredient-not-object",
+    "violates": "node",
+    "field": "ingredients",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        "aspirin 81 mg"
+      ]
+    }
+  },
+  {
+    "id": "strength-zero",
+    "violates": "min_exclusive",
+    "field": "ingredients.strength_value",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "0",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "strength-float",
+    "violates": "datatype",
+    "field": "ingredients.strength_value",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": 81.5,
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "substance-not-iri",
+    "violates": "ref",
+    "field": "ingredients.substance",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "duplicate-substance",
+    "violates": "pydantic_only:product-ingredient-substances-unique",
+    "field": "ingredients",
+    "expect": "declared_leak",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        },
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "40",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,104 @@
+[
+  {
+    "id": "recall-number-short",
+    "violates": "pattern",
+    "field": "recall_number",
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-123-2025",
+      "classification": "II",
+      "reason": "Failed dissolution specifications.",
+      "report_date": "2025-02-12",
+      "products": [
+        "https://example.org/monograph/product/198440",
+        "https://example.org/monograph/product/2001467"
+      ],
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
+    }
+  },
+  {
+    "id": "classification-text",
+    "violates": "enum",
+    "field": "classification",
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-0123-2025",
+      "classification": "Class II",
+      "reason": "Failed dissolution specifications.",
+      "report_date": "2025-02-12",
+      "products": [
+        "https://example.org/monograph/product/198440",
+        "https://example.org/monograph/product/2001467"
+      ],
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
+    }
+  },
+  {
+    "id": "impossible-date",
+    "violates": "datatype",
+    "field": "report_date",
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-0123-2025",
+      "classification": "II",
+      "reason": "Failed dissolution specifications.",
+      "report_date": "2025-02-30",
+      "products": [
+        "https://example.org/monograph/product/198440",
+        "https://example.org/monograph/product/2001467"
+      ],
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
+    }
+  },
+  {
+    "id": "firm-missing",
+    "violates": "required",
+    "field": "recalling_firm",
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-0123-2025",
+      "classification": "II",
+      "reason": "Failed dissolution specifications.",
+      "report_date": "2025-02-12",
+      "products": [
+        "https://example.org/monograph/product/198440",
+        "https://example.org/monograph/product/2001467"
+      ]
+    }
+  },
+  {
+    "id": "reason-empty",
+    "violates": "min_length",
+    "field": "reason",
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-0123-2025",
+      "classification": "II",
+      "reason": "",
+      "report_date": "2025-02-12",
+      "products": [
+        "https://example.org/monograph/product/198440",
+        "https://example.org/monograph/product/2001467"
+      ],
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
+    }
+  },
+  {
+    "id": "unknown-key",
+    "violates": "closed",
+    "field": null,
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-0123-2025",
+      "classification": "II",
+      "reason": "Failed dissolution specifications.",
+      "report_date": "2025-02-12",
+      "products": [
+        "https://example.org/monograph/product/198440",
+        "https://example.org/monograph/product/2001467"
+      ],
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc",
+      "status": "Ongoing"
+    }
+  }
+]

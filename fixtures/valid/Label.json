@@ -1,0 +1,33 @@
+[
+  {
+    "id": "with-sections",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "effective_date": "2024-05-01",
+      "products": [
+        "https://example.org/monograph/product/243670"
+      ],
+      "sections": [
+        {
+          "code": "34067-9",
+          "title": "INDICATIONS AND USAGE",
+          "text": "For the temporary relief of minor aches and pains."
+        },
+        {
+          "code": "34068-7",
+          "title": "DOSAGE AND ADMINISTRATION",
+          "text": "Chew 1 to 4 tablets every 4 hours.\nDo not exceed 48 tablets in 24 hours."
+        }
+      ]
+    }
+  },
+  {
+    "id": "bare",
+    "record": {
+      "set_id": "9b1e6c2a-3d4f-4a5b-9c6d-7e8f9a0b1c2d",
+      "version": 1,
+      "effective_date": "2019-12-31"
+    }
+  }
+]

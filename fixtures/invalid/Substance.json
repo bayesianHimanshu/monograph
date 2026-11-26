@@ -1,0 +1,72 @@
+[
+  {
+    "id": "unii-too-short",
+    "violates": "pattern",
+    "field": "unii",
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "R16CO5Y76",
+      "name": "ASPIRIN"
+    }
+  },
+  {
+    "id": "unii-lowercase",
+    "violates": "pattern",
+    "field": "unii",
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "r16co5y76e",
+      "name": "ASPIRIN"
+    }
+  },
+  {
+    "id": "name-missing",
+    "violates": "required",
+    "field": "name",
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "R16CO5Y76E"
+    }
+  },
+  {
+    "id": "name-not-string",
+    "violates": "datatype",
+    "field": "name",
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "R16CO5Y76E",
+      "name": 42
+    }
+  },
+  {
+    "id": "name-empty",
+    "violates": "min_length",
+    "field": "name",
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "R16CO5Y76E",
+      "name": ""
+    }
+  },
+  {
+    "id": "name-too-long",
+    "violates": "max_length",
+    "field": "name",
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "R16CO5Y76E",
+      "name": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    }
+  },
+  {
+    "id": "unknown-key",
+    "violates": "closed",
+    "field": null,
+    "expect": "agree_invalid",
+    "record": {
+      "unii": "R16CO5Y76E",
+      "name": "ASPIRIN",
+      "synonym": "ASA"
+    }
+  }
+]

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "serious",
+    "record": {
+      "report_id": "10003301",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "product": "https://example.org/monograph/product/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "non-serious",
+    "record": {
+      "report_id": "20004402",
+      "receipt_date": "2023-07-15",
+      "serious": false,
+      "drugs": [
+        {
+          "drug_name": "IBUPROFEN",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "IBUPROFEN",
+          "role": "suspect"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Headache"
+        }
+      ]
+    }
+  }
+]

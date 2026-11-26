@@ -1,0 +1,49 @@
+[
+  {
+    "id": "ndc-4-4-1",
+    "violates": "pattern",
+    "field": "ndc",
+    "expect": "agree_invalid",
+    "record": {
+      "ndc": "0280-2000-1",
+      "product": "https://example.org/monograph/product/243670",
+      "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
+      "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
+    }
+  },
+  {
+    "id": "product-missing",
+    "violates": "required",
+    "field": "product",
+    "expect": "agree_invalid",
+    "record": {
+      "ndc": "0280-2000-10",
+      "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
+      "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
+    }
+  },
+  {
+    "id": "labeler-not-iri",
+    "violates": "ref",
+    "field": "labeler",
+    "expect": "agree_invalid",
+    "record": {
+      "ndc": "0280-2000-10",
+      "product": "https://example.org/monograph/product/243670",
+      "labeler": "bayer-healthcare-llc",
+      "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
+    }
+  },
+  {
+    "id": "description-empty",
+    "violates": "min_length",
+    "field": "description",
+    "expect": "agree_invalid",
+    "record": {
+      "ndc": "0280-2000-10",
+      "product": "https://example.org/monograph/product/243670",
+      "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
+      "description": ""
+    }
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "id": "trailing-newline-unii",
+    "class": "Substance",
+    "expect": "disagree",
+    "note": "Pydantic (Rust regex) and XPath treat $ as end of text. pySHACL evaluates sh:pattern with Python re, where $ also matches before a final newline.",
+    "record": {
+      "unii": "R16CO5Y76E\n",
+      "name": "ASPIRIN"
+    }
+  },
+  {
+    "id": "trailing-newline-ndc",
+    "class": "PackagedProduct",
+    "expect": "disagree",
+    "note": "Same divergence on an alternation pattern.",
+    "record": {
+      "ndc": "0280-2000-10\n",
+      "product": "https://example.org/monograph/product/243670",
+      "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
+      "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
+    }
+  },
+  {
+    "id": "trailing-newline-iri",
+    "class": "PackagedProduct",
+    "expect": "disagree",
+    "note": "Same divergence on the reference IRI pattern.",
+    "record": {
+      "ndc": "0280-2000-10",
+      "product": "https://example.org/monograph/product/243670",
+      "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc\n",
+      "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
+    }
+  },
+  {
+    "id": "inner-newline-unii",
+    "class": "Substance",
+    "expect": "agree_invalid",
+    "note": "A newline before the end is rejected by every dialect.",
+    "record": {
+      "unii": "R16CO\n5Y76E",
+      "name": "ASPIRIN"
+    }
+  }
+]

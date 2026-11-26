@@ -1,0 +1,73 @@
+[
+  {
+    "id": "aspirin-81",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin 81 MG Chewable Tablet",
+      "dosage_form": "TABLET, CHEWABLE",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/R16CO5Y76E",
+          "strength_value": "81",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "apap-ibu",
+    "record": {
+      "rxcui": "2001467",
+      "name": "acetaminophen 250 MG / ibuprofen 125 MG Oral Tablet",
+      "dosage_form": "TABLET, FILM COATED",
+      "routes": [
+        "ORAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/362O9ITL9D",
+          "strength_value": "250",
+          "strength_unit": "mg/1"
+        },
+        {
+          "substance": "https://example.org/monograph/substance/WK2XYI10QM",
+          "strength_value": "125.0",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "apap-500",
+    "record": {
+      "rxcui": "198440",
+      "name": "acetaminophen 500 MG Oral Tablet",
+      "dosage_form": "TABLET",
+      "routes": [
+        "ORAL",
+        "RECTAL"
+      ],
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/362O9ITL9D",
+          "strength_value": "500",
+          "strength_unit": "mg/1"
+        }
+      ]
+    }
+  },
+  {
+    "id": "no-ingredients",
+    "record": {
+      "rxcui": "1111",
+      "name": "placebo topical",
+      "dosage_form": "CREAM",
+      "routes": [
+        "TOPICAL"
+      ]
+    }
+  }
+]
