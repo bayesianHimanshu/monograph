@@ -299,6 +299,21 @@ def report_h6(root: Root = Path()) -> None:
     typer.echo(f"wrote {path} from {len(records)} result lines")
 
 
+@report_app.command("h4")
+def report_h4(root: Root = Path(), split: str = "test") -> None:
+    """Regenerate docs/h4/RESULTS.md from results/h4/*.jsonl alone."""
+    from monograph.harness.report_h4 import H4Report
+    from monograph.harness.results import read_results
+
+    records = list(read_results(root / "results" / "h4"))
+    if not records:
+        raise _fail("no results in results/h4; run `monograph h4 run` and `monograph h4 score` first")
+    text = H4Report(records, split).render()
+    path = root / "docs" / "h4" / "RESULTS.md"
+    path.write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {path} from {len(records)} result lines")
+
+
 @app.command()
 def release(root: Root = Path()) -> None:
     """Snapshot generated/ into generated/releases/<SCHEMA_VERSION>/. Refuses to overwrite a release."""
