@@ -118,9 +118,11 @@ __rules__: ClassVar[tuple[Rule, ...]] = (
   and extra keys), validated by pySHACL against the committed `generated/monograph.shapes.ttl`.
 * **References in per-record validation.** `sh:class T` needs the referenced node's type in the data
   graph, and a single record does not contain its referents. The mapper adds a typed stub
-  (`<ref> a T`) for each `Ref[T]`, which is exactly the information `Ref[T]` carries, and pySHACL is
-  told to validate only the record's own focus node (`focus_nodes`), so the stub is not itself
-  validated as a full instance. A separate dataset-level check merges all valid fixtures without
+  (`<ref> a T`) for each `Ref[T]`, which is exactly the information `Ref[T]` carries. Stubs are
+  targeted by their class's node shape and fail it (they carry no data), so results whose focus node
+  is not the record or one of its embedded nodes are dropped. (The first design used pySHACL's
+  `focus_nodes` option instead; it turned out to skip `sh:qualifiedValueShape` silently, which the
+  fixtures caught. See "Deviations".) A separate dataset-level check merges all valid fixtures without
   stubs and validates referential integrity, which Pydantic cannot do per record.
 * Disagreement is a bug unless the only Pydantic failures come from `pydantic_only` validators.
 
@@ -182,6 +184,20 @@ superset cannot be decided in general. Any change at all with an unchanged `SCHE
    suite run to minutes.
 10. **The datetime mapping** (`AwareDatetime` to `xsd:dateTime`) is implemented and unit-tested on a
     test-only model. No v0.1.0 class needs a timestamp.
+
+11. **Per-record SHACL validation filters results by focus node** instead of using pySHACL's
+    `focus_nodes` option. In pySHACL 0.40.2 `focus_nodes` without `use_shapes` silently skips
+    `sh:qualifiedValueShape` constraints, so the primary-suspect rule never fired. A minimal
+    reproduction lives in `validate/pyshacl_probes.py` and runs as a characterization test.
+12. **Foreign keys are `DEFERRABLE INITIALLY IMMEDIATE`.** The integration probe replaces a valid row
+    with its invalid variant inside a savepoint, and the references are still checked before the
+    savepoint ends.
+13. **Extra commands.** `monograph check all` runs every gate. `monograph ingest fixtures` selects the
+    offline sample. `monograph ingest map` records conformance on its own.
+14. **The mutation pipeline's gates** are generation, drift, breaking, lint, agreement and the
+    non-integration tests. ruff and mypy are not gates there (they check style and types, not sync),
+    and `tests/test_mutations.py` is excluded because it checks the mutations against the pristine
+    source, which a mutant copy is not.
 
 ## Stages
 

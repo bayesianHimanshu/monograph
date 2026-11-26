@@ -46,7 +46,7 @@ def _reason(path: str, kind: str) -> str:
 
 
 def _note(text: str) -> str:
-    return re.sub(r"'[^']*'|\"[^\"]*\"|[0-9]+", "#", text)
+    return re.sub(r"'[^']*'|\"[^\"]*\"|\b[0-9]+\b", "#", text)
 
 
 class ConformanceRun:

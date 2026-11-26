@@ -162,6 +162,108 @@ def mutate(
 
 
 @app.command()
+def measure(
+    root: Root = Path(),
+    examples: Annotated[int, typer.Option(help="Hypothesis examples per class for valid instances.")] = 50,
+    per_site: Annotated[int, typer.Option(help="Hypothesis examples per mutation site.")] = 10,
+) -> None:
+    """Run every measurement and append the results to results/h6 (the report reads only those)."""
+    import os
+
+    from monograph.core import models
+    from monograph.core.instances import Instantiator
+    from monograph.core.meta import DEFAULT_BASE
+    from monograph.gen.ddl import DdlGenerator
+    from monograph.gen.regex import check_pattern
+    from monograph.harness.measure import Measurement, record_conformance, record_postgres
+    from monograph.harness.property_run import PropertyAgreementRun
+    from monograph.ingest.openfda import ENDPOINTS, RawCache
+    from monograph.validate.fixtures import FixtureLoader
+    from monograph.validate.lint import ValidatorLinter
+    from monograph.validate.pydantic_side import PydanticValidator
+    from monograph.validate.pyshacl_probes import all_probes
+    from monograph.validate.strategies import Perturber, RecordStrategies
+
+    spec = wiring.build_spec()
+    vocab = Vocabulary()
+    today = wiring.today()
+    writer = wiring.results_writer(root)
+    instantiator = Instantiator(spec)
+    mapper = wiring.mapper(spec, vocab)
+    checker = wiring.agreement_checker(spec, root, today)
+    fixtures = FixtureLoader(spec, wiring.fixtures_dir(root))
+    pydantic = PydanticValidator(today)
+    m = Measurement(writer, spec, checker, instantiator, mapper, fixtures, pydantic.context)
+    typer.echo(f"run {writer.run_id}: fixtures")
+    m.fixtures_agreement()
+
+    typer.echo("property-based agreement")
+    strategies = RecordStrategies(
+        spec, DEFAULT_BASE, today, lambda cls, record: pydantic.check(instantiator.instantiate(cls, record)).valid
+    )
+    run = PropertyAgreementRun(spec, checker, instantiator, strategies, Perturber(spec), examples, per_site)
+    m.property_agreement(run, examples, per_site)
+
+    cache = RawCache(wiring.raw_dir(root))
+    raw = {endpoint: cache.all(endpoint) for endpoint in ENDPOINTS}
+    source = "data/raw"
+    if not any(raw.values()):
+        raw, source = wiring.openfda_fixtures(root), "fixtures/openfda"
+    typer.echo(f"real records from {source}")
+    conformance = wiring.conformance_run(spec, root)
+    record_conformance(writer, conformance.run(raw), source)
+    real_valid = []
+    for candidate in conformance.candidates(raw):
+        instance = instantiator.instantiate(spec.by_name(candidate.cls).cls, candidate.record)
+        if pydantic.check(instance).valid:
+            real_valid.append(type(instance).model_validate(instance, context=pydantic.context))
+    typer.echo("round trip, dataset integrity, leaks")
+    m.round_trip(real_valid)
+    m.dataset_integrity(wiring.shapes_graph(root))
+    ddl = DdlGenerator(spec, check_pattern).generate()
+    m.leaks(ValidatorLinter(models.MODELS, models).run(), ddl, check_pattern)
+    m.validator_findings(all_probes())
+
+    dsn = os.environ.get("MONOGRAPH_PG_DSN", "postgresql://monograph:monograph@localhost:55432/monograph")
+    try:
+        from monograph.validate.fixtures import Fixture
+        from monograph.validate.postgres_matrix import PostgresMatrixRun, scratch_schema
+
+        nul = Fixture("nul-in-name", spec.by_name("Substance").cls, {"unii": "0000000000", "name": "A\x00B"}, "")
+        with scratch_schema(dsn) as conn:
+            matrix = PostgresMatrixRun(conn, spec, ddl, mapper, fixtures, instantiator).run([nul])
+        record_postgres(writer, ddl, matrix, None)
+        typer.echo("postgres matrix recorded")
+    except Exception as exc:  # no database is a recorded, visible skip, not a silent one
+        record_postgres(writer, ddl, None, f"{type(exc).__name__}: {str(exc).splitlines()[0][:200]}")
+        typer.echo(f"postgres matrix skipped: {exc}", err=True)
+
+    builder = wiring.artifact_builder(spec, vocab)
+    m.sizes(root / "src" / "monograph" / "core" / "models.py", builder.build().files)
+    m.generation_time(builder, wiring.build_spec, repeats=5)
+    typer.echo(f"measurements appended to {wiring.results_dir(root)}")
+
+
+report_app = typer.Typer(no_args_is_help=True, help="Regenerate experiment reports from results JSONL.")
+app.add_typer(report_app, name="report")
+
+
+@report_app.command("h6")
+def report_h6(root: Root = Path()) -> None:
+    """Regenerate docs/h6/RESULTS.md from results/h6/*.jsonl alone."""
+    from monograph.harness.report import ReportBuilder
+    from monograph.harness.results import read_results
+
+    records = list(read_results(wiring.results_dir(root)))
+    if not records:
+        raise _fail("no results in results/h6; run `monograph measure` and `monograph mutate` first")
+    text = ReportBuilder(records).render()
+    path = root / "docs" / "h6" / "RESULTS.md"
+    path.write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {path} from {len(records)} result lines")
+
+
+@app.command()
 def release(root: Root = Path()) -> None:
     """Snapshot generated/ into generated/releases/<SCHEMA_VERSION>/. Refuses to overwrite a release."""
     import shutil

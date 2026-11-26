@@ -1,0 +1,101 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - name: ruff
+        run: uv run ruff check src tests && uv run ruff format --check src tests
+      - name: mypy
+        run: uv run mypy
+
+  gates:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - name: unit tests (round trip, property-based agreement, generators)
+        run: uv run pytest -q
+      - name: drift check
+        run: uv run monograph check drift
+      - name: breaking-change check
+        run: uv run monograph check breaking
+      - name: validator lint
+        run: uv run monograph check lint
+      - name: agreement (fixtures, probes, real openFDA records)
+        run: uv run monograph check agreement
+
+  integration:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: monograph
+          POSTGRES_PASSWORD: monograph
+          POSTGRES_DB: monograph
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U monograph -d monograph"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      MONOGRAPH_PG_DSN: postgresql://monograph:monograph@localhost:5432/monograph
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - name: Postgres integration
+        run: uv run pytest -q -m integration
+
+  mutation:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: monograph
+          POSTGRES_PASSWORD: monograph
+          POSTGRES_DB: monograph
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U monograph -d monograph"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      MONOGRAPH_PG_DSN: postgresql://monograph:monograph@localhost:5432/monograph
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - name: mutation suite
+        run: uv run monograph mutate
+      - name: measurements and report
+        if: always()
+        run: uv run monograph measure && uv run monograph report h6
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: h6-results-${{ github.run_id }}
+          path: |
+            results/h6/
+            docs/h6/RESULTS.md
