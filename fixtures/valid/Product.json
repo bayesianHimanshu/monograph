@@ -2,12 +2,15 @@
   {
     "id": "aspirin-81",
     "record": {
-      "rxcui": "243670",
-      "name": "aspirin 81 MG Chewable Tablet",
+      "product_ndc": "0280-2000",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
+      "name": "Bayer Low Dose Aspirin",
       "dosage_form": "TABLET, CHEWABLE",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/R16CO5Y76E",
@@ -20,12 +23,15 @@
   {
     "id": "apap-ibu",
     "record": {
-      "rxcui": "2001467",
-      "name": "acetaminophen 250 MG / ibuprofen 125 MG Oral Tablet",
+      "product_ndc": "12345-6789",
+      "product_type": "HUMAN PRESCRIPTION DRUG",
+      "finished": true,
+      "name": "Acme Dual Action",
       "dosage_form": "TABLET, FILM COATED",
       "routes": [
         "ORAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/2001467",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/362O9ITL9D",
@@ -43,13 +49,16 @@
   {
     "id": "apap-500",
     "record": {
-      "rxcui": "198440",
-      "name": "acetaminophen 500 MG Oral Tablet",
+      "product_ndc": "12345-678",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
+      "name": "Acme Acetaminophen",
       "dosage_form": "TABLET",
       "routes": [
         "ORAL",
         "RECTAL"
       ],
+      "clinical_drug": "https://example.org/monograph/clinical-drug/198440",
       "ingredients": [
         {
           "substance": "https://example.org/monograph/substance/362O9ITL9D",
@@ -60,13 +69,32 @@
     }
   },
   {
-    "id": "no-ingredients",
+    "id": "no-clinical-drug",
     "record": {
-      "rxcui": "1111",
+      "product_ndc": "55555-0001",
+      "product_type": "HUMAN OTC DRUG",
+      "finished": true,
       "name": "placebo topical",
       "dosage_form": "CREAM",
       "routes": [
         "TOPICAL"
+      ]
+    }
+  },
+  {
+    "id": "bulk-without-route",
+    "record": {
+      "product_ndc": "55555-0002",
+      "product_type": "BULK INGREDIENT",
+      "finished": false,
+      "name": "acetaminophen bulk powder",
+      "dosage_form": "POWDER",
+      "ingredients": [
+        {
+          "substance": "https://example.org/monograph/substance/362O9ITL9D",
+          "strength_value": "1",
+          "strength_unit": "kg/kg"
+        }
       ]
     }
   }

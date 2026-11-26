@@ -1,0 +1,32 @@
+[
+  {
+    "id": "rxcui-letters",
+    "violates": "pattern",
+    "field": "rxcui",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "RX123",
+      "name": "aspirin 81 MG Chewable Tablet"
+    }
+  },
+  {
+    "id": "name-empty",
+    "violates": "min_length",
+    "field": "name",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": ""
+    }
+  },
+  {
+    "id": "name-has-nul",
+    "violates": "charset",
+    "field": "name",
+    "expect": "agree_invalid",
+    "record": {
+      "rxcui": "243670",
+      "name": "aspirin\u0000 81"
+    }
+  }
+]

@@ -3,6 +3,7 @@
     "id": "serious",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -13,7 +14,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -37,13 +38,14 @@
   {
     "id": "non-serious",
     "record": {
-      "report_id": "20004402",
+      "report_id": "20004402-1",
+      "source_system": "faers_qde",
       "receipt_date": "2023-07-15",
       "serious": false,
       "drugs": [
         {
           "drug_name": "IBUPROFEN",
-          "role": "primary suspect"
+          "role": "suspect"
         },
         {
           "drug_name": "IBUPROFEN",

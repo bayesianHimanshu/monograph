@@ -6,6 +6,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [],
@@ -13,7 +14,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -35,9 +36,48 @@
     }
   },
   {
-    "id": "no-primary-suspect",
-    "violates": "rule:has-primary-suspect",
+    "id": "no-suspect",
+    "violates": "rule:has-suspect",
     "field": "drugs",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "source_system": "openfda_e2b",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+          "role": "interacting"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "source-system-missing",
+    "violates": "required",
+    "field": "source_system",
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
@@ -51,8 +91,86 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
-          "role": "secondary suspect"
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "source-system-unknown",
+    "violates": "enum",
+    "field": "source_system",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "source_system": "e2b",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "report-id-long-suffix",
+    "violates": "pattern",
+    "field": "report_id",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301-12345",
+      "source_system": "openfda_e2b",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+          "role": "primary suspect"
         },
         {
           "drug_name": "Tylenol",
@@ -79,6 +197,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "US-123",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -89,7 +208,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -117,6 +236,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -127,7 +247,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -145,6 +265,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -160,7 +281,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -189,6 +310,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -199,7 +321,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -227,6 +349,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -237,7 +360,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -265,6 +388,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": "true",
       "seriousness_criteria": [
@@ -275,7 +399,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -303,6 +427,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -313,7 +438,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -341,6 +466,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -351,7 +477,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -371,6 +497,7 @@
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -381,7 +508,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "https://example.org/monograph/product/243670",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
           "role": "primary suspect"
         },
         {
@@ -403,12 +530,13 @@
     }
   },
   {
-    "id": "drug-product-urn",
+    "id": "drug-clinical-drug-urn",
     "violates": "ref",
-    "field": "drugs.product",
+    "field": "drugs.clinical_drug",
     "expect": "agree_invalid",
     "record": {
       "report_id": "10003301",
+      "source_system": "openfda_e2b",
       "receipt_date": "2024-01-02",
       "serious": true,
       "seriousness_criteria": [
@@ -419,7 +547,7 @@
       "drugs": [
         {
           "drug_name": "ASPIRIN 81MG",
-          "product": "urn:rxcui:243670",
+          "clinical_drug": "urn:rxcui:243670",
           "role": "primary suspect"
         },
         {
@@ -430,6 +558,45 @@
       "reactions": [
         {
           "term": "Nausea"
+        },
+        {
+          "term": "Vomiting"
+        },
+        {
+          "term": "Nausea"
+        }
+      ]
+    }
+  },
+  {
+    "id": "reaction-term-has-bell",
+    "violates": "charset",
+    "field": "reactions.term",
+    "expect": "agree_invalid",
+    "record": {
+      "report_id": "10003301",
+      "source_system": "openfda_e2b",
+      "receipt_date": "2024-01-02",
+      "serious": true,
+      "seriousness_criteria": [
+        "hospitalization",
+        "other"
+      ],
+      "patient_age_years": "64.5",
+      "drugs": [
+        {
+          "drug_name": "ASPIRIN 81MG",
+          "clinical_drug": "https://example.org/monograph/clinical-drug/243670",
+          "role": "primary suspect"
+        },
+        {
+          "drug_name": "Tylenol",
+          "role": "concomitant"
+        }
+      ],
+      "reactions": [
+        {
+          "term": "Nausea\u0007"
         },
         {
           "term": "Vomiting"

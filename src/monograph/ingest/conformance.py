@@ -34,6 +34,8 @@ class ConformanceReport:
     raw_records: dict[str, int]
     classes: dict[str, ClassConformance]
     disagreements: list[dict[str, Any]]
+    report_id_suffixes: Counter[str] = field(default_factory=Counter)
+    quarantine: list[dict[str, Any]] = field(default_factory=list)
 
     def agreement(self) -> tuple[int, int]:
         total = sum(sum(c.outcomes.values()) for c in self.classes.values())
@@ -71,7 +73,15 @@ class ConformanceRun:
         classes: dict[str, ClassConformance] = {c.cls.__name__: ClassConformance() for c in self._spec.entities()}
         seen: set[tuple[str, str]] = set()
         disagreements: list[dict[str, Any]] = []
-        for candidate in self.candidates(raw):
+        suffixes: Counter[str] = Counter()
+        quarantine: list[dict[str, Any]] = []
+        pairs = [
+            (endpoint, r, c)
+            for endpoint, records in raw.items()
+            for r in records
+            for c in self._mapper.map(endpoint, r)
+        ]
+        for endpoint, raw_record, candidate in pairs:
             cls = self._spec.by_name(candidate.cls).cls
             stats = classes[candidate.cls]
             instance = self._instantiator.instantiate(cls, candidate.record)
@@ -81,6 +91,10 @@ class ConformanceRun:
                 continue
             seen.add(key)
             stats.candidates += 1
+            if candidate.cls == "AdverseEventReport":
+                report_id = str(candidate.record.get("report_id", ""))
+                match = re.fullmatch(r"[0-9]+(-[0-9]+)", report_id)
+                suffixes[match.group(1) if match else "(none)"] += 1
             for note in candidate.notes:
                 stats.notes[_note(note)] += 1
             result = self._checker.check(instance)
@@ -89,6 +103,18 @@ class ConformanceRun:
                 stats.valid += 1
             for reason in sorted({_reason(v.path, v.kind) for v in result.pydantic.violations}):
                 stats.reasons[reason] += 1
+            unsafe = [v for v in result.pydantic.violations if v.kind == "control_character"]
+            if unsafe:
+                # Quarantined, never sanitized: the raw record is kept exactly as fetched, with the reason.
+                quarantine.append(
+                    {
+                        "endpoint": endpoint,
+                        "source": candidate.source,
+                        "class": candidate.cls,
+                        "reasons": [f"{v.path}: {v.message}" for v in unsafe],
+                        "raw": raw_record,
+                    }
+                )
             if not result.agrees:
                 disagreements.append(
                     {
@@ -98,4 +124,4 @@ class ConformanceRun:
                         "shacl": [v.describe() for v in result.shacl.violations][:3],
                     }
                 )
-        return ConformanceReport({k: len(v) for k, v in raw.items()}, classes, disagreements)
+        return ConformanceReport({k: len(v) for k, v in raw.items()}, classes, disagreements, suffixes, quarantine)

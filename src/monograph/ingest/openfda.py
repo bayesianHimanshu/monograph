@@ -216,6 +216,15 @@ class OpenFdaMapper:
         notes.add(f"{what}: openfda.rxcui has {len(rxcuis)} values")
         return None
 
+    def clinical_drugs(self, openfda: object, source: str) -> list[Candidate]:
+        """One ClinicalDrug per RxCUI the source mentions. openFDA has no RxNorm names, so name is left out."""
+        rxcuis = _list(openfda.get("rxcui") if isinstance(openfda, dict) else None)
+        return [Candidate("ClinicalDrug", {"rxcui": str(r)}, source) for r in sorted({str(r) for r in rxcuis})]
+
+    def _products(self, openfda: object) -> list[str]:
+        ndcs = _list(openfda.get("product_ndc") if isinstance(openfda, dict) else None)
+        return sorted({self._iri("product", str(n)) for n in ndcs})
+
     def organization(self, name: object, source: str) -> Candidate:
         text = name if isinstance(name, str) else ""
         return Candidate("Organization", {"slug": slugify(text), "name": text}, source)
@@ -252,36 +261,46 @@ class OpenFdaMapper:
             else:
                 notes.add(f"ingredient {a.get('name')!r}: strength {strength!r} is not 'number unit'")
             ingredients.append(ingredient)
-        rxcui = self._single_rxcui(openfda, notes, "product")
+        product_ndc = raw.get("product_ndc")
         product: dict[str, Any] = {
-            "name": raw.get("generic_name") or raw.get("brand_name"),
+            "product_ndc": product_ndc,
+            "name": raw.get("brand_name") or raw.get("generic_name"),
+            "product_type": raw.get("product_type"),
+            "finished": raw.get("finished"),
             "dosage_form": raw.get("dosage_form"),
             "routes": _list(raw.get("route")),
             "ingredients": ingredients,
         }
+        rxcui = self._single_rxcui(openfda, notes, "clinical drug")
         if rxcui is not None:
-            product["rxcui"] = rxcui
+            product["clinical_drug"] = self._iri("clinical-drug", rxcui)
         out.append(Candidate("Product", product, source, tuple(notes.items)))
+        out += self.clinical_drugs(openfda, source)
         labeler = self._iri("organization", slugify(str(raw.get("labeler_name", ""))))
         for package in _list(raw.get("packaging")):
             record: dict[str, Any] = {"ndc": package.get("package_ndc"), "labeler": labeler}
-            if rxcui is not None:
-                record["product"] = self._iri("product", rxcui)
+            if isinstance(product_ndc, str):
+                record["product"] = self._iri("product", product_ndc)
             if package.get("description") is not None:
                 record["description"] = package.get("description")
-            pkg_notes = () if rxcui is not None else ("product: no single RxCUI to reference",)
-            out.append(Candidate("PackagedProduct", record, source, pkg_notes))
+            out.append(Candidate("PackagedProduct", record, source))
         return out
 
     def label(self, raw: dict[str, Any]) -> list[Candidate]:
         source = f"label:{raw.get('id', '?')}"
         version = raw.get("version")
         openfda = raw.get("openfda") or {}
+        set_id = raw.get("set_id")
+        canonical_notes: tuple[str, ...] = ()
+        if isinstance(set_id, str) and set_id != set_id.lower():
+            # UUIDs are case-insensitive (RFC 4122), so lowercasing is lossless canonicalization, not repair.
+            set_id = set_id.lower()
+            canonical_notes = ("label: set_id canonicalized to lowercase",)
         record: dict[str, Any] = {
-            "set_id": raw.get("set_id"),
+            "set_id": set_id,
             "version": int(version) if isinstance(version, str) and version.isdigit() else version,
             "effective_date": fda_date(raw.get("effective_time")),
-            "products": sorted({self._iri("product", str(r)) for r in _list(openfda.get("rxcui"))}),
+            "products": self._products(openfda),
             "sections": [
                 {"code": code, "title": title, "text": "\n".join(str(t) for t in _list(raw.get(name))).strip()}
                 for name, (code, title) in LABEL_SECTIONS.items()
@@ -294,8 +313,8 @@ class OpenFdaMapper:
         if len(uniis) == len(names) == 1:  # longer lists are not documented as aligned
             substances.append(Candidate("Substance", {"unii": uniis[0], "name": names[0]}, source))
         unmapped = sorted(k for k in raw if k not in LABEL_SECTIONS and isinstance(raw[k], list) and k != "openfda")
-        notes = (f"label: {len(unmapped)} text fields without a LOINC mapping",) if unmapped else ()
-        return [*substances, Candidate("Label", record, source, notes)]
+        notes = canonical_notes + ((f"label: {len(unmapped)} text fields without a LOINC mapping",) if unmapped else ())
+        return [*substances, *self.clinical_drugs(openfda, source), Candidate("Label", record, source, notes)]
 
     def event(self, raw: dict[str, Any]) -> list[Candidate]:
         source = f"event:{raw.get('safetyreportid', '?')}"
@@ -306,6 +325,7 @@ class OpenFdaMapper:
         if suspects > 1:
             notes.add(f"drugs: {suspects} suspects and E2B does not say which is primary")
         drugs = []
+        clinical: list[Candidate] = []
         for d in drugs_raw:
             code = d.get("drugcharacterization")
             role = {
@@ -316,11 +336,13 @@ class OpenFdaMapper:
             drug: dict[str, Any] = {"drug_name": d.get("medicinalproduct"), "role": role}
             rxcuis = _list((d.get("openfda") or {}).get("rxcui"))
             if len(rxcuis) == 1:
-                drug["product"] = self._iri("product", str(rxcuis[0]))
+                drug["clinical_drug"] = self._iri("clinical-drug", str(rxcuis[0]))
             drugs.append(drug)
+            clinical += self.clinical_drugs(d.get("openfda"), source)
         serious = {"1": True, "2": False}.get(str(raw.get("serious")), raw.get("serious"))
         record: dict[str, Any] = {
             "report_id": raw.get("safetyreportid"),
+            "source_system": "openfda_e2b",
             "receipt_date": fda_date(raw.get("receivedate")),
             "serious": serious,
             "seriousness_criteria": sorted(v for k, v in SERIOUSNESS_FIELDS.items() if raw.get(k) == "1"),
@@ -332,7 +354,7 @@ class OpenFdaMapper:
             record["patient_age_years"] = str(age)
         elif age is not None:
             notes.add(f"patient age: unit {unit!r} is not years; left out")
-        return [Candidate("AdverseEventReport", record, source, tuple(notes.items))]
+        return [*clinical, Candidate("AdverseEventReport", record, source, tuple(notes.items))]
 
     def enforcement(self, raw: dict[str, Any]) -> list[Candidate]:
         source = f"enforcement:{raw.get('recall_number', '?')}"
@@ -346,7 +368,7 @@ class OpenFdaMapper:
             "classification": classification,
             "reason": raw.get("reason_for_recall"),
             "report_date": fda_date(raw.get("report_date")),
-            "products": sorted({self._iri("product", str(r)) for r in _list(openfda.get("rxcui"))}),
+            "products": self._products(openfda),
             "recalling_firm": self._iri("organization", slugify(str(firm or ""))),
         }
         return [self.organization(firm, source), Candidate("Recall", record, source)]

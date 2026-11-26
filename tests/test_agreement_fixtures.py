@@ -37,7 +37,8 @@ EXPECTED_COMPONENT = {
     "node": {"NodeConstraintComponent", "NodeKindConstraintComponent", "ClassConstraintComponent"},
     "closed": {"ClosedConstraintComponent"},
     "rule:serious-requires-criterion": {"OrConstraintComponent"},
-    "rule:has-primary-suspect": {"QualifiedMinCountConstraintComponent"},
+    "rule:has-suspect": {"QualifiedMinCountConstraintComponent"},
+    "charset": {"NotConstraintComponent"},
     "pydantic_only:label-section-codes-unique": {"MaxCountConstraintComponent"},
 }
 

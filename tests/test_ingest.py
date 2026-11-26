@@ -38,9 +38,10 @@ def _event(*codes: str) -> dict[str, Any]:
 
 
 def test_single_suspect_is_primary_and_several_are_not_guessed() -> None:
-    [one] = OpenFdaMapper().event(_event("1", "2"))
+    *_, one = OpenFdaMapper().event(_event("1", "2"))
+    assert one.record["source_system"] == "openfda_e2b"
     assert [d["role"] for d in one.record["drugs"]] == ["primary suspect", "concomitant"]
-    [two] = OpenFdaMapper().event(_event("1", "1", "3"))
+    *_, two = OpenFdaMapper().event(_event("1", "1", "3"))
     assert [d["role"] for d in two.record["drugs"]] == ["suspect", "suspect", "interacting"]
     assert any("does not say which is primary" in n for n in two.notes)
     assert one.record["seriousness_criteria"] == ["hospitalization"]
@@ -68,14 +69,15 @@ def test_label_sections_use_loinc_codes() -> None:
         "version": "2",
         "effective_time": "20200101",
         "indications_and_usage": ["Use it.", "Wisely."],
-        "openfda": {"rxcui": ["1", "2"]},
+        "openfda": {"rxcui": ["1", "2"], "product_ndc": ["0280-2000", "0280-2001"]},
     }
-    [label] = OpenFdaMapper().label(raw)
+    *drugs, label = OpenFdaMapper().label(raw)  # one ClinicalDrug candidate per RxCUI, then the label
+    assert [d.record for d in drugs] == [{"rxcui": "1"}, {"rxcui": "2"}]
     assert label.record["version"] == 2
     assert label.record["sections"] == [
         {"code": "34067-9", "title": "INDICATIONS AND USAGE", "text": "Use it.\nWisely."}
     ]
-    assert len(label.record["products"]) == 2
+    assert label.record["products"][0].endswith("/product/0280-2000")
 
 
 class _FakeTime:
@@ -127,7 +129,7 @@ def test_real_fixture_records_agree() -> None:
     agreed, total = report.agreement()
     assert total > 50
     assert agreed == total, report.disagreements
-    assert report.classes["AdverseEventReport"].reasons["<record>: rule:has-primary-suspect"] > 0
+    assert report.classes["Product"].candidates > 0
 
 
 @pytest.mark.parametrize("endpoint", ["ndc", "label", "event", "enforcement"])
@@ -135,3 +137,35 @@ def test_fixture_files_are_raw_openfda_records(endpoint: str) -> None:
     data = json.loads((ROOT / "fixtures" / "openfda" / f"{endpoint}.json").read_text())
     assert isinstance(data, list)
     assert data
+
+
+def test_set_id_is_canonicalized_and_noted() -> None:
+    raw = {"id": "x", "set_id": "0013824B-6AEE-4DA4-AFFD-35BC6BF19D91", "version": "1", "effective_time": "20200101"}
+    *_, label = OpenFdaMapper().label(raw)
+    assert label.record["set_id"] == "0013824b-6aee-4da4-affd-35bc6bf19d91"
+    assert "set_id canonicalized to lowercase" in " ".join(label.notes)
+
+
+def test_unsafe_records_are_quarantined_unchanged(tmp_path: Path) -> None:
+    import copy
+    from datetime import UTC, datetime
+
+    from monograph.ingest.quarantine import QuarantineStore
+
+    raw = {
+        "recall_number": "D-0001-2024",
+        "classification": "Class II",
+        "reason_for_recall": "Bad\x1cdata",
+        "report_date": "20240102",
+        "recalling_firm": "Acme Inc.",
+        "openfda": {},
+    }
+    original = copy.deepcopy(raw)
+    report = wiring.conformance_run(wiring.build_spec(), ROOT).run({"enforcement": [raw]})
+    [entry] = report.quarantine
+    assert entry["raw"] == original  # nothing stripped or replaced
+    assert "U+001C" in entry["reasons"][0]
+    assert report.classes["Recall"].valid == 0
+    path = QuarantineStore(tmp_path, lambda: datetime(2026, 11, 26, tzinfo=UTC)).add(report.quarantine, "run")
+    assert path is not None
+    assert json.loads(path.read_text())["raw"]["reason_for_recall"] == "Bad\x1cdata"

@@ -13,13 +13,13 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from decimal import Decimal
 from enum import StrEnum
-from typing import Any, Union, get_args, get_origin
+from typing import Annotated, Any, Union, get_args, get_origin
 
 import annotated_types as at
 from pydantic import AwareDatetime, BaseModel
 from pydantic.fields import FieldInfo
 
-from monograph.core.meta import OntClass, OntEnum, OntProp
+from monograph.core.meta import Charset, OntClass, OntEnum, OntProp, SafeChars
 from monograph.core.refs import Ref
 from monograph.core.rules import PYDANTIC_ONLY_MARK, AtLeast, PydanticOnly, RequiredWhen, Rule
 
@@ -55,6 +55,7 @@ class Constraints:
     le: Bound | None = None
     gt: Bound | None = None
     lt: Bound | None = None
+    charset: Charset | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -170,6 +171,7 @@ class SchemaSpec:
                     ("max_inclusive", k.le),
                     ("min_exclusive", k.gt),
                     ("max_exclusive", k.lt),
+                    ("charset", k.charset.value if k.charset else None),
                 ):
                     if value is not None:
                         yield ConstraintSite(name, f.name, kind, str(value))
@@ -249,9 +251,8 @@ def _analyze_field(cls: type[BaseModel], name: str, info: FieldInfo) -> FieldSpe
     props = [m for m in info.metadata if isinstance(m, OntProp)]
     if len(props) != 1:
         raise SchemaError(f"{where}: needs exactly one OntProp annotation, found {len(props)}")
-    constraints, min_len, max_len = _constraints(where, info.metadata)
-
     annotation: Any = info.annotation
+    metadata = list(info.metadata)
     card = Card.ONE
     origin = get_origin(annotation)
     if origin in (Union, types.UnionType):
@@ -266,6 +267,11 @@ def _analyze_field(cls: type[BaseModel], name: str, info: FieldInfo) -> FieldSpe
     elif origin in (set, tuple, dict) or annotation in (list, set, frozenset, tuple, dict):
         raise SchemaError(f"{where}: use list[T] (ordered) or frozenset[T] (keyed); {annotation} is not supported")
 
+    if get_origin(annotation) is Annotated:
+        # `SafeText | None` keeps its Annotated metadata inside the union; lift it out.
+        metadata += list(annotation.__metadata__)
+        annotation = annotation.__origin__
+    constraints, min_len, max_len = _constraints(where, metadata)
     kind, scalar, enum, target = _inner_kind(where, annotation)
     _check_default(where, info, card, min_len)
 
@@ -288,6 +294,10 @@ def _analyze_field(cls: type[BaseModel], name: str, info: FieldInfo) -> FieldSpe
 
     if constraints.pattern is not None and scalar is not str:
         raise SchemaError(f"{where}: pattern applies to str fields only")
+    if scalar is str and constraints.charset is None:
+        raise SchemaError(f"{where}: plain str is not allowed; use SafeIdentifier or SafeText")
+    if constraints.charset is not None and scalar is not str:
+        raise SchemaError(f"{where}: SafeIdentifier and SafeText apply to str fields only")
     bounds = (constraints.ge, constraints.le, constraints.gt, constraints.lt)
     if any(b is not None for b in bounds) and (scalar not in (int, Decimal) or card in (Card.LIST, Card.SET)):
         raise SchemaError(f"{where}: numeric bounds apply to single int or Decimal fields only")
@@ -318,10 +328,13 @@ def _constraints(where: str, metadata: list[Any]) -> tuple[Constraints, int | No
     min_len: int | None = None
     max_len: int | None = None
     bounds: dict[str, Bound] = {}
+    charset: Charset | None = None
     for m in metadata:
         if isinstance(m, OntProp):
             continue
-        if isinstance(m, at.Ge):
+        if isinstance(m, SafeChars):
+            charset = m.charset
+        elif isinstance(m, at.Ge):
             bounds["ge"] = _bound(where, m.ge)
         elif isinstance(m, at.Le):
             bounds["le"] = _bound(where, m.le)
@@ -339,7 +352,7 @@ def _constraints(where: str, metadata: list[Any]) -> tuple[Constraints, int | No
             continue  # a declared pydantic_only functional validator; the lint step inventories it
         else:
             raise SchemaError(f"{where}: constraint {m!r} has no projection (supported: pattern, lengths, bounds)")
-    constraints = Constraints(pattern=pattern, **bounds)  # type: ignore[arg-type]
+    constraints = Constraints(pattern=pattern, charset=charset, **bounds)  # type: ignore[arg-type]
     return constraints, min_len, max_len
 
 
@@ -403,14 +416,30 @@ def _analyze_enum(enum: type[StrEnum]) -> EnumSpec:
 
 def _check_rules(c: ClassSpec) -> None:
     where = c.cls.__name__
+    for p in c.pydantic_only:
+        if p.unique is None:
+            continue
+        f = c.find(p.unique.field)
+        if f is None or f.kind is not Kind.EMBEDDED or not f.is_collection or f.target is None:
+            raise SchemaError(f"{where}: {p.id}: unique= must name a collection of embedded values")
+        for key in p.unique.keys:
+            if ClassSpecLookup.field(f.target, key) is None:
+                raise SchemaError(f"{where}: {p.id}: {f.target.__name__} has no field {key!r}")
     for rule in c.rules:
         if isinstance(rule, RequiredWhen):
-            when, then = c.find(rule.when), c.find(rule.then)
-            if when is None or then is None:
-                raise SchemaError(f"{where}: rule {rule.id} names an unknown field")
-            if when.is_collection or when.kind not in (Kind.SCALAR, Kind.ENUM):
-                raise SchemaError(f"{where}: rule {rule.id}: `when` must be a single scalar or enum field")
-            _check_value(where, rule.id, when, rule.equals)
+            then = c.find(rule.then)
+            if then is None or not rule.when:
+                raise SchemaError(f"{where}: rule {rule.id} names an unknown field or has no condition")
+            for condition in rule.when:
+                when = c.find(condition.field)
+                if when is None:
+                    raise SchemaError(f"{where}: rule {rule.id} names an unknown field")
+                if when.is_collection or when.kind not in (Kind.SCALAR, Kind.ENUM):
+                    raise SchemaError(f"{where}: rule {rule.id}: conditions must test a single scalar or enum field")
+                if not condition.values:
+                    raise SchemaError(f"{where}: rule {rule.id}: a condition needs at least one value")
+                for value in condition.values:
+                    _check_value(where, rule.id, when, value)
             if then.card is Card.ONE:
                 raise SchemaError(f"{where}: rule {rule.id}: `then` is already required")
         elif isinstance(rule, AtLeast):
@@ -421,7 +450,10 @@ def _check_rules(c: ClassSpec) -> None:
             child = ClassSpecLookup.field(parent.target, rule.where)
             if child is None or child.is_collection or child.kind not in (Kind.SCALAR, Kind.ENUM):
                 raise SchemaError(f"{where}: rule {rule.id}: `where` must be a single scalar or enum field")
-            _check_value(where, rule.id, child, rule.equals)
+            if not rule.values:
+                raise SchemaError(f"{where}: rule {rule.id}: `values` must not be empty")
+            for value in rule.values:
+                _check_value(where, rule.id, child, value)
             if rule.min_count < 1:
                 raise SchemaError(f"{where}: rule {rule.id}: min_count must be at least 1")
         ids = [r.id for r in c.rules]

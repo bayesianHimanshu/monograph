@@ -68,10 +68,16 @@ class ReportBuilder:
             "",
         ]
         out += self._summary()
+        out += self._corrections_section()
+        out += self._compat_section()
         out += self._mutation_section()
         out += self._agreement_section()
         out += self._roundtrip_section()
         out += self._conformance_section()
+        out += self._before_after_section()
+        out += self._deferred_section()
+        out += self._quarantine_section()
+        out += self._coverage_section()
         out += self._leak_section()
         out += self._size_section()
         out += self._provenance()
@@ -89,10 +95,80 @@ class ReportBuilder:
             ["Declared pydantic_only constraints", self._value("leaks.pydantic_only")],
             ["Constraints the DDL cannot enforce", self._value("leaks.postgres_static")],
             ["Idiomatic patterns rejected by the regex subset", self._value("leaks.regex_subset")],
+            ["Constraints enforced in Pydantic / SHACL / Postgres", self._coverage_summary()],
             ["pySHACL deviations observed", self._value("findings.pyshacl")],
             ["Generation time for all artifacts (median)", f"{self._value('generation.seconds')} s"],
         ]
         return ["## Summary", "", *_table(["Metric", "Value"], rows), ""]
+
+    def _history(self, metric: str) -> list[Record]:
+        return [r for r in self._records if r["metric"] == metric]
+
+    def _coverage_summary(self) -> str:
+        totals = self._value("coverage.matrix")
+        if not totals:
+            return "n/a"
+        n = self._details("coverage.matrix").get("constraints")
+        return (
+            " / ".join(f"{totals[layer].get('enforced', 0)}" for layer in ("pydantic", "shacl", "postgres"))
+            + f" of {n}"
+        )
+
+    def _coverage_line(self) -> str:
+        totals = self._value("coverage.matrix")
+        if not totals:
+            return "not recorded"
+        return "; ".join(
+            f"{layer} {t.get('enforced', 0)}/{t.get('partial', 0)}/{t.get('not enforced', 0)}"
+            for layer, t in totals.items()
+        )
+
+    def _corrections_section(self) -> list[str]:
+        out = ["## Model corrections", ""]
+        rows = []
+        for r in self._history("model.changes"):
+            for change in r["details"]["changes"]:
+                rows.append([r["details"]["version"], change["id"], change["finding"], change["correction"]])
+        if not rows:
+            return [*out, "No model changes recorded.", ""]
+        seen, unique = set(), []
+        for row in rows:
+            if tuple(row) not in seen:
+                seen.add(tuple(row))
+                unique.append(row)
+        out += [
+            "Each change below corrects the model in response to a real-data finding from H6. None loosens a"
+            " constraint beyond what the finding requires.",
+            "",
+        ]
+        out += _table(["Version", "Change", "H6 finding", "Correction"], unique)
+        return [*out, ""]
+
+    def _compat_section(self) -> list[str]:
+        rows = []
+        for r in self._history("compat.check"):
+            d = r["details"]
+            rows.append(
+                [
+                    r["timestamp"][:19],
+                    d["checked_version"],
+                    d["release"],
+                    "pass" if r["value"] else "FAIL",
+                    len(d["breaking"]),
+                    d["additive"],
+                    d["problem"] or "",
+                ]
+            )
+        out = ["## Breaking-change gate", ""]
+        if not rows:
+            return [*out, "No breaking-change checks recorded.", ""]
+        out += [
+            "Every recorded run of `monograph check breaking --record`, oldest first. A run that fails with the"
+            " source still at the old version, before the bump, shows that the gate demanded the major version.",
+            "",
+        ]
+        out += _table(["UTC time", "Checked as", "Last release", "Verdict", "Breaking", "Additive", "Problem"], rows)
+        return [*out, ""]
 
     def _mutation_section(self) -> list[str]:
         rows = self._mutations()
@@ -121,6 +197,22 @@ class ReportBuilder:
                 ]
             )
         out += _table(["ID", "Mutation", "Expected gate", "Gates that failed", "As expected", "Seconds"], table)
+        history = []
+        for r in self._history("mutation.detection_rate"):
+            run = [x for x in self._records if x["run_id"] == r["run_id"] and x["metric"].startswith("mutation.M")]
+            unexpected = [x["metric"].removeprefix("mutation.") for x in run if not x["value"]]
+            history.append(
+                [
+                    r["timestamp"][:19],
+                    r["schema_version"],
+                    r["git_sha"][:12],
+                    len(run),
+                    _pct(r["value"]),
+                    ", ".join(unexpected) or "none",
+                ]
+            )
+        out += ["", "Every recorded suite run (the table above is the latest):", ""]
+        out += _table(["UTC time", "Schema", "Git SHA", "Mutations run", "Detection", "Not as expected"], history)
         out += ["", "Gate evidence (last lines of output) for each caught mutation:", ""]
         for r in rows:
             for gate, text in sorted(r["details"].get("evidence", {}).items()):
@@ -214,6 +306,108 @@ class ReportBuilder:
         out += ["", "Ingest notes (where the source could not fill a field unambiguously):", "", *notes]
         return [*out, ""]
 
+    def _before_after_section(self) -> list[str]:
+        by_version: dict[str, dict[str, Record]] = {}
+        for r in self._records:
+            if r["metric"].startswith("conformance.") and r["details"].get("source") == "data/raw":
+                by_version.setdefault(r["schema_version"], {})[r["metric"].removeprefix("conformance.")] = r
+        out = ["## Conformance before and after the corrections", ""]
+        if len(by_version) < 2:
+            return [*out, "Needs conformance runs on data/raw under two schema versions.", ""]
+        versions = sorted(by_version, key=lambda v: tuple(int(x) for x in v.split(".")))
+        after = by_version[versions[-1]]
+        out += [
+            f"Same cached raw sample under every schema version that has a conformance run. Product changed"
+            f" meaning in 1.0.0: in {versions[0]} it was keyed by RxCUI (that concept is now ClinicalDrug),"
+            " from 1.0.0 on it is keyed by product NDC.",
+            "",
+        ]
+        names = sorted({n for v in versions for n in by_version[v]})
+        rows = []
+        for name in names:
+            cells = []
+            for v in versions:
+                rec = by_version[v].get(name)
+                cells.append(
+                    f"{rec['details']['valid']}/{rec['details']['candidates']} ({_pct(rec['value'])})"
+                    if rec
+                    else "absent"
+                )
+            rows.append([name, *cells])
+        out += _table(["Class", *versions], rows)
+        out += ["", f"Every remaining failure reason under {versions[-1]}, with counts:", ""]
+        remaining = [
+            [name, n, reason]
+            for name, r in sorted(after.items())
+            for reason, n in r["details"].get("all_reasons", r["details"]["top_reasons"])
+        ]
+        out += _table(["Class", "Records", "Reason"], remaining) if remaining else ["None."]
+        suffix = self._get("ingest.report_id_suffix")
+        if suffix is not None:
+            d = suffix["details"]
+            out += [
+                "",
+                f"Safety report ID suffixes: {d['with_suffix']} of {d['reports']} reports ({_pct(suffix['value'])})"
+                f" carry a -digits suffix. Suffix values: {d['suffixes']}.",
+            ]
+        return [*out, ""]
+
+    def _deferred_section(self) -> list[str]:
+        d = self._details("findings.deferred")
+        out = ["## Deferred to H4/H2", ""]
+        if not d:
+            return [*out, "Nothing recorded.", ""]
+        out += [
+            "Real-data failures that stay failing on purpose. The model is not loosened for them; the counts are"
+            " from the latest conformance run.",
+            "",
+        ]
+        out += _table(
+            ["Class", "Failure reason", "Records", "Deferred to", "Why"],
+            [[i["class"], i["reason"], i["records"], i["deferred_to"], i["rationale"]] for i in d["items"]],
+        )
+        return [*out, ""]
+
+    def _quarantine_section(self) -> list[str]:
+        d = self._details("ingest.quarantine")
+        out = ["## Quarantine", ""]
+        if not d:
+            return [*out, "Nothing recorded.", ""]
+        out += [
+            f"{self._value('ingest.quarantine')} record{'s' if self._value('ingest.quarantine') != 1 else ''} failed"
+            " SafeIdentifier or SafeText. Quarantined records are stored unchanged"
+            " in data/quarantine/ with the reason and are never sanitized.",
+            "",
+        ]
+        out += _table(
+            ["Source", "Class", "Reason"],
+            [[q["source"], q["class"], "; ".join(q["reasons"])] for q in d.get("records", [])],
+        )
+        return [*out, ""]
+
+    def _coverage_section(self) -> list[str]:
+        d = self._details("coverage.matrix")
+        out = ["## Constraint coverage by layer", ""]
+        if not d:
+            return [*out, "No coverage matrix recorded.", ""]
+        totals = self._value("coverage.matrix")
+        out += [
+            "Computed from the source by `harness/coverage.py`: rows from the SchemaSpec, the SHACL column from"
+            " the generated shapes graph, the Postgres column from the DDL generator's inventories.",
+            "",
+        ]
+        statuses = ("enforced", "partial", "not enforced")
+        out += _table(
+            ["Layer", *statuses],
+            [[layer, *(totals[layer].get(st, 0) for st in statuses)] for layer in ("pydantic", "shacl", "postgres")],
+        )
+        out += [""]
+        out += _table(
+            ["Class", "Field", "Constraint", "Pydantic", "SHACL", "Postgres", "Note"],
+            [[r["cls"], r["field"], r["kind"], r["pydantic"], r["shacl"], r["postgres"], r["note"]] for r in d["rows"]],
+        )
+        return [*out, ""]
+
     def _leak_section(self) -> list[str]:
         out = ["## Leak inventory", "", "### Constraints declared pydantic_only", ""]
         decl = self._details("leaks.pydantic_only").get("declared", [])
@@ -250,10 +444,25 @@ class ReportBuilder:
             ]
         out += ["", "### Patterns outside the safe regex subset", ""]
         catalog = self._details("leaks.regex_subset").get("idiomatic_patterns", [])
-        out += ["Idiomatic patterns a developer would write for this model, checked against the subset:", ""]
+        rx = self._details("leaks.regex_subset")
+        out += [
+            "Idiomatic patterns a developer would write for this model, checked against the subset after"
+            f" canonicalization: {rx.get('accepted')} of {rx.get('total')} pass now;"
+            f" {rx.get('accepted_without_canonicalization')} would pass without it (the H6 rule).",
+            "",
+        ]
         out += _table(
-            ["Purpose", "Pattern", "In subset", "Reason"],
-            [[c["purpose"], f"`{c['pattern']}`", "yes" if c["accepted"] else "no", c["reason"] or ""] for c in catalog],
+            ["Purpose", "Pattern", "In subset", "Canonical form", "Reason"],
+            [
+                [
+                    c["purpose"],
+                    f"`{c['pattern']}`",
+                    "yes" if c["accepted"] else "no",
+                    f"`{c['canonical']}`" if c.get("canonical") else "",
+                    c["reason"] or "",
+                ]
+                for c in catalog
+            ],
         )
         out += ["", "### Validator implementation findings (pySHACL)", ""]
         probes = self._details("findings.pyshacl").get("probes", [])
@@ -345,10 +554,11 @@ class ReportBuilder:
             f" {_pct(agreement[1])}, real records {_pct(agreement[2])}. Round trip: {_pct(roundtrip)}.",
             f"* It holds only inside a projectable subset. Leaks: {leaks['pydantic_only']} pydantic_only constraints,"
             f" {leaks['postgres']} constraints the DDL cannot express, {len(coerced)} invalid fixtures Postgres"
-            f" accepted through implicit casts, {leaks['regex']} of {catalog} idiomatic regexes outside the safe"
-            " subset.",
+            f" accepted through implicit casts, {leaks['regex']} of {catalog} idiomatic regexes still outside the"
+            " safe subset after canonicalization.",
             f"* Agreement also depends on the validator implementation: {leaks['pyshacl']} pySHACL deviations from the"
             f" SHACL spec were observed, and {dialect_text}",
+            f"* Coverage across layers (enforced / partial / not enforced): {self._coverage_line()}.",
             "* Lowest real-data conformance: "
             + ", ".join(f"{name} {_pct(rate)}" for name, rate in weakest)
             + f". {real_cause}",

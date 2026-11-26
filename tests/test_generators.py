@@ -11,12 +11,12 @@ from pydantic import Field
 from rdflib import OWL, RDF, RDFS, BNode, Graph, Literal, URIRef
 
 from monograph import wiring
-from monograph.core.meta import OntClass, OntProp
+from monograph.core.meta import OntClass, OntProp, SafeIdentifier
 from monograph.core.models import Entity
+from monograph.core.regex import RegexSubsetError
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.vocab import Vocabulary
 from monograph.gen.artifacts import JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE
-from monograph.gen.regex import RegexSubsetError
 from monograph.gen.shacl import SH
 from monograph.gen.turtle import TurtleError, TurtleWriter
 
@@ -61,7 +61,7 @@ def test_shacl_shapes_are_closed_and_targeted(spec: SchemaSpec, files: dict[str,
     assert g.value(unii, SH.minCount) == Literal(1)
     ingredient = URIRef(V.shapes_ns + "Product-ingredient")
     assert g.value(ingredient, SH.node) == V.node_shape(spec.by_name("Ingredient").cls)
-    assert (URIRef(V.shapes_ns + "rule-has-primary-suspect"), RDF.type, SH.NodeShape) in g
+    assert (URIRef(V.shapes_ns + "rule-has-suspect"), RDF.type, SH.NodeShape) in g
 
 
 def test_json_schema_has_rules(files: dict[str, str]) -> None:
@@ -93,10 +93,10 @@ def test_pattern_outside_subset_fails_generation() -> None:
         """Bad."""
 
         __ont__: ClassVar[OntClass] = OntClass(name="Bad", label="bad", path="bad", key=("code",))
-        code: Annotated[str, OntProp("code", "code"), Field(pattern=r"^\d+$")]
+        code: Annotated[SafeIdentifier, OntProp("code", "code"), Field(pattern=r"^\d+$")]
 
     spec = analyze((Entity, Bad), "0.0.0")
-    with pytest.raises(RegexSubsetError, match="escape"):
+    with pytest.raises(RegexSubsetError, match="canonical"):
         wiring.artifact_builder(spec, V).build()
 
 
@@ -119,13 +119,36 @@ def test_turtle_writer_round_trips_through_rdflib(files: dict[str, str]) -> None
 
 
 def test_ddl_lists_what_postgres_cannot_enforce(spec: SchemaSpec) -> None:
+    from monograph.core.regex import check_pattern
     from monograph.gen.ddl import DdlGenerator
-    from monograph.gen.regex import check_pattern
 
     result = DdlGenerator(spec, check_pattern).generate()
     kinds = {(u.cls, u.kind) for u in result.unenforced}
-    assert ("AdverseEventReport", "rule:has-primary-suspect") in kinds
+    assert ("AdverseEventReport", "rule:has-suspect") in kinds
     assert ("AdverseEventReport", "min_count") in kinds
     assert ("Label", "pydantic_only:label-effective-date-not-future") in kinds
     assert "ck_adverse_event_report_rule_serious_requires_criterion" in result.sql
-    assert "ck_product_routes_min_count" in result.sql
+    assert "ck_product_rule_finished_rx_otc_requires_route" in result.sql
+    assert ("Product", "pydantic_only:product-ingredient-substances-unique") not in kinds  # projected as UNIQUE
+    assert "uq_product__ingredients_substance UNIQUE (owner_iri, substance_iri)" in result.sql
+    assert "DEFERRABLE" not in result.sql
+
+
+def test_test_profile_ddl_has_deferrable_foreign_keys(spec: SchemaSpec) -> None:
+    from monograph.core.regex import check_pattern
+    from monograph.gen.ddl import DdlGenerator, DdlProfile
+
+    default = DdlGenerator(spec, check_pattern, DdlProfile.DEFAULT).render()
+    test = DdlGenerator(spec, check_pattern, DdlProfile.TEST).render()
+    assert test.count("DEFERRABLE INITIALLY IMMEDIATE") == test.count("REFERENCES")
+    assert default.replace("default profile", "test profile") == test.replace(" DEFERRABLE INITIALLY IMMEDIATE", "")
+
+
+def test_bounded_patterns_imply_max_length_and_strings_forbid_control_characters(files: dict[str, str]) -> None:
+    g = _graph(files[SHACL_FILE])
+    assert g.value(URIRef(V.shapes_ns + "Substance-unii"), SH.maxLength) == Literal(10)
+    assert g.value(URIRef(V.shapes_ns + "Organization-slug"), SH.maxLength) == Literal(120)  # explicit max_length
+    for name in ("Substance-unii", "Substance-name", "PackagedProduct-labeler"):
+        negated = g.value(URIRef(V.shapes_ns + name), SH["not"])
+        assert negated is not None
+        assert "\x00" in str(g.value(negated, SH.pattern))

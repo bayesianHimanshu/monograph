@@ -5,13 +5,30 @@
     "field": "recall_number",
     "expect": "agree_invalid",
     "record": {
-      "recall_number": "D-123-2025",
+      "recall_number": "D-12-2025",
       "classification": "II",
       "reason": "Failed dissolution specifications.",
       "report_date": "2025-02-12",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
+      ],
+      "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
+    }
+  },
+  {
+    "id": "reason-has-nul",
+    "violates": "charset",
+    "field": "reason",
+    "expect": "agree_invalid",
+    "record": {
+      "recall_number": "D-0123-2025",
+      "classification": "II",
+      "reason": "Failed\u0000 dissolution.",
+      "report_date": "2025-02-12",
+      "products": [
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ],
       "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
     }
@@ -27,8 +44,8 @@
       "reason": "Failed dissolution specifications.",
       "report_date": "2025-02-12",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ],
       "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
     }
@@ -44,8 +61,8 @@
       "reason": "Failed dissolution specifications.",
       "report_date": "2025-02-30",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ],
       "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
     }
@@ -61,8 +78,8 @@
       "reason": "Failed dissolution specifications.",
       "report_date": "2025-02-12",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ]
     }
   },
@@ -77,8 +94,8 @@
       "reason": "",
       "report_date": "2025-02-12",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ],
       "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc"
     }
@@ -94,8 +111,8 @@
       "reason": "Failed dissolution specifications.",
       "report_date": "2025-02-12",
       "products": [
-        "https://example.org/monograph/product/198440",
-        "https://example.org/monograph/product/2001467"
+        "https://example.org/monograph/product/12345-678",
+        "https://example.org/monograph/product/12345-6789"
       ],
       "recalling_firm": "https://example.org/monograph/organization/acme-pharma-inc",
       "status": "Ongoing"

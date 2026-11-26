@@ -45,15 +45,18 @@ class JsonSchemaGenerator:
             "$defs": defs,
         }
 
-    def _rule(self, c: ClassSpec, rule: RequiredWhen | AtLeast) -> dict[str, Any]:
+    def _rule(self, cs: ClassSpec, rule: RequiredWhen | AtLeast) -> dict[str, Any]:
         if isinstance(rule, RequiredWhen):
-            then = c.field(rule.then)
+            then = cs.field(rule.then)
             requirement: dict[str, Any] = {"required": [rule.then]}
             if then.is_collection:
                 requirement["properties"] = {rule.then: {"minItems": 1}}
             return {
                 "$comment": f"rule {rule.id}: {rule.message}",
-                "if": {"properties": {rule.when: {"const": _json(rule.equals)}}, "required": [rule.when]},
+                "if": {
+                    "properties": {c.field: {"enum": [_json(v) for v in c.values]} for c in rule.when},
+                    "required": [c.field for c in rule.when],
+                },
                 "then": requirement,
             }
         return {
@@ -61,7 +64,7 @@ class JsonSchemaGenerator:
             "properties": {
                 rule.field: {
                     "contains": {
-                        "properties": {rule.where: {"const": _json(rule.equals)}},
+                        "properties": {rule.where: {"enum": [_json(v) for v in rule.values]}},
                         "required": [rule.where],
                     },
                     "minContains": rule.min_count,

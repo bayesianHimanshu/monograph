@@ -16,19 +16,20 @@ from rdflib import OWL, RDF, RDFS, XSD, Graph
 from monograph.core.instances import Instantiator
 from monograph.core.meta import DEFAULT_BASE
 from monograph.core.models import MODELS
+from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.version import SCHEMA_VERSION
 from monograph.core.vocab import Vocabulary
-from monograph.gen.artifacts import DDL_FILE, JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE, ArtifactBuilder
-from monograph.gen.ddl import DdlGenerator
+from monograph.gen.artifacts import DDL_FILE, DDL_TEST_FILE, JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE, ArtifactBuilder
+from monograph.gen.ddl import DdlGenerator, DdlProfile
 from monograph.gen.jsonschema import JsonSchemaGenerator
 from monograph.gen.owl import OwlGenerator
-from monograph.gen.regex import check_pattern
 from monograph.gen.shacl import SH, ShaclGenerator
 from monograph.gen.turtle import TurtleWriter
 from monograph.harness.results import ResultsWriter
 from monograph.ingest.conformance import ConformanceRun
 from monograph.ingest.openfda import ENDPOINTS, OpenFdaMapper
+from monograph.ingest.quarantine import QuarantineStore
 from monograph.rdf.mapping import RdfMapper
 from monograph.validate.agreement import AgreementChecker
 from monograph.validate.pydantic_side import PydanticValidator
@@ -59,7 +60,8 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         OWL_FILE: OwlGenerator(spec, vocab, writer).render,
         SHACL_FILE: ShaclGenerator(spec, vocab, writer, check_pattern).render,
         JSON_SCHEMA_FILE: JsonSchemaGenerator(spec, vocab, f"{DEFAULT_BASE}schema/{spec.version}").render,
-        DDL_FILE: DdlGenerator(spec, check_pattern).render,
+        DDL_FILE: DdlGenerator(spec, check_pattern, DdlProfile.DEFAULT).render,
+        DDL_TEST_FILE: DdlGenerator(spec, check_pattern, DdlProfile.TEST).render,
     }
     return ArtifactBuilder(renderers, time.perf_counter)
 
@@ -138,3 +140,7 @@ def openfda_fixtures(root: Path) -> dict[str, list[dict[str, Any]]]:
         path = fixtures_dir(root) / "openfda" / f"{endpoint}.json"
         out[endpoint] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
     return out
+
+
+def quarantine_store(root: Path) -> QuarantineStore:
+    return QuarantineStore(root / "data" / "quarantine", lambda: datetime.now(UTC))

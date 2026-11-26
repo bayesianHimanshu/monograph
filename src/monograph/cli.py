@@ -9,10 +9,10 @@ from typing import Annotated
 import typer
 
 from monograph import wiring
+from monograph.core.regex import RegexSubsetError
 from monograph.core.spec import SchemaError
 from monograph.core.vocab import Vocabulary
 from monograph.gen.artifacts import write_artifacts
-from monograph.gen.regex import RegexSubsetError
 from monograph.validate.drift import DriftChecker
 
 logging.getLogger("rdflib").setLevel(logging.ERROR)  # invalid IRIs in negative tests are expected
@@ -72,31 +72,59 @@ def check_drift(root: Root = Path()) -> None:
     typer.echo("drift check ok")
 
 
-def _breaking(root: Path) -> bool:
+def _breaking(root: Path, as_version: str | None = None, record: bool = False) -> bool:
     from monograph.core.version import SCHEMA_VERSION
     from monograph.gen.artifacts import OWL_FILE, SHACL_FILE
     from monograph.validate.compat import CompatChecker
 
+    version = as_version or SCHEMA_VERSION
     files = wiring.artifact_builder(wiring.build_spec(), Vocabulary()).build().files
     checker = CompatChecker(wiring.generated_dir(root) / "releases", OWL_FILE, SHACL_FILE)
-    report = checker.check(SCHEMA_VERSION, files[OWL_FILE], files[SHACL_FILE])
-    for change in report.changes:
-        label = "BREAKING" if change.breaking else "additive"
-        typer.echo(f"breaking-change: {label}: {change.kind}: {change.subject}: {change.detail}")
+    report = checker.check(version, files[OWL_FILE], files[SHACL_FILE])
+    for title, changes in (("since previous release", report.changes), ("since own snapshot", report.snapshot_changes)):
+        for change in changes:
+            if change.breaking:
+                typer.echo(f"breaking-change: {title}: BREAKING: {change.kind}: {change.subject}: {change.detail}")
+    snapshot_breaking = sum(c.breaking for c in report.snapshot_changes)
     typer.echo(
-        f"breaking-change: release {report.release}, current {report.current}, "
-        f"{len(report.changes)} changes, {len(report.breaking)} breaking"
+        f"breaking-change: previous release {report.release}, current {report.current}:"
+        f" {len(report.changes)} changes ({len(report.breaking)} breaking) since the previous release,"
+        f" {len(report.snapshot_changes)} ({snapshot_breaking} breaking) since the {report.current} snapshot"
     )
     if report.problem:
         typer.echo(f"breaking-change: {report.problem}", err=True)
+    if record:
+        wiring.results_writer(root).write(
+            "compat.check",
+            report.ok,
+            {
+                "release": report.release,
+                "checked_version": version,
+                "schema_version_in_source": SCHEMA_VERSION,
+                "changes": len(report.changes),
+                "breaking": [f"{c.kind}: {c.subject}: {c.detail}" for c in report.breaking],
+                "additive": len(report.changes) - len(report.breaking),
+                "snapshot_changes": len(report.snapshot_changes),
+                "snapshot_breaking": [
+                    f"{c.kind}: {c.subject}: {c.detail}" for c in report.snapshot_changes if c.breaking
+                ],
+                "problem": report.problem,
+            },
+        )
     return report.ok
 
 
 @check_app.command("breaking")
-def check_breaking(root: Root = Path()) -> None:
+def check_breaking(
+    root: Root = Path(),
+    as_version: Annotated[
+        str | None, typer.Option(help="Check as if SCHEMA_VERSION were this (to show what the gate demands).")
+    ] = None,
+    record: Annotated[bool, typer.Option(help="Append the verdict to results/h6.")] = False,
+) -> None:
     """Fail if OWL/SHACL changed incompatibly since the last release without a major version bump."""
     try:
-        ok = _breaking(root)
+        ok = _breaking(root, as_version, record)
     except (SchemaError, RegexSubsetError) as exc:
         raise _fail(f"generation: {exc}") from exc
     if not ok:
@@ -173,8 +201,10 @@ def measure(
     from monograph.core import models
     from monograph.core.instances import Instantiator
     from monograph.core.meta import DEFAULT_BASE
-    from monograph.gen.ddl import DdlGenerator
-    from monograph.gen.regex import check_pattern
+    from monograph.core.regex import check_pattern
+    from monograph.core.version import CHANGES, DEFERRED
+    from monograph.gen.ddl import DdlGenerator, DdlProfile
+    from monograph.harness.coverage import CoverageMatrix
     from monograph.harness.measure import Measurement, record_conformance, record_postgres
     from monograph.harness.property_run import PropertyAgreementRun
     from monograph.ingest.openfda import ENDPOINTS, RawCache
@@ -211,7 +241,10 @@ def measure(
         raw, source = wiring.openfda_fixtures(root), "fixtures/openfda"
     typer.echo(f"real records from {source}")
     conformance = wiring.conformance_run(spec, root)
-    record_conformance(writer, conformance.run(raw), source)
+    conformance_report = conformance.run(raw)
+    record_conformance(writer, conformance_report, source)
+    wiring.quarantine_store(root).add(conformance_report.quarantine, writer.run_id)
+    m.deferred(DEFERRED, conformance_report)
     real_valid = []
     for candidate in conformance.candidates(raw):
         instance = instantiator.instantiate(spec.by_name(candidate.cls).cls, candidate.record)
@@ -220,8 +253,10 @@ def measure(
     typer.echo("round trip, dataset integrity, leaks")
     m.round_trip(real_valid)
     m.dataset_integrity(wiring.shapes_graph(root))
-    ddl = DdlGenerator(spec, check_pattern).generate()
-    m.leaks(ValidatorLinter(models.MODELS, models).run(), ddl, check_pattern)
+    ddl = DdlGenerator(spec, check_pattern, DdlProfile.TEST).generate()
+    m.leaks(ValidatorLinter(models.MODELS, models).run(), DdlGenerator(spec, check_pattern).generate())
+    m.coverage(CoverageMatrix(spec, wiring.shapes_graph(root), DdlGenerator(spec, check_pattern).generate(), vocab))
+    m.changelog(CHANGES)
     m.validator_findings(all_probes())
 
     dsn = os.environ.get("MONOGRAPH_PG_DSN", "postgresql://monograph:monograph@localhost:55432/monograph")
@@ -376,8 +411,13 @@ def ingest_map(
             typer.echo(f"    {count} x {reason}")
     agreed, total = report.agreement()
     typer.echo(f"agreement on real records: {agreed}/{total}")
+    if report.quarantine:
+        for q in report.quarantine:
+            typer.echo(f"quarantined {q['source']}: {'; '.join(q['reasons'])}")
     if record:
-        record_conformance(wiring.results_writer(root), report, source)
+        writer = wiring.results_writer(root)
+        record_conformance(writer, report, source)
+        wiring.quarantine_store(root).add(report.quarantine, writer.run_id)
 
 
 @ingest_app.command("fixtures")

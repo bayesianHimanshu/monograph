@@ -10,6 +10,7 @@ OWL_FILE = "monograph.owl.ttl"
 SHACL_FILE = "monograph.shapes.ttl"
 JSON_SCHEMA_FILE = "monograph.schema.json"
 DDL_FILE = "monograph.ddl.sql"
+DDL_TEST_FILE = "monograph.test.ddl.sql"
 
 
 @dataclass(frozen=True, slots=True)

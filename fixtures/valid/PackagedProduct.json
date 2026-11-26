@@ -3,7 +3,7 @@
     "id": "4-4-2",
     "record": {
       "ndc": "0280-2000-10",
-      "product": "https://example.org/monograph/product/243670",
+      "product": "https://example.org/monograph/product/0280-2000",
       "labeler": "https://example.org/monograph/organization/bayer-healthcare-llc",
       "description": "36 TABLET, CHEWABLE in 1 BOTTLE"
     }
@@ -12,7 +12,7 @@
     "id": "5-3-2",
     "record": {
       "ndc": "12345-678-90",
-      "product": "https://example.org/monograph/product/198440",
+      "product": "https://example.org/monograph/product/12345-678",
       "labeler": "https://example.org/monograph/organization/acme-pharma-inc",
       "description": "100 TABLET in 1 BOTTLE"
     }
@@ -21,7 +21,7 @@
     "id": "5-4-1",
     "record": {
       "ndc": "12345-6789-0",
-      "product": "https://example.org/monograph/product/2001467",
+      "product": "https://example.org/monograph/product/12345-6789",
       "labeler": "https://example.org/monograph/organization/acme-pharma-inc"
     }
   }

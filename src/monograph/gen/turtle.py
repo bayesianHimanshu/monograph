@@ -104,16 +104,20 @@ class TurtleWriter:
         return f"<{iri}>"
 
     def _literal(self, lit: Literal) -> str:
-        text = (
-            str(lit)
-            .replace("\\", "\\\\")
-            .replace('"', '\\"')
-            .replace("\n", "\\n")
-            .replace("\r", "\\r")
-            .replace("\t", "\\t")
-        )
+        text = "".join(_escape(ch) for ch in str(lit))
         if lit.language:
             return f'"{text}"@{lit.language}'
         if lit.datatype is not None:
             return f'"{text}"^^{self._iri(str(lit.datatype))}'
         return f'"{text}"'
+
+
+_ESCAPES = {"\\": "\\\\", '"': '\\"', "\n": "\\n", "\r": "\\r", "\t": "\\t"}
+
+
+def _escape(ch: str) -> str:
+    if ch in _ESCAPES:
+        return _ESCAPES[ch]
+    if ord(ch) < 0x20 or 0x7F <= ord(ch) <= 0x9F:
+        return f"\\u{ord(ch):04X}"
+    return ch

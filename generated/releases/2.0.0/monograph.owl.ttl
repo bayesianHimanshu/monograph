@@ -1,0 +1,1018 @@
+@prefix mono: <https://example.org/monograph/ontology#> .
+@prefix shape: <https://example.org/monograph/shapes#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.org/monograph/ontology>
+    a owl:Ontology ;
+    owl:versionIRI <https://example.org/monograph/ontology/2.0.0> ;
+    owl:versionInfo "2.0.0" ;
+    rdfs:label "MONOGRAPH drug product model" .
+
+mono:AdverseEventReport
+    a owl:Class ;
+    rdfs:comment "A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA." ;
+    rdfs:label "Adverse event report" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:ClinicalDrug
+    a owl:Class ;
+    rdfs:comment "A clinical drug concept in RxNorm, identified by its RxCUI. Several NDC products can share one clinical drug. The name is optional because openFDA carries RxCUIs without their RxNorm names." ;
+    rdfs:label "Clinical drug" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:DrugInvolvement
+    a owl:Class ;
+    rdfs:comment "A drug mentioned in an adverse event report, as reported." ;
+    rdfs:label "Drug involvement" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:DrugRole
+    a owl:Class ;
+    rdfs:comment "The role a drug played in an adverse event report. `suspect` is E2B characterization 1 when the source does not say which suspect is primary." ;
+    rdfs:label "Drug role" .
+
+mono:DrugRole-CONCOMITANT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "concomitant" .
+
+mono:DrugRole-INTERACTING
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "interacting" .
+
+mono:DrugRole-PRIMARY_SUSPECT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "primary suspect" .
+
+mono:DrugRole-SECONDARY_SUSPECT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "secondary suspect" .
+
+mono:DrugRole-SUSPECT
+    a mono:DrugRole, owl:NamedIndividual ;
+    rdfs:label "suspect" .
+
+mono:EmbeddedValue
+    a owl:Class ;
+    rdfs:comment "A value that only exists inside its parent entity. Its IRI derives from the parent's IRI." ;
+    rdfs:label "Embedded value" .
+
+mono:Entity
+    a owl:Class ;
+    rdfs:comment "A thing with a public identifier and its own IRI." ;
+    rdfs:label "Entity" .
+
+mono:Ingredient
+    a owl:Class ;
+    rdfs:comment "An active ingredient of a product with its strength." ;
+    rdfs:label "Ingredient" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:Label
+    a owl:Class ;
+    rdfs:comment "One version of a structured product label (SPL)." ;
+    rdfs:label "Label" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:LabelSection
+    a owl:Class ;
+    rdfs:comment "One LOINC-coded section of a structured product label." ;
+    rdfs:label "Label section" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:Organization
+    a owl:Class ;
+    rdfs:comment "A company acting as manufacturer, labeler or recalling firm." ;
+    rdfs:label "Organization" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:PackagedProduct
+    a owl:Class ;
+    rdfs:comment "A package of a product, identified by its 10-digit hyphenated package NDC." ;
+    rdfs:label "Packaged product" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:Product
+    a owl:Class ;
+    rdfs:comment "A drug product as listed with FDA, identified by its product NDC (labeler and product segments)." ;
+    rdfs:label "Product" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:ProductType
+    a owl:Class ;
+    rdfs:comment "The FDA NDC directory product type." ;
+    rdfs:label "Product type" .
+
+mono:ProductType-BULK_INGREDIENT
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "BULK INGREDIENT" .
+
+mono:ProductType-CELLULAR_THERAPY
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "CELLULAR THERAPY" .
+
+mono:ProductType-DRUG_FOR_FURTHER_PROCESSING
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "DRUG FOR FURTHER PROCESSING" .
+
+mono:ProductType-HUMAN_OTC_DRUG
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "HUMAN OTC DRUG" .
+
+mono:ProductType-HUMAN_PRESCRIPTION_DRUG
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "HUMAN PRESCRIPTION DRUG" .
+
+mono:ProductType-LICENSED_VACCINE_BULK_INTERMEDIATE
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "LICENSED VACCINE BULK INTERMEDIATE" .
+
+mono:ProductType-NON_STANDARDIZED_ALLERGENIC
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "NON-STANDARDIZED ALLERGENIC" .
+
+mono:ProductType-PLASMA_DERIVATIVE
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "PLASMA DERIVATIVE" .
+
+mono:ProductType-STANDARDIZED_ALLERGENIC
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "STANDARDIZED ALLERGENIC" .
+
+mono:ProductType-VACCINE
+    a mono:ProductType, owl:NamedIndividual ;
+    rdfs:label "VACCINE" .
+
+mono:Reaction
+    a owl:Class ;
+    rdfs:comment "A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed)." ;
+    rdfs:label "Reaction" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
+mono:Recall
+    a owl:Class ;
+    rdfs:comment "A drug recall from the FDA enforcement report." ;
+    rdfs:label "Recall" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:RecallClassification
+    a owl:Class ;
+    rdfs:comment "FDA recall classification, from I (most serious) to III." ;
+    rdfs:label "Recall classification" .
+
+mono:RecallClassification-CLASS_I
+    a mono:RecallClassification, owl:NamedIndividual ;
+    rdfs:label "I" .
+
+mono:RecallClassification-CLASS_II
+    a mono:RecallClassification, owl:NamedIndividual ;
+    rdfs:label "II" .
+
+mono:RecallClassification-CLASS_III
+    a mono:RecallClassification, owl:NamedIndividual ;
+    rdfs:label "III" .
+
+mono:Route
+    a owl:Class ;
+    rdfs:comment "Route of administration: the FDA SPL route of administration terms, with NCI Thesaurus codes. Source: https://www.fda.gov/industry/structured-product-labeling-resources/route-administration (content current as of 10/29/2021; NCI concept C38114). 121 terms." ;
+    rdfs:label "Route of administration" .
+
+mono:Route-AURICULAR_OTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "AURICULAR (OTIC)" .
+
+mono:Route-BUCCAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "BUCCAL" .
+
+mono:Route-CONJUNCTIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "CONJUNCTIVAL" .
+
+mono:Route-CUTANEOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "CUTANEOUS" .
+
+mono:Route-DENTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "DENTAL" .
+
+mono:Route-ELECTRO_OSMOSIS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ELECTRO-OSMOSIS" .
+
+mono:Route-ENDOCERVICAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENDOCERVICAL" .
+
+mono:Route-ENDOSINUSIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENDOSINUSIAL" .
+
+mono:Route-ENDOTRACHEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENDOTRACHEAL" .
+
+mono:Route-ENTERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ENTERAL" .
+
+mono:Route-EPIDURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "EPIDURAL" .
+
+mono:Route-EXTRACORPOREAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "EXTRACORPOREAL" .
+
+mono:Route-EXTRA_AMNIOTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "EXTRA-AMNIOTIC" .
+
+mono:Route-HEMODIALYSIS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "HEMODIALYSIS" .
+
+mono:Route-INFILTRATION
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INFILTRATION" .
+
+mono:Route-INTERSTITIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTERSTITIAL" .
+
+mono:Route-INTRABILIARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRABILIARY" .
+
+mono:Route-INTRABRONCHIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRABRONCHIAL" .
+
+mono:Route-INTRABURSAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRABURSAL" .
+
+mono:Route-INTRACAMERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAMERAL" .
+
+mono:Route-INTRACANALICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACANALICULAR" .
+
+mono:Route-INTRACARDIAC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACARDIAC" .
+
+mono:Route-INTRACARTILAGINOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACARTILAGINOUS" .
+
+mono:Route-INTRACAUDAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAUDAL" .
+
+mono:Route-INTRACAVERNOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAVERNOUS" .
+
+mono:Route-INTRACAVITARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACAVITARY" .
+
+mono:Route-INTRACEREBRAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACEREBRAL" .
+
+mono:Route-INTRACISTERNAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACISTERNAL" .
+
+mono:Route-INTRACORNEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORNEAL" .
+
+mono:Route-INTRACORONAL_DENTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORONAL, DENTAL" .
+
+mono:Route-INTRACORONARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORONARY" .
+
+mono:Route-INTRACORPORUS_CAVERNOSUM
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACORPORUS CAVERNOSUM" .
+
+mono:Route-INTRACRANIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRACRANIAL" .
+
+mono:Route-INTRADERMAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADERMAL" .
+
+mono:Route-INTRADISCAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADISCAL" .
+
+mono:Route-INTRADUCTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADUCTAL" .
+
+mono:Route-INTRADUODENAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADUODENAL" .
+
+mono:Route-INTRADURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRADURAL" .
+
+mono:Route-INTRAEPICARDIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAEPICARDIAL" .
+
+mono:Route-INTRAEPIDERMAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAEPIDERMAL" .
+
+mono:Route-INTRAESOPHAGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAESOPHAGEAL" .
+
+mono:Route-INTRAGASTRIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAGASTRIC" .
+
+mono:Route-INTRAGINGIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAGINGIVAL" .
+
+mono:Route-INTRAHEPATIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAHEPATIC" .
+
+mono:Route-INTRAILEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAILEAL" .
+
+mono:Route-INTRALESIONAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALESIONAL" .
+
+mono:Route-INTRALINGUAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALINGUAL" .
+
+mono:Route-INTRALUMINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALUMINAL" .
+
+mono:Route-INTRALYMPHATIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRALYMPHATIC" .
+
+mono:Route-INTRAMAMMARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMAMMARY" .
+
+mono:Route-INTRAMEDULLARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMEDULLARY" .
+
+mono:Route-INTRAMENINGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMENINGEAL" .
+
+mono:Route-INTRAMUSCULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAMUSCULAR" .
+
+mono:Route-INTRANODAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRANODAL" .
+
+mono:Route-INTRAOCULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAOCULAR" .
+
+mono:Route-INTRAOMENTUM
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAOMENTUM" .
+
+mono:Route-INTRAOVARIAN
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAOVARIAN" .
+
+mono:Route-INTRAPERICARDIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPERICARDIAL" .
+
+mono:Route-INTRAPERITONEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPERITONEAL" .
+
+mono:Route-INTRAPLEURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPLEURAL" .
+
+mono:Route-INTRAPROSTATIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPROSTATIC" .
+
+mono:Route-INTRAPULMONARY
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAPULMONARY" .
+
+mono:Route-INTRARUMINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRARUMINAL" .
+
+mono:Route-INTRASINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRASINAL" .
+
+mono:Route-INTRASPINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRASPINAL" .
+
+mono:Route-INTRASYNOVIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRASYNOVIAL" .
+
+mono:Route-INTRATENDINOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATENDINOUS" .
+
+mono:Route-INTRATESTICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATESTICULAR" .
+
+mono:Route-INTRATHECAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATHECAL" .
+
+mono:Route-INTRATHORACIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATHORACIC" .
+
+mono:Route-INTRATUBULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATUBULAR" .
+
+mono:Route-INTRATUMOR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATUMOR" .
+
+mono:Route-INTRATYMPANIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRATYMPANIC" .
+
+mono:Route-INTRAUTERINE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAUTERINE" .
+
+mono:Route-INTRAVASCULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVASCULAR" .
+
+mono:Route-INTRAVENOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVENOUS" .
+
+mono:Route-INTRAVENTRICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVENTRICULAR" .
+
+mono:Route-INTRAVESICAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVESICAL" .
+
+mono:Route-INTRAVITREAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRAVITREAL" .
+
+mono:Route-INTRA_ABDOMINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-ABDOMINAL" .
+
+mono:Route-INTRA_AMNIOTIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-AMNIOTIC" .
+
+mono:Route-INTRA_ARTERIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-ARTERIAL" .
+
+mono:Route-INTRA_ARTICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "INTRA-ARTICULAR" .
+
+mono:Route-IONTOPHORESIS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "IONTOPHORESIS" .
+
+mono:Route-IRRIGATION
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "IRRIGATION" .
+
+mono:Route-LARYNGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "LARYNGEAL" .
+
+mono:Route-NASAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "NASAL" .
+
+mono:Route-NASOGASTRIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "NASOGASTRIC" .
+
+mono:Route-NOT_APPLICABLE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "NOT APPLICABLE" .
+
+mono:Route-OCCLUSIVE_DRESSING_TECHNIQUE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "OCCLUSIVE DRESSING TECHNIQUE" .
+
+mono:Route-OPHTHALMIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "OPHTHALMIC" .
+
+mono:Route-ORAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "ORAL" .
+
+mono:Route-OROPHARYNGEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "OROPHARYNGEAL" .
+
+mono:Route-PARENTERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PARENTERAL" .
+
+mono:Route-PERCUTANEOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERCUTANEOUS" .
+
+mono:Route-PERIARTICULAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERIARTICULAR" .
+
+mono:Route-PERIDURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERIDURAL" .
+
+mono:Route-PERINEURAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERINEURAL" .
+
+mono:Route-PERIODONTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "PERIODONTAL" .
+
+mono:Route-RECTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "RECTAL" .
+
+mono:Route-RESPIRATORY_INHALATION
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "RESPIRATORY (INHALATION)" .
+
+mono:Route-RETROBULBAR
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "RETROBULBAR" .
+
+mono:Route-SOFT_TISSUE
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SOFT TISSUE" .
+
+mono:Route-SUBARACHNOID
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBARACHNOID" .
+
+mono:Route-SUBCONJUNCTIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBCONJUNCTIVAL" .
+
+mono:Route-SUBCUTANEOUS
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBCUTANEOUS" .
+
+mono:Route-SUBGINGIVAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBGINGIVAL" .
+
+mono:Route-SUBLINGUAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBLINGUAL" .
+
+mono:Route-SUBMUCOSAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBMUCOSAL" .
+
+mono:Route-SUBRETINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUBRETINAL" .
+
+mono:Route-SUPRACHOROIDAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "SUPRACHOROIDAL" .
+
+mono:Route-TOPICAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TOPICAL" .
+
+mono:Route-TRANSDERMAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSDERMAL" .
+
+mono:Route-TRANSENDOCARDIAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSENDOCARDIAL" .
+
+mono:Route-TRANSMUCOSAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSMUCOSAL" .
+
+mono:Route-TRANSPLACENTAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSPLACENTAL" .
+
+mono:Route-TRANSTRACHEAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSTRACHEAL" .
+
+mono:Route-TRANSTYMPANIC
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "TRANSTYMPANIC" .
+
+mono:Route-URETERAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "URETERAL" .
+
+mono:Route-URETHRAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "URETHRAL" .
+
+mono:Route-VAGINAL
+    a mono:Route, owl:NamedIndividual ;
+    rdfs:label "VAGINAL" .
+
+mono:SeriousnessCriterion
+    a owl:Class ;
+    rdfs:comment "Why a report is classified as serious (ICH E2B seriousness criteria)." ;
+    rdfs:label "Seriousness criterion" .
+
+mono:SeriousnessCriterion-CONGENITAL_ANOMALY
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "congenital anomaly" .
+
+mono:SeriousnessCriterion-DEATH
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "death" .
+
+mono:SeriousnessCriterion-DISABLING
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "disabling" .
+
+mono:SeriousnessCriterion-HOSPITALIZATION
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "hospitalization" .
+
+mono:SeriousnessCriterion-LIFE_THREATENING
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "life threatening" .
+
+mono:SeriousnessCriterion-OTHER
+    a mono:SeriousnessCriterion, owl:NamedIndividual ;
+    rdfs:label "other" .
+
+mono:SourceSystem
+    a owl:Class ;
+    rdfs:comment "Which reporting system an adverse event report came from. The two differ in what they record (for example, only the FAERS quarterly files say which suspect drug is primary)." ;
+    rdfs:label "Source system" .
+
+mono:SourceSystem-FAERS_QDE
+    a mono:SourceSystem, owl:NamedIndividual ;
+    rdfs:label "faers_qde" .
+
+mono:SourceSystem-OPENFDA_E2B
+    a mono:SourceSystem, owl:NamedIndividual ;
+    rdfs:label "openfda_e2b" .
+
+mono:Substance
+    a owl:Class ;
+    rdfs:comment "A chemical or biological substance identified by its FDA Unique Ingredient Identifier." ;
+    rdfs:label "Substance" ;
+    rdfs:subClassOf mono:Entity .
+
+mono:clinicalDrug
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:DrugInvolvement mono:Product )
+    ] ;
+    rdfs:label "clinical drug" ;
+    rdfs:range mono:ClinicalDrug .
+
+mono:dosageForm
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Dosage form as written in the source." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "dosage form" ;
+    rdfs:range xsd:string .
+
+mono:drugInvolvement
+    a owl:ObjectProperty ;
+    rdfs:comment "Drugs, in reported order." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "drug involvement" ;
+    rdfs:range mono:DrugInvolvement .
+
+mono:drugRole
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Role in the report." ;
+    rdfs:domain mono:DrugInvolvement ;
+    rdfs:label "drug role" ;
+    rdfs:range mono:DrugRole .
+
+mono:effectiveDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "SPL effective time." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "effective date" ;
+    rdfs:range xsd:date .
+
+mono:finished
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Whether this is a finished product (False for bulk ingredients and intermediates)." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "finished" ;
+    rdfs:range xsd:boolean .
+
+mono:ingredient
+    a owl:ObjectProperty ;
+    rdfs:comment "Active ingredients, in order." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "ingredient" ;
+    rdfs:range mono:Ingredient .
+
+mono:labelVersion
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "SPL version." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "label version" ;
+    rdfs:range xsd:integer .
+
+mono:labeler
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The labeler firm." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "labeler" ;
+    rdfs:range mono:Organization .
+
+mono:labelsProduct
+    a owl:ObjectProperty ;
+    rdfs:comment "Products." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "labels product" ;
+    rdfs:range mono:Product .
+
+mono:loincCode
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "LOINC code." ;
+    rdfs:domain mono:LabelSection ;
+    rdfs:label "LOINC code" ;
+    rdfs:range xsd:string .
+
+mono:meddraPreferredTerm
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "MedDRA PT text (at most 100 characters)." ;
+    rdfs:domain mono:Reaction ;
+    rdfs:label "MedDRA preferred term" ;
+    rdfs:range xsd:string .
+
+mono:name
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:ClinicalDrug mono:Organization mono:Product mono:Substance )
+    ] ;
+    rdfs:label "name" ;
+    rdfs:range xsd:string .
+
+mono:ndc
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Package NDC in 4-4-2, 5-3-2 or 5-4-1 form." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "NDC" ;
+    rdfs:range xsd:string .
+
+mono:packageDescription
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Package description as written in the source." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "package description" ;
+    rdfs:range xsd:string .
+
+mono:patientAgeYears
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Patient age at onset, in years." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "patient age in years" ;
+    rdfs:range xsd:decimal .
+
+mono:product
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The packaged product." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "product" ;
+    rdfs:range mono:Product .
+
+mono:productNdc
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Product NDC in 4-4, 5-3 or 5-4 form." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "product NDC" ;
+    rdfs:range xsd:string .
+
+mono:productType
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "NDC directory product type." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "product type" ;
+    rdfs:range mono:ProductType .
+
+mono:reaction
+    a owl:ObjectProperty ;
+    rdfs:comment "Reactions, in order." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "reaction" ;
+    rdfs:range mono:Reaction .
+
+mono:recallClassification
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Class." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "classification" ;
+    rdfs:range mono:RecallClassification .
+
+mono:recallNumber
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "FDA recall number, for example D-321-2016 or D-0123-2025." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "recall number" ;
+    rdfs:range xsd:string .
+
+mono:recallReason
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Reason for the recall." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "reason" ;
+    rdfs:range xsd:string .
+
+mono:recallingFirm
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The recalling firm." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "recalling firm" ;
+    rdfs:range mono:Organization .
+
+mono:recallsProduct
+    a owl:ObjectProperty ;
+    rdfs:comment "Products." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "recalls product" ;
+    rdfs:range mono:Product .
+
+mono:receiptDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Date FDA received the report." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "receipt date" ;
+    rdfs:range xsd:date .
+
+mono:reportDate
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Enforcement report date." ;
+    rdfs:domain mono:Recall ;
+    rdfs:label "report date" ;
+    rdfs:range xsd:date .
+
+mono:route
+    a owl:ObjectProperty ;
+    rdfs:comment "Routes of administration. Required for finished prescription and OTC products." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "route" ;
+    rdfs:range mono:Route .
+
+mono:rxcui
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "RxNorm CUI." ;
+    rdfs:domain mono:ClinicalDrug ;
+    rdfs:label "RxCUI" ;
+    rdfs:range xsd:string .
+
+mono:safetyReportId
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Safety report ID, optionally with a -digits version suffix." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "safety report ID" ;
+    rdfs:range xsd:string .
+
+mono:section
+    a owl:ObjectProperty ;
+    rdfs:comment "Coded sections." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "section" ;
+    rdfs:range mono:LabelSection .
+
+mono:sectionText
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Plain text." ;
+    rdfs:domain mono:LabelSection ;
+    rdfs:label "section text" ;
+    rdfs:range xsd:string .
+
+mono:sectionTitle
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Title." ;
+    rdfs:domain mono:LabelSection ;
+    rdfs:label "section title" ;
+    rdfs:range xsd:string .
+
+mono:serious
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Whether the report is serious." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "serious" ;
+    rdfs:range xsd:boolean .
+
+mono:seriousnessCriterion
+    a owl:ObjectProperty ;
+    rdfs:comment "Seriousness criteria met." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "seriousness criterion" ;
+    rdfs:range mono:SeriousnessCriterion .
+
+mono:setId
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "SPL set ID, a lowercase UUID." ;
+    rdfs:domain mono:Label ;
+    rdfs:label "SPL set ID" ;
+    rdfs:range xsd:string .
+
+mono:slug
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Stable key: the normalized name, lowercase, words joined by hyphens." ;
+    rdfs:domain mono:Organization ;
+    rdfs:label "slug" ;
+    rdfs:range xsd:string .
+
+mono:sourceSystem
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Where the report came from." ;
+    rdfs:domain mono:AdverseEventReport ;
+    rdfs:label "source system" ;
+    rdfs:range mono:SourceSystem .
+
+mono:strengthUnit
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Unit of the strength, for example mg/1." ;
+    rdfs:domain mono:Ingredient ;
+    rdfs:label "strength unit" ;
+    rdfs:range xsd:string .
+
+mono:strengthValue
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Numeric strength." ;
+    rdfs:domain mono:Ingredient ;
+    rdfs:label "strength value" ;
+    rdfs:range xsd:decimal .
+
+mono:substance
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The substance." ;
+    rdfs:domain mono:Ingredient ;
+    rdfs:label "substance" ;
+    rdfs:range mono:Substance .
+
+mono:unii
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "FDA UNII code." ;
+    rdfs:domain mono:Substance ;
+    rdfs:label "UNII" ;
+    rdfs:range xsd:string .
+
+mono:verbatimDrugName
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "Drug name exactly as reported." ;
+    rdfs:domain mono:DrugInvolvement ;
+    rdfs:label "verbatim drug name" ;
+    rdfs:range xsd:string .
