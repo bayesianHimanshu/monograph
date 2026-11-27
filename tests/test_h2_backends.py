@@ -146,3 +146,22 @@ def test_free_form_tools_on_the_mini_dataset() -> None:
             cypher_runner.run_cypher(QueryIn(query="MATCH (n) RETURN n.nope.nope("))
         assert "Edge labels" in cypher_runner.describe_schema(NoInput())
         assert "CREATE TABLE product" in sql_runner.describe_schema(NoInput())
+
+
+def test_template_plans_reproduce_the_gold_on_the_mini_dataset(services: tuple[ToolService, ToolService]) -> None:
+    import random
+
+    from monograph.qa.generate import _check
+    from monograph.qa.index import Index
+    from monograph.qa.templates import TEMPLATES
+
+    ix = Index.build(mini_instances())
+    checked = 0
+    for t in TEMPLATES:
+        for n, c in enumerate(t.candidates(ix, random.Random(t.id))):
+            if n >= 3:
+                break
+            for service in services:
+                assert _check(c, service) == "ok", (t.id, c.params)
+            checked += 1
+    assert checked >= 40

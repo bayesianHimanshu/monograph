@@ -179,3 +179,33 @@ def mcp(
 
     service = tool_service(store, root)
     anyio.run(serve_stdio, service)
+
+
+QUESTIONS_FILE = Path("fixtures/h2/questions.json")
+QUESTION_SEED = 20261127
+
+
+@h2_app.command("questions")
+def questions(root: Root = Path()) -> None:
+    """Generate the question set and its gold (checked through the tools on both stores)."""
+    from monograph.qa.generate import generate, recheck
+    from monograph.qa.index import Index
+
+    ds = build_dataset(root)
+    ix = Index.build(ds.instances)
+    qs, report = generate(ix, tool_service("sql", root), QUESTION_SEED, typer.echo)
+    bad = recheck(ix, qs, tool_service("graph", root), QUESTION_SEED)
+    typer.echo(f"recheck on the graph store: {len(bad)} disagreements")
+    if bad:
+        typer.echo(f"the stores disagree on {bad[:10]}", err=True)
+        raise typer.Exit(1)
+    counts: dict[str, dict[str, int]] = {}
+    for q in qs:
+        counts.setdefault(q["type"], {"dev": 0, "test": 0})[q["split"]] += 1
+    out = {"seed": QUESTION_SEED, "dataset": ds.summary()["instances"], "counts": counts, "questions": qs}
+    path = root / QUESTIONS_FILE
+    path.write_text(json.dumps(out, indent=1, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
+    from dataclasses import asdict as _asdict
+
+    wiring.results_writer(root, "H2").write("h2.questions", len(qs), {"counts": counts, **_asdict(report)})
+    typer.echo(f"{len(qs)} questions written to {QUESTIONS_FILE}: {counts}")

@@ -65,8 +65,14 @@ def mini_instances() -> dict[str, list[BaseModel]]:
     return out
 
 
+_LOADED: dict[str, str] = {}
+
+
 def load_test_db(instances: dict[str, list[BaseModel]]) -> str:
-    """(Re)build the test database from `instances`; returns its admin DSN."""
+    """Build the test database from `instances` once per test session; returns its admin DSN. Rebuilding
+    under open connections would recreate the roles and schema they use, so later calls reuse it."""
+    if "dsn" in _LOADED:
+        return _LOADED["dsn"]
     dsn = admin_dsn()
     with psycopg.connect(dsn, autocommit=True) as conn:
         if not conn.execute("SELECT 1 FROM pg_database WHERE datname = %s", [TEST_DB]).fetchone():
@@ -79,6 +85,7 @@ def load_test_db(instances: dict[str, list[BaseModel]]) -> str:
         RelationalLoader(conn, spec, mapper(spec, Vocabulary()), ddl).load(instances, lambda _: None)
         GraphLoader(conn, projection()).load(lambda _: None)
         create_roles(conn, projection().graph, TEST_ROLES, "h2t_sql", "h2t_graph")
+    _LOADED["dsn"] = test_dsn
     return test_dsn
 
 
