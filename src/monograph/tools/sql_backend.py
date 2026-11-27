@@ -44,6 +44,8 @@ class SqlBackend:
         return self._select(label, sql.SQL("strpos(upper({}), %s) > 0").format(sql.Identifier(prop)), [token])
 
     def alias_owners(self, token: str) -> list[tuple[str, str]]:
+        if not self._p.has_edge("ALIAS"):
+            return []
         rows = self._all("SELECT owner_iri, name FROM organization__aliases WHERE strpos(upper(name), %s) > 0", [token])
         return [(str(a), str(b)) for a, b in rows]
 
@@ -92,7 +94,7 @@ class SqlBackend:
             " JOIN product p ON p.iri = i.owner_iri WHERE i.substance_iri = %s"
         )
         params: list[Any] = [substance]
-        if moiety:
+        if moiety and self._p.has_edge("HAS_ACTIVE_MOIETY"):
             query += (
                 " UNION SELECT p.iri, p.name, p.product_ndc, 'moiety' FROM product__ingredients i"
                 " JOIN substance__active_moiety m ON m.owner_iri = i.substance_iri"
@@ -111,25 +113,39 @@ class SqlBackend:
     def clinical_drugs_of(self, label: str, iri: str) -> list[str]:
         if label == "ClinicalDrug":
             return [iri]
-        products = self._product_sql(label)
-        query = (
-            f"WITH p AS ({products}) SELECT m.clinical_drug_iri FROM product__drug_mappings m"
-            " WHERE m.owner_iri IN (SELECT * FROM p)"
-            " UNION SELECT clinical_drug_iri FROM product WHERE iri IN (SELECT * FROM p)"
-            " AND clinical_drug_iri IS NOT NULL"
-        )
+        parts = []
+        if self._p.has_edge("DRUG_MAPPING"):
+            parts.append(
+                "SELECT m.clinical_drug_iri FROM product__drug_mappings m WHERE m.owner_iri IN (SELECT * FROM p)"
+            )
+        if self._p.has_edge("CLINICAL_DRUG", "Product"):
+            parts.append(
+                "SELECT clinical_drug_iri FROM product WHERE iri IN (SELECT * FROM p) AND clinical_drug_iri IS NOT NULL"
+            )
+        if not parts:
+            return []  # no crosswalk in this store (H2.1, identity off)
+        query = f"WITH p AS ({self._product_sql(label)}) " + " UNION ".join(parts)
         return [str(row[0]) for row in self._all(query, [iri])]
 
     def reports_involving(self, clinical_drugs: Sequence[str]) -> list[tuple[str, str, str, bool]]:
+        drugs = list(clinical_drugs)
+        conditions, params = [], []
+        if self._p.has_edge("CLINICAL_DRUG", "DrugInvolvement"):
+            conditions.append("d.clinical_drug_iri = ANY(%s)")
+            params.append(drugs)
+        if self._p.has_edge("HARMONIZED_CLINICAL_DRUG"):
+            conditions.append(
+                "EXISTS (SELECT 1 FROM adverse_event_report__drugs__harmonized_clinical_drugs h"
+                " WHERE h.owner_iri = d.iri AND h.target_iri = ANY(%s))"
+            )
+            params.append(drugs)
+        if not conditions:
+            return []  # report drugs are not linked to clinical drugs in this store (H2.1, identity off)
         query = (
             "SELECT DISTINCT r.iri, r.report_id, r.receipt_date, r.serious FROM adverse_event_report r"
-            " JOIN adverse_event_report__drugs d ON d.owner_iri = r.iri"
-            " WHERE d.clinical_drug_iri = ANY(%s) OR EXISTS (SELECT 1 FROM"
-            " adverse_event_report__drugs__harmonized_clinical_drugs h"
-            " WHERE h.owner_iri = d.iri AND h.target_iri = ANY(%s))"
+            " JOIN adverse_event_report__drugs d ON d.owner_iri = r.iri WHERE " + " OR ".join(conditions)
         )
-        drugs = list(clinical_drugs)
-        return [(str(a), str(b), str(c), bool(d)) for a, b, c, d in self._all(query, [drugs, drugs])]
+        return [(str(a), str(b), str(c), bool(d)) for a, b, c, d in self._all(query, params)]
 
     _RECALL = (
         "SELECT DISTINCT r.iri, r.recall_number, r.classification, r.report_date, r.recalling_firm_iri FROM recall r"
@@ -145,11 +161,14 @@ class SqlBackend:
 
     def products_of(self, label: str, iri: str) -> list[str]:
         if label == "ClinicalDrug":
-            query = (
-                "SELECT owner_iri FROM product__drug_mappings WHERE clinical_drug_iri = %s"
-                " UNION SELECT iri FROM product WHERE clinical_drug_iri = %s"
-            )
-            return [str(row[0]) for row in self._all(query, [iri, iri])]
+            parts = []
+            if self._p.has_edge("DRUG_MAPPING"):
+                parts.append("SELECT owner_iri FROM product__drug_mappings WHERE clinical_drug_iri = %s")
+            if self._p.has_edge("CLINICAL_DRUG", "Product"):
+                parts.append("SELECT iri FROM product WHERE clinical_drug_iri = %s")
+            if not parts:
+                return []
+            return [str(row[0]) for row in self._all(" UNION ".join(parts), [iri] * len(parts))]
         if label == "Organization":
             query = "SELECT DISTINCT product_iri FROM packaged_product WHERE labeler_iri = %s"
             return [str(row[0]) for row in self._all(query, [iri])]

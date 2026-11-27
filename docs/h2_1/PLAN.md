@@ -228,3 +228,11 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
   646 with identity on. All other entity counts and every reject count are identical in both levels. With
   identity on, 630 recalls name a recalling firm that is a labeler organization: 576 resolved through a labeler's
   product and 54 that share the labeler's slug.
+* **Stage 2, fairness.** The loader now compares the two stores in full (every vertex with its properties,
+  every edge with its properties, as multisets), not only by count; the first run of that comparison caught a
+  bug in the comparison itself (decimal edge properties), not in the data. In every cell, on the H2 mini
+  fixture: both stores are identical, both backends return identical results on H2's 41-call battery, a
+  descriptions-off database has no comment on any object in schema `h2`, and each cell's roles are refused by
+  the other cells' databases. With identity off the resolver matches only canonical identifiers and names as
+  written (no 11-digit NDC, case, punctuation, suffix or alias match), salt forms, crosswalk events and
+  crosswalk recalls come back empty, and `resolve_entity` is the only tool whose definition differs.

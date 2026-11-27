@@ -95,6 +95,14 @@ class Projection:
     def edge(self, label: str) -> EdgeLabel:
         return next(e for e in self.edges if e.label == label)
 
+    def has_edge(self, label: str, from_label: str | None = None) -> bool:
+        """Whether the edge label exists (from `from_label`, if given); H2.1's identity-off cells lack some."""
+        return any(
+            e.label == label and (from_label is None or s.from_label == from_label)
+            for e in self.edges
+            for s in e.sources
+        )
+
     def render(self) -> str:
         return json.dumps(asdict(self), indent=2, ensure_ascii=False) + "\n"
 

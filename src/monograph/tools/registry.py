@@ -289,6 +289,15 @@ class ToolError(Exception):
     """A tool could not answer (unknown id, unsupported kind). The message goes back to the agent."""
 
 
+# H2.1, identity off: the only tool description that differs between cells, because the resolver does.
+RESOLVE_EXACT_DESCRIPTION = (
+    "Find canonical entities for a name, code or identifier. Matches exact identifiers as written (UNII,"
+    " product NDC, package NDC with hyphens, RxCUI, recall number, report id, SPL set id, firm slug) and exact"
+    " names, with no normalization. Returns each candidate's id, kind, display name and which identifier or"
+    " name matched."
+)
+
+
 class ToolSpec(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, frozen=True)
 

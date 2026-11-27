@@ -8,7 +8,7 @@ import re
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from datetime import date
-from typing import Any, Literal, Protocol
+from typing import Any, ClassVar, Literal, Protocol
 
 from pydantic import BaseModel
 
@@ -64,8 +64,15 @@ def _cap[T](items: list[T]) -> tuple[list[T], bool]:
 
 
 class ToolService:
-    def __init__(self, backend: Backend) -> None:
+    def __init__(self, backend: Backend, identity: bool = True) -> None:
+        """`identity=False` (H2.1's identity-off cells): resolve_entity matches canonical identifiers and names
+        exactly as given, with no 11-digit NDC, normalization, aliases or crosswalks."""
         self._b = backend
+        self._identity = identity
+
+    @property
+    def identity(self) -> bool:
+        return self._identity
 
     @property
     def backend(self) -> str:
@@ -118,6 +125,8 @@ class ToolService:
                     key, r.Candidate(id=row["iri"], kind=kind.value, display=display(label, row), match=match)
                 )
 
+        if not self._identity:
+            return self._resolve_exactly(text, kinds)
         exact = {
             EntityKind.SUBSTANCE: [("unii", text.upper())],
             EntityKind.PRODUCT: [("product_ndc", text)],
@@ -149,6 +158,32 @@ class ToolService:
                     add(kind, [x for x in rows if normalize_firm(str(x["name"])) == target], "name")
                     owners = sorted({o for o, name in self._b.alias_owners(token) if normalize_firm(name) == target})
                     add(kind, self._b.vertices("Organization", owners), "alias")
+        order = {k.value: i for i, k in enumerate(EntityKind)}
+        items = sorted(found.values(), key=lambda c: (order[c.kind], c.id, c.match))
+        capped, truncated = _cap(items)
+        return r.ResolveEntityOut(candidates=capped, truncated=truncated)
+
+    EXACT_PROPS: ClassVar[dict[EntityKind, tuple[str, ...]]] = {
+        EntityKind.SUBSTANCE: ("unii", "name"),
+        EntityKind.PRODUCT: ("product_ndc", "name"),
+        EntityKind.PACKAGE: ("ndc",),
+        EntityKind.CLINICAL_DRUG: ("rxcui", "name"),
+        EntityKind.RECALL: ("recall_number",),
+        EntityKind.REPORT: ("report_id",),
+        EntityKind.LABEL: ("set_id",),
+        EntityKind.ORGANIZATION: ("slug", "name"),
+    }
+
+    def _resolve_exactly(self, text: str, kinds: Sequence[EntityKind]) -> r.ResolveEntityOut:
+        found: dict[tuple[str, str], r.Candidate] = {}
+        for kind in kinds:
+            label = KIND_LABEL[kind]
+            for prop in self.EXACT_PROPS[kind]:
+                for row in self._b.by_property(label, prop, [text]):
+                    found.setdefault(
+                        (row["iri"], prop),
+                        r.Candidate(id=row["iri"], kind=kind.value, display=display(label, row), match=prop),
+                    )
         order = {k.value: i for i, k in enumerate(EntityKind)}
         items = sorted(found.values(), key=lambda c: (order[c.kind], c.id, c.match))
         capped, truncated = _cap(items)

@@ -25,7 +25,7 @@ from monograph.tools.freeform import (
     QueryIn,
     SqlRunner,
 )
-from monograph.tools.registry import TOOLS, ToolError, tool_schema
+from monograph.tools.registry import RESOLVE_EXACT_DESCRIPTION, TOOLS, ToolError, ToolSpec, tool_schema
 from monograph.tools.service import ToolService
 
 ARMS: tuple[str, ...] = ("S-free", "S-tools", "G-free", "G-tools")
@@ -88,8 +88,17 @@ class Arm:
         return sha256(json.dumps(list(self.tools), sort_keys=True))
 
 
+def _tool_description(t: ToolSpec, identity: bool) -> str:
+    return RESOLVE_EXACT_DESCRIPTION if t.name == "resolve_entity" and not identity else t.description
+
+
 def tools_arm(name: str, service: ToolService) -> Arm:
-    defs = tuple({"name": t.name, "description": t.description, "input_schema": tool_schema(t)} for t in TOOLS)
+    """The registry's tools over one store. With identity off (H2.1), resolve_entity's description states its
+    exact matching; every other definition is the same in every cell."""
+    defs = tuple(
+        {"name": t.name, "description": _tool_description(t, service.identity), "input_schema": tool_schema(t)}
+        for t in TOOLS
+    )
 
     def execute(tool: str, arguments: dict[str, Any]) -> str:
         try:
