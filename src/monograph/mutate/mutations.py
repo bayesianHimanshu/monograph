@@ -34,6 +34,17 @@ def replace_once(root: Path, relative: Path, old: str, new: str) -> None:
     path.write_text(text.replace(old, new), encoding="utf-8")
 
 
+def bump_version(root: Path, minor: bool) -> None:
+    """Bump SCHEMA_VERSION in the copy: the next minor (x.y+1.0) or the next major (x+1.0.0)."""
+    text = (root / VERSION).read_text(encoding="utf-8")
+    match = re.search(r'SCHEMA_VERSION = "(\d+)\.(\d+)\.(\d+)"', text)
+    if match is None:
+        raise MutationError("SCHEMA_VERSION not found")
+    major, minor_n = int(match.group(1)), int(match.group(2))
+    new = f"{major}.{minor_n + 1}.0" if minor else f"{major + 1}.0.0"
+    replace_once(root, VERSION, match.group(0), f'SCHEMA_VERSION = "{new}"')
+
+
 @dataclass(frozen=True, slots=True)
 class Mutation:
     id: str
@@ -105,7 +116,7 @@ def _m7(root: Path, cli: Cli) -> None:
         '    INTRAVENOUS = "INTRAVENOUS"  # C38276\n',
         '    INTRAVENOUS = "INTRAVENOUS"  # C38276\n    INTRAVENOUS_BOLUS = "INTRAVENOUS BOLUS"  # C38274\n',
     )
-    replace_once(root, VERSION, 'SCHEMA_VERSION = "2.0.0"', 'SCHEMA_VERSION = "2.1.0"')
+    bump_version(root, minor=True)
     cli("gen")
     cli("release")  # an additive change is complete only with its snapshot
 
@@ -139,12 +150,25 @@ def _m10(root: Path, cli: Cli) -> None:
 
 def _m11(root: Path, cli: Cli) -> None:
     replace_once(
-        root, TEST_DDL, "REFERENCES substance (iri) DEFERRABLE INITIALLY IMMEDIATE", "REFERENCES substance (iri)"
+        root,
+        TEST_DDL,
+        "recalling_firm_iri text NOT NULL REFERENCES organization (iri) DEFERRABLE INITIALLY IMMEDIATE",
+        "recalling_firm_iri text NOT NULL REFERENCES organization (iri)",
     )
 
 
 def _m12(root: Path, cli: Cli) -> None:
-    replace_once(root, VERSION, 'SCHEMA_VERSION = "2.0.0"', 'SCHEMA_VERSION = "3.0.0"')
+    bump_version(root, minor=False)
+    cli("gen")
+
+
+JSONSCHEMA_GEN = Path("src/monograph/gen/jsonschema.py")
+
+
+def _m13(root: Path, cli: Cli) -> None:
+    # Reproduces the H6.1 regression: the generator itself stops writing `pattern`, and the artifacts are
+    # regenerated, so the drift check stays green.
+    replace_once(root, JSONSCHEMA_GEN, '        ("pattern", k.pattern),\n', "")
     cli("gen")
 
 
@@ -161,6 +185,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M10", "Break the instance mapping for one property", "agreement|tests", _m10),
     Mutation("M11", "Hand-edit the test-profile DDL to make a foreign key non-deferrable", "drift", _m11),
     Mutation("M12", "Bump the major version without a release snapshot", "breaking", _m12),
+    Mutation("M13", "JSON Schema generator drops every pattern (regenerated)", "agreement|tests", _m13),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

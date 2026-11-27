@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Callable
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
@@ -20,7 +21,16 @@ from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.version import SCHEMA_VERSION
 from monograph.core.vocab import Vocabulary
-from monograph.gen.artifacts import DDL_FILE, DDL_TEST_FILE, JSON_SCHEMA_FILE, OWL_FILE, SHACL_FILE, ArtifactBuilder
+from monograph.gen.artifacts import (
+    CONTEXT_SHACL_FILE,
+    DDL_FILE,
+    DDL_TEST_FILE,
+    EXTRACTION_SCHEMA_FILE,
+    JSON_SCHEMA_FILE,
+    OWL_FILE,
+    SHACL_FILE,
+    ArtifactBuilder,
+)
 from monograph.gen.ddl import DdlGenerator, DdlProfile
 from monograph.gen.jsonschema import JsonSchemaGenerator
 from monograph.gen.owl import OwlGenerator
@@ -54,15 +64,31 @@ def turtle_writer(vocab: Vocabulary) -> TurtleWriter:
     )
 
 
+def context_vocab() -> Vocabulary:
+    """Context shapes live in their own IRI space, next to the record shapes."""
+    from monograph.core.meta import SHAPES_NS, VOCAB_NS
+
+    return Vocabulary(VOCAB_NS, SHAPES_NS + "context-")
+
+
 def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
+    from monograph.core.models import LabelExtraction
+
     writer = turtle_writer(vocab)
-    renderers = {
+    json_schema = JsonSchemaGenerator(spec, vocab, f"{DEFAULT_BASE}schema/{spec.version}")
+    renderers: dict[str, Callable[[], str]] = {
         OWL_FILE: OwlGenerator(spec, vocab, writer).render,
         SHACL_FILE: ShaclGenerator(spec, vocab, writer, check_pattern).render,
-        JSON_SCHEMA_FILE: JsonSchemaGenerator(spec, vocab, f"{DEFAULT_BASE}schema/{spec.version}").render,
+        JSON_SCHEMA_FILE: json_schema.render,
         DDL_FILE: DdlGenerator(spec, check_pattern, DdlProfile.DEFAULT).render,
         DDL_TEST_FILE: DdlGenerator(spec, check_pattern, DdlProfile.TEST).render,
     }
+    if any(c.cls is LabelExtraction for c in spec.classes):  # the H4 extraction views of the model
+        context = ShaclGenerator(
+            spec, context_vocab(), turtle_writer(context_vocab()), check_pattern, (LabelExtraction,)
+        )
+        renderers[EXTRACTION_SCHEMA_FILE] = lambda: json_schema.render_extraction(LabelExtraction)
+        renderers[CONTEXT_SHACL_FILE] = context.render
     return ArtifactBuilder(renderers, time.perf_counter)
 
 
@@ -110,7 +136,7 @@ def git_sha(root: Path) -> str:
         return "unknown"
     # Results and the report are outputs, not inputs: appending to them does not make the source dirty.
     dirty = subprocess.run(
-        ["git", "status", "--porcelain", "--", ".", ":!results", ":!docs/h6/RESULTS.md"],
+        ["git", "status", "--porcelain", "--", ".", ":!results", ":!docs/h6/RESULTS.md", ":!docs/h4/RESULTS.md"],
         cwd=root,
         capture_output=True,
         text=True,
@@ -119,11 +145,12 @@ def git_sha(root: Path) -> str:
     return out.stdout.strip() + ("-dirty" if dirty.strip() else "")
 
 
-def results_writer(root: Path) -> ResultsWriter:
+def results_writer(root: Path, experiment: str = "H6") -> ResultsWriter:
     import uuid
 
+    directory = root / "results" / experiment.lower()
     return ResultsWriter(
-        results_dir(root), uuid.uuid4().hex[:12], git_sha(root), SCHEMA_VERSION, lambda: datetime.now(UTC)
+        directory, uuid.uuid4().hex[:12], git_sha(root), SCHEMA_VERSION, lambda: datetime.now(UTC), experiment
     )
 
 

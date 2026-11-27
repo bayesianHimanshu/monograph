@@ -188,3 +188,25 @@ def test_added_negated_constraint_is_breaking() -> None:
         s.add((ps("Recall-recallReason"), SH["not"], shape))
 
     assert [b for _, b in _changes(negate)] == [True]
+
+
+def test_constraints_and_rules_on_a_new_class_are_additive() -> None:
+    def new_class(o: Graph, s: Graph) -> None:
+        cls = URIRef(V.ns + "Brand")
+        o.add((cls, RDF.type, OWL.Class))
+        node = ps("Brand")
+        s.add((node, RDF.type, SH.NodeShape))
+        s.add((node, SH.targetClass, cls))
+        s.add((node, SH.closed, Literal(True)))
+        prop = ps("Brand-name")
+        s.add((node, SH.property, prop))
+        s.add((prop, SH.path, URIRef(V.ns + "brandName")))
+        s.add((prop, SH.minCount, Literal(1)))
+        rule = URIRef(V.shapes_ns + "rule-brand-named")
+        s.add((rule, RDF.type, SH.NodeShape))
+        s.add((rule, SH.targetClass, cls))
+        s.add((rule, SH.message, Literal("m")))
+
+    changes = _changes(new_class)
+    assert changes
+    assert not any(b for _, b in changes), changes

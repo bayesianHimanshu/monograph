@@ -9,6 +9,7 @@ reports the gap.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import unicodedata
@@ -82,19 +83,24 @@ class RawCache:
     def __init__(self, directory: Path) -> None:
         self._directory = directory
 
-    def path(self, endpoint: str, skip: int, limit: int) -> Path:
-        return self._directory / endpoint / f"skip-{skip:06d}-limit-{limit:04d}.json"
+    def path(self, endpoint: str, skip: int, limit: int, search: str | None = None) -> Path:
+        if search is None:
+            return self._directory / endpoint / f"skip-{skip:06d}-limit-{limit:04d}.json"
+        digest = hashlib.sha256(search.encode("utf-8")).hexdigest()[:16]
+        return self._directory / endpoint / "search" / f"{digest}-skip-{skip:06d}-limit-{limit:04d}.json"
 
-    def read(self, endpoint: str, skip: int, limit: int) -> list[dict[str, Any]] | None:
-        path = self.path(endpoint, skip, limit)
+    def read(self, endpoint: str, skip: int, limit: int, search: str | None = None) -> list[dict[str, Any]] | None:
+        path = self.path(endpoint, skip, limit, search)
         if not path.exists():
             return None
         data = json.loads(path.read_text(encoding="utf-8"))
         assert isinstance(data, list)
         return data
 
-    def write(self, endpoint: str, skip: int, limit: int, records: list[dict[str, Any]]) -> None:
-        path = self.path(endpoint, skip, limit)
+    def write(
+        self, endpoint: str, skip: int, limit: int, records: list[dict[str, Any]], search: str | None = None
+    ) -> None:
+        path = self.path(endpoint, skip, limit, search)
         path.parent.mkdir(parents=True, exist_ok=True)
         if not path.exists():
             path.write_text(json.dumps(records, sort_keys=True), encoding="utf-8")
@@ -127,11 +133,13 @@ class OpenFdaClient:
         self._last = float("-inf")
         self.network_calls = 0
 
-    def page(self, endpoint: str, skip: int, limit: int) -> list[dict[str, Any]]:
-        cached = self._cache.read(endpoint, skip, limit)
+    def page(self, endpoint: str, skip: int, limit: int, search: str | None = None) -> list[dict[str, Any]]:
+        cached = self._cache.read(endpoint, skip, limit, search)
         if cached is not None:
             return cached
         params: dict[str, str | int] = {"limit": limit, "skip": skip}
+        if search is not None:
+            params["search"] = search
         if self._api_key:
             params["api_key"] = self._api_key
         for attempt in range(5):
@@ -152,7 +160,7 @@ class OpenFdaClient:
             break
         else:
             raise RuntimeError(f"openFDA rate limit persisted for {endpoint} skip={skip}")
-        self._cache.write(endpoint, skip, limit, records)
+        self._cache.write(endpoint, skip, limit, records, search)
         return records
 
     def sample(self, endpoint: str, total: int, page_size: int) -> list[dict[str, Any]]:

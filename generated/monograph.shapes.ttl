@@ -169,6 +169,166 @@ shape:Entity
     rdfs:label "Entity" ;
     sh:targetClass mono:Entity .
 
+shape:ExtractedIngredient
+    a sh:NodeShape ;
+    rdfs:label "Extracted ingredient" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:ExtractedIngredient-basisUnit, shape:ExtractedIngredient-basisValue, shape:ExtractedIngredient-resolvedSubstance, shape:ExtractedIngredient-strengthUcumUnit, shape:ExtractedIngredient-strengthValue, shape:ExtractedIngredient-substanceName ;
+    sh:targetClass mono:ExtractedIngredient .
+
+shape:ExtractedIngredient-basisUnit
+    a sh:PropertyShape ;
+    sh:in ( mono:UcumUnit-UNIT_OF_PRESENTATION mono:UcumUnit-ALLERGY_UNITS mono:UcumUnit-AMB_A_1_UNITS mono:UcumUnit-BIOEQUIVALENT_ALLERGY_UNITS mono:UcumUnit-ARBITRARY_UNITS mono:UcumUnit-CELL_CULTURE_INFECTIOUS_DOSE_50 mono:UcumUnit-COLONY_FORMING_UNITS mono:UcumUnit-CURIE mono:UcumUnit-DAY mono:UcumUnit-D_ANTIGEN_UNITS mono:UcumUnit-DECILITER mono:UcumUnit-FOCUS_FORMING_UNITS mono:UcumUnit-FORMAZIN_TURBIDITY_UNIT mono:UcumUnit-GENOMIC_COPIES mono:UcumUnit-GRAM mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_CENTESIMAL_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_CENTESIMAL_KORSAKOVIAN_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_MILLESIMAL_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_QUINTAMILLESIMAL_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_DECIMAL_SERIES mono:UcumUnit-HOUR mono:UcumUnit-INTERNATIONAL_UNITS mono:UcumUnit-KILOGRAM mono:UcumUnit-LIMIT_OF_FLOCCULATION mono:UcumUnit-LITER mono:UcumUnit-MICROCURIE mono:UcumUnit-MICROGRAM mono:UcumUnit-MICROLITER mono:UcumUnit-MICROMOLE mono:UcumUnit-MICRON mono:UcumUnit-MILLICURIE mono:UcumUnit-MILLIEQUIVALENT mono:UcumUnit-MILLIGRAM mono:UcumUnit-MILLILITER mono:UcumUnit-MILLIMETER mono:UcumUnit-MILLIMOLE mono:UcumUnit-MINUTE mono:UcumUnit-MOLE mono:UcumUnit-MONTH mono:UcumUnit-NANOGRAM mono:UcumUnit-NANOMOLE mono:UcumUnit-NEPHELOMETRIC_TURBIDITY_UNIT mono:UcumUnit-PLAQUE_FORMING_UNITS mono:UcumUnit-PROTEIN_NITROGEN_UNITS mono:UcumUnit-SECOND mono:UcumUnit-SQUARE_CENTIMETER mono:UcumUnit-TISSUE_CULTURE_INFECTIOUS_DOSE_50 mono:UcumUnit-UNIT_CATALYTIC_ACTIVITY mono:UcumUnit-UNITED_STATES_PHARMACOPEIA_UNIT mono:UcumUnit-VIRAL_PARTICLES mono:UcumUnit-WEEK mono:UcumUnit-YEAR ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "basis unit (UCUM)" ;
+    sh:path mono:basisUnit .
+
+shape:ExtractedIngredient-basisValue
+    a sh:PropertyShape ;
+    sh:datatype xsd:decimal ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minExclusive "0"^^xsd:decimal ;
+    sh:name "basis value" ;
+    sh:path mono:basisValue .
+
+shape:ExtractedIngredient-resolvedSubstance
+    a sh:PropertyShape ;
+    sh:class mono:Substance ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:name "resolved substance" ;
+    sh:nodeKind sh:IRI ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:resolvedSubstance ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:ExtractedIngredient-strengthUcumUnit
+    a sh:PropertyShape ;
+    sh:in ( mono:UcumUnit-UNIT_OF_PRESENTATION mono:UcumUnit-ALLERGY_UNITS mono:UcumUnit-AMB_A_1_UNITS mono:UcumUnit-BIOEQUIVALENT_ALLERGY_UNITS mono:UcumUnit-ARBITRARY_UNITS mono:UcumUnit-CELL_CULTURE_INFECTIOUS_DOSE_50 mono:UcumUnit-COLONY_FORMING_UNITS mono:UcumUnit-CURIE mono:UcumUnit-DAY mono:UcumUnit-D_ANTIGEN_UNITS mono:UcumUnit-DECILITER mono:UcumUnit-FOCUS_FORMING_UNITS mono:UcumUnit-FORMAZIN_TURBIDITY_UNIT mono:UcumUnit-GENOMIC_COPIES mono:UcumUnit-GRAM mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_CENTESIMAL_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_CENTESIMAL_KORSAKOVIAN_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_MILLESIMAL_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_QUINTAMILLESIMAL_SERIES mono:UcumUnit-HOMEOPATHIC_POTENCY_OF_DECIMAL_SERIES mono:UcumUnit-HOUR mono:UcumUnit-INTERNATIONAL_UNITS mono:UcumUnit-KILOGRAM mono:UcumUnit-LIMIT_OF_FLOCCULATION mono:UcumUnit-LITER mono:UcumUnit-MICROCURIE mono:UcumUnit-MICROGRAM mono:UcumUnit-MICROLITER mono:UcumUnit-MICROMOLE mono:UcumUnit-MICRON mono:UcumUnit-MILLICURIE mono:UcumUnit-MILLIEQUIVALENT mono:UcumUnit-MILLIGRAM mono:UcumUnit-MILLILITER mono:UcumUnit-MILLIMETER mono:UcumUnit-MILLIMOLE mono:UcumUnit-MINUTE mono:UcumUnit-MOLE mono:UcumUnit-MONTH mono:UcumUnit-NANOGRAM mono:UcumUnit-NANOMOLE mono:UcumUnit-NEPHELOMETRIC_TURBIDITY_UNIT mono:UcumUnit-PLAQUE_FORMING_UNITS mono:UcumUnit-PROTEIN_NITROGEN_UNITS mono:UcumUnit-SECOND mono:UcumUnit-SQUARE_CENTIMETER mono:UcumUnit-TISSUE_CULTURE_INFECTIOUS_DOSE_50 mono:UcumUnit-UNIT_CATALYTIC_ACTIVITY mono:UcumUnit-UNITED_STATES_PHARMACOPEIA_UNIT mono:UcumUnit-VIRAL_PARTICLES mono:UcumUnit-WEEK mono:UcumUnit-YEAR ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "strength unit (UCUM)" ;
+    sh:path mono:strengthUcumUnit .
+
+shape:ExtractedIngredient-strengthValue
+    a sh:PropertyShape ;
+    sh:datatype xsd:decimal ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minExclusive "0"^^xsd:decimal ;
+    sh:name "strength value" ;
+    sh:path mono:strengthValue .
+
+shape:ExtractedIngredient-substanceName
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "substance name" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:substanceName .
+
+shape:ExtractedPackage
+    a sh:NodeShape ;
+    rdfs:label "Extracted package" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:ExtractedPackage-ndc, shape:ExtractedPackage-registryListsProduct, shape:ExtractedPackage-resolvedPackage ;
+    sh:targetClass mono:ExtractedPackage .
+
+shape:ExtractedPackage-ndc
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "12"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "NDC" ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:ndc ;
+    sh:pattern "^([0-9]{4}-[0-9]{4}-[0-9]{2}|[0-9]{5}-[0-9]{3}-[0-9]{2}|[0-9]{5}-[0-9]{4}-[0-9])$" .
+
+shape:ExtractedPackage-registryListsProduct
+    a sh:PropertyShape ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:name "registry lists the label's products" ;
+    sh:path mono:registryListsProduct .
+
+shape:ExtractedPackage-resolvedPackage
+    a sh:PropertyShape ;
+    sh:class mono:PackagedProduct ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:name "resolved package" ;
+    sh:nodeKind sh:IRI ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:resolvedPackage ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:ExtractedProduct
+    a sh:NodeShape ;
+    rdfs:label "Extracted product" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:ExtractedProduct-extractedDosageForm, shape:ExtractedProduct-extractedIngredient, shape:ExtractedProduct-extractedPackage, shape:ExtractedProduct-name, shape:ExtractedProduct-route ;
+    sh:targetClass mono:ExtractedProduct .
+
+shape:ExtractedProduct-extractedDosageForm
+    a sh:PropertyShape ;
+    sh:in ( mono:DosageForm-AEROSOL mono:DosageForm-AEROSOL_FOAM mono:DosageForm-AEROSOL_METERED mono:DosageForm-AEROSOL_POWDER mono:DosageForm-AEROSOL_SPRAY mono:DosageForm-BAR_CHEWABLE mono:DosageForm-BEAD mono:DosageForm-CAPSULE mono:DosageForm-CAPSULE_COATED mono:DosageForm-CAPSULE_COATED_PELLETS mono:DosageForm-CAPSULE_COATED_EXTENDED_RELEASE mono:DosageForm-CAPSULE_DELAYED_RELEASE mono:DosageForm-CAPSULE_DELAYED_RELEASE_PELLETS mono:DosageForm-CAPSULE_EXTENDED_RELEASE mono:DosageForm-CAPSULE_FILM_COATED_EXTENDED_RELEASE mono:DosageForm-CAPSULE_GELATIN_COATED mono:DosageForm-CAPSULE_LIQUID_FILLED mono:DosageForm-CELLULAR_SHEET mono:DosageForm-CHEWABLE_GEL mono:DosageForm-CLOTH mono:DosageForm-CONCENTRATE mono:DosageForm-CREAM mono:DosageForm-CREAM_AUGMENTED mono:DosageForm-CRYSTAL mono:DosageForm-DISC mono:DosageForm-DOUCHE mono:DosageForm-DRESSING mono:DosageForm-DRUG_ELUTING_CONTACT_LENS mono:DosageForm-ELIXIR mono:DosageForm-EMULSION mono:DosageForm-ENEMA mono:DosageForm-EXTRACT mono:DosageForm-FIBER_EXTENDED_RELEASE mono:DosageForm-FILM mono:DosageForm-FILM_EXTENDED_RELEASE mono:DosageForm-FILM_SOLUBLE mono:DosageForm-FOR_SOLUTION mono:DosageForm-FOR_SUSPENSION mono:DosageForm-FOR_SUSPENSION_EXTENDED_RELEASE mono:DosageForm-GAS mono:DosageForm-GEL mono:DosageForm-GEL_DENTIFRICE mono:DosageForm-GEL_METERED mono:DosageForm-GLOBULE mono:DosageForm-GRANULE mono:DosageForm-GRANULE_DELAYED_RELEASE mono:DosageForm-GRANULE_EFFERVESCENT mono:DosageForm-GRANULE_FOR_SOLUTION mono:DosageForm-GRANULE_FOR_SUSPENSION mono:DosageForm-GRANULE_FOR_SUSPENSION_EXTENDED_RELEASE mono:DosageForm-GUM_CHEWING mono:DosageForm-IMPLANT mono:DosageForm-INHALANT mono:DosageForm-INJECTABLE_FOAM mono:DosageForm-INJECTABLE_LIPOSOMAL mono:DosageForm-INJECTION mono:DosageForm-INJECTION_EMULSION mono:DosageForm-INJECTION_LIPID_COMPLEX mono:DosageForm-INJECTION_POWDER_FOR_SOLUTION mono:DosageForm-INJECTION_POWDER_FOR_SUSPENSION mono:DosageForm-INJECTION_POWDER_FOR_SUSPENSION_EXTENDED_RELEASE mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_LIPOSOMAL_SUSPENSION mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_SOLUTION mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_SUSPENSION mono:DosageForm-INJECTION_POWDER_LYOPHILIZED_FOR_SUSPENSION_EXTENDED_RELEASE mono:DosageForm-INJECTION_SOLUTION mono:DosageForm-INJECTION_SOLUTION_CONCENTRATE mono:DosageForm-INJECTION_SUSPENSION mono:DosageForm-INJECTION_SUSPENSION_EXTENDED_RELEASE mono:DosageForm-INJECTION_SUSPENSION_LIPOSOMAL mono:DosageForm-INJECTION_SUSPENSION_SONICATED mono:DosageForm-INSERT mono:DosageForm-INSERT_EXTENDED_RELEASE mono:DosageForm-INTRAUTERINE_DEVICE mono:DosageForm-IRRIGANT mono:DosageForm-JELLY mono:DosageForm-KIT mono:DosageForm-LINIMENT mono:DosageForm-LIPSTICK mono:DosageForm-LIQUID mono:DosageForm-LIQUID_EXTENDED_RELEASE mono:DosageForm-LOTION mono:DosageForm-LOTION_AUGMENTED mono:DosageForm-LOTION_SHAMPOO mono:DosageForm-LOZENGE mono:DosageForm-MOUTHWASH mono:DosageForm-NOT_APPLICABLE mono:DosageForm-OIL mono:DosageForm-OINTMENT mono:DosageForm-OINTMENT_AUGMENTED mono:DosageForm-PASTE mono:DosageForm-PASTE_DENTIFRICE mono:DosageForm-PASTILLE mono:DosageForm-PATCH mono:DosageForm-PATCH_EXTENDED_RELEASE mono:DosageForm-PATCH_EXTENDED_RELEASE_ELECTRICALLY_CONTROLLED mono:DosageForm-PELLET mono:DosageForm-PELLET_IMPLANTABLE mono:DosageForm-PELLETS_COATED_EXTENDED_RELEASE mono:DosageForm-PILL mono:DosageForm-PLASTER mono:DosageForm-POULTICE mono:DosageForm-POWDER mono:DosageForm-POWDER_DENTIFRICE mono:DosageForm-POWDER_FOR_SOLUTION mono:DosageForm-POWDER_FOR_SUSPENSION mono:DosageForm-POWDER_METERED mono:DosageForm-RING mono:DosageForm-RINSE mono:DosageForm-SALVE mono:DosageForm-SHAMPOO mono:DosageForm-SHAMPOO_SUSPENSION mono:DosageForm-SOAP mono:DosageForm-SOLUTION mono:DosageForm-SOLUTION_CONCENTRATE mono:DosageForm-SOLUTION_FOR_SLUSH mono:DosageForm-SOLUTION_GEL_FORMING_DROPS mono:DosageForm-SOLUTION_GEL_FORMING_EXTENDED_RELEASE mono:DosageForm-SOLUTION_DROPS mono:DosageForm-SPONGE mono:DosageForm-SPRAY mono:DosageForm-SPRAY_METERED mono:DosageForm-SPRAY_SUSPENSION mono:DosageForm-STICK mono:DosageForm-STRIP mono:DosageForm-SUPPOSITORY mono:DosageForm-SUPPOSITORY_EXTENDED_RELEASE mono:DosageForm-SUSPENSION mono:DosageForm-SUSPENSION_EXTENDED_RELEASE mono:DosageForm-SUSPENSION_DROPS mono:DosageForm-SWAB mono:DosageForm-SYRUP mono:DosageForm-SYSTEM mono:DosageForm-TABLET mono:DosageForm-TABLET_CHEWABLE mono:DosageForm-TABLET_CHEWABLE_EXTENDED_RELEASE mono:DosageForm-TABLET_COATED mono:DosageForm-TABLET_COATED_PARTICLES mono:DosageForm-TABLET_DELAYED_RELEASE mono:DosageForm-TABLET_DELAYED_RELEASE_PARTICLES mono:DosageForm-TABLET_EFFERVESCENT mono:DosageForm-TABLET_EXTENDED_RELEASE mono:DosageForm-TABLET_FILM_COATED mono:DosageForm-TABLET_FILM_COATED_EXTENDED_RELEASE mono:DosageForm-TABLET_FOR_SOLUTION mono:DosageForm-TABLET_FOR_SUSPENSION mono:DosageForm-TABLET_MULTILAYER mono:DosageForm-TABLET_MULTILAYER_EXTENDED_RELEASE mono:DosageForm-TABLET_ORALLY_DISINTEGRATING mono:DosageForm-TABLET_ORALLY_DISINTEGRATING_DELAYED_RELEASE mono:DosageForm-TABLET_SOLUBLE mono:DosageForm-TABLET_SUGAR_COATED mono:DosageForm-TABLET_WITH_SENSOR mono:DosageForm-TAMPON mono:DosageForm-TAPE mono:DosageForm-TINCTURE mono:DosageForm-TROCHE mono:DosageForm-WAFER ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "dosage form (SPL term)" ;
+    sh:path mono:extractedDosageForm .
+
+shape:ExtractedProduct-extractedIngredient
+    a sh:PropertyShape ;
+    sh:class mono:ExtractedIngredient ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "extracted ingredient" ;
+    sh:node shape:ExtractedIngredient ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:extractedIngredient .
+
+shape:ExtractedProduct-extractedPackage
+    a sh:PropertyShape ;
+    sh:class mono:ExtractedPackage ;
+    sh:name "extracted package" ;
+    sh:node shape:ExtractedPackage ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:extractedPackage .
+
+shape:ExtractedProduct-name
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "name" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:name .
+
+shape:ExtractedProduct-route
+    a sh:PropertyShape ;
+    sh:in ( mono:Route-AURICULAR_OTIC mono:Route-BUCCAL mono:Route-CONJUNCTIVAL mono:Route-CUTANEOUS mono:Route-DENTAL mono:Route-ELECTRO_OSMOSIS mono:Route-ENDOCERVICAL mono:Route-ENDOSINUSIAL mono:Route-ENDOTRACHEAL mono:Route-ENTERAL mono:Route-EPIDURAL mono:Route-EXTRA_AMNIOTIC mono:Route-EXTRACORPOREAL mono:Route-HEMODIALYSIS mono:Route-INFILTRATION mono:Route-INTERSTITIAL mono:Route-INTRA_ABDOMINAL mono:Route-INTRA_AMNIOTIC mono:Route-INTRA_ARTERIAL mono:Route-INTRA_ARTICULAR mono:Route-INTRABILIARY mono:Route-INTRABRONCHIAL mono:Route-INTRABURSAL mono:Route-INTRACAMERAL mono:Route-INTRACANALICULAR mono:Route-INTRACARDIAC mono:Route-INTRACARTILAGINOUS mono:Route-INTRACAUDAL mono:Route-INTRACAVERNOUS mono:Route-INTRACAVITARY mono:Route-INTRACEREBRAL mono:Route-INTRACISTERNAL mono:Route-INTRACORNEAL mono:Route-INTRACORONAL_DENTAL mono:Route-INTRACORONARY mono:Route-INTRACORPORUS_CAVERNOSUM mono:Route-INTRACRANIAL mono:Route-INTRADERMAL mono:Route-INTRADISCAL mono:Route-INTRADUCTAL mono:Route-INTRADUODENAL mono:Route-INTRADURAL mono:Route-INTRAEPICARDIAL mono:Route-INTRAEPIDERMAL mono:Route-INTRAESOPHAGEAL mono:Route-INTRAGASTRIC mono:Route-INTRAGINGIVAL mono:Route-INTRAHEPATIC mono:Route-INTRAILEAL mono:Route-INTRALESIONAL mono:Route-INTRALINGUAL mono:Route-INTRALUMINAL mono:Route-INTRALYMPHATIC mono:Route-INTRAMAMMARY mono:Route-INTRAMEDULLARY mono:Route-INTRAMENINGEAL mono:Route-INTRAMUSCULAR mono:Route-INTRANODAL mono:Route-INTRAOCULAR mono:Route-INTRAOMENTUM mono:Route-INTRAOVARIAN mono:Route-INTRAPERICARDIAL mono:Route-INTRAPERITONEAL mono:Route-INTRAPLEURAL mono:Route-INTRAPROSTATIC mono:Route-INTRAPULMONARY mono:Route-INTRARUMINAL mono:Route-INTRASINAL mono:Route-INTRASPINAL mono:Route-INTRASYNOVIAL mono:Route-INTRATENDINOUS mono:Route-INTRATESTICULAR mono:Route-INTRATHECAL mono:Route-INTRATHORACIC mono:Route-INTRATUBULAR mono:Route-INTRATUMOR mono:Route-INTRATYMPANIC mono:Route-INTRAUTERINE mono:Route-INTRAVASCULAR mono:Route-INTRAVENOUS mono:Route-INTRAVENTRICULAR mono:Route-INTRAVESICAL mono:Route-INTRAVITREAL mono:Route-IONTOPHORESIS mono:Route-IRRIGATION mono:Route-LARYNGEAL mono:Route-NASAL mono:Route-NASOGASTRIC mono:Route-NOT_APPLICABLE mono:Route-OCCLUSIVE_DRESSING_TECHNIQUE mono:Route-OPHTHALMIC mono:Route-ORAL mono:Route-OROPHARYNGEAL mono:Route-PARENTERAL mono:Route-PERCUTANEOUS mono:Route-PERIARTICULAR mono:Route-PERIDURAL mono:Route-PERINEURAL mono:Route-PERIODONTAL mono:Route-RECTAL mono:Route-RESPIRATORY_INHALATION mono:Route-RETROBULBAR mono:Route-SOFT_TISSUE mono:Route-SUBARACHNOID mono:Route-SUBCONJUNCTIVAL mono:Route-SUBCUTANEOUS mono:Route-SUBGINGIVAL mono:Route-SUBLINGUAL mono:Route-SUBMUCOSAL mono:Route-SUBRETINAL mono:Route-SUPRACHOROIDAL mono:Route-TOPICAL mono:Route-TRANSDERMAL mono:Route-TRANSENDOCARDIAL mono:Route-TRANSMUCOSAL mono:Route-TRANSPLACENTAL mono:Route-TRANSTRACHEAL mono:Route-TRANSTYMPANIC mono:Route-URETERAL mono:Route-URETHRAL mono:Route-VAGINAL ) ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "route" ;
+    sh:path mono:route .
+
 shape:Ingredient
     a sh:NodeShape ;
     rdfs:label "Ingredient" ;
@@ -258,6 +418,46 @@ shape:Label-section
     sh:path mono:section .
 
 shape:Label-setId
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "36"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "SPL set ID" ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:setId ;
+    sh:pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" .
+
+shape:LabelExtraction
+    a sh:NodeShape ;
+    rdfs:label "Label extraction" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:LabelExtraction-extractedProduct, shape:LabelExtraction-labelVersion, shape:LabelExtraction-setId ;
+    sh:targetClass mono:LabelExtraction .
+
+shape:LabelExtraction-extractedProduct
+    a sh:PropertyShape ;
+    sh:class mono:ExtractedProduct ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "extracted product" ;
+    sh:node shape:ExtractedProduct ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:extractedProduct .
+
+shape:LabelExtraction-labelVersion
+    a sh:PropertyShape ;
+    sh:datatype xsd:integer ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxExclusive "1000000"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minInclusive "1"^^xsd:integer ;
+    sh:name "label version" ;
+    sh:path mono:labelVersion .
+
+shape:LabelExtraction-setId
     a sh:PropertyShape ;
     sh:datatype xsd:string ;
     sh:maxCount "1"^^xsd:integer ;
@@ -663,6 +863,21 @@ shape:rule-has-suspect
         ]
     ] ;
     sh:targetClass mono:AdverseEventReport .
+
+shape:rule-listed-package-resolves
+    a sh:NodeShape ;
+    rdfs:label "listed-package-resolves" ;
+    sh:message "the registry lists this label's products, so the NDC must be one of their packages" ;
+    sh:or ( [
+        sh:not [
+            sh:hasValue "true"^^xsd:boolean ;
+            sh:path mono:registryListsProduct
+        ]
+    ] [
+        sh:minCount "1"^^xsd:integer ;
+        sh:path mono:resolvedPackage
+    ] ) ;
+    sh:targetClass mono:ExtractedPackage .
 
 shape:rule-serious-requires-criterion
     a sh:NodeShape ;

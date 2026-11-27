@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 from typing import Annotated
@@ -298,6 +299,21 @@ def report_h6(root: Root = Path()) -> None:
     typer.echo(f"wrote {path} from {len(records)} result lines")
 
 
+@report_app.command("h4")
+def report_h4(root: Root = Path(), split: str = "test") -> None:
+    """Regenerate docs/h4/RESULTS.md from results/h4/*.jsonl alone."""
+    from monograph.harness.report_h4 import H4Report
+    from monograph.harness.results import read_results
+
+    records = list(read_results(root / "results" / "h4"))
+    if not records:
+        raise _fail("no results in results/h4; run `monograph h4 run` and `monograph h4 score` first")
+    text = H4Report(records, split).render()
+    path = root / "docs" / "h4" / "RESULTS.md"
+    path.write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {path} from {len(records)} result lines")
+
+
 @app.command()
 def release(root: Root = Path()) -> None:
     """Snapshot generated/ into generated/releases/<SCHEMA_VERSION>/. Refuses to overwrite a release."""
@@ -345,6 +361,19 @@ def _agreement(root: Path) -> bool:
     for d in report.disagreements:
         failures += 1
         typer.echo(f"agreement: real {d['class']} {d['source']}: Pydantic and SHACL disagree", err=True)
+    from monograph.gen.artifacts import JSON_SCHEMA_FILE
+    from monograph.validate.jsonschema_side import DECLARED_LEAKS, JsonSchemaValidator
+
+    schema = JsonSchemaValidator(json.loads((wiring.generated_dir(root) / JSON_SCHEMA_FILE).read_text()))
+    for f in loader.valid():
+        if errors := schema.errors_for(f.cls.__name__, f.record):
+            failures += 1
+            typer.echo(f"agreement: JSON Schema rejects valid {f.name}: {errors[0]}", err=True)
+    for f in loader.invalid():
+        if not schema.errors_for(f.cls.__name__, f.record) and f.name not in DECLARED_LEAKS:
+            failures += 1
+            typer.echo(f"agreement: JSON Schema accepts invalid {f.name} ({f.violates})", err=True)
+    typer.echo("agreement: fixtures checked against the generated JSON Schema")
     groups = (("valid", loader.valid()), ("invalid", loader.invalid()), ("probe", loader.probes()))
     for group, fixtures in groups:
         for f in fixtures:
@@ -451,6 +480,10 @@ def ingest_fixtures(
         path.write_text(json.dumps(records, indent=1, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
         typer.echo(f"{endpoint}: {len(records)} records -> {path}")
 
+
+from monograph.extract.cli import h4_app  # noqa: E402
+
+app.add_typer(h4_app, name="h4")
 
 if __name__ == "__main__":
     app()

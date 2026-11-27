@@ -25,8 +25,10 @@ class ResultsWriter:
         git_sha: str,
         schema_version: str,
         clock: Callable[[], datetime],
+        experiment: str = EXPERIMENT,
     ) -> None:
         self._directory = directory
+        self._experiment = experiment
         self._run_id = run_id
         self._git_sha = git_sha
         self._schema_version = schema_version
@@ -45,7 +47,7 @@ class ResultsWriter:
             "timestamp": now.isoformat(),
             "git_sha": self._git_sha,
             "schema_version": self._schema_version,
-            "experiment": EXPERIMENT,
+            "experiment": self._experiment,
             "metric": metric,
             "value": value,
             "details": details or {},

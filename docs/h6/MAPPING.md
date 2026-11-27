@@ -137,3 +137,20 @@ against instances (that needs a JSON Schema validator, which is not an allowed d
 
 The classifier is fail-closed: OWL and SHACL statements that the signature does not model explicitly
 are kept as residuals, and any residual difference counts as breaking.
+
+## Derived fields and graph-context shapes (from 2.1.0, used by H4)
+
+* `Derived(by=..., required_in_context=...)` marks a field that deterministic code fills, never an
+  extractor. The extraction JSON Schema (`generated/monograph.extraction.schema.json`) leaves derived
+  fields out; everything else about the field projects as usual.
+* `generated/monograph.context.shapes.ttl` holds graph-context shapes: the classes reachable from
+  `LabelExtraction`, with every `required_in_context` field required. They are validated against the
+  extraction merged into the reference graph without reference stubs, so `sh:class` means the node exists.
+* `__extraction_only__` declares graph-context checks with no SHACL Core form, the way `pydantic_only`
+  declares record checks. They appear in the coverage matrix as not enforced by SHACL or Postgres.
+* The JSON Schema generator writes every string and integer constraint from the SchemaSpec instead of
+  trusting Pydantic's rendering, which drops `pattern` for validator-wrapped strings.
+* Postgres identifiers longer than 63 characters keep a readable prefix and end in a hash of the full
+  name, so two constraints can never collide through Postgres's silent truncation.
+* The breaking-change classifier treats constraints and rules on a class the previous release did not
+  have as additive: they cannot invalidate existing data.

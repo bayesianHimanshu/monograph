@@ -38,6 +38,7 @@ EXPECTED_COMPONENT = {
     "closed": {"ClosedConstraintComponent"},
     "rule:serious-requires-criterion": {"OrConstraintComponent"},
     "rule:has-suspect": {"QualifiedMinCountConstraintComponent"},
+    "rule:listed-package-resolves": {"NodeConstraintComponent", "OrConstraintComponent"},
     "charset": {"NotConstraintComponent"},
     "pydantic_only:label-section-codes-unique": {"MaxCountConstraintComponent"},
 }
@@ -80,7 +81,9 @@ def test_dialect_probes_behave_as_documented(
 
 def test_every_constraint_kind_and_rule_has_an_invalid_fixture(spec: SchemaSpec, fixtures: FixtureLoader) -> None:
     covered = {f.violates for f in fixtures.invalid()}
-    needed = {s.kind for s in spec.constraint_sites()}
+    # extraction_only checks need the reference graph by definition, so no single record can violate
+    # them; tests/test_h4_context.py covers each of them against a graph.
+    needed = {s.kind for s in spec.constraint_sites() if not s.kind.startswith("extraction_only:")}
     assert needed - covered == set()
 
 

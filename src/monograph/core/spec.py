@@ -19,9 +19,9 @@ import annotated_types as at
 from pydantic import AwareDatetime, BaseModel
 from pydantic.fields import FieldInfo
 
-from monograph.core.meta import Charset, OntClass, OntEnum, OntProp, SafeChars
+from monograph.core.meta import Charset, Derived, OntClass, OntEnum, OntProp, SafeChars
 from monograph.core.refs import Ref
-from monograph.core.rules import PYDANTIC_ONLY_MARK, AtLeast, PydanticOnly, RequiredWhen, Rule
+from monograph.core.rules import PYDANTIC_ONLY_MARK, AtLeast, ExtractionOnly, PydanticOnly, RequiredWhen, Rule
 
 
 class SchemaError(Exception):
@@ -71,6 +71,7 @@ class FieldSpec:
     target: type[BaseModel] | None
     constraints: Constraints
     description: str | None
+    derived: Derived | None = None
 
     @property
     def is_collection(self) -> bool:
@@ -86,6 +87,7 @@ class ClassSpec:
     fields: tuple[FieldSpec, ...]
     rules: tuple[Rule, ...]
     pydantic_only: tuple[PydanticOnly, ...]
+    extraction_only: tuple[ExtractionOnly, ...] = ()
 
     @property
     def is_entity(self) -> bool:
@@ -179,6 +181,8 @@ class SchemaSpec:
                 yield ConstraintSite(name, None, f"rule:{r.id}")
             for p in c.pydantic_only:
                 yield ConstraintSite(name, None, f"pydantic_only:{p.id}")
+            for e in c.extraction_only:
+                yield ConstraintSite(name, None, f"extraction_only:{e.id}")
 
 
 def _type_kind(f: FieldSpec) -> str:
@@ -243,7 +247,10 @@ def _analyze_class(cls: type[BaseModel], models: Sequence[type[BaseModel]]) -> C
         for d in cls.__pydantic_decorators__.model_validators.values()
         if hasattr(d.func, PYDANTIC_ONLY_MARK) and d.cls_var_name in vars(cls)
     )
-    return ClassSpec(cls, meta, doc, parent, fields, rules, declared)
+    extraction_only = tuple(vars(cls).get("__extraction_only__", ()))
+    if any(not isinstance(e, ExtractionOnly) for e in extraction_only):
+        raise SchemaError(f"{cls.__name__}: __extraction_only__ must hold ExtractionOnly declarations")
+    return ClassSpec(cls, meta, doc, parent, fields, rules, declared, extraction_only)
 
 
 def _analyze_field(cls: type[BaseModel], name: str, info: FieldInfo) -> FieldSpec:
@@ -314,6 +321,7 @@ def _analyze_field(cls: type[BaseModel], name: str, info: FieldInfo) -> FieldSpe
         target=target,
         constraints=constraints,
         description=info.description,
+        derived=next((m for m in metadata if isinstance(m, Derived)), None),
     )
 
 
@@ -330,7 +338,7 @@ def _constraints(where: str, metadata: list[Any]) -> tuple[Constraints, int | No
     bounds: dict[str, Bound] = {}
     charset: Charset | None = None
     for m in metadata:
-        if isinstance(m, OntProp):
+        if isinstance(m, OntProp | Derived):
             continue
         if isinstance(m, SafeChars):
             charset = m.charset

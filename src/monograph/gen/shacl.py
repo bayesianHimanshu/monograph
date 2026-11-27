@@ -46,16 +46,35 @@ class ShaclGenerator:
         vocab: Vocabulary,
         writer: TurtleWriter,
         check_pattern: Callable[[str], None],
+        context_roots: tuple[type, ...] = (),
     ) -> None:
+        """With `context_roots`, generate graph-context shapes: only the classes reachable from the roots,
+        and every `Derived(required_in_context=True)` field becomes required. Validated against the
+        extraction merged into the reference graph, with no reference stubs, so sh:class means "this node
+        exists in the graph"."""
         self._spec = spec
         self._vocab = vocab
         self._writer = writer
         self._check_pattern = check_pattern
+        self._context = bool(context_roots)
+        self._classes = self._reachable(context_roots) if context_roots else [c.cls for c in spec.classes]
+
+    def _reachable(self, roots: tuple[type, ...]) -> list[type]:
+        out: list[type] = []
+        todo = list(roots)
+        while todo:
+            cls = todo.pop(0)
+            if cls in out:
+                continue
+            out.append(cls)
+            todo += [f.target for f in self._spec.of(cls).fields if f.kind is Kind.EMBEDDED and f.target]
+        return [c.cls for c in self._spec.classes if c.cls in out]
 
     def graph(self) -> Graph:
         g = Graph()
         for c in self._spec.classes:
-            self._node_shape(g, c)
+            if c.cls in self._classes:
+                self._node_shape(g, c)
         return g
 
     def render(self) -> str:
@@ -90,8 +109,11 @@ class ShaclGenerator:
         g.add((ps, RDF.type, SH.PropertyShape))
         g.add((ps, SH.path, v.prop(f)))
         g.add((ps, SH.name, Literal(f.prop.label)))
-        if f.min_count > 0:
-            g.add((ps, SH.minCount, Literal(f.min_count)))
+        minimum = f.min_count
+        if self._context and f.derived is not None and f.derived.required_in_context:
+            minimum = max(minimum, 1)
+        if minimum > 0:
+            g.add((ps, SH.minCount, Literal(minimum)))
         if f.max_count is not None:
             g.add((ps, SH.maxCount, Literal(f.max_count)))
 

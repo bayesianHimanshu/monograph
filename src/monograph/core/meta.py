@@ -113,3 +113,18 @@ class SafeChars:
 
 SafeIdentifier = Annotated[str, SafeChars(Charset.IDENTIFIER)]
 SafeText = Annotated[str, SafeChars(Charset.TEXT)]
+
+
+@dataclass(frozen=True, slots=True)
+class Derived:
+    """Annotated marker: the field is filled by deterministic code, never by an extractor.
+
+    by:                  what fills it (for documentation and the leak inventory).
+    required_in_context: in the graph-context shapes the field must be present (minCount 1), so a missing
+                         value means "could not be resolved against the reference graph".
+
+    The extraction JSON Schema (the one sent to an LLM) leaves derived fields out.
+    """
+
+    by: str
+    required_in_context: bool = False

@@ -1,0 +1,192 @@
+[
+  {
+    "id": "listed-package-unresolved",
+    "violates": "rule:listed-package-resolves",
+    "field": "products.packages",
+    "expect": "agree_invalid",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "products": [
+        {
+          "name": "Bayer Low Dose Aspirin",
+          "dosage_form": "TABLET, CHEWABLE",
+          "routes": [
+            "ORAL"
+          ],
+          "ingredients": [
+            {
+              "substance_name": "aspirin",
+              "strength_value": "81",
+              "strength_unit": "mg",
+              "basis_value": "1",
+              "basis_unit": "1",
+              "resolved_substance": "https://example.org/monograph/substance/R16CO5Y76E"
+            }
+          ],
+          "packages": [
+            {
+              "ndc": "0280-2000-10",
+              "registry_lists_product": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "dosage-form-free-text",
+    "violates": "enum",
+    "field": "products.dosage_form",
+    "expect": "agree_invalid",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "products": [
+        {
+          "name": "Bayer Low Dose Aspirin",
+          "dosage_form": "Chewable tablet",
+          "routes": [
+            "ORAL"
+          ],
+          "ingredients": [
+            {
+              "substance_name": "aspirin",
+              "strength_value": "81",
+              "strength_unit": "mg",
+              "basis_value": "1",
+              "basis_unit": "1",
+              "resolved_substance": "https://example.org/monograph/substance/R16CO5Y76E"
+            }
+          ],
+          "packages": [
+            {
+              "ndc": "0280-2000-10",
+              "resolved_package": "https://example.org/monograph/packaged-product/0280-2000-10",
+              "registry_lists_product": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "unit-not-ucum",
+    "violates": "enum",
+    "field": "products.ingredients.strength_unit",
+    "expect": "agree_invalid",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "products": [
+        {
+          "name": "Bayer Low Dose Aspirin",
+          "dosage_form": "TABLET, CHEWABLE",
+          "routes": [
+            "ORAL"
+          ],
+          "ingredients": [
+            {
+              "substance_name": "aspirin",
+              "strength_value": "81",
+              "strength_unit": "MG",
+              "basis_value": "1",
+              "basis_unit": "1",
+              "resolved_substance": "https://example.org/monograph/substance/R16CO5Y76E"
+            }
+          ],
+          "packages": [
+            {
+              "ndc": "0280-2000-10",
+              "resolved_package": "https://example.org/monograph/packaged-product/0280-2000-10",
+              "registry_lists_product": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "basis-zero",
+    "violates": "min_exclusive",
+    "field": "products.ingredients.basis_value",
+    "expect": "agree_invalid",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "products": [
+        {
+          "name": "Bayer Low Dose Aspirin",
+          "dosage_form": "TABLET, CHEWABLE",
+          "routes": [
+            "ORAL"
+          ],
+          "ingredients": [
+            {
+              "substance_name": "aspirin",
+              "strength_value": "81",
+              "strength_unit": "mg",
+              "basis_value": "0",
+              "basis_unit": "1",
+              "resolved_substance": "https://example.org/monograph/substance/R16CO5Y76E"
+            }
+          ],
+          "packages": [
+            {
+              "ndc": "0280-2000-10",
+              "resolved_package": "https://example.org/monograph/packaged-product/0280-2000-10",
+              "registry_lists_product": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "ndc-without-hyphens",
+    "violates": "pattern",
+    "field": "products.packages.ndc",
+    "expect": "agree_invalid",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "products": [
+        {
+          "name": "Bayer Low Dose Aspirin",
+          "dosage_form": "TABLET, CHEWABLE",
+          "routes": [
+            "ORAL"
+          ],
+          "ingredients": [
+            {
+              "substance_name": "aspirin",
+              "strength_value": "81",
+              "strength_unit": "mg",
+              "basis_value": "1",
+              "basis_unit": "1",
+              "resolved_substance": "https://example.org/monograph/substance/R16CO5Y76E"
+            }
+          ],
+          "packages": [
+            {
+              "ndc": "0280200010",
+              "resolved_package": "https://example.org/monograph/packaged-product/0280-2000-10",
+              "registry_lists_product": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "no-products",
+    "violates": "min_count",
+    "field": "products",
+    "expect": "agree_invalid",
+    "record": {
+      "set_id": "0c3d2f4e-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+      "version": 3,
+      "products": []
+    }
+  }
+]

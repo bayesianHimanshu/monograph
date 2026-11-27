@@ -132,3 +132,15 @@ def pydantic_only(id: str, reason: str, unique: UniqueWithin | None = None) -> C
         return func
 
     return mark
+
+
+@dataclass(frozen=True, slots=True)
+class ExtractionOnly:
+    """A graph-context check with no SHACL Core projection, declared on the model like pydantic_only.
+
+    It runs as deterministic code in the A3 repair loop (extract/repair/shacl_feedback.py), where every
+    declared id must have exactly one implementation (checked by a test).
+    """
+
+    id: str
+    reason: str

@@ -12,12 +12,13 @@ from typing import Annotated, ClassVar, Self
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, model_validator
 
-from monograph.core.meta import OntClass, OntEnum, OntProp, SafeIdentifier, SafeText
+from monograph.core.meta import Derived, OntClass, OntEnum, OntProp, SafeIdentifier, SafeText
 from monograph.core.refs import Ref
 from monograph.core.regex import safe
 from monograph.core.rules import (
     AtLeast,
     Condition,
+    ExtractionOnly,
     PydanticOnlyViolation,
     RequiredWhen,
     Rule,
@@ -260,6 +261,245 @@ class SourceSystem(StrEnum):
 
     OPENFDA_E2B = "openfda_e2b"
     FAERS_QDE = "faers_qde"
+
+
+class DosageForm(StrEnum):
+    """Dosage form: the FDA SPL dosage form terms, with NCI Thesaurus codes.
+
+    Source: https://www.fda.gov/industry/structured-product-labeling-resources/dosage-forms
+    (content current as of 02/03/2022). 158 terms.
+    """
+
+    __ont__ = OntEnum(name="DosageForm", label="Dosage form")
+
+    AEROSOL = "AEROSOL"  # C42887
+    AEROSOL_FOAM = "AEROSOL, FOAM"  # C42888
+    AEROSOL_METERED = "AEROSOL, METERED"  # C42960
+    AEROSOL_POWDER = "AEROSOL, POWDER"  # C42971
+    AEROSOL_SPRAY = "AEROSOL, SPRAY"  # C42889
+    BAR_CHEWABLE = "BAR, CHEWABLE"  # C42892
+    BEAD = "BEAD"  # C42890
+    CAPSULE = "CAPSULE"  # C25158
+    CAPSULE_COATED = "CAPSULE, COATED"  # C42895
+    CAPSULE_COATED_PELLETS = "CAPSULE, COATED PELLETS"  # C42896
+    CAPSULE_COATED_EXTENDED_RELEASE = "CAPSULE, COATED, EXTENDED RELEASE"  # C42917
+    CAPSULE_DELAYED_RELEASE = "CAPSULE, DELAYED RELEASE"  # C42902
+    CAPSULE_DELAYED_RELEASE_PELLETS = "CAPSULE, DELAYED RELEASE PELLETS"  # C42904
+    CAPSULE_EXTENDED_RELEASE = "CAPSULE, EXTENDED RELEASE"  # C42916
+    CAPSULE_FILM_COATED_EXTENDED_RELEASE = "CAPSULE, FILM COATED, EXTENDED RELEASE"  # C42928
+    CAPSULE_GELATIN_COATED = "CAPSULE, GELATIN COATED"  # C42936
+    CAPSULE_LIQUID_FILLED = "CAPSULE, LIQUID FILLED"  # C42954
+    CELLULAR_SHEET = "CELLULAR SHEET"  # C100103
+    CHEWABLE_GEL = "CHEWABLE GEL"  # C134876
+    CLOTH = "CLOTH"  # C60884
+    CONCENTRATE = "CONCENTRATE"  # C60891
+    CREAM = "CREAM"  # C28944
+    CREAM_AUGMENTED = "CREAM, AUGMENTED"  # C60897
+    CRYSTAL = "CRYSTAL"  # C42901
+    DISC = "DISC"  # C43525
+    DOUCHE = "DOUCHE"  # C42679
+    DRESSING = "DRESSING"  # C42763
+    DRUG_ELUTING_CONTACT_LENS = "DRUG-ELUTING CONTACT LENS"  # C185352
+    ELIXIR = "ELIXIR"  # C42912
+    EMULSION = "EMULSION"  # C42913
+    ENEMA = "ENEMA"  # C42915
+    EXTRACT = "EXTRACT"  # C42929
+    FIBER_EXTENDED_RELEASE = "FIBER, EXTENDED RELEASE"  # C60926
+    FILM = "FILM"  # C42932
+    FILM_EXTENDED_RELEASE = "FILM, EXTENDED RELEASE"  # C42920
+    FILM_SOLUBLE = "FILM, SOLUBLE"  # C42984
+    FOR_SOLUTION = "FOR SOLUTION"  # C60927
+    FOR_SUSPENSION = "FOR SUSPENSION"  # C60928
+    FOR_SUSPENSION_EXTENDED_RELEASE = "FOR SUSPENSION, EXTENDED RELEASE"  # C60929
+    GAS = "GAS"  # C42933
+    GEL = "GEL"  # C42934
+    GEL_DENTIFRICE = "GEL, DENTIFRICE"  # C42906
+    GEL_METERED = "GEL, METERED"  # C60930
+    GLOBULE = "GLOBULE"  # C42937
+    GRANULE = "GRANULE"  # C42938
+    GRANULE_DELAYED_RELEASE = "GRANULE, DELAYED RELEASE"  # C42903
+    GRANULE_EFFERVESCENT = "GRANULE, EFFERVESCENT"  # C42909
+    GRANULE_FOR_SOLUTION = "GRANULE, FOR SOLUTION"  # C42939
+    GRANULE_FOR_SUSPENSION = "GRANULE, FOR SUSPENSION"  # C42940
+    GRANULE_FOR_SUSPENSION_EXTENDED_RELEASE = "GRANULE, FOR SUSPENSION, EXTENDED RELEASE"  # C42921
+    GUM_CHEWING = "GUM, CHEWING"  # C42894
+    IMPLANT = "IMPLANT"  # C42942
+    INHALANT = "INHALANT"  # C42944
+    INJECTABLE_FOAM = "INJECTABLE FOAM"  # C113106
+    INJECTABLE_LIPOSOMAL = "INJECTABLE, LIPOSOMAL"  # C60931
+    INJECTION = "INJECTION"  # C42946
+    INJECTION_EMULSION = "INJECTION, EMULSION"  # C42914
+    INJECTION_LIPID_COMPLEX = "INJECTION, LIPID COMPLEX"  # C42950
+    INJECTION_POWDER_FOR_SOLUTION = "INJECTION, POWDER, FOR SOLUTION"  # C42974
+    INJECTION_POWDER_FOR_SUSPENSION = "INJECTION, POWDER, FOR SUSPENSION"  # C42976
+    INJECTION_POWDER_FOR_SUSPENSION_EXTENDED_RELEASE = "INJECTION, POWDER, FOR SUSPENSION, EXTENDED RELEASE"  # C42977
+    INJECTION_POWDER_LYOPHILIZED_FOR_LIPOSOMAL_SUSPENSION = (
+        "INJECTION, POWDER, LYOPHILIZED, FOR LIPOSOMAL SUSPENSION"  # C42959
+    )
+    INJECTION_POWDER_LYOPHILIZED_FOR_SOLUTION = "INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION"  # C42957
+    INJECTION_POWDER_LYOPHILIZED_FOR_SUSPENSION = "INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION"  # C42958
+    INJECTION_POWDER_LYOPHILIZED_FOR_SUSPENSION_EXTENDED_RELEASE = (
+        "INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION, EXTENDED RELEASE"  # C42956
+    )
+    INJECTION_SOLUTION = "INJECTION, SOLUTION"  # C42945
+    INJECTION_SOLUTION_CONCENTRATE = "INJECTION, SOLUTION, CONCENTRATE"  # C42899
+    INJECTION_SUSPENSION = "INJECTION, SUSPENSION"  # C42995
+    INJECTION_SUSPENSION_EXTENDED_RELEASE = "INJECTION, SUSPENSION, EXTENDED RELEASE"  # C42926
+    INJECTION_SUSPENSION_LIPOSOMAL = "INJECTION, SUSPENSION, LIPOSOMAL"  # C42951
+    INJECTION_SUSPENSION_SONICATED = "INJECTION, SUSPENSION, SONICATED"  # C42988
+    INSERT = "INSERT"  # C60933
+    INSERT_EXTENDED_RELEASE = "INSERT, EXTENDED RELEASE"  # C42922
+    INTRAUTERINE_DEVICE = "INTRAUTERINE DEVICE"  # C47915
+    IRRIGANT = "IRRIGANT"  # C42947
+    JELLY = "JELLY"  # C42948
+    KIT = "KIT"  # C47916
+    LINIMENT = "LINIMENT"  # C42949
+    LIPSTICK = "LIPSTICK"  # C42952
+    LIQUID = "LIQUID"  # C42953
+    LIQUID_EXTENDED_RELEASE = "LIQUID, EXTENDED RELEASE"  # C60934
+    LOTION = "LOTION"  # C29167
+    LOTION_AUGMENTED = "LOTION, AUGMENTED"  # C60957
+    LOTION_SHAMPOO = "LOTION/SHAMPOO"  # C60958
+    LOZENGE = "LOZENGE"  # C42955
+    MOUTHWASH = "MOUTHWASH"  # C29269
+    NOT_APPLICABLE = "NOT APPLICABLE"  # C48624
+    OIL = "OIL"  # C42965
+    OINTMENT = "OINTMENT"  # C42966
+    OINTMENT_AUGMENTED = "OINTMENT, AUGMENTED"  # C60984
+    PASTE = "PASTE"  # C42967
+    PASTE_DENTIFRICE = "PASTE, DENTIFRICE"  # C42907
+    PASTILLE = "PASTILLE"  # C60985
+    PATCH = "PATCH"  # C42968
+    PATCH_EXTENDED_RELEASE = "PATCH, EXTENDED RELEASE"  # C42923
+    PATCH_EXTENDED_RELEASE_ELECTRICALLY_CONTROLLED = "PATCH, EXTENDED RELEASE, ELECTRICALLY CONTROLLED"  # C42911
+    PELLET = "PELLET"  # C42969
+    PELLET_IMPLANTABLE = "PELLET, IMPLANTABLE"  # C42943
+    PELLETS_COATED_EXTENDED_RELEASE = "PELLETS, COATED, EXTENDED RELEASE"  # C42918
+    PILL = "PILL"  # C25394
+    PLASTER = "PLASTER"  # C42970
+    POULTICE = "POULTICE"  # C47913
+    POWDER = "POWDER"  # C42972
+    POWDER_DENTIFRICE = "POWDER, DENTIFRICE"  # C42908
+    POWDER_FOR_SOLUTION = "POWDER, FOR SOLUTION"  # C42973
+    POWDER_FOR_SUSPENSION = "POWDER, FOR SUSPENSION"  # C42975
+    POWDER_METERED = "POWDER, METERED"  # C42961
+    RING = "RING"  # C60988
+    RINSE = "RINSE"  # C42979
+    SALVE = "SALVE"  # C42980
+    SHAMPOO = "SHAMPOO"  # C42981
+    SHAMPOO_SUSPENSION = "SHAMPOO, SUSPENSION"  # C42982
+    SOAP = "SOAP"  # C42983
+    SOLUTION = "SOLUTION"  # C42986
+    SOLUTION_CONCENTRATE = "SOLUTION, CONCENTRATE"  # C42898
+    SOLUTION_FOR_SLUSH = "SOLUTION, FOR SLUSH"  # C42987
+    SOLUTION_GEL_FORMING_DROPS = "SOLUTION, GEL FORMING / DROPS"  # C60994
+    SOLUTION_GEL_FORMING_EXTENDED_RELEASE = "SOLUTION, GEL FORMING, EXTENDED RELEASE"  # C42935
+    SOLUTION_DROPS = "SOLUTION/ DROPS"  # C60992
+    SPONGE = "SPONGE"  # C47912
+    SPRAY = "SPRAY"  # C42989
+    SPRAY_METERED = "SPRAY, METERED"  # C42962
+    SPRAY_SUSPENSION = "SPRAY, SUSPENSION"  # C42990
+    STICK = "STICK"  # C42991
+    STRIP = "STRIP"  # C47914
+    SUPPOSITORY = "SUPPOSITORY"  # C42993
+    SUPPOSITORY_EXTENDED_RELEASE = "SUPPOSITORY, EXTENDED RELEASE"  # C42924
+    SUSPENSION = "SUSPENSION"  # C42994
+    SUSPENSION_EXTENDED_RELEASE = "SUSPENSION, EXTENDED RELEASE"  # C42925
+    SUSPENSION_DROPS = "SUSPENSION/ DROPS"  # C60995
+    SWAB = "SWAB"  # C47898
+    SYRUP = "SYRUP"  # C42996
+    SYSTEM = "SYSTEM"  # C17423
+    TABLET = "TABLET"  # C42998
+    TABLET_CHEWABLE = "TABLET, CHEWABLE"  # C42893
+    TABLET_CHEWABLE_EXTENDED_RELEASE = "TABLET, CHEWABLE, EXTENDED RELEASE"  # C124794
+    TABLET_COATED = "TABLET, COATED"  # C42897
+    TABLET_COATED_PARTICLES = "TABLET, COATED PARTICLES"  # C60997
+    TABLET_DELAYED_RELEASE = "TABLET, DELAYED RELEASE"  # C42905
+    TABLET_DELAYED_RELEASE_PARTICLES = "TABLET, DELAYED RELEASE PARTICLES"  # C42997
+    TABLET_EFFERVESCENT = "TABLET, EFFERVESCENT"  # C42910
+    TABLET_EXTENDED_RELEASE = "TABLET, EXTENDED RELEASE"  # C42927
+    TABLET_FILM_COATED = "TABLET, FILM COATED"  # C42931
+    TABLET_FILM_COATED_EXTENDED_RELEASE = "TABLET, FILM COATED, EXTENDED RELEASE"  # C42930
+    TABLET_FOR_SOLUTION = "TABLET, FOR SOLUTION"  # C61004
+    TABLET_FOR_SUSPENSION = "TABLET, FOR SUSPENSION"  # C61005
+    TABLET_MULTILAYER = "TABLET, MULTILAYER"  # C42964
+    TABLET_MULTILAYER_EXTENDED_RELEASE = "TABLET, MULTILAYER, EXTENDED RELEASE"  # C42963
+    TABLET_ORALLY_DISINTEGRATING = "TABLET, ORALLY DISINTEGRATING"  # C42999
+    TABLET_ORALLY_DISINTEGRATING_DELAYED_RELEASE = "TABLET, ORALLY DISINTEGRATING, DELAYED RELEASE"  # C61006
+    TABLET_SOLUBLE = "TABLET, SOLUBLE"  # C42985
+    TABLET_SUGAR_COATED = "TABLET, SUGAR COATED"  # C42992
+    TABLET_WITH_SENSOR = "TABLET WITH SENSOR"  # C147579
+    TAMPON = "TAMPON"  # C47892
+    TAPE = "TAPE"  # C47897
+    TINCTURE = "TINCTURE"  # C43000
+    TROCHE = "TROCHE"  # C43001
+    WAFER = "WAFER"  # C43003
+
+
+class UcumUnit(StrEnum):
+    """Unit of measure: the UCUM codes FDA accepts in SPL. "1" is the unit of presentation (per tablet,
+    per capsule, ...).
+
+    Source: https://www.fda.gov/industry/structured-product-labeling-resources/units-measure
+    (content current as of 10/24/2024). 52 units.
+    """
+
+    __ont__ = OntEnum(name="UcumUnit", label="UCUM unit")
+
+    UNIT_OF_PRESENTATION = "1"  # UNIT OF PRESENTATION
+    ALLERGY_UNITS = "[AU]"  # ALLERGY UNITS
+    AMB_A_1_UNITS = "[Amb'a'1'U]"  # AMB A 1 UNITS
+    BIOEQUIVALENT_ALLERGY_UNITS = "[BAU]"  # BIOEQUIVALENT ALLERGY UNITS
+    ARBITRARY_UNITS = "[arb'U]"  # ARBITRARY UNITS
+    CELL_CULTURE_INFECTIOUS_DOSE_50 = "[CCID_50]"  # CELL CULTURE INFECTIOUS DOSE 50%
+    COLONY_FORMING_UNITS = "[CFU]"  # COLONY FORMING UNITS
+    CURIE = "Ci"
+    DAY = "d"
+    D_ANTIGEN_UNITS = "[D'ag'U]"  # D-ANTIGEN UNITS
+    DECILITER = "dL"
+    FOCUS_FORMING_UNITS = "[FFU]"  # FOCUS-FORMING UNITS
+    FORMAZIN_TURBIDITY_UNIT = "[FNU]"  # FORMAZIN TURBIDITY UNIT
+    GENOMIC_COPIES = "{GC}"  # GENOMIC COPIES
+    GRAM = "g"
+    HOMEOPATHIC_POTENCY_OF_CENTESIMAL_SERIES = "[hp_C]"  # HOMEOPATHIC POTENCY OF CENTESIMAL SERIES
+    HOMEOPATHIC_POTENCY_OF_CENTESIMAL_KORSAKOVIAN_SERIES = (
+        "{kp_C}"  # HOMEOPATHIC POTENCY OF CENTESIMAL KORSAKOVIAN SERIES
+    )
+    HOMEOPATHIC_POTENCY_OF_MILLESIMAL_SERIES = "[hp_M]"  # HOMEOPATHIC POTENCY OF MILLESIMAL SERIES
+    HOMEOPATHIC_POTENCY_OF_QUINTAMILLESIMAL_SERIES = "[hp_Q]"  # HOMEOPATHIC POTENCY OF QUINTAMILLESIMAL SERIES
+    HOMEOPATHIC_POTENCY_OF_DECIMAL_SERIES = "[hp_X]"  # HOMEOPATHIC POTENCY OF DECIMAL SERIES
+    HOUR = "h"
+    INTERNATIONAL_UNITS = "[iU]"  # INTERNATIONAL UNITS
+    KILOGRAM = "kg"
+    LIMIT_OF_FLOCCULATION = "[Lf]"  # LIMIT OF FLOCCULATION
+    LITER = "L"
+    MICROCURIE = "uCi"
+    MICROGRAM = "ug"
+    MICROLITER = "uL"
+    MICROMOLE = "umol"
+    MICRON = "um"
+    MILLICURIE = "mCi"
+    MILLIEQUIVALENT = "meq"
+    MILLIGRAM = "mg"
+    MILLILITER = "mL"
+    MILLIMETER = "mm"
+    MILLIMOLE = "mmol"
+    MINUTE = "min"
+    MOLE = "mol"
+    MONTH = "mo"
+    NANOGRAM = "ng"
+    NANOMOLE = "nmol"
+    NEPHELOMETRIC_TURBIDITY_UNIT = "[NTU]"  # NEPHELOMETRIC TURBIDITY UNIT
+    PLAQUE_FORMING_UNITS = "[PFU]"  # PLAQUE-FORMING UNITS
+    PROTEIN_NITROGEN_UNITS = "[PNU]"  # PROTEIN NITROGEN UNITS
+    SECOND = "s"
+    SQUARE_CENTIMETER = "cm2"  # SQUARE CENTIMETER
+    TISSUE_CULTURE_INFECTIOUS_DOSE_50 = "[TCID_50]"  # TISSUE CULTURE INFECTIOUS DOSE 50%
+    UNIT_CATALYTIC_ACTIVITY = "U"  # UNIT - CATALYTIC ACTIVITY
+    UNITED_STATES_PHARMACOPEIA_UNIT = "[USP'U]"  # UNITED STATES PHARMACOPEIA UNIT
+    VIRAL_PARTICLES = "{VP}"  # VIRAL PARTICLES
+    WEEK = "wk"
+    YEAR = "a"
 
 
 # ---------------------------------------------------------------------------------------------------
@@ -618,6 +858,149 @@ class Recall(Entity):
     ]
 
 
+# ---------------------------------------------------------------------------------------------------
+# H4: extraction targets. Filled from label narrative by an extractor; derived fields are filled by
+# deterministic resolution against the reference graph and are never part of the extraction schema.
+# ---------------------------------------------------------------------------------------------------
+
+_PACKAGE_NDC = r"^(\d{4}-\d{4}-\d{2}|\d{5}-\d{3}-\d{2}|\d{5}-\d{4}-\d)$"
+
+
+class ExtractedIngredient(EmbeddedValue):
+    """An active ingredient as stated in label narrative: name, strength and the basis of the strength."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="ExtractedIngredient", label="Extracted ingredient")
+
+    substance_name: Annotated[
+        SafeText,
+        OntProp("substanceName", "substance name"),
+        Field(min_length=1, max_length=500, description="Substance name exactly as the label states it."),
+    ]
+    strength_value: Annotated[
+        Decimal, OntProp("strengthValue", "strength value"), Field(gt=0, description="Numeric strength.")
+    ]
+    strength_unit: Annotated[
+        UcumUnit, OntProp("strengthUcumUnit", "strength unit (UCUM)"), Field(description="Unit of the strength.")
+    ]
+    basis_value: Annotated[
+        Decimal,
+        OntProp("basisValue", "basis value"),
+        Field(gt=0, description="Amount the strength refers to, for example 5 in 'per 5 mL'; 1 for per unit."),
+    ]
+    basis_unit: Annotated[
+        UcumUnit,
+        OntProp("basisUnit", "basis unit (UCUM)"),
+        Field(description="Unit of the basis: mL in 'per 5 mL', '1' for per tablet or capsule."),
+    ]
+    resolved_substance: Annotated[
+        Ref[Substance] | None,
+        OntProp("resolvedSubstance", "resolved substance"),
+        Derived(by="extract/resolve.py: substance name to UNII", required_in_context=True),
+        Field(description="The Substance this name resolves to in the reference graph."),
+    ] = None
+
+
+class ExtractedPackage(EmbeddedValue):
+    """A package NDC mentioned in label narrative (for example in How Supplied)."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="ExtractedPackage", label="Extracted package")
+    __rules__: ClassVar[tuple[Rule, ...]] = (
+        RequiredWhen(
+            id="listed-package-resolves",
+            when=(Condition("registry_lists_product", (True,)),),
+            then="resolved_package",
+            message="the registry lists this label's products, so the NDC must be one of their packages",
+        ),
+    )
+
+    ndc: Annotated[
+        SafeIdentifier,
+        OntProp("ndc", "NDC"),
+        Field(pattern=safe(_PACKAGE_NDC), description="Package NDC in 4-4-2, 5-3-2 or 5-4-1 form."),
+    ]
+    resolved_package: Annotated[
+        Ref[PackagedProduct] | None,
+        OntProp("resolvedPackage", "resolved package"),
+        Derived(by="extract/resolve.py: NDC to PackagedProduct"),
+        Field(description="The PackagedProduct with this NDC in the reference graph."),
+    ] = None
+    registry_lists_product: Annotated[
+        bool | None,
+        OntProp("registryListsProduct", "registry lists the label's products"),
+        Derived(by="extract/resolve.py: whether the reference graph links the label to any product"),
+        Field(description="True when the registry knows this label's products, so its packages must resolve."),
+    ] = None
+
+
+class ExtractedProduct(EmbeddedValue):
+    """One product described by a label: what it is made of, its form, its routes, its packages."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="ExtractedProduct", label="Extracted product")
+
+    name: Annotated[SafeText, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Product name.")]
+    dosage_form: Annotated[
+        DosageForm, OntProp("extractedDosageForm", "dosage form (SPL term)"), Field(description="Dosage form.")
+    ]
+    routes: Annotated[
+        frozenset[Route], OntProp("route", "route"), Field(min_length=1, description="Routes of administration.")
+    ]
+    ingredients: Annotated[
+        list[ExtractedIngredient],
+        OntProp("extractedIngredient", "extracted ingredient"),
+        Field(min_length=1, description="Active ingredients with strengths, in label order."),
+    ]
+    packages: Annotated[
+        list[ExtractedPackage],
+        OntProp("extractedPackage", "extracted package"),
+        Field(description="Package NDCs the label lists for this product."),
+    ] = []
+
+
+class LabelExtraction(Entity):
+    """What an extractor read from one label's narrative, plus the label it came from."""
+
+    __ont__: ClassVar[OntClass] = OntClass(
+        name="LabelExtraction", label="Label extraction", path="label-extraction", key=("set_id", "version")
+    )
+    __extraction_only__: ClassVar[tuple[ExtractionOnly, ...]] = (
+        ExtractionOnly(
+            id="package-product-matches-label",
+            reason=(
+                "The package's Product must be one of the label's Products: membership of one path's values"
+                " in the set reached by another path needs SPARQL (sh:sparql), which SHACL Core does not have."
+            ),
+        ),
+        ExtractionOnly(
+            id="ingredient-count-matches-product",
+            reason=(
+                "The number of extracted ingredients must equal the referenced Product's where the graph knows"
+                " it: equality of two paths' cardinalities has no SHACL Core construct."
+            ),
+        ),
+    )
+
+    set_id: Annotated[
+        SafeIdentifier,
+        OntProp("setId", "SPL set ID"),
+        Derived(by="the SPL document metadata"),
+        Field(
+            pattern=safe(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"),
+            description="SPL set ID of the label read.",
+        ),
+    ]
+    version: Annotated[
+        int,
+        OntProp("labelVersion", "label version"),
+        Derived(by="the SPL document metadata"),
+        Field(ge=1, lt=1_000_000, description="SPL version read."),
+    ]
+    products: Annotated[
+        list[ExtractedProduct],
+        OntProp("extractedProduct", "extracted product"),
+        Field(min_length=1, description="Products the label describes."),
+    ]
+
+
 # Every class that is part of the ontology, bases first. Generators walk this tuple.
 MODELS: tuple[type[ModelBase], ...] = (
     Entity,
@@ -634,4 +1017,8 @@ MODELS: tuple[type[ModelBase], ...] = (
     Reaction,
     AdverseEventReport,
     Recall,
+    ExtractedIngredient,
+    ExtractedPackage,
+    ExtractedProduct,
+    LabelExtraction,
 )

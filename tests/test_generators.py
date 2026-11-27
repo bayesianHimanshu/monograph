@@ -152,3 +152,29 @@ def test_bounded_patterns_imply_max_length_and_strings_forbid_control_characters
         negated = g.value(URIRef(V.shapes_ns + name), SH["not"])
         assert negated is not None
         assert "\x00" in str(g.value(negated, SH.pattern))
+
+
+def test_json_schema_states_every_string_and_integer_constraint_of_the_spec(
+    spec: SchemaSpec, files: dict[str, str]
+) -> None:
+    """Regression: from 1.0.0 the JSON Schema silently lost every `pattern` once strings became
+    SafeIdentifier or SafeText (Pydantic rendered only the first step of a validator chain)."""
+    import json
+
+    doc = json.loads(files[JSON_SCHEMA_FILE])
+    missing = []
+    for c in spec.concrete():
+        props = doc["$defs"][c.cls.__name__]["properties"]
+        for f in c.fields:
+            if f.is_collection or f.kind.value != "scalar":
+                continue
+            prop = props[f.name]
+            branch = next((b for b in prop.get("anyOf", [prop]) if b.get("type") != "null"), prop)
+            for key, value in (
+                ("pattern", f.constraints.pattern),
+                ("minLength", f.constraints.min_length),
+                ("maxLength", f.constraints.max_length),
+            ):
+                if value is not None and branch.get(key) != value:
+                    missing.append(f"{c.cls.__name__}.{f.name} {key}")
+    assert missing == []

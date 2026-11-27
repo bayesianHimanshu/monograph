@@ -9,13 +9,16 @@ properties (`x-rdf-class`, `x-rdf-property`) and the rule projections (`if`/`the
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 from typing import Any
 
+from pydantic import BaseModel
 from pydantic.json_schema import models_json_schema
 
 from monograph.core.rules import AtLeast, RequiredWhen, RuleValue
-from monograph.core.spec import ClassSpec, SchemaSpec
+from monograph.core.spec import ClassSpec, FieldSpec, Kind, SchemaSpec
 from monograph.core.vocab import Vocabulary
+from monograph.gen.shacl import forbidden_class
 
 
 class JsonSchemaGenerator:
@@ -33,6 +36,7 @@ class JsonSchemaGenerator:
             d["x-rdf-class"] = str(self._vocab.cls(c.cls))
             for f in c.fields:
                 d["properties"][f.name]["x-rdf-property"] = str(self._vocab.prop(f))
+                _apply_constraints(d["properties"][f.name], f)
             rules = [self._rule(c, r) for r in c.rules]
             if rules:
                 d["allOf"] = rules
@@ -75,6 +79,73 @@ class JsonSchemaGenerator:
     def render(self) -> str:
         return json.dumps(self.document(), indent=2, sort_keys=True, ensure_ascii=True) + "\n"
 
+    def extraction_document(self, root: type[BaseModel]) -> dict[str, Any]:
+        """The schema an extractor (an LLM) fills: `root` and what it embeds, without derived fields.
+
+        Derived fields (resolver links, document metadata) are filled by deterministic code, so asking a
+        model for them would invite invention.
+        """
+        _, top = models_json_schema([(root, "validation")], ref_template="#/$defs/{model}")
+        defs: dict[str, Any] = top.get("$defs", {})
+        for name, d in defs.items():
+            if "properties" not in d:
+                continue
+            c = self._spec.by_name(name)
+            for f in c.fields:
+                if f.derived is not None:
+                    d["properties"].pop(f.name, None)
+                    if f.name in d.get("required", []):
+                        d["required"].remove(f.name)
+                elif f.name in d["properties"]:
+                    d["properties"][f.name]["x-rdf-property"] = str(self._vocab.prop(f))
+                    _apply_constraints(d["properties"][f.name], f)
+        return {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": f"{self._schema_id}/extraction",
+            "title": f"MONOGRAPH extraction target: {root.__name__}",
+            "x-schema-version": self._spec.version,
+            "$ref": f"#/$defs/{root.__name__}",
+            "$defs": defs,
+        }
+
+    def render_extraction(self, root: type[BaseModel]) -> str:
+        return json.dumps(self.extraction_document(root), indent=2, sort_keys=True, ensure_ascii=True) + "\n"
+
 
 def _json(value: RuleValue) -> bool | int | str:
     return value if isinstance(value, bool | int) else str(value)
+
+
+def _apply_constraints(prop: dict[str, Any], f: FieldSpec) -> None:
+    """Write the field's constraints from the SchemaSpec into its JSON Schema.
+
+    Pydantic's own rendering is not trusted for this: when a str type carries a validator (SafeIdentifier,
+    SafeText), Pydantic splits the field into a validator chain and renders only the first step, which
+    silently drops `pattern`. The spec is the single source, so the generator states every constraint.
+    """
+    if f.kind is not Kind.SCALAR or f.is_collection:
+        return
+    target = prop
+    if "anyOf" in prop:  # T | None
+        target = next((branch for branch in prop["anyOf"] if branch.get("type") != "null"), prop)
+    k = f.constraints
+    for key, value in (
+        ("pattern", k.pattern),
+        ("minLength", k.min_length),
+        ("maxLength", k.max_length),
+    ):
+        if value is not None:
+            target[key] = value
+    for key, bound in (("minimum", k.ge), ("maximum", k.le), ("exclusiveMinimum", k.gt), ("exclusiveMaximum", k.lt)):
+        if bound is None:
+            continue
+        if f.scalar is int:
+            target[key] = int(bound)
+        elif f.scalar is Decimal:
+            # Pydantic accepts a Decimal as a JSON number or a numeric string. Bounds can only be stated for the
+            # number branch; a bound on a string-encoded number is a declared JSON Schema leak.
+            for branch in target.get("anyOf", [target]):
+                if branch.get("type") == "number":
+                    branch[key] = float(bound) if bound != int(bound) else int(bound)
+    if k.charset is not None:
+        target["not"] = {"pattern": forbidden_class(k.charset)}

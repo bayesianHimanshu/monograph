@@ -1,6 +1,6 @@
 """The version of the drug product model. Bump it according to semver; CI enforces the rules."""
 
-SCHEMA_VERSION = "2.0.0"
+SCHEMA_VERSION = "2.1.1"
 
 # What changed in each release and why. Every entry corrects the model in response to an H6 or H6.1
 # real-data finding; none of them loosens a constraint for its own sake. `monograph measure` writes this
@@ -67,6 +67,33 @@ CHANGES: dict[str, tuple[tuple[str, str, str], ...]] = {
             "H6.1: the route enum was the 23 routes observed in one sample; real records used routes outside it.",
             "Route is the FDA SPL route of administration list (121 terms with NCI codes). OTIC is replaced by the "
             "FDA term AURICULAR (OTIC).",
+        ),
+    ),
+    "2.1.0": (
+        (
+            "h4-extraction-targets",
+            "H4 extracts product facts from label narrative and needs typed targets that resolve against the graph.",
+            "Additive: LabelExtraction, ExtractedProduct, ExtractedIngredient and ExtractedPackage; the FDA SPL "
+            "DosageForm (158 terms) and UcumUnit (52 codes) enums; Derived fields filled by deterministic "
+            "resolution; graph-context shapes (generated/monograph.context.shapes.ttl) and two extraction_only "
+            "checks; rule listed-package-resolves.",
+        ),
+        (
+            "json-schema-patterns",
+            "H4: since 1.0.0 the generated JSON Schema had silently lost every pattern once strings became "
+            "SafeIdentifier or SafeText (Pydantic renders only the first step of a validator chain).",
+            "The JSON Schema generator now writes every string and integer constraint from the SchemaSpec, and a "
+            "test checks that each one is present.",
+        ),
+    ),
+    "2.1.1": (
+        (
+            "json-schema-projection",
+            "H4: validating real records against the generated JSON Schema showed it ignored SafeIdentifier and "
+            "SafeText, and Decimal bounds.",
+            "The JSON Schema now states the charset as `not: {pattern}` and Decimal bounds on the number branch. "
+            "What it still cannot state (bounds on string-encoded Decimals, floats for Decimals, pydantic_only) is "
+            "a declared list that the agreement gate checks.",
         ),
     ),
 }
