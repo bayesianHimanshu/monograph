@@ -133,9 +133,30 @@ def check_breaking(
     typer.echo("breaking-change check ok")
 
 
+def _prereg(root: Path) -> bool:
+    from monograph.validate.prereg import PreregError, prereg_violations
+
+    try:
+        problems = prereg_violations(root)
+    except PreregError as exc:
+        typer.echo(f"prereg: {exc}", err=True)
+        return False
+    for problem in problems:
+        typer.echo(f"prereg: {problem}", err=True)
+    return not problems
+
+
+@check_app.command("prereg")
+def check_prereg(root: Root = Path()) -> None:
+    """Fail if any committed docs/h*/PREREG.md differs from the version in the commit that added it."""
+    if not _prereg(root):
+        raise _fail("prereg check: pre-registrations are immutable once committed")
+    typer.echo("prereg check ok")
+
+
 @check_app.command("all")
 def check_all(root: Root = Path()) -> None:
-    """Run drift, breaking-change, lint and agreement, and report every failure."""
+    """Run drift, breaking-change, lint, agreement and prereg, and report every failure."""
     from monograph.core import models
     from monograph.validate.lint import ValidatorLinter
 
@@ -152,6 +173,8 @@ def check_all(root: Root = Path()) -> None:
         failed.append("lint")
     if not _agreement(root):
         failed.append("agreement")
+    if not _prereg(root):
+        failed.append("prereg")
     if failed:
         raise _fail(f"gates failed: {', '.join(failed)}")
     typer.echo("all gates ok")

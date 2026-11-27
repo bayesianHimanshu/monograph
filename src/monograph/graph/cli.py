@@ -471,10 +471,15 @@ def _dev_log(root: Path) -> list[dict[str, Any]]:
 
 @h2_app.command("prereg")
 def prereg(root: Root = Path()) -> None:
-    """Write docs/h2/PREREG.md from the code, the question set and the dev log."""
+    """Write docs/h2/PREREG.md from the code, the question set and the dev log, once: it never overwrites."""
     from monograph.qa.prereg import render_prereg
+
+    if (root / PREREG_FILE).exists():
+        typer.echo(f"refusing: {PREREG_FILE} exists, and a pre-registration is never rewritten", err=True)
+        raise typer.Exit(code=1)
 
     data = json.loads((root / QUESTIONS_FILE).read_text(encoding="utf-8"))
     text = render_prereg(root, current_hashes(root), _dev_log(root), data["dataset"], data["counts"], LIMITATIONS)
-    (root / PREREG_FILE).write_text(text, encoding="utf-8")
+    with (root / PREREG_FILE).open("x", encoding="utf-8") as fh:
+        fh.write(text)
     typer.echo(f"wrote {PREREG_FILE}; frozen drift now: {h2_frozen_drift(root)}")

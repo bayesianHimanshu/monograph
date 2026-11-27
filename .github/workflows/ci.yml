@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the prereg gate reads each PREREG.md's first commit
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - name: ruff
@@ -29,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the prereg gate reads each PREREG.md's first commit
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - name: unit tests (round trip, property-based agreement, generators)
@@ -41,6 +45,8 @@ jobs:
         run: uv run monograph check lint
       - name: agreement (fixtures, probes, real openFDA records)
         run: uv run monograph check agreement
+      - name: PREREG immutability
+        run: uv run monograph check prereg
 
   integration:
     if: github.event_name != 'schedule'
@@ -61,6 +67,8 @@ jobs:
       MONOGRAPH_PG_DSN: postgresql://monograph:monograph@localhost:5432/monograph
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the prereg gate reads each PREREG.md's first commit
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - name: Postgres integration
@@ -75,6 +83,8 @@ jobs:
       MONOGRAPH_AGE_DSN: postgresql://monograph:monograph@localhost:5433/monograph
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the prereg gate reads each PREREG.md's first commit
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - name: start Postgres + AGE
@@ -106,6 +116,8 @@ jobs:
       MONOGRAPH_PG_DSN: postgresql://monograph:monograph@localhost:5432/monograph
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the prereg gate reads each PREREG.md's first commit
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked
       - name: mutation suite

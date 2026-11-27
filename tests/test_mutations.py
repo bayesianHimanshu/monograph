@@ -15,9 +15,11 @@ from .conftest import ROOT
 @pytest.mark.parametrize("mutation", MUTATIONS, ids=lambda m: m.id)
 def test_every_mutation_still_applies_to_the_source(mutation: Mutation) -> None:
     with temp_copy(ROOT) as root:
-        before = {p: p.read_bytes() for p in (root / "src").rglob("*.py")} | {
-            p: p.read_bytes() for p in (root / "generated").glob("*.*")
-        }
+        before = (
+            {p: p.read_bytes() for p in (root / "src").rglob("*.py")}
+            | {p: p.read_bytes() for p in (root / "generated").glob("*.*")}
+            | {p: p.read_bytes() for p in (root / "docs").rglob("PREREG.md")}
+        )
         mutation.apply(root, lambda *args: None)
         after = {p: p.read_bytes() for p in before}
         assert before != after, f"{mutation.id} changed nothing"
