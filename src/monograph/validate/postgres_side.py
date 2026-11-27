@@ -57,6 +57,8 @@ class PostgresLoader:
             if f.name not in instance.__dict__:
                 continue
             value = instance.__dict__[f.name]
+            if f.kind is Kind.EMBEDDED and value is None:
+                continue  # an absent optional embedded value has no child row
             if f.kind is Kind.EMBEDDED or (f.kind is Kind.REF and f.is_collection):
                 later.append((f, value))
             else:

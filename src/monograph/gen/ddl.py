@@ -110,14 +110,39 @@ class _Table:
     name: str
     columns: list[str] = field(default_factory=list)
     constraints: list[str] = field(default_factory=list)
+    comment: str | None = None
+    column_comments: list[tuple[str, str]] = field(default_factory=list)
 
     def check(self, label: str, expression: str) -> None:
         name = identifier(f"ck_{self.name}_{label}")
         self.constraints.append(f"CONSTRAINT {name} CHECK ({expression})")
 
+    def describe(self, column: str, text: str) -> None:
+        self.column_comments.append((column, text))
+
     def render(self) -> str:
         body = ",\n".join(f"    {line}" for line in [*self.columns, *self.constraints])
-        return f"CREATE TABLE {self.name} (\n{body}\n);"
+        lines = [f"CREATE TABLE {self.name} (\n{body}\n);"]
+        if self.comment is not None:
+            lines.append(f"COMMENT ON TABLE {self.name} IS {_literal(self.comment)};")
+        lines += [f"COMMENT ON COLUMN {self.name}.{c} IS {_literal(text)};" for c, text in self.column_comments]
+        return "\n".join(lines)
+
+
+def _field_text(f: FieldSpec) -> str:
+    return f.description or f.prop.label
+
+
+ENUM_LISTED_UP_TO = 12  # members; longer enums (routes, dosage forms) are not listed in descriptions
+
+
+def describe_field(f: FieldSpec) -> str:
+    """The description shown to agents, identical in the DDL comments and the graph projection: the field
+    description, plus the allowed values for a short enum."""
+    text = _field_text(f)
+    if f.enum is not None and len(f.enum) <= ENUM_LISTED_UP_TO:
+        text += " One of: " + ", ".join(m.value for m in f.enum) + "."
+    return text
 
 
 class DdlGenerator:
@@ -149,7 +174,7 @@ class DdlGenerator:
     # -----------------------------------------------------------------------------------------------
 
     def _entity(self, c: ClassSpec, unenforced: list[Unenforced]) -> list[_Table]:
-        table = _Table(table_name(c.cls))
+        table = _Table(table_name(c.cls), comment=c.doc)
         self._iri_column(table)
         extra = self._fields(table, c, unenforced)
         keys = ", ".join(column_name(c.field(k)) for k in c.meta.key)
@@ -183,6 +208,7 @@ class DdlGenerator:
         self._check_pattern(IRI_PATTERN)
         table.columns.append("iri text PRIMARY KEY")
         table.check("iri_pattern", f"iri ~ {_literal(IRI_PATTERN)}")
+        table.describe("iri", "Canonical identifier (IRI).")
 
     def _fields(self, table: _Table, c: ClassSpec, unenforced: list[Unenforced]) -> list[_Table]:
         extra: list[_Table] = []
@@ -199,6 +225,7 @@ class DdlGenerator:
 
     def _column(self, table: _Table, c: ClassSpec, f: FieldSpec) -> None:
         col = column_name(f)
+        table.describe(col, describe_field(f))
         not_null = " NOT NULL" if f.card is Card.ONE else ""
         if f.kind is Kind.REF:
             assert f.target is not None
@@ -247,6 +274,7 @@ class DdlGenerator:
     def _enum_array(self, table: _Table, f: FieldSpec) -> None:
         assert f.enum is not None
         col = f.name
+        table.describe(col, describe_field(f))
         values = ", ".join(_literal(m.value) for m in f.enum)
         table.columns.append(f"{col} text[] NOT NULL DEFAULT '{{}}'")
         table.check(f"{col}_enum", f"{col} <@ ARRAY[{values}]::text[]")
@@ -257,9 +285,11 @@ class DdlGenerator:
 
     def _join_table(self, owner: str, c: ClassSpec, f: FieldSpec, unenforced: list[Unenforced]) -> _Table:
         assert f.target is not None
-        t = _Table(child_table(owner, f))
+        t = _Table(child_table(owner, f), comment=f"{c.cls.__name__}.{f.name}: {_field_text(f)}")
         t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE{self._fk}")
         t.columns.append(f"target_iri text NOT NULL REFERENCES {table_name(f.target)} (iri){self._fk}")
+        t.describe("owner_iri", f"The {c.cls.__name__} row ({owner}.iri).")
+        t.describe("target_iri", f"The {f.target.__name__} row ({table_name(f.target)}.iri).")
         t.check("target_iri_pattern", f"target_iri ~ {_literal(IRI_PATTERN)}")
         t.constraints.append(f"CONSTRAINT {identifier(f'pk_{t.name}')} PRIMARY KEY (owner_iri, target_iri)")
         self._row_counts(c, f, unenforced)
@@ -268,10 +298,12 @@ class DdlGenerator:
     def _embedded(self, owner: str, c: ClassSpec, f: FieldSpec, unenforced: list[Unenforced]) -> list[_Table]:
         assert f.target is not None
         target = self._spec.of(f.target)
-        t = _Table(child_table(owner, f))
+        t = _Table(child_table(owner, f), comment=f"{c.cls.__name__}.{f.name}: {_field_text(f)} {target.doc}")
         self._iri_column(t)
         t.columns.append(f"owner_iri text NOT NULL REFERENCES {owner} (iri) ON DELETE CASCADE{self._fk}")
+        t.describe("owner_iri", f"The owning {c.cls.__name__} row ({owner}.iri).")
         if f.card is Card.LIST:
+            t.describe("position", "Position in the owner's list, from 0.")
             t.columns.append("position integer NOT NULL")
             t.check("position_min_inclusive", "position >= 0")
             t.constraints.append(f"CONSTRAINT {identifier(f'uq_{t.name}_position')} UNIQUE (owner_iri, position)")

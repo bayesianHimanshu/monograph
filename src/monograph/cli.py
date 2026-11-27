@@ -133,9 +133,31 @@ def check_breaking(
     typer.echo("breaking-change check ok")
 
 
+def _prereg(root: Path) -> bool:
+    from monograph.validate.prereg import PreregError, prereg_violations
+
+    try:
+        problems = prereg_violations(root)
+    except PreregError as exc:
+        typer.echo(f"prereg: {exc}", err=True)
+        return False
+    for problem in problems:
+        typer.echo(f"prereg: {problem}", err=True)
+    return not problems
+
+
+@check_app.command("prereg")
+def check_prereg(root: Root = Path()) -> None:
+    """Fail if a committed PREREG.md or pinned experiments/hN/frozen/ file changed, a DEVIATIONS.md lost an
+    entry, or a PREREG references a file outside experiments/hN/frozen/ and docs/hN/ without a logged pin."""
+    if not _prereg(root):
+        raise _fail("prereg check: pre-registrations are immutable once committed")
+    typer.echo("prereg check ok")
+
+
 @check_app.command("all")
 def check_all(root: Root = Path()) -> None:
-    """Run drift, breaking-change, lint and agreement, and report every failure."""
+    """Run drift, breaking-change, lint, agreement and prereg, and report every failure."""
     from monograph.core import models
     from monograph.validate.lint import ValidatorLinter
 
@@ -152,6 +174,8 @@ def check_all(root: Root = Path()) -> None:
         failed.append("lint")
     if not _agreement(root):
         failed.append("agreement")
+    if not _prereg(root):
+        failed.append("prereg")
     if failed:
         raise _fail(f"gates failed: {', '.join(failed)}")
     typer.echo("all gates ok")
@@ -297,6 +321,14 @@ def report_h6(root: Root = Path()) -> None:
     path = root / "docs" / "h6" / "RESULTS.md"
     path.write_text(text, encoding="utf-8")
     typer.echo(f"wrote {path} from {len(records)} result lines")
+
+
+@report_app.command("h2")
+def report_h2(root: Root = Path()) -> None:
+    """Regenerate docs/h2/RESULTS.md from results/h2/*.jsonl alone."""
+    from monograph.graph.cli import report_h2 as run
+
+    run(root)
 
 
 @report_app.command("h4")
@@ -487,3 +519,7 @@ app.add_typer(h4_app, name="h4")
 
 if __name__ == "__main__":
     app()
+
+from monograph.graph.cli import h2_app  # noqa: E402
+
+app.add_typer(h2_app, name="h2")

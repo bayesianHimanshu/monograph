@@ -145,10 +145,33 @@
       "type": "object",
       "x-rdf-class": "https://example.org/monograph/ontology#AdverseEventReport"
     },
+    "AliasSource": {
+      "description": "Which kind of record an organization name variant was seen in.",
+      "enum": [
+        "ndc_directory",
+        "enforcement",
+        "rxnav"
+      ],
+      "title": "AliasSource",
+      "type": "string"
+    },
     "ClinicalDrug": {
       "additionalProperties": false,
       "description": "A clinical drug concept in RxNorm, identified by its RxCUI.\n\nSeveral NDC products can share one clinical drug. The name is optional because openFDA carries\nRxCUIs without their RxNorm names.",
       "properties": {
+        "generic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GenericLink"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For a branded drug (SBD or BPCK), the generic clinical drug it is a brand of.",
+          "x-rdf-property": "https://example.org/monograph/ontology#hasGeneric"
+        },
         "name": {
           "anyOf": [
             {
@@ -177,6 +200,24 @@
           "title": "Rxcui",
           "type": "string",
           "x-rdf-property": "https://example.org/monograph/ontology#rxcui"
+        },
+        "term_type": {
+          "anyOf": [
+            {
+              "not": {
+                "pattern": "[\u0000-\u001f\u007f-\u009f]"
+              },
+              "pattern": "^[A-Z]{2,6}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.",
+          "title": "Term Type",
+          "x-rdf-property": "https://example.org/monograph/ontology#termType"
         }
       },
       "required": [
@@ -381,6 +422,18 @@
           "type": "string",
           "x-rdf-property": "https://example.org/monograph/ontology#verbatimDrugName"
         },
+        "harmonized_clinical_drugs": {
+          "default": [],
+          "description": "Every RxCUI openFDA's harmonization assigns to the reported drug (openfda.rxcui).",
+          "items": {
+            "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+            "type": "string"
+          },
+          "title": "Harmonized Clinical Drugs",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#harmonizedClinicalDrug"
+        },
         "role": {
           "$ref": "#/$defs/DrugRole",
           "description": "Role in the report.",
@@ -394,6 +447,43 @@
       "title": "DrugInvolvement",
       "type": "object",
       "x-rdf-class": "https://example.org/monograph/ontology#DrugInvolvement"
+    },
+    "DrugMapping": {
+      "additionalProperties": false,
+      "description": "A crosswalk entry from a product to an RxNorm clinical drug, with its provenance.",
+      "properties": {
+        "clinical_drug": {
+          "description": "The RxCUI.",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Clinical Drug",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#mappedClinicalDrug"
+        },
+        "evidence": {
+          "description": "The request or record the mapping was read from.",
+          "maxLength": 500,
+          "minLength": 1,
+          "not": {
+            "pattern": "[\u0000-\b\u000b-\f\u000e-\u001f\u007f-\u009f]"
+          },
+          "title": "Evidence",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#evidence"
+        },
+        "source": {
+          "$ref": "#/$defs/MappingSource",
+          "description": "Source.",
+          "x-rdf-property": "https://example.org/monograph/ontology#mappingSource"
+        }
+      },
+      "required": [
+        "clinical_drug",
+        "source",
+        "evidence"
+      ],
+      "title": "DrugMapping",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#DrugMapping"
     },
     "DrugRole": {
       "description": "The role a drug played in an adverse event report.\n\n`suspect` is E2B characterization 1 when the source does not say which suspect is primary.",
@@ -622,6 +712,37 @@
       "type": "object",
       "x-rdf-class": "https://example.org/monograph/ontology#ExtractedProduct"
     },
+    "GenericLink": {
+      "additionalProperties": false,
+      "description": "The generic clinical drug a branded drug is a trade name of, with where that is stated.",
+      "properties": {
+        "drug": {
+          "description": "The generic clinical drug.",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Drug",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#genericDrug"
+        },
+        "source": {
+          "description": "Provenance: the RxNav request and RxNorm data version.",
+          "maxLength": 200,
+          "minLength": 1,
+          "not": {
+            "pattern": "[\u0000-\b\u000b-\f\u000e-\u001f\u007f-\u009f]"
+          },
+          "title": "Source",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#linkSource"
+        }
+      },
+      "required": [
+        "drug",
+        "source"
+      ],
+      "title": "GenericLink",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#GenericLink"
+    },
     "Ingredient": {
       "additionalProperties": false,
       "description": "An active ingredient of a product with its strength.",
@@ -817,10 +938,61 @@
       "type": "object",
       "x-rdf-class": "https://example.org/monograph/ontology#LabelSection"
     },
+    "MappingSource": {
+      "description": "Where a product-to-clinical-drug mapping comes from.",
+      "enum": [
+        "openfda_ndc",
+        "rxnav_ndcproperties"
+      ],
+      "title": "MappingSource",
+      "type": "string"
+    },
+    "MoietyLink": {
+      "additionalProperties": false,
+      "description": "The active moiety of a substance that is a salt, ester or other form of it, with where that is stated.",
+      "properties": {
+        "moiety": {
+          "description": "The active moiety (parent substance).",
+          "pattern": "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$",
+          "title": "Moiety",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#moiety"
+        },
+        "source": {
+          "description": "Provenance: 'spl:<set id>' of the label that states it.",
+          "maxLength": 200,
+          "minLength": 1,
+          "not": {
+            "pattern": "[\u0000-\b\u000b-\f\u000e-\u001f\u007f-\u009f]"
+          },
+          "title": "Source",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#linkSource"
+        }
+      },
+      "required": [
+        "moiety",
+        "source"
+      ],
+      "title": "MoietyLink",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#MoietyLink"
+    },
     "Organization": {
       "additionalProperties": false,
       "description": "A company acting as manufacturer, labeler or recalling firm.",
       "properties": {
+        "aliases": {
+          "default": [],
+          "description": "Other names this firm appears under, each with its source and evidence.",
+          "items": {
+            "$ref": "#/$defs/OrganizationAlias"
+          },
+          "title": "Aliases",
+          "type": "array",
+          "uniqueItems": true,
+          "x-rdf-property": "https://example.org/monograph/ontology#alias"
+        },
         "name": {
           "description": "Preferred name.",
           "maxLength": 500,
@@ -851,6 +1023,47 @@
       "title": "Organization",
       "type": "object",
       "x-rdf-class": "https://example.org/monograph/ontology#Organization"
+    },
+    "OrganizationAlias": {
+      "additionalProperties": false,
+      "description": "A name variant of an organization, tied to it by an identifier (the NDC labeler code), not by\nsimilarity.",
+      "properties": {
+        "evidence": {
+          "description": "The record and identifier that tie the name to the firm.",
+          "maxLength": 500,
+          "minLength": 1,
+          "not": {
+            "pattern": "[\u0000-\b\u000b-\f\u000e-\u001f\u007f-\u009f]"
+          },
+          "title": "Evidence",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#evidence"
+        },
+        "name": {
+          "description": "The variant.",
+          "maxLength": 500,
+          "minLength": 1,
+          "not": {
+            "pattern": "[\u0000-\b\u000b-\f\u000e-\u001f\u007f-\u009f]"
+          },
+          "title": "Name",
+          "type": "string",
+          "x-rdf-property": "https://example.org/monograph/ontology#aliasName"
+        },
+        "source": {
+          "$ref": "#/$defs/AliasSource",
+          "description": "Record kind.",
+          "x-rdf-property": "https://example.org/monograph/ontology#aliasSource"
+        }
+      },
+      "required": [
+        "name",
+        "source",
+        "evidence"
+      ],
+      "title": "OrganizationAlias",
+      "type": "object",
+      "x-rdf-class": "https://example.org/monograph/ontology#OrganizationAlias"
     },
     "PackagedProduct": {
       "additionalProperties": false,
@@ -891,6 +1104,24 @@
           "title": "Ndc",
           "type": "string",
           "x-rdf-property": "https://example.org/monograph/ontology#ndc"
+        },
+        "ndc11": {
+          "anyOf": [
+            {
+              "not": {
+                "pattern": "[\u0000-\u001f\u007f-\u009f]"
+              },
+              "pattern": "^[0-9]{11}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The same NDC in the 11-digit 5-4-2 form without hyphens (HIPAA form): a leading zero is added to the short segment.",
+          "title": "Ndc11",
+          "x-rdf-property": "https://example.org/monograph/ontology#ndc11"
         },
         "product": {
           "description": "The packaged product.",
@@ -972,6 +1203,16 @@
           "title": "Dosage Form",
           "type": "string",
           "x-rdf-property": "https://example.org/monograph/ontology#dosageForm"
+        },
+        "drug_mappings": {
+          "default": [],
+          "description": "Crosswalk to RxNorm clinical drugs (RxCUIs), one entry per source, sorted.",
+          "items": {
+            "$ref": "#/$defs/DrugMapping"
+          },
+          "title": "Drug Mappings",
+          "type": "array",
+          "x-rdf-property": "https://example.org/monograph/ontology#drugMapping"
         },
         "finished": {
           "description": "Whether this is a finished product (False for bulk ingredients and intermediates).",
@@ -1309,6 +1550,19 @@
       "additionalProperties": false,
       "description": "A chemical or biological substance identified by its FDA Unique Ingredient Identifier.",
       "properties": {
+        "active_moiety": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MoietyLink"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For a salt, ester or other form, its active moiety (for example ampicillin sodium to ampicillin). Absent when the substance is its own moiety or no label states one.",
+          "x-rdf-property": "https://example.org/monograph/ontology#hasActiveMoiety"
+        },
         "name": {
           "description": "Preferred name.",
           "maxLength": 500,
@@ -1399,7 +1653,7 @@
       "type": "string"
     }
   },
-  "$id": "https://example.org/monograph/schema/2.1.1",
+  "$id": "https://example.org/monograph/schema/2.2.0",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "anyOf": [
     {
@@ -1431,5 +1685,5 @@
     }
   ],
   "title": "MONOGRAPH drug product model",
-  "x-schema-version": "2.1.1"
+  "x-schema-version": "2.2.0"
 }

@@ -109,7 +109,8 @@ def _m6(root: Path, cli: Cli) -> None:
 
 
 def _m7(root: Path, cli: Cli) -> None:
-    # INTRAVENOUS BOLUS (C38274) is in FDA's Data Standards Manual list but not in the SPL list we ship.
+    # INTRAVENOUS BOLUS (C38274) is in FDA's Data Standards Manual list but not in the SPL list we ship. It
+    # also changes the live extraction schema, which H4 no longer reads (it loads its pinned copy).
     replace_once(
         root,
         MODELS,
@@ -172,6 +173,53 @@ def _m13(root: Path, cli: Cli) -> None:
     cli("gen")
 
 
+AGE_JSON = Path("generated/monograph.age.json")
+AGE_GEN = Path("src/monograph/gen/age.py")
+
+
+def _m14(root: Path, cli: Cli) -> None:
+    # Hand-edit the generated projection: drop the RECALLING_FIRM edge label.
+    import json
+
+    path = root / AGE_JSON
+    data = json.loads(path.read_text(encoding="utf-8"))
+    before = len(data["edges"])
+    data["edges"] = [e for e in data["edges"] if e["label"] != "RECALLING_FIRM"]
+    if len(data["edges"]) != before - 1:
+        raise MutationError("RECALLING_FIRM edge label not found")
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def _m15(root: Path, cli: Cli) -> None:
+    # The projection generator stops emitting edges for single (non-collection) references, regenerated, so
+    # the drift check stays green.
+    replace_once(
+        root,
+        AGE_GEN,
+        "                b.edge(edge_label(f.prop.name), source)\n",
+        "                if f.is_collection:\n                    b.edge(edge_label(f.prop.name), source)\n",
+    )
+    cli("gen")
+
+
+H4_PREREG = Path("docs/h4/PREREG.md")
+
+
+def _m16(root: Path, cli: Cli) -> None:
+    # Edit a committed pre-registration after the fact: loosen H4's decision threshold.
+    path = root / H4_PREREG
+    text = path.read_text(encoding="utf-8")
+    path.write_text(text + "\nAmendment: the threshold is relaxed to 0.02.\n", encoding="utf-8")
+
+
+H4_PINNED_SCHEMA = Path("experiments/h4/frozen/monograph.extraction.schema.json")
+
+
+def _m17(root: Path, cli: Cli) -> None:
+    # Tamper with H4's pinned extraction schema: drop one dosage form from the enum H4 extracted against.
+    replace_once(root, H4_PINNED_SCHEMA, '        "AEROSOL, FOAM",\n', "")
+
+
 MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M1", "Hand-edit generated SHACL to loosen a pattern", "drift", _m1),
     Mutation("M2", "Add a field to a model without regenerating", "drift", _m2),
@@ -186,6 +234,10 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M11", "Hand-edit the test-profile DDL to make a foreign key non-deferrable", "drift", _m11),
     Mutation("M12", "Bump the major version without a release snapshot", "breaking", _m12),
     Mutation("M13", "JSON Schema generator drops every pattern (regenerated)", "agreement|tests", _m13),
+    Mutation("M14", "Hand-edit the generated graph projection to drop an edge label", "drift", _m14),
+    Mutation("M15", "Graph projection generator drops single-reference edges (regenerated)", "tests", _m15),
+    Mutation("M16", "Edit a committed PREREG.md after its first commit", "prereg", _m16),
+    Mutation("M17", "Tamper with H4's pinned extraction schema", "tests", _m17),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

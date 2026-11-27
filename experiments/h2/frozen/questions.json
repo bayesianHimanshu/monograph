@@ -1,0 +1,6125 @@
+{
+ "counts": {
+  "T1": {
+   "dev": 10,
+   "test": 40
+  },
+  "T2": {
+   "dev": 10,
+   "test": 40
+  },
+  "T3": {
+   "dev": 10,
+   "test": 40
+  },
+  "T4": {
+   "dev": 10,
+   "test": 40
+  },
+  "T5": {
+   "dev": 10,
+   "test": 40
+  },
+  "T6": {
+   "dev": 10,
+   "test": 40
+  }
+ },
+ "dataset": {
+  "AdverseEventReport": 1422,
+  "ClinicalDrug": 8468,
+  "Label": 892,
+  "Organization": 646,
+  "PackagedProduct": 4713,
+  "Product": 2132,
+  "Recall": 1161,
+  "Substance": 866
+ },
+ "questions": [
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/68382-021-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/zydus-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-00",
+   "params": {
+    "ndc": "68382-021-01"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which firm labels the package with NDC 68382-021-01?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/55111-466-78"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/dr-reddy-s-laboratories-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-01",
+   "params": {
+    "ndc": "55111-466-78"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Who is the labeler of package NDC 55111-466-78?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/29300-188-10"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/unichem-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-02",
+   "params": {
+    "ndc": "29300-188-10"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Name the firm that labels the package 29300-188-10.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0409-4713-26"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/hospira-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-03",
+   "params": {
+    "ndc": "0409-4713-26"
+   },
+   "phrasing": 3,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which organization is the labeler of the package with NDC 0409-4713-26?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/45963-305-09"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/actavis-pharma-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-04",
+   "params": {
+    "ndc": "45963-305-09"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which firm labels the package with NDC 45963-305-09?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/15631-0261-4"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/rxhomeo-private-limited-d-b-a-rxhomeo-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-05",
+   "params": {
+    "ndc": "15631-0261-4"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t1_package_labeler",
+   "text": "Who is the labeler of package NDC 15631-0261-4?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/33342-094-45"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/macleods-pharmaceuticals-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-06",
+   "params": {
+    "ndc": "33342-094-45"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Name the firm that labels the package 33342-094-45.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/31722-819-32"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/camber-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-07",
+   "params": {
+    "ndc": "31722-819-32"
+   },
+   "phrasing": 3,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which organization is the labeler of the package with NDC 31722-819-32?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/50268-068-15"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/avpak"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-08",
+   "params": {
+    "ndc": "50268-068-15"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which firm labels the package with NDC 50268-068-15?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/33342-094-47"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/macleods-pharmaceuticals-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-09",
+   "params": {
+    "ndc": "33342-094-47"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t1_package_labeler",
+   "text": "Who is the labeler of package NDC 33342-094-47?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0187-0798-42"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/bausch-health-us-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-10",
+   "params": {
+    "ndc": "0187-0798-42"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Name the firm that labels the package 0187-0798-42.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/55513-813-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/amgen-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-11",
+   "params": {
+    "ndc": "55513-813-01"
+   },
+   "phrasing": 3,
+   "split": "dev",
+   "template": "t1_package_labeler",
+   "text": "Which organization is the labeler of the package with NDC 55513-813-01?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0121-0978-00"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/pai-holdings-llc-dba-pai-pharma"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-12",
+   "params": {
+    "ndc": "0121-0978-00"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which firm labels the package with NDC 0121-0978-00?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/70710-1644-5"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/zydus-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-13",
+   "params": {
+    "ndc": "70710-1644-5"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t1_package_labeler",
+   "text": "Who is the labeler of package NDC 70710-1644-5?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0603-5337-15"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/par-health-usa-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-14",
+   "params": {
+    "ndc": "0603-5337-15"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Name the firm that labels the package 0603-5337-15.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/75826-115-10"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/winder-laboratories-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-15",
+   "params": {
+    "ndc": "75826-115-10"
+   },
+   "phrasing": 3,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which organization is the labeler of the package with NDC 75826-115-10?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/68180-295-03"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/lupin-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_package_labeler-16",
+   "params": {
+    "ndc": "68180-295-03"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_package_labeler",
+   "text": "Which firm labels the package with NDC 68180-295-03?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/0603-5337"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/VB0R961HZT"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-00",
+   "params": {
+    "product_ndc": "0603-5337"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "Which substances are the active ingredients of the product with product NDC 0603-5337?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/53185-277"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/V1Q0O9OJ9Z"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-01",
+   "params": {
+    "product_ndc": "53185-277"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "What are the active ingredients of product NDC 53185-277?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/50268-163"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/9WP59609J6"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-02",
+   "params": {
+    "product_ndc": "50268-163"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "List the active ingredient substances of the product 50268-163.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/70377-068"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/X0Z7454B90"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-03",
+   "params": {
+    "product_ndc": "70377-068"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t1_product_ingredients",
+   "text": "Which substances are the active ingredients of the product with product NDC 70377-068?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/50268-167"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/Q0MQD1073Q"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-04",
+   "params": {
+    "product_ndc": "50268-167"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "What are the active ingredients of product NDC 50268-167?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/17271-710"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/451W47IQ8X",
+     "https://example.org/monograph/substance/660YQ98I10",
+     "https://example.org/monograph/substance/M4I0D6VV5M",
+     "https://example.org/monograph/substance/TU7HW0W0QT"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-05",
+   "params": {
+    "product_ndc": "17271-710"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "List the active ingredient substances of the product 17271-710.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/70069-231"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/4S9CL2DY2H"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-06",
+   "params": {
+    "product_ndc": "70069-231"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "Which substances are the active ingredients of the product with product NDC 70069-231?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/68180-423"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/97I1C92E55"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-07",
+   "params": {
+    "product_ndc": "68180-423"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "What are the active ingredients of product NDC 68180-423?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/60793-852"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/9J765S329G"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-08",
+   "params": {
+    "product_ndc": "60793-852"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "List the active ingredient substances of the product 60793-852.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/67877-437"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/0020414E5U"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-09",
+   "params": {
+    "product_ndc": "67877-437"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "Which substances are the active ingredients of the product with product NDC 67877-437?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/42292-041"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/9J765S329G"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-10",
+   "params": {
+    "product_ndc": "42292-041"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "What are the active ingredients of product NDC 42292-041?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/16571-820"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/YF1K15M17Y"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-11",
+   "params": {
+    "product_ndc": "16571-820"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "List the active ingredient substances of the product 16571-820.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/63347-600"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/K3D86KJ24N"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-12",
+   "params": {
+    "product_ndc": "63347-600"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "Which substances are the active ingredients of the product with product NDC 63347-600?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/60687-793"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/ZG7E5POY8O"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-13",
+   "params": {
+    "product_ndc": "60687-793"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t1_product_ingredients",
+   "text": "What are the active ingredients of product NDC 60687-793?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/68462-726"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/Z8J84YIX6L"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-14",
+   "params": {
+    "product_ndc": "68462-726"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "List the active ingredient substances of the product 68462-726.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/16729-490"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/R4Z9X1N2ND"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-15",
+   "params": {
+    "product_ndc": "16729-490"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_product_ingredients",
+   "text": "Which substances are the active ingredients of the product with product NDC 16729-490?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/0941-0427"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/02F3473H9O",
+     "https://example.org/monograph/substance/451W47IQ8X",
+     "https://example.org/monograph/substance/LX22YL083G",
+     "https://example.org/monograph/substance/M4I0D6VV5M",
+     "https://example.org/monograph/substance/TU7HW0W0QT"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_product_ingredients-16",
+   "params": {
+    "product_ndc": "0941-0427"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t1_product_ingredients",
+   "text": "What are the active ingredients of product NDC 0941-0427?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0590-2024"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/60687-782",
+     "https://example.org/monograph/product/60687-793"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-00",
+   "params": {
+    "recall_number": "D-0590-2024"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "Which products does recall D-0590-2024 name?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0200-2024"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0093-1712",
+     "https://example.org/monograph/product/0093-1713",
+     "https://example.org/monograph/product/0093-1714",
+     "https://example.org/monograph/product/0093-1715",
+     "https://example.org/monograph/product/0093-1716",
+     "https://example.org/monograph/product/0093-1718",
+     "https://example.org/monograph/product/0093-1720",
+     "https://example.org/monograph/product/0093-1721",
+     "https://example.org/monograph/product/0093-1723"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-01",
+   "params": {
+    "recall_number": "D-0200-2024"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "What products are named in recall D-0200-2024?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0553-2021"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/61703-350",
+     "https://example.org/monograph/product/61703-408"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-02",
+   "params": {
+    "recall_number": "D-0553-2021"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t1_recall_products",
+   "text": "List the products covered by recall D-0553-2021.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0302-2025"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0869-0871"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-03",
+   "params": {
+    "recall_number": "D-0302-2025"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "Which products does recall D-0302-2025 name?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-1066-2020"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0573-0149",
+     "https://example.org/monograph/product/0573-0169",
+     "https://example.org/monograph/product/0573-1769"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-04",
+   "params": {
+    "recall_number": "D-1066-2020"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "What products are named in recall D-1066-2020?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0350-2019"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/68462-711"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-05",
+   "params": {
+    "recall_number": "D-0350-2019"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "List the products covered by recall D-0350-2019.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0037-2026"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/16571-862",
+     "https://example.org/monograph/product/16571-863"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-06",
+   "params": {
+    "recall_number": "D-0037-2026"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "Which products does recall D-0037-2026 name?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0469-2025"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/67877-544",
+     "https://example.org/monograph/product/67877-545"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-07",
+   "params": {
+    "recall_number": "D-0469-2025"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t1_recall_products",
+   "text": "What products are named in recall D-0469-2025?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0288-2026"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/62795-4005"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-08",
+   "params": {
+    "recall_number": "D-0288-2026"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "List the products covered by recall D-0288-2026.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0578-2025"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/68462-162",
+     "https://example.org/monograph/product/68462-163",
+     "https://example.org/monograph/product/68462-164",
+     "https://example.org/monograph/product/68462-165"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-09",
+   "params": {
+    "recall_number": "D-0578-2025"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "Which products does recall D-0578-2025 name?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-1041-2019"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/31722-700",
+     "https://example.org/monograph/product/31722-701",
+     "https://example.org/monograph/product/31722-702"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-10",
+   "params": {
+    "recall_number": "D-1041-2019"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "What products are named in recall D-1041-2019?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-013-2014"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0409-4755",
+     "https://example.org/monograph/product/0409-4759"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-11",
+   "params": {
+    "recall_number": "D-013-2014"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "List the products covered by recall D-013-2014.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0367-2021"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/23155-227",
+     "https://example.org/monograph/product/23155-228"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-12",
+   "params": {
+    "recall_number": "D-0367-2021"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t1_recall_products",
+   "text": "Which products does recall D-0367-2021 name?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0605-2017"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/68382-022",
+     "https://example.org/monograph/product/68382-023",
+     "https://example.org/monograph/product/68382-024"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-13",
+   "params": {
+    "recall_number": "D-0605-2017"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "What products are named in recall D-0605-2017?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-1581-2019"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/68180-518",
+     "https://example.org/monograph/product/68180-519",
+     "https://example.org/monograph/product/68180-520"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-14",
+   "params": {
+    "recall_number": "D-1581-2019"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "List the products covered by recall D-1581-2019.",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/recall/D-0290-2015"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/63323-010"
+    ],
+    "kind": "ids"
+   },
+   "id": "t1_recall_products-15",
+   "params": {
+    "recall_number": "D-0290-2015"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t1_recall_products",
+   "text": "Which products does recall D-0290-2015 name?",
+   "type": "T1"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/YF1K15M17Y"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/deva-holding-as-cerkezkoy-subesi",
+     "https://example.org/monograph/organization/rising-pharma-holding-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-00",
+   "params": {
+    "name": "TEMOZOLOMIDE",
+    "unii": "YF1K15M17Y"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which firms recalled products that contain TEMOZOLOMIDE (UNII YF1K15M17Y)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/X0Z7454B90"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/appco-pharma-llc",
+     "https://example.org/monograph/organization/teva-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-01",
+   "params": {
+    "name": "PRAZOSIN HYDROCHLORIDE",
+    "unii": "X0Z7454B90"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which recalling firms issued recalls of products containing PRAZOSIN HYDROCHLORIDE (UNII X0Z7454B90)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/O80TY208ZW"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/biolyte-laboratories-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-02",
+   "params": {
+    "name": "ARNICA MONTANA",
+    "unii": "O80TY208ZW"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Name the firms that recalled a product with the active ingredient ARNICA MONTANA (UNII O80TY208ZW).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/241ATL177A"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/mckesson-medical-surgical-inc-corporate-office"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-03",
+   "params": {
+    "name": "SOYBEAN OIL",
+    "unii": "241ATL177A"
+   },
+   "phrasing": 3,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which organizations recalled products that have SOYBEAN OIL (UNII 241ATL177A) as an active ingredient?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/WEC6I2K1FC"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/cardinal-health-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-04",
+   "params": {
+    "name": "AZILSARTAN KAMEDOXOMIL",
+    "unii": "WEC6I2K1FC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which firms recalled products that contain AZILSARTAN KAMEDOXOMIL (UNII WEC6I2K1FC)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/1LZ13MQR0S"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/biolyte-laboratories-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-05",
+   "params": {
+    "name": "FRANGULA CALIFORNICA BARK",
+    "unii": "1LZ13MQR0S"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which recalling firms issued recalls of products containing FRANGULA CALIFORNICA BARK (UNII 1LZ13MQR0S)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/EH28UP18IF"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/dr-reddy-s-laboratories-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-06",
+   "params": {
+    "name": "ISOTRETINOIN",
+    "unii": "EH28UP18IF"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Name the firms that recalled a product with the active ingredient ISOTRETINOIN (UNII EH28UP18IF).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/S7499TYY6G"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/leo-pharma-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-07",
+   "params": {
+    "name": "CALCIPOTRIENE HYDRATE",
+    "unii": "S7499TYY6G"
+   },
+   "phrasing": 3,
+   "split": "dev",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which organizations recalled products that have CALCIPOTRIENE HYDRATE (UNII S7499TYY6G) as an active ingredient?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/VB0R961HZT"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/boehringer-ingelheim-roxane-inc",
+     "https://example.org/monograph/organization/par-pharmaceutical-inc",
+     "https://example.org/monograph/organization/west-ward-pharmaceutical"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-08",
+   "params": {
+    "name": "PREDNISONE",
+    "unii": "VB0R961HZT"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which firms recalled products that contain PREDNISONE (UNII VB0R961HZT)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/5TJD82A1ET"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/china-gel-llc",
+     "https://example.org/monograph/organization/unexo-life-sciences-private-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-09",
+   "params": {
+    "name": "CAMPHOR (SYNTHETIC)",
+    "unii": "5TJD82A1ET"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which recalling firms issued recalls of products containing CAMPHOR (SYNTHETIC) (UNII 5TJD82A1ET)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/PVI5M0M1GW"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/amgen-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-10",
+   "params": {
+    "name": "FILGRASTIM",
+    "unii": "PVI5M0M1GW"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Name the firms that recalled a product with the active ingredient FILGRASTIM (UNII PVI5M0M1GW).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/V8G4MOF2V9"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/glenmark-pharmaceuticals-inc-usa"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-11",
+   "params": {
+    "name": "DEFERASIROX",
+    "unii": "V8G4MOF2V9"
+   },
+   "phrasing": 3,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which organizations recalled products that have DEFERASIROX (UNII V8G4MOF2V9) as an active ingredient?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/L64SXO195N"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/boehringer-ingelheim-roxane-inc",
+     "https://example.org/monograph/organization/cardinal-health-inc",
+     "https://example.org/monograph/organization/cardinal-healthcare"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recall_firms_by_substance-12",
+   "params": {
+    "name": "TIOTROPIUM BROMIDE MONOHYDRATE",
+    "unii": "L64SXO195N"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recall_firms_by_substance",
+   "text": "Which firms recalled products that contain TIOTROPIUM BROMIDE MONOHYDRATE (UNII L64SXO195N)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/B53E3NMY5C"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/dr-reddy-s-laboratories-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-00",
+   "params": {
+    "name": "Tizanidine Hydrochloride",
+    "unii": "B53E3NMY5C"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Which firms label products that contain Tizanidine Hydrochloride (UNII B53E3NMY5C)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/593YOG76RN"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/fenwal-inc",
+     "https://example.org/monograph/organization/terumo-corporation"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-01",
+   "params": {
+    "name": "Sodium Phosphate, Monobasic, Monohydrate",
+    "unii": "593YOG76RN"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Who are the labelers of products containing Sodium Phosphate, Monobasic, Monohydrate (UNII 593YOG76RN)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/K3D86KJ24N"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/blaine-labs-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-02",
+   "params": {
+    "name": "UNDECYLENIC ACID",
+    "unii": "K3D86KJ24N"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Name the firms that label a product with the active ingredient UNDECYLENIC ACID (UNII K3D86KJ24N).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/0K5C5T2QPG"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/zydus-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-03",
+   "params": {
+    "name": "LANSOPRAZOLE",
+    "unii": "0K5C5T2QPG"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t2_labelers_by_substance",
+   "text": "Which firms label products that contain LANSOPRAZOLE (UNII 0K5C5T2QPG)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/146T0TU1JB"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/rising-health-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-04",
+   "params": {
+    "name": "PENICILLIN V POTASSIUM",
+    "unii": "146T0TU1JB"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Who are the labelers of products containing PENICILLIN V POTASSIUM (UNII 146T0TU1JB)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/7S5I7G3JQL"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/sandoz-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-05",
+   "params": {
+    "name": "DEXAMETHASONE",
+    "unii": "7S5I7G3JQL"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Name the firms that label a product with the active ingredient DEXAMETHASONE (UNII 7S5I7G3JQL).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/2XG66W44KF"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/alcon-laboratories-inc",
+     "https://example.org/monograph/organization/kroger-company"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-06",
+   "params": {
+    "name": "OLOPATADINE HYDROCHLORIDE",
+    "unii": "2XG66W44KF"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Which firms label products that contain OLOPATADINE HYDROCHLORIDE (UNII 2XG66W44KF)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/3XMK78S47O"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/actavis-pharma-inc",
+     "https://example.org/monograph/organization/lupin-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-07",
+   "params": {
+    "name": "TESTOSTERONE",
+    "unii": "3XMK78S47O"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t2_labelers_by_substance",
+   "text": "Who are the labelers of products containing TESTOSTERONE (UNII 3XMK78S47O)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/O0P4I5851I"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/sun-pharmaceutical-industries-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-08",
+   "params": {
+    "name": "LURASIDONE HYDROCHLORIDE",
+    "unii": "O0P4I5851I"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t2_labelers_by_substance",
+   "text": "Name the firms that label a product with the active ingredient LURASIDONE HYDROCHLORIDE (UNII O0P4I5851I).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/7TQO7W3VT8"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/fresenius-kabi-usa-llc",
+     "https://example.org/monograph/organization/hospira-inc",
+     "https://example.org/monograph/organization/sportpharm-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-09",
+   "params": {
+    "name": "BUPIVACAINE HYDROCHLORIDE",
+    "unii": "7TQO7W3VT8"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Which firms label products that contain BUPIVACAINE HYDROCHLORIDE (UNII 7TQO7W3VT8)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/2968PHW8QP"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/chartwell-governmental-specialty-rx-llc",
+     "https://example.org/monograph/organization/chartwell-rx-llc",
+     "https://example.org/monograph/organization/terumo-bct-ltd"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-10",
+   "params": {
+    "name": "CITRIC ACID MONOHYDRATE",
+    "unii": "2968PHW8QP"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Who are the labelers of products containing CITRIC ACID MONOHYDRATE (UNII 2968PHW8QP)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/O3J8G9O825"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/abbvie-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-11",
+   "params": {
+    "name": "RITONAVIR",
+    "unii": "O3J8G9O825"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Name the firms that label a product with the active ingredient RITONAVIR (UNII O3J8G9O825).",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/6NAF1689IO"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/boiron",
+     "https://example.org/monograph/organization/medinatura"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_labelers_by_substance-12",
+   "params": {
+    "name": "SCHOENOCAULON OFFICINALE SEED",
+    "unii": "6NAF1689IO"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_labelers_by_substance",
+   "text": "Which firms label products that contain SCHOENOCAULON OFFICINALE SEED (UNII 6NAF1689IO)?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/actavis-laboratories-fl-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/0E43V0BB57",
+     "https://example.org/monograph/substance/QTG126297Q"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-00",
+   "params": {
+    "firm": "Actavis Laboratories, FL, Inc."
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "Which substances are active ingredients of products recalled by Actavis Laboratories, FL, Inc.?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/rising-pharma-holdings-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/4B3SC438HI",
+     "https://example.org/monograph/substance/P8Y54F701R"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-01",
+   "params": {
+    "firm": "Rising Pharma Holdings, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "What active ingredients are in the products that Rising Pharma Holdings, Inc. recalled?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/bionpharma-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/Y883P1Z2LT"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-02",
+   "params": {
+    "firm": "Bionpharma Inc.,"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "List the active ingredient substances of products recalled by Bionpharma Inc.,.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/leadiant-biosciences-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/IF1B771SVB"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-03",
+   "params": {
+    "firm": "Leadiant Biosciences, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "Which substances are active ingredients of products recalled by Leadiant Biosciences, Inc.?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/heritage-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/1Y58DO4MY1",
+     "https://example.org/monograph/substance/JIL713Q00N",
+     "https://example.org/monograph/substance/N6M33094FD",
+     "https://example.org/monograph/substance/OL961R6O2C",
+     "https://example.org/monograph/substance/X4HES1O11F",
+     "https://example.org/monograph/substance/XB13HYU18U"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-04",
+   "params": {
+    "firm": "Heritage Pharmaceuticals Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "What active ingredients are in the products that Heritage Pharmaceuticals Inc recalled?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/kowa-pharmaceuticals-america-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/IYD54XEG3W"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-05",
+   "params": {
+    "firm": "Kowa Pharmaceuticals America, Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "List the active ingredient substances of products recalled by Kowa Pharmaceuticals America, Inc.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/deva-holding-as-cerkezkoy-subesi"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/YF1K15M17Y"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-06",
+   "params": {
+    "firm": "Deva Holding AS - Cerkezkoy Subesi"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "Which substances are active ingredients of products recalled by Deva Holding AS - Cerkezkoy Subesi?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/glenmark-therapeutics-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/5QZO15J2Z8"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-07",
+   "params": {
+    "firm": "Glenmark Therapeutics, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "What active ingredients are in the products that Glenmark Therapeutics, Inc. recalled?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/rising-pharma-holding-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/46627O600J",
+     "https://example.org/monograph/substance/4975G9NM6T",
+     "https://example.org/monograph/substance/MNX7R8C5VO",
+     "https://example.org/monograph/substance/YF1K15M17Y"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-08",
+   "params": {
+    "firm": "Rising Pharma Holding, Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "List the active ingredient substances of products recalled by Rising Pharma Holding, Inc.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/sigmapharm-laboratories-llc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/JKZ19V908O"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-09",
+   "params": {
+    "firm": "Sigmapharm Laboratories, LLC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "Which substances are active ingredients of products recalled by Sigmapharm Laboratories, LLC?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/endo-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/7SFC6U2VI5"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-10",
+   "params": {
+    "firm": "Endo Pharmaceuticals, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "What active ingredients are in the products that Endo Pharmaceuticals, Inc. recalled?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/apotex-corp"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/3I3T11UD2S",
+     "https://example.org/monograph/substance/4EVE5946BQ",
+     "https://example.org/monograph/substance/4S9CL2DY2H",
+     "https://example.org/monograph/substance/G162GK9U4W",
+     "https://example.org/monograph/substance/P8Y54F701R",
+     "https://example.org/monograph/substance/X2ELS050D8",
+     "https://example.org/monograph/substance/XB13HYU18U"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_substances_recalled_by_firm-11",
+   "params": {
+    "firm": "Apotex Corp."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_substances_recalled_by_firm",
+   "text": "List the active ingredient substances of products recalled by Apotex Corp.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/septodont-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0127-2021"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-00",
+   "params": {
+    "firm": "Septodont, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls name products labeled by Septodont, Inc.?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/parke-davis-div-of-pfizer-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0002-2020"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-01",
+   "params": {
+    "firm": "Parke-Davis Div of Pfizer Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls cover a product that Parke-Davis Div of Pfizer Inc labels?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/trp-company"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0860-2026"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-02",
+   "params": {
+    "firm": "TRP Company"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "List the recalls that name a product labeled by TRP Company.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/mayne-pharma"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0616-2018"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-03",
+   "params": {
+    "firm": "Mayne Pharma"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls name products labeled by Mayne Pharma?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/blaine-labs-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0697-2026"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-04",
+   "params": {
+    "firm": "Blaine Labs Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls cover a product that Blaine Labs Inc. labels?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/thea-pharma-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0374-2024",
+     "https://example.org/monograph/recall/D-0500-2026"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-05",
+   "params": {
+    "firm": "Thea Pharma Inc."
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "List the recalls that name a product labeled by Thea Pharma Inc.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/gilead-sciences-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0005-2025"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-06",
+   "params": {
+    "firm": "Gilead Sciences, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls name products labeled by Gilead Sciences, Inc.?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/biolyte-laboratories-llc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0002-2019"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-07",
+   "params": {
+    "firm": "BioLyte Laboratories, LLC"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls cover a product that BioLyte Laboratories, LLC labels?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/bryant-ranch-prepack"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0537-2024",
+     "https://example.org/monograph/recall/D-0539-2024"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-08",
+   "params": {
+    "firm": "Bryant Ranch Prepack"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "List the recalls that name a product labeled by Bryant Ranch Prepack.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/kramer-novis"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0868-2023",
+     "https://example.org/monograph/recall/D-1395-2019",
+     "https://example.org/monograph/recall/D-1497-2019"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-09",
+   "params": {
+    "firm": "KRAMER NOVIS"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls name products labeled by KRAMER NOVIS?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/mycone-dental-supply-co-inc-dba-keystone-industries-and-deepak-products-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0137-2025"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-10",
+   "params": {
+    "firm": "Mycone Dental Supply Co., Inc DBA Keystone Industries and Deepak Products Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "Which recalls cover a product that Mycone Dental Supply Co., Inc DBA Keystone Industries and Deepak Products Inc labels?",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/china-gel-llc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0789-2021"
+    ],
+    "kind": "ids"
+   },
+   "id": "t2_recalls_of_labeled_products-11",
+   "params": {
+    "firm": "China-Gel, LLC"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t2_recalls_of_labeled_products",
+   "text": "List the recalls that name a product labeled by China-Gel, LLC.",
+   "type": "T2"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/17772-102-10"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/supernus-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-00",
+   "params": {
+    "ndc11": "17772010210"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Which firm labels the package with 11-digit NDC 17772010210?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0338-0718-12"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/baxter-healthcare-corporation"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-01",
+   "params": {
+    "ndc11": "00338071812"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Who is the labeler of the package whose NDC in 11-digit form is 00338071812?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/65862-697-90"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/aurobindo-pharma-limited"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-02",
+   "params": {
+    "ndc11": "65862069790"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Name the labeler of package 65862069790 (11-digit NDC).",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/49348-543-57"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/strategic-sourcing-services-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-03",
+   "params": {
+    "ndc11": "49348054357"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Which firm labels the package with 11-digit NDC 49348054357?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/51672-4133-6"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/sun-pharmaceutical-industries-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-04",
+   "params": {
+    "ndc11": "51672413306"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t3_ndc11_labeler",
+   "text": "Who is the labeler of the package whose NDC in 11-digit form is 51672413306?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/68462-268-23"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/glenmark-pharmaceuticals-inc-usa"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-05",
+   "params": {
+    "ndc11": "68462026823"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Name the labeler of package 68462026823 (11-digit NDC).",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0135-0557-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/haleon-us-holdings-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-06",
+   "params": {
+    "ndc11": "00135055701"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Which firm labels the package with 11-digit NDC 00135055701?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/63347-600-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/blaine-labs-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-07",
+   "params": {
+    "ndc11": "63347060001"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Who is the labeler of the package whose NDC in 11-digit form is 63347060001?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/68180-459-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/lupin-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-08",
+   "params": {
+    "ndc11": "68180045901"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t3_ndc11_labeler",
+   "text": "Name the labeler of package 68180045901 (11-digit NDC).",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0409-4759-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/hospira-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_ndc11_labeler-09",
+   "params": {
+    "ndc11": "00409475901"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_ndc11_labeler",
+   "text": "Which firm labels the package with 11-digit NDC 00409475901?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/854252"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0781-3238",
+     "https://example.org/monograph/product/0781-3246",
+     "https://example.org/monograph/product/0781-3256",
+     "https://example.org/monograph/product/0781-3262",
+     "https://example.org/monograph/product/0781-3268",
+     "https://example.org/monograph/product/0781-3298",
+     "https://example.org/monograph/product/0781-3299",
+     "https://example.org/monograph/product/0955-1003",
+     "https://example.org/monograph/product/0955-1004",
+     "https://example.org/monograph/product/0955-1006",
+     "https://example.org/monograph/product/0955-1008",
+     "https://example.org/monograph/product/0955-1010",
+     "https://example.org/monograph/product/0955-1012",
+     "https://example.org/monograph/product/0955-1015",
+     "https://example.org/monograph/product/0955-1016"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-00",
+   "params": {
+    "rxcui": "854252"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "Which products are mapped to RxCUI 854252?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/854908"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/29300-187",
+     "https://example.org/monograph/product/29300-188",
+     "https://example.org/monograph/product/29300-189",
+     "https://example.org/monograph/product/68462-878",
+     "https://example.org/monograph/product/68462-879",
+     "https://example.org/monograph/product/68462-880"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-01",
+   "params": {
+    "rxcui": "854908"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t3_rxcui_products",
+   "text": "Which products correspond to the RxNorm clinical drug with RxCUI 854908?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/809987"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/31722-812",
+     "https://example.org/monograph/product/31722-813",
+     "https://example.org/monograph/product/31722-814",
+     "https://example.org/monograph/product/31722-815",
+     "https://example.org/monograph/product/68462-678",
+     "https://example.org/monograph/product/68462-679",
+     "https://example.org/monograph/product/68462-680",
+     "https://example.org/monograph/product/68462-681"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-02",
+   "params": {
+    "rxcui": "809987"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "List the products mapped to RxCUI 809987.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/206819"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0641-6000",
+     "https://example.org/monograph/product/0641-6001",
+     "https://example.org/monograph/product/0641-6002",
+     "https://example.org/monograph/product/0641-6003"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-03",
+   "params": {
+    "rxcui": "206819"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "Which products are mapped to RxCUI 206819?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/866111"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/16729-200",
+     "https://example.org/monograph/product/16729-201",
+     "https://example.org/monograph/product/16729-202",
+     "https://example.org/monograph/product/16729-203",
+     "https://example.org/monograph/product/16729-289"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-04",
+   "params": {
+    "rxcui": "866111"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "Which products correspond to the RxNorm clinical drug with RxCUI 866111?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/854846"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/57664-046",
+     "https://example.org/monograph/product/57664-047",
+     "https://example.org/monograph/product/57664-048",
+     "https://example.org/monograph/product/57664-049",
+     "https://example.org/monograph/product/57664-050",
+     "https://example.org/monograph/product/57664-051",
+     "https://example.org/monograph/product/57664-052",
+     "https://example.org/monograph/product/57664-083",
+     "https://example.org/monograph/product/57664-084",
+     "https://example.org/monograph/product/57664-085",
+     "https://example.org/monograph/product/57664-086",
+     "https://example.org/monograph/product/57664-087",
+     "https://example.org/monograph/product/57664-088",
+     "https://example.org/monograph/product/59417-101",
+     "https://example.org/monograph/product/59417-102",
+     "https://example.org/monograph/product/59417-103",
+     "https://example.org/monograph/product/59417-104",
+     "https://example.org/monograph/product/59417-105",
+     "https://example.org/monograph/product/59417-106",
+     "https://example.org/monograph/product/59417-107",
+     "https://example.org/monograph/product/59417-115",
+     "https://example.org/monograph/product/59417-116",
+     "https://example.org/monograph/product/59417-117",
+     "https://example.org/monograph/product/59417-118",
+     "https://example.org/monograph/product/59417-119",
+     "https://example.org/monograph/product/59417-120"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-05",
+   "params": {
+    "rxcui": "854846"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "List the products mapped to RxCUI 854846.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1734355"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/63323-285",
+     "https://example.org/monograph/product/63323-286",
+     "https://example.org/monograph/product/63323-287",
+     "https://example.org/monograph/product/63323-288"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-06",
+   "params": {
+    "rxcui": "1734355"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "Which products are mapped to RxCUI 1734355?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/606859"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0074-9036",
+     "https://example.org/monograph/product/0074-9037"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-07",
+   "params": {
+    "rxcui": "606859"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "Which products correspond to the RxNorm clinical drug with RxCUI 606859?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1652646"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0002-7510",
+     "https://example.org/monograph/product/0002-7516",
+     "https://example.org/monograph/product/0002-7712",
+     "https://example.org/monograph/product/0002-7714",
+     "https://example.org/monograph/product/0002-8213",
+     "https://example.org/monograph/product/0002-8799"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-08",
+   "params": {
+    "rxcui": "1652646"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_rxcui_products",
+   "text": "List the products mapped to RxCUI 1652646.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/433801"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/59762-0057",
+     "https://example.org/monograph/product/59762-0059",
+     "https://example.org/monograph/product/59762-0066",
+     "https://example.org/monograph/product/59762-0068"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_rxcui_products-09",
+   "params": {
+    "rxcui": "433801"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t3_rxcui_products",
+   "text": "Which products are mapped to RxCUI 433801?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/KM2Z91756Z"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/33342-107",
+     "https://example.org/monograph/product/33342-108",
+     "https://example.org/monograph/product/33342-109"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-00",
+   "params": {
+    "name": "RISEDRONIC ACID"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t3_moiety_products",
+   "text": "Which products contain RISEDRONIC ACID, counting salt forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/Q812464R06"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0409-1283",
+     "https://example.org/monograph/product/0409-1304",
+     "https://example.org/monograph/product/0409-1312",
+     "https://example.org/monograph/product/0409-2634",
+     "https://example.org/monograph/product/0409-3365",
+     "https://example.org/monograph/product/0703-0018",
+     "https://example.org/monograph/product/0703-0110",
+     "https://example.org/monograph/product/0703-0113"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-01",
+   "params": {
+    "name": "HYDROMORPHONE"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "Which products contain HYDROMORPHONE as an active ingredient, including its salt and ester forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/7355X3ROTS"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0067-6426",
+     "https://example.org/monograph/product/0904-6312",
+     "https://example.org/monograph/product/11673-322",
+     "https://example.org/monograph/product/11673-843",
+     "https://example.org/monograph/product/17856-0155",
+     "https://example.org/monograph/product/37808-093",
+     "https://example.org/monograph/product/37808-095",
+     "https://example.org/monograph/product/37835-527",
+     "https://example.org/monograph/product/41226-782",
+     "https://example.org/monograph/product/51316-943",
+     "https://example.org/monograph/product/52083-630",
+     "https://example.org/monograph/product/52083-650",
+     "https://example.org/monograph/product/52083-655",
+     "https://example.org/monograph/product/55319-933",
+     "https://example.org/monograph/product/58593-828",
+     "https://example.org/monograph/product/63824-015",
+     "https://example.org/monograph/product/63941-385",
+     "https://example.org/monograph/product/68071-3551",
+     "https://example.org/monograph/product/69729-785",
+     "https://example.org/monograph/product/71205-654",
+     "https://example.org/monograph/product/72288-557",
+     "https://example.org/monograph/product/72288-990",
+     "https://example.org/monograph/product/72854-082",
+     "https://example.org/monograph/product/72854-153",
+     "https://example.org/monograph/product/76162-198",
+     "https://example.org/monograph/product/79481-7470",
+     "https://example.org/monograph/product/82706-022",
+     "https://example.org/monograph/product/82706-023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-02",
+   "params": {
+    "name": "DEXTROMETHORPHAN"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "List the products whose active ingredients include DEXTROMETHORPHAN, counting salt forms.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/U188XYD42P"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/68180-422"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-03",
+   "params": {
+    "name": "MOXIFLOXACIN"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "Which products contain MOXIFLOXACIN, counting salt forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/8CBV67279L"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0517-9302"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-04",
+   "params": {
+    "name": "CUPRIC CATION"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "Which products contain CUPRIC CATION as an active ingredient, including its salt and ester forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/41VRH5220H"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/60429-734",
+     "https://example.org/monograph/product/60429-735",
+     "https://example.org/monograph/product/60429-736",
+     "https://example.org/monograph/product/60429-737",
+     "https://example.org/monograph/product/60505-0083",
+     "https://example.org/monograph/product/60505-0084",
+     "https://example.org/monograph/product/60505-0097",
+     "https://example.org/monograph/product/60505-0101",
+     "https://example.org/monograph/product/60505-1316",
+     "https://example.org/monograph/product/60505-1317",
+     "https://example.org/monograph/product/60505-1318",
+     "https://example.org/monograph/product/60505-4377",
+     "https://example.org/monograph/product/60505-4378",
+     "https://example.org/monograph/product/60505-4379"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-05",
+   "params": {
+    "name": "PAROXETINE"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t3_moiety_products",
+   "text": "List the products whose active ingredients include PAROXETINE, counting salt forms.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/I0VM4M70GC"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0904-7253",
+     "https://example.org/monograph/product/0904-7254",
+     "https://example.org/monograph/product/0904-7255"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-06",
+   "params": {
+    "name": "DABIGATRAN"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "Which products contain DABIGATRAN, counting salt forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/3XMK78S47O"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0591-2924",
+     "https://example.org/monograph/product/0591-2926",
+     "https://example.org/monograph/product/52536-625",
+     "https://example.org/monograph/product/55150-276",
+     "https://example.org/monograph/product/55150-277",
+     "https://example.org/monograph/product/55150-278",
+     "https://example.org/monograph/product/62756-015",
+     "https://example.org/monograph/product/62756-016",
+     "https://example.org/monograph/product/62756-017",
+     "https://example.org/monograph/product/68180-943"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-07",
+   "params": {
+    "name": "TESTOSTERONE"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "Which products contain TESTOSTERONE as an active ingredient, including its salt and ester forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/CZ5312222S"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/43066-009",
+     "https://example.org/monograph/product/43066-016",
+     "https://example.org/monograph/product/55150-183"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-08",
+   "params": {
+    "name": "NICARDIPINE"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "List the products whose active ingredients include NICARDIPINE, counting salt forms.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/J2VZ07J96K"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/11527-162",
+     "https://example.org/monograph/product/30142-790",
+     "https://example.org/monograph/product/55150-234",
+     "https://example.org/monograph/product/61314-630"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_moiety_products-09",
+   "params": {
+    "name": "POLYMYXIN B"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_moiety_products",
+   "text": "Which products contain POLYMYXIN B, counting salt forms?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/novo-nordisk"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0615-2021",
+     "https://example.org/monograph/recall/D-0618-2021"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-00",
+   "params": {
+    "firm": "Novo Nordisk Pharmaceutical Industries, LP"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls were issued by Novo Nordisk Pharmaceutical Industries, LP?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/amerisource-bergen"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-1066-2013"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-01",
+   "params": {
+    "firm": "Amerisouce Bergen"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls did Amerisouce Bergen issue as recalling firm?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/granules-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0187-2025",
+     "https://example.org/monograph/recall/D-0670-2025",
+     "https://example.org/monograph/recall/D-0672-2025",
+     "https://example.org/monograph/recall/D-1386-2020"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-02",
+   "params": {
+    "firm": "Granules Pharmaceutical Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "List the recalls whose recalling firm is Granules Pharmaceutical Inc.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/rising-pharma-holdings-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0573-2022",
+     "https://example.org/monograph/recall/D-1367-2020"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-03",
+   "params": {
+    "firm": "RISING PHARMACEUTICALS"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls were issued by RISING PHARMACEUTICALS?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/dr-reddy-s-laboratories-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0219-2026",
+     "https://example.org/monograph/recall/D-0292-2021",
+     "https://example.org/monograph/recall/D-0365-2025",
+     "https://example.org/monograph/recall/D-0485-2024",
+     "https://example.org/monograph/recall/D-1001-2019",
+     "https://example.org/monograph/recall/D-1143-2015",
+     "https://example.org/monograph/recall/D-1375-2015",
+     "https://example.org/monograph/recall/D-1377-2015",
+     "https://example.org/monograph/recall/D-1379-2015"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-04",
+   "params": {
+    "firm": "Dr. Reddys Laboratories Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls did Dr. Reddys Laboratories Inc issue as recalling firm?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/prodose-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0583-2018"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-05",
+   "params": {
+    "firm": "SPIRIT PHARMACEUTICALS LLC"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "List the recalls whose recalling firm is SPIRIT PHARMACEUTICALS LLC.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/mayne-pharma"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0616-2018",
+     "https://example.org/monograph/recall/D-1152-2022"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-06",
+   "params": {
+    "firm": "Mayne Pharma Commercial LLC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls were issued by Mayne Pharma Commercial LLC?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/focus-health-group"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0535-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-07",
+   "params": {
+    "firm": "Focus Health Group Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls did Focus Health Group Inc issue as recalling firm?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/carefusion-213-llc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0517-2026",
+     "https://example.org/monograph/recall/D-0518-2026",
+     "https://example.org/monograph/recall/D-0643-2026",
+     "https://example.org/monograph/recall/D-0646-2026",
+     "https://example.org/monograph/recall/D-1168-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-08",
+   "params": {
+    "firm": "CareFusion 213, LLC"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t3_alias_recalls",
+   "text": "List the recalls whose recalling firm is CareFusion 213, LLC.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/k-c-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0006-2027",
+     "https://example.org/monograph/recall/D-0323-2015",
+     "https://example.org/monograph/recall/D-0416-2026",
+     "https://example.org/monograph/recall/D-0898-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-09",
+   "params": {
+    "firm": "K C Pharmaceuticals Inc"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls were issued by K C Pharmaceuticals Inc?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/2283236"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/72426-818"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-00",
+   "params": {
+    "brand": "bempedoic acid 180 MG / ezetimibe 10 MG Oral Tablet [Nexlizet]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "Which products are generic equivalents of the brand drug bempedoic acid 180 MG / ezetimibe 10 MG Oral Tablet [Nexlizet]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/311027"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0002-8315",
+     "https://example.org/monograph/product/0002-8805",
+     "https://example.org/monograph/product/0169-1834",
+     "https://example.org/monograph/product/0169-3004"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-01",
+   "params": {
+    "brand": "insulin isophane, human 100 UNT/ML Injectable Suspension [Novolin N]"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "List the products that are generic equivalents of insulin isophane, human 100 UNT/ML Injectable Suspension [Novolin N].",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/2598352"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/49702-231"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-02",
+   "params": {
+    "brand": "abacavir 60 MG / dolutegravir 5 MG / lamivudine 30 MG Tablet for Oral Suspension [Triumeq]"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t3_brand_generics",
+   "text": "Which products are mapped to the generic clinical drug of the brand abacavir 60 MG / dolutegravir 5 MG / lamivudine 30 MG Tablet for Oral Suspension [Triumeq]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1014573"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/45802-147",
+     "https://example.org/monograph/product/63981-147",
+     "https://example.org/monograph/product/79903-126"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-03",
+   "params": {
+    "brand": "12 HR cetirizine hydrochloride 5 MG / pseudoephedrine hydrochloride 120 MG Extended Release Oral Tablet [Aller-Tec D]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "Which products are generic equivalents of the brand drug 12 HR cetirizine hydrochloride 5 MG / pseudoephedrine hydrochloride 120 MG Extended Release Oral Tablet [Aller-Tec D]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/2693567"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/61755-005"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-04",
+   "params": {
+    "brand": "0.05 ML aflibercept 40 MG/ML Prefilled Syringe [Eylea]"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "List the products that are generic equivalents of 0.05 ML aflibercept 40 MG/ML Prefilled Syringe [Eylea].",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1871467"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/57664-046",
+     "https://example.org/monograph/product/57664-047",
+     "https://example.org/monograph/product/57664-048",
+     "https://example.org/monograph/product/57664-049",
+     "https://example.org/monograph/product/57664-050",
+     "https://example.org/monograph/product/57664-051",
+     "https://example.org/monograph/product/57664-052",
+     "https://example.org/monograph/product/57664-083",
+     "https://example.org/monograph/product/57664-084",
+     "https://example.org/monograph/product/57664-085",
+     "https://example.org/monograph/product/57664-086",
+     "https://example.org/monograph/product/57664-087",
+     "https://example.org/monograph/product/57664-088",
+     "https://example.org/monograph/product/59417-101",
+     "https://example.org/monograph/product/59417-102",
+     "https://example.org/monograph/product/59417-103",
+     "https://example.org/monograph/product/59417-104",
+     "https://example.org/monograph/product/59417-105",
+     "https://example.org/monograph/product/59417-106",
+     "https://example.org/monograph/product/59417-107",
+     "https://example.org/monograph/product/59417-115",
+     "https://example.org/monograph/product/59417-116",
+     "https://example.org/monograph/product/59417-117",
+     "https://example.org/monograph/product/59417-118",
+     "https://example.org/monograph/product/59417-119",
+     "https://example.org/monograph/product/59417-120"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-05",
+   "params": {
+    "brand": "lisdexamfetamine dimesylate 60 MG Chewable Tablet [Vyvanse]"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "Which products are mapped to the generic clinical drug of the brand lisdexamfetamine dimesylate 60 MG Chewable Tablet [Vyvanse]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1047444"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/66794-151",
+     "https://example.org/monograph/product/66794-155",
+     "https://example.org/monograph/product/66794-156",
+     "https://example.org/monograph/product/66794-157"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-06",
+   "params": {
+    "brand": "20 ML baclofen 0.5 MG/ML Injection [Gablofen]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "Which products are generic equivalents of the brand drug 20 ML baclofen 0.5 MG/ML Injection [Gablofen]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/208540"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/0456-0458",
+     "https://example.org/monograph/product/0456-0459",
+     "https://example.org/monograph/product/0456-0460",
+     "https://example.org/monograph/product/0456-0461",
+     "https://example.org/monograph/product/0456-0462",
+     "https://example.org/monograph/product/0456-0463",
+     "https://example.org/monograph/product/0456-0464",
+     "https://example.org/monograph/product/0456-1045",
+     "https://example.org/monograph/product/42192-327",
+     "https://example.org/monograph/product/42192-328",
+     "https://example.org/monograph/product/42192-329",
+     "https://example.org/monograph/product/42192-330",
+     "https://example.org/monograph/product/42192-331",
+     "https://example.org/monograph/product/42192-376"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-07",
+   "params": {
+    "brand": "thyroid (USP) 60 MG Oral Tablet [Armour Thyroid]"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "List the products that are generic equivalents of thyroid (USP) 60 MG Oral Tablet [Armour Thyroid].",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1605088"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/55111-113",
+     "https://example.org/monograph/product/55111-135",
+     "https://example.org/monograph/product/55111-136",
+     "https://example.org/monograph/product/55111-137"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-08",
+   "params": {
+    "brand": "isotretinoin 30 MG Oral Capsule [Zenatane]"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t3_brand_generics",
+   "text": "Which products are mapped to the generic clinical drug of the brand isotretinoin 30 MG Oral Capsule [Zenatane]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1437290"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/product/17772-101",
+     "https://example.org/monograph/product/17772-102",
+     "https://example.org/monograph/product/17772-103",
+     "https://example.org/monograph/product/17772-104"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_brand_generics-09",
+   "params": {
+    "brand": "24 HR topiramate 200 MG Extended Release Oral Capsule [Trokendi]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t3_brand_generics",
+   "text": "Which products are generic equivalents of the brand drug 24 HR topiramate 200 MG Extended Release Oral Capsule [Trokendi]?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/HN1ZRA3Q20"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/exela-pharma-sciences-llc",
+     "https://example.org/monograph/organization/mckesson-medical-surgical-inc-corporate-office"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-00",
+   "params": {
+    "name": "BICARBONATE ION"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which firms recalled products that contain BICARBONATE ION, counting salt forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/O7FU5X12W5"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/cipla-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-01",
+   "params": {
+    "name": "LANTHANUM CATION (3+)"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which recalling firms issued recalls of products containing LANTHANUM CATION (3+), including its salt and ester forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/QF8SVZ843E"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/asttrazeneca-pharmaceuticals-lp",
+     "https://example.org/monograph/organization/cipla-usa-inc",
+     "https://example.org/monograph/organization/glaxosmithkline-llc",
+     "https://example.org/monograph/organization/mckesson-medical-surgical-inc-corporate-office",
+     "https://example.org/monograph/organization/perrigo-company-plc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-02",
+   "params": {
+    "name": "ALBUTEROL"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Name the firms that recalled a product containing ALBUTEROL, counting salt forms.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/J2KLZ20U1M"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/mckesson-medical-surgical-inc-corporate-office"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-03",
+   "params": {
+    "name": "AZITHROMYCIN ANHYDROUS"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which firms recalled products that contain AZITHROMYCIN ANHYDROUS, counting salt forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/2M83C4R6ZB"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/baxter-healthcare-corp",
+     "https://example.org/monograph/organization/baxter-healthcare-corporation",
+     "https://example.org/monograph/organization/fresenius-medical-care-renal-therapies-group-llc",
+     "https://example.org/monograph/organization/glaxosmithkline-consumer-healthcare-holdings-llc",
+     "https://example.org/monograph/organization/guardian-drug-co-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-04",
+   "params": {
+    "name": "CALCIUM CATION"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which recalling firms issued recalls of products containing CALCIUM CATION, including its salt and ester forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/AL805O9OG9"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/sandoz-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-05",
+   "params": {
+    "name": "ORPHENADRINE"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Name the firms that recalled a product containing ORPHENADRINE, counting salt forms.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/HU9DX48N0T"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/ascend-laboratories-llc",
+     "https://example.org/monograph/organization/par-pharmaceutical-inc",
+     "https://example.org/monograph/organization/vistapharm-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-06",
+   "params": {
+    "name": "MYCOPHENOLIC ACID"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which firms recalled products that contain MYCOPHENOLIC ACID, counting salt forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/9842X06Q6M"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/leo-pharma-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-07",
+   "params": {
+    "name": "BETAMETHASONE"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which recalling firms issued recalls of products containing BETAMETHASONE, including its salt and ester forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/3L5TQ84570"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/sato-pharmaceutical-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-08",
+   "params": {
+    "name": "MECLIZINE"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Name the firms that recalled a product containing MECLIZINE, counting salt forms.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/84319SGC3C"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/heritage-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_moiety-09",
+   "params": {
+    "name": "AMIKACIN"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t4_recall_firms_by_moiety",
+   "text": "Which firms recalled products that contain AMIKACIN, counting salt forms?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/granules-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/6DPV8NK46S",
+     "https://example.org/monograph/substance/786Z46389E",
+     "https://example.org/monograph/substance/G83415V073",
+     "https://example.org/monograph/substance/JJ768O327N",
+     "https://example.org/monograph/substance/O1ZPV620O4",
+     "https://example.org/monograph/substance/SML2Y3J35T"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-00",
+   "params": {
+    "firm": "Granules Pharmaceutical Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "Which substances are active ingredients of products recalled by Granules Pharmaceutical Inc.?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/mayne-pharma"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/81BDR9Y8PS",
+     "https://example.org/monograph/substance/MN3L5RMN02"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-01",
+   "params": {
+    "firm": "Mayne Pharma Commercial LLC"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "What active ingredients are in the products that Mayne Pharma Commercial LLC recalled?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/dr-reddy-s-laboratories-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/15H5577CQD",
+     "https://example.org/monograph/substance/44YRR34555",
+     "https://example.org/monograph/substance/48A5M73Z4Q",
+     "https://example.org/monograph/substance/4G7DS2Q64Y",
+     "https://example.org/monograph/substance/82269ASB48",
+     "https://example.org/monograph/substance/864V2Q084H",
+     "https://example.org/monograph/substance/RG277LF5B3"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-02",
+   "params": {
+    "firm": "Dr. Reddys Laboratories Inc"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "List the active ingredient substances of products recalled by Dr. Reddys Laboratories Inc.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/prodose-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/WK2XYI10QM"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-03",
+   "params": {
+    "firm": "SPIRIT PHARMACEUTICALS LLC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "Which substances are active ingredients of products recalled by SPIRIT PHARMACEUTICALS LLC?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/rising-pharma-holdings-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/4B3SC438HI",
+     "https://example.org/monograph/substance/P8Y54F701R"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-04",
+   "params": {
+    "firm": "RISING PHARMACEUTICALS"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "What active ingredients are in the products that RISING PHARMACEUTICALS recalled?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/novo-nordisk"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/059QF0KO0R",
+     "https://example.org/monograph/substance/839I73S42A",
+     "https://example.org/monograph/substance/D933668QVX"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-05",
+   "params": {
+    "firm": "Novo Nordisk Pharmaceutical Industries, LP"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "List the active ingredient substances of products recalled by Novo Nordisk Pharmaceutical Industries, LP.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/k-c-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/0YZT43HS7D",
+     "https://example.org/monograph/substance/3NXW29V3WO",
+     "https://example.org/monograph/substance/532B59J990",
+     "https://example.org/monograph/substance/7SA290YK68",
+     "https://example.org/monograph/substance/B697894SGQ",
+     "https://example.org/monograph/substance/FZ989GH94E",
+     "https://example.org/monograph/substance/PDC6A3C0OX"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-06",
+   "params": {
+    "firm": "K C Pharmaceuticals Inc"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "Which substances are active ingredients of products recalled by K C Pharmaceuticals Inc?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/breckenridge-pharmaceutical-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/9044SC542W"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-07",
+   "params": {
+    "firm": "Breckenridge Pharmaceutical, Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "What active ingredients are in the products that Breckenridge Pharmaceutical, Inc recalled?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/genentech-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/1RXS4UE564",
+     "https://example.org/monograph/substance/ZL1R02VT79"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-08",
+   "params": {
+    "firm": "Genentech Inc"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "List the active ingredient substances of products recalled by Genentech Inc.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/altaire-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/4T6H12BN9U",
+     "https://example.org/monograph/substance/QTG126297Q",
+     "https://example.org/monograph/substance/T5L8T28FGP"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-09",
+   "params": {
+    "firm": "Altaire Pharmaceuticals, Inc."
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "Which substances are active ingredients of products recalled by Altaire Pharmaceuticals, Inc.?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/309336"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/baxter-healthcare-corporation",
+     "https://example.org/monograph/organization/pharmacia-upjohn-company-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-00",
+   "params": {
+    "rxcui": "309336"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Which firms label packages of products mapped to RxCUI 309336?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1719803"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/bluepoint-laboratories",
+     "https://example.org/monograph/organization/mylan-institutional-llc",
+     "https://example.org/monograph/organization/somerset-therapeutics-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-01",
+   "params": {
+    "rxcui": "1719803"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Who are the labelers of products mapped to RxCUI 1719803?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/311028"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/eli-lilly-and-company",
+     "https://example.org/monograph/organization/novo-nordisk"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-02",
+   "params": {
+    "rxcui": "311028"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Name the firms that label a product mapped to the RxNorm clinical drug 311028.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1724341"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/hospira-inc",
+     "https://example.org/monograph/organization/teva-parenteral-medicines-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-03",
+   "params": {
+    "rxcui": "1724341"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Which firms label packages of products mapped to RxCUI 1724341?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/313572"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/eugia-us-llc",
+     "https://example.org/monograph/organization/hospira-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-04",
+   "params": {
+    "rxcui": "313572"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Who are the labelers of products mapped to RxCUI 313572?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/898356"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/dr-reddy-s-laboratories-limited",
+     "https://example.org/monograph/organization/lupin-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-05",
+   "params": {
+    "rxcui": "898356"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Name the firms that label a product mapped to the RxNorm clinical drug 898356.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/199224"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/bluepoint-laboratories",
+     "https://example.org/monograph/organization/zydus-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-06",
+   "params": {
+    "rxcui": "199224"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Which firms label packages of products mapped to RxCUI 199224?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/197657"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/epic-pharma-llc",
+     "https://example.org/monograph/organization/teva-pharmaceuticals-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-07",
+   "params": {
+    "rxcui": "197657"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Who are the labelers of products mapped to RxCUI 197657?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/409823"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/ascend-laboratories-llc",
+     "https://example.org/monograph/organization/lupin-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-08",
+   "params": {
+    "rxcui": "409823"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Name the firms that label a product mapped to the RxNorm clinical drug 409823.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1792144"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/amneal-pharmaceuticals-llc",
+     "https://example.org/monograph/organization/asclemed-usa-inc",
+     "https://example.org/monograph/organization/dynarex-corporation",
+     "https://example.org/monograph/organization/eugia-us-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_labelers_by_rxcui-09",
+   "params": {
+    "rxcui": "1792144"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_labelers_by_rxcui",
+   "text": "Which firms label packages of products mapped to RxCUI 1792144?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/0338-0703-41"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/baxter-healthcare-corporation"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-00",
+   "params": {
+    "ndc11": "00338070341"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which firms recalled the product packaged under 11-digit NDC 00338070341?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/68180-295-06"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/lupin-pharmaceuticals-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-01",
+   "params": {
+    "ndc11": "68180029506"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which recalling firms issued recalls of the product whose package has the 11-digit NDC 68180029506?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/68462-165-60"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/glenmark-pharmaceuticals-inc-usa"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-02",
+   "params": {
+    "ndc11": "68462016560"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Name the firms that recalled the product of package 68462016560 (11-digit NDC).",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/76402-403-06"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/hillyard-gmp"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-03",
+   "params": {
+    "ndc11": "76402040306"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which firms recalled the product packaged under 11-digit NDC 76402040306?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/33342-088-41"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/macleods-pharma-usa-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-04",
+   "params": {
+    "ndc11": "33342008841"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which recalling firms issued recalls of the product whose package has the 11-digit NDC 33342008841?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/55150-111-10"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/mckesson-medical-surgical-inc-corporate-office"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-05",
+   "params": {
+    "ndc11": "55150011110"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Name the firms that recalled the product of package 55150011110 (11-digit NDC).",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/65219-328-10"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/fresenius-kabi-usa-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-06",
+   "params": {
+    "ndc11": "65219032810"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which firms recalled the product packaged under 11-digit NDC 65219032810?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/43547-331-09"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/prinston-pharmaceutical-inc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-07",
+   "params": {
+    "ndc11": "43547033109"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which recalling firms issued recalls of the product whose package has the 11-digit NDC 43547033109?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/55150-277-01"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/eugia-us-llc"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-08",
+   "params": {
+    "ndc11": "55150027701"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Name the firms that recalled the product of package 55150027701 (11-digit NDC).",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/packaged-product/50268-166-12"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/organization/avkare"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recall_firms_by_ndc11-09",
+   "params": {
+    "ndc11": "50268016612"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recall_firms_by_ndc11",
+   "text": "Which firms recalled the product packaged under 11-digit NDC 50268016612?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1369784"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-1742-2019"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-00",
+   "params": {
+    "brand": "20 ML baclofen 0.5 MG/ML Prefilled Syringe [Gablofen]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls name generic equivalents of the brand drug 20 ML baclofen 0.5 MG/ML Prefilled Syringe [Gablofen]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/860898"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0220-2024",
+     "https://example.org/monograph/recall/D-1142-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-01",
+   "params": {
+    "brand": "vigabatrin 500 MG Powder for Oral Solution [Sabril]"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls cover a product that is a generic equivalent of vigabatrin 500 MG Powder for Oral Solution [Sabril]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/854840"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0006-2017",
+     "https://example.org/monograph/recall/D-0149-2026"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-02",
+   "params": {
+    "brand": "lisdexamfetamine dimesylate 40 MG Oral Capsule [Vyvanse]"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "List the recalls of products that are generic equivalents of the brand lisdexamfetamine dimesylate 40 MG Oral Capsule [Vyvanse].",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1871469"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0006-2017",
+     "https://example.org/monograph/recall/D-0149-2026"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-03",
+   "params": {
+    "brand": "lisdexamfetamine dimesylate 50 MG Chewable Tablet [Vyvanse]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls name generic equivalents of the brand drug lisdexamfetamine dimesylate 50 MG Chewable Tablet [Vyvanse]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/2584863"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0025-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-04",
+   "params": {
+    "brand": "0.1 ML ranibizumab 100 MG/ML Injection [Susvimo]"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls cover a product that is a generic equivalent of 0.1 ML ranibizumab 100 MG/ML Injection [Susvimo]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/2673602"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0353-2026"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-05",
+   "params": {
+    "brand": "0.6 ML pegfilgrastim-cbqv 10 MG/ML Injection [Udenyca]"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "List the recalls of products that are generic equivalents of the brand 0.6 ML pegfilgrastim-cbqv 10 MG/ML Injection [Udenyca].",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/830839"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0487-2019"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-06",
+   "params": {
+    "brand": "24 HR diltiazem hydrochloride 240 MG Extended Release Oral Capsule [Cardizem]"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls name generic equivalents of the brand drug 24 HR diltiazem hydrochloride 240 MG Extended Release Oral Capsule [Cardizem]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1926332"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0445-2024"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-07",
+   "params": {
+    "brand": "0.5 UNT Doses 3 ML insulin lispro 100 UNT/ML Pen Injector [Humalog]"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls cover a product that is a generic equivalent of 0.5 UNT Doses 3 ML insulin lispro 100 UNT/ML Pen Injector [Humalog]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/2598352"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0486-2021"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-08",
+   "params": {
+    "brand": "abacavir 60 MG / dolutegravir 5 MG / lamivudine 30 MG Tablet for Oral Suspension [Triumeq]"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_recalls_of_generics",
+   "text": "List the recalls of products that are generic equivalents of the brand abacavir 60 MG / dolutegravir 5 MG / lamivudine 30 MG Tablet for Oral Suspension [Triumeq].",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/clinical-drug/1091654"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0429-2021"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_recalls_of_generics-09",
+   "params": {
+    "brand": "azilsartan medoxomil 80 MG Oral Tablet [Edarbi]"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t4_recalls_of_generics",
+   "text": "Which recalls name generic equivalents of the brand drug azilsartan medoxomil 80 MG Oral Tablet [Edarbi]?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/451W47IQ8X"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_serious_reports_by_substance-00",
+   "params": {
+    "from": "2015-01-01",
+    "name": "SODIUM CHLORIDE",
+    "to": "2015-12-31",
+    "unii": "451W47IQ8X"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "How many serious adverse event reports received from 2015-01-01 to 2015-12-31 involve products that contain SODIUM CHLORIDE (UNII 451W47IQ8X)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/LX22YL083G"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 36
+   },
+   "id": "t5_serious_reports_by_substance-01",
+   "params": {
+    "from": "2014-01-01",
+    "name": "DEXTROSE MONOHYDRATE",
+    "to": "2014-12-31",
+    "unii": "LX22YL083G"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Between 2014-01-01 and 2014-12-31, how many serious adverse event reports involve products containing DEXTROSE MONOHYDRATE (UNII LX22YL083G)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/VZI5B1W380"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_serious_reports_by_substance-02",
+   "params": {
+    "from": "2016-01-01",
+    "name": "OXCARBAZEPINE",
+    "to": "2016-12-31",
+    "unii": "VZI5B1W380"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Count the serious adverse event reports received from 2016-01-01 to 2016-12-31 that involve a product with the active ingredient OXCARBAZEPINE (UNII VZI5B1W380).",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/YQE403BP4D"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 6
+   },
+   "id": "t5_serious_reports_by_substance-03",
+   "params": {
+    "from": "2014-01-01",
+    "name": "PHENOBARBITAL",
+    "to": "2014-12-31",
+    "unii": "YQE403BP4D"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "How many serious adverse event reports received from 2014-01-01 to 2014-12-31 involve products that contain PHENOBARBITAL (UNII YQE403BP4D)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/P380M0454Z"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 5
+   },
+   "id": "t5_serious_reports_by_substance-04",
+   "params": {
+    "from": "2014-01-01",
+    "name": "CEFAZOLIN SODIUM",
+    "to": "2014-12-31",
+    "unii": "P380M0454Z"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Between 2014-01-01 and 2014-12-31, how many serious adverse event reports involve products containing CEFAZOLIN SODIUM (UNII P380M0454Z)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/55JG375S6M"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_serious_reports_by_substance-05",
+   "params": {
+    "from": "2020-01-01",
+    "name": "PREGABALIN",
+    "to": "2020-12-31",
+    "unii": "55JG375S6M"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Count the serious adverse event reports received from 2020-01-01 to 2020-12-31 that involve a product with the active ingredient PREGABALIN (UNII 55JG375S6M).",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/JJ768O327N"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 10
+   },
+   "id": "t5_serious_reports_by_substance-06",
+   "params": {
+    "from": "2014-01-01",
+    "name": "DEXTROAMPHETAMINE SULFATE",
+    "to": "2014-12-31",
+    "unii": "JJ768O327N"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "How many serious adverse event reports received from 2014-01-01 to 2014-12-31 involve products that contain DEXTROAMPHETAMINE SULFATE (UNII JJ768O327N)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/F6A27P4Q4R"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_serious_reports_by_substance-07",
+   "params": {
+    "from": "2021-01-01",
+    "name": "SELENIOUS ACID",
+    "to": "2021-12-31",
+    "unii": "F6A27P4Q4R"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Between 2021-01-01 and 2021-12-31, how many serious adverse event reports involve products containing SELENIOUS ACID (UNII F6A27P4Q4R)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/D35FM8T64X"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_serious_reports_by_substance-08",
+   "params": {
+    "from": "2014-01-01",
+    "name": "FOSAPREPITANT DIMEGLUMINE",
+    "to": "2014-12-31",
+    "unii": "D35FM8T64X"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Count the serious adverse event reports received from 2014-01-01 to 2014-12-31 that involve a product with the active ingredient FOSAPREPITANT DIMEGLUMINE (UNII D35FM8T64X).",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/X2ELS050D8"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 10
+   },
+   "id": "t5_serious_reports_by_substance-09",
+   "params": {
+    "from": "2014-01-01",
+    "name": "PAROXETINE HYDROCHLORIDE",
+    "to": "2014-12-31",
+    "unii": "X2ELS050D8"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t5_serious_reports_by_substance",
+   "text": "How many serious adverse event reports received from 2014-01-01 to 2014-12-31 involve products that contain PAROXETINE HYDROCHLORIDE (UNII X2ELS050D8)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/68JRS2HC1C"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_serious_reports_by_substance-10",
+   "params": {
+    "from": "2019-01-01",
+    "name": "HOMATROPINE METHYLBROMIDE",
+    "to": "2019-12-31",
+    "unii": "68JRS2HC1C"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Between 2019-01-01 and 2019-12-31, how many serious adverse event reports involve products containing HOMATROPINE METHYLBROMIDE (UNII 68JRS2HC1C)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/L9F3D9RENQ"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 4
+   },
+   "id": "t5_serious_reports_by_substance-11",
+   "params": {
+    "from": "2014-01-01",
+    "name": "OXYBUTYNIN CHLORIDE",
+    "to": "2014-12-31",
+    "unii": "L9F3D9RENQ"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t5_serious_reports_by_substance",
+   "text": "Count the serious adverse event reports received from 2014-01-01 to 2014-12-31 that involve a product with the active ingredient OXYBUTYNIN CHLORIDE (UNII L9F3D9RENQ).",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/NMH84OZK2B"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 17
+   },
+   "id": "t5_serious_reports_by_substance-12",
+   "params": {
+    "from": "2014-01-01",
+    "name": "ONDANSETRON HYDROCHLORIDE",
+    "to": "2014-12-31",
+    "unii": "NMH84OZK2B"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_serious_reports_by_substance",
+   "text": "How many serious adverse event reports received from 2014-01-01 to 2014-12-31 involve products that contain ONDANSETRON HYDROCHLORIDE (UNII NMH84OZK2B)?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/bayer-healthcare-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_recalls_by_class-00",
+   "params": {
+    "class": "II",
+    "firm": "Bayer Healthcare Pharmaceuticals Inc."
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t5_recalls_by_class",
+   "text": "How many class II recalls did Bayer Healthcare Pharmaceuticals Inc. issue?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/sun-pharmaceutical-industries-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 4
+   },
+   "id": "t5_recalls_by_class-01",
+   "params": {
+    "class": "I",
+    "firm": "Sun Pharmaceutical Industries, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "How many recalls of class I have Sun Pharmaceutical Industries, Inc. as recalling firm?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/amneal-pharmaceuticals-llc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_recalls_by_class-02",
+   "params": {
+    "class": "II",
+    "firm": "Amneal Pharmaceuticals LLC"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "Count the class II recalls issued by Amneal Pharmaceuticals LLC.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/efficient-laboratories-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_recalls_by_class-03",
+   "params": {
+    "class": "II",
+    "firm": "EFFICIENT LABORATORIES INC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "How many class II recalls did EFFICIENT LABORATORIES INC issue?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/rohto-mentholatum-vietnam-co-ltd"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 3
+   },
+   "id": "t5_recalls_by_class-04",
+   "params": {
+    "class": "II",
+    "firm": "Rohto-Mentholatum (Vietnam) Co., Ltd."
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t5_recalls_by_class",
+   "text": "How many recalls of class II have Rohto-Mentholatum (Vietnam) Co., Ltd. as recalling firm?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/strides-pharma-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_recalls_by_class-05",
+   "params": {
+    "class": "II",
+    "firm": "STRIDES PHARMA INC"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "Count the class II recalls issued by STRIDES PHARMA INC.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/epic-pharma-llc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_recalls_by_class-06",
+   "params": {
+    "class": "II",
+    "firm": "EPIC PHARMA, LLC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "How many class II recalls did EPIC PHARMA, LLC issue?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/shilpa-medicare-limited"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_recalls_by_class-07",
+   "params": {
+    "class": "II",
+    "firm": "Shilpa Medicare Limited"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t5_recalls_by_class",
+   "text": "How many recalls of class II have Shilpa Medicare Limited as recalling firm?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/orient-pharma-co-ltd-yunlin-plant"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_recalls_by_class-08",
+   "params": {
+    "class": "III",
+    "firm": "Orient Pharma Co., Ltd. Yunlin Plant"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "Count the class III recalls issued by Orient Pharma Co., Ltd. Yunlin Plant.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/taro-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_recalls_by_class-09",
+   "params": {
+    "class": "II",
+    "firm": "Taro Pharmaceuticals, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "How many class II recalls did Taro Pharmaceuticals, Inc. issue?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/vitae-enim-vitae-scientific-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_recalls_by_class-10",
+   "params": {
+    "class": "II",
+    "firm": "Vitae Enim Vitae Scientific, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "How many recalls of class II have Vitae Enim Vitae Scientific, Inc. as recalling firm?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/prescript-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_recalls_by_class-11",
+   "params": {
+    "class": "II",
+    "firm": "Prescript Pharmaceuticals, Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "Count the class II recalls issued by Prescript Pharmaceuticals, Inc.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/pd-rx-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_recalls_by_class-12",
+   "params": {
+    "class": "II",
+    "firm": "PD-Rx Pharmaceuticals, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_recalls_by_class",
+   "text": "How many class II recalls did PD-Rx Pharmaceuticals, Inc. issue?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/23155-290"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 5
+   },
+   "id": "t5_reports_for_product-00",
+   "params": {
+    "product_ndc": "23155-290"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve the product with product NDC 23155-290?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/43598-321"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 5
+   },
+   "id": "t5_reports_for_product-01",
+   "params": {
+    "product_ndc": "43598-321"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve product NDC 43598-321?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/0264-3195"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 7
+   },
+   "id": "t5_reports_for_product-02",
+   "params": {
+    "product_ndc": "0264-3195"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "Count the adverse event reports that involve the product 0264-3195.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/16729-447"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 54
+   },
+   "id": "t5_reports_for_product-03",
+   "params": {
+    "product_ndc": "16729-447"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve the product with product NDC 16729-447?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/0409-4713"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 17
+   },
+   "id": "t5_reports_for_product-04",
+   "params": {
+    "product_ndc": "0409-4713"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve product NDC 0409-4713?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/50580-535"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 11
+   },
+   "id": "t5_reports_for_product-05",
+   "params": {
+    "product_ndc": "50580-535"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "Count the adverse event reports that involve the product 50580-535.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/66794-157"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 27
+   },
+   "id": "t5_reports_for_product-06",
+   "params": {
+    "product_ndc": "66794-157"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve the product with product NDC 66794-157?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/65862-570"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 21
+   },
+   "id": "t5_reports_for_product-07",
+   "params": {
+    "product_ndc": "65862-570"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve product NDC 65862-570?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/29300-115"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 22
+   },
+   "id": "t5_reports_for_product-08",
+   "params": {
+    "product_ndc": "29300-115"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "Count the adverse event reports that involve the product 29300-115.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/68462-496"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 6
+   },
+   "id": "t5_reports_for_product-09",
+   "params": {
+    "product_ndc": "68462-496"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve the product with product NDC 68462-496?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/0597-0168"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 5
+   },
+   "id": "t5_reports_for_product-10",
+   "params": {
+    "product_ndc": "0597-0168"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "How many adverse event reports involve product NDC 0597-0168?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/product/16729-011"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 1
+   },
+   "id": "t5_reports_for_product-11",
+   "params": {
+    "product_ndc": "16729-011"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_reports_for_product",
+   "text": "Count the adverse event reports that involve the product 16729-011.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/janssen-biotech-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 3
+   },
+   "id": "t5_products_labeled-00",
+   "params": {
+    "firm": "Janssen Biotech, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many products does Janssen Biotech, Inc. label?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/geri-care-pharmaceutical-corp"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_products_labeled-01",
+   "params": {
+    "firm": "Geri-Care Pharmaceutical Corp."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many distinct products have a package labeled by Geri-Care Pharmaceutical Corp.?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/actavis-pharma-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 22
+   },
+   "id": "t5_products_labeled-02",
+   "params": {
+    "firm": "Actavis Pharma, Inc."
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t5_products_labeled",
+   "text": "Count the products labeled by Actavis Pharma, Inc.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/major-pharmaceuticals"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 19
+   },
+   "id": "t5_products_labeled-03",
+   "params": {
+    "firm": "Major Pharmaceuticals"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many products does Major Pharmaceuticals label?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/bryant-ranch-prepack"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 3
+   },
+   "id": "t5_products_labeled-04",
+   "params": {
+    "firm": "Bryant Ranch Prepack"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many distinct products have a package labeled by Bryant Ranch Prepack?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/sun-pharmaceutical-industries-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 92
+   },
+   "id": "t5_products_labeled-05",
+   "params": {
+    "firm": "Sun Pharmaceutical Industries, Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "Count the products labeled by Sun Pharmaceutical Industries, Inc.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/fresenius-medical-care-holdings-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 3
+   },
+   "id": "t5_products_labeled-06",
+   "params": {
+    "firm": "Fresenius Medical Care Holdings, Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many products does Fresenius Medical Care Holdings, Inc. label?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/kvk-tech-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 9
+   },
+   "id": "t5_products_labeled-07",
+   "params": {
+    "firm": "KVK-Tech, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many distinct products have a package labeled by KVK-Tech, Inc.?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/leadiant-biosciences-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 2
+   },
+   "id": "t5_products_labeled-08",
+   "params": {
+    "firm": "Leadiant Biosciences, Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "Count the products labeled by Leadiant Biosciences, Inc.",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/avpak"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 8
+   },
+   "id": "t5_products_labeled-09",
+   "params": {
+    "firm": "AvPAK"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many products does AvPAK label?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/exelan-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 6
+   },
+   "id": "t5_products_labeled-10",
+   "params": {
+    "firm": "Exelan Pharmaceuticals, Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t5_products_labeled",
+   "text": "How many distinct products have a package labeled by Exelan Pharmaceuticals, Inc.?",
+   "type": "T5"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/granules-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "kind": "number",
+    "number": 12
+   },
+   "id": "t5_products_labeled-11",
+   "params": {
+    "firm": "Granules Pharmaceuticals Inc."
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t5_products_labeled",
+   "text": "Count the products labeled by Granules Pharmaceuticals Inc.",
+   "type": "T5"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-00",
+   "params": {
+    "ndc": "0409-3365-08"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Which firm labels the package with NDC 0409-3365-08?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-01",
+   "params": {
+    "ndc": "68180-295-97"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t6_fake_package",
+   "text": "Who is the labeler of package NDC 68180-295-97?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-02",
+   "params": {
+    "ndc": "17772-103-20"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Name the firm that labels the package 17772-103-20.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-03",
+   "params": {
+    "ndc": "0406-8953-97"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Which firm labels the package with NDC 0406-8953-97?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-04",
+   "params": {
+    "ndc": "51754-5001-0"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Who is the labeler of package NDC 51754-5001-0?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-05",
+   "params": {
+    "ndc": "68180-956-16"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t6_fake_package",
+   "text": "Name the firm that labels the package 68180-956-16.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-06",
+   "params": {
+    "ndc": "16729-455-03"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Which firm labels the package with NDC 16729-455-03?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-07",
+   "params": {
+    "ndc": "23155-050-02"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Who is the labeler of package NDC 23155-050-02?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-08",
+   "params": {
+    "ndc": "33342-398-23"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Name the firm that labels the package 33342-398-23.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_package-09",
+   "params": {
+    "ndc": "55513-530-97"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_package",
+   "text": "Which firm labels the package with NDC 55513-530-97?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-00",
+   "params": {
+    "unii": "0DH805EVYJ"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Which firms recalled products that contain the substance with UNII 0DH805EVYJ?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-01",
+   "params": {
+    "unii": "OHCVU244LF"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Which recalling firms issued recalls of products containing the substance with UNII OHCVU244LF?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-02",
+   "params": {
+    "unii": "BXXLMSR45G"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Name the firms that recalled a product whose active ingredient has UNII BXXLMSR45G.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-03",
+   "params": {
+    "unii": "5YKLSWG0K6"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t6_fake_unii",
+   "text": "Which firms recalled products that contain the substance with UNII 5YKLSWG0K6?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-04",
+   "params": {
+    "unii": "EPUKCG4B2Z"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Which recalling firms issued recalls of products containing the substance with UNII EPUKCG4B2Z?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-05",
+   "params": {
+    "unii": "IIH20PWIVR"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t6_fake_unii",
+   "text": "Name the firms that recalled a product whose active ingredient has UNII IIH20PWIVR.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-06",
+   "params": {
+    "unii": "W21DVTKAL9"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Which firms recalled products that contain the substance with UNII W21DVTKAL9?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-07",
+   "params": {
+    "unii": "TKFADERB7W"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Which recalling firms issued recalls of products containing the substance with UNII TKFADERB7W?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-08",
+   "params": {
+    "unii": "HSYHMOFEGC"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Name the firms that recalled a product whose active ingredient has UNII HSYHMOFEGC.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_unii-09",
+   "params": {
+    "unii": "CUDSPHUPFY"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_unii",
+   "text": "Which firms recalled products that contain the substance with UNII CUDSPHUPFY?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/0022LFJ74Y"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-00",
+   "params": {
+    "name": "TARAXACUM OFFICINALE LEAF",
+    "unii": "0022LFJ74Y"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Which firms recalled products that contain TARAXACUM OFFICINALE LEAF (UNII 0022LFJ74Y)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/VSW71SS07I"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-01",
+   "params": {
+    "name": "LACHESIS MUTA VENOM",
+    "unii": "VSW71SS07I"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t6_substance_without_recalls",
+   "text": "Which recalling firms issued recalls of products containing LACHESIS MUTA VENOM (UNII VSW71SS07I)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/9YQ9DI1W42"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-02",
+   "params": {
+    "name": "ENSULIZOLE",
+    "unii": "9YQ9DI1W42"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Name the firms that recalled a product with the active ingredient ENSULIZOLE (UNII 9YQ9DI1W42).",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/M6Q1EO9TD0"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-03",
+   "params": {
+    "name": "AMANTADINE HYDROCHLORIDE",
+    "unii": "M6Q1EO9TD0"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Which firms recalled products that contain AMANTADINE HYDROCHLORIDE (UNII M6Q1EO9TD0)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/56U7906FQW"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-04",
+   "params": {
+    "name": "Ganirelix Acetate",
+    "unii": "56U7906FQW"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Which recalling firms issued recalls of products containing Ganirelix Acetate (UNII 56U7906FQW)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/KHS0AZ4JVK"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-05",
+   "params": {
+    "name": "BUTALBITAL",
+    "unii": "KHS0AZ4JVK"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Name the firms that recalled a product with the active ingredient BUTALBITAL (UNII KHS0AZ4JVK).",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/GCU97FKN3R"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-06",
+   "params": {
+    "name": "VALGANCICLOVIR",
+    "unii": "GCU97FKN3R"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Which firms recalled products that contain VALGANCICLOVIR (UNII GCU97FKN3R)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/9X4R4A4HQQ"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-07",
+   "params": {
+    "name": "BERAHYALURONIDASE ALFA",
+    "unii": "9X4R4A4HQQ"
+   },
+   "phrasing": 1,
+   "split": "dev",
+   "template": "t6_substance_without_recalls",
+   "text": "Which recalling firms issued recalls of products containing BERAHYALURONIDASE ALFA (UNII 9X4R4A4HQQ)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/V9BI9B5YI2"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-08",
+   "params": {
+    "name": "DOXYLAMINE SUCCINATE",
+    "unii": "V9BI9B5YI2"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Name the firms that recalled a product with the active ingredient DOXYLAMINE SUCCINATE (UNII V9BI9B5YI2).",
+   "type": "T6"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/substance/LKG8494WBH"
+   ],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_substance_without_recalls-09",
+   "params": {
+    "name": "BENZYL ALCOHOL",
+    "unii": "LKG8494WBH"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_substance_without_recalls",
+   "text": "Which firms recalled products that contain BENZYL ALCOHOL (UNII LKG8494WBH)?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-00",
+   "params": {
+    "firm": "Kestrel Bay Pharmaceuticals, LLC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "Which recalls were issued by Kestrel Bay Pharmaceuticals, LLC?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-01",
+   "params": {
+    "firm": "Brightwater Pharma Corp."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "Which recalls did Brightwater Pharma Corp. issue as recalling firm?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-02",
+   "params": {
+    "firm": "Bellweather Rx Solutions LLC"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "List the recalls whose recalling firm is Bellweather Rx Solutions LLC.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-03",
+   "params": {
+    "firm": "Westmoor Health Products Inc."
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "Which recalls were issued by Westmoor Health Products Inc.?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-04",
+   "params": {
+    "firm": "Granite Harbor Pharmaceuticals Inc."
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "Which recalls did Granite Harbor Pharmaceuticals Inc. issue as recalling firm?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-05",
+   "params": {
+    "firm": "Calder Ridge Laboratories, Inc."
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "List the recalls whose recalling firm is Calder Ridge Laboratories, Inc.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-06",
+   "params": {
+    "firm": "Northbridge Pharmaceuticals LLC"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "Which recalls were issued by Northbridge Pharmaceuticals LLC?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-07",
+   "params": {
+    "firm": "Thornfield Pharmacal Company"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_firm",
+   "text": "Which recalls did Thornfield Pharmacal Company issue as recalling firm?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-08",
+   "params": {
+    "firm": "Sable Point Medical Supply Inc"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t6_fake_firm",
+   "text": "List the recalls whose recalling firm is Sable Point Medical Supply Inc.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_firm-09",
+   "params": {
+    "firm": "Halvorsen Generics USA, Inc."
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t6_fake_firm",
+   "text": "Which recalls were issued by Halvorsen Generics USA, Inc.?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-00",
+   "params": {
+    "rxcui": "2237880"
+   },
+   "phrasing": 0,
+   "split": "dev",
+   "template": "t6_fake_rxcui",
+   "text": "Which products are mapped to RxCUI 2237880?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-01",
+   "params": {
+    "rxcui": "2046318"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "Which products correspond to the RxNorm clinical drug with RxCUI 2046318?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-02",
+   "params": {
+    "rxcui": "2820804"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t6_fake_rxcui",
+   "text": "List the products mapped to RxCUI 2820804.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-03",
+   "params": {
+    "rxcui": "1087393"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "Which products are mapped to RxCUI 1087393?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-04",
+   "params": {
+    "rxcui": "1088104"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "Which products correspond to the RxNorm clinical drug with RxCUI 1088104?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-05",
+   "params": {
+    "rxcui": "2353191"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "List the products mapped to RxCUI 2353191.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-06",
+   "params": {
+    "rxcui": "1983492"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "Which products are mapped to RxCUI 1983492?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-07",
+   "params": {
+    "rxcui": "1644328"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "Which products correspond to the RxNorm clinical drug with RxCUI 1644328?",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-08",
+   "params": {
+    "rxcui": "1676036"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "List the products mapped to RxCUI 1676036.",
+   "type": "T6"
+  },
+  {
+   "anchors": [],
+   "gold": {
+    "kind": "none"
+   },
+   "id": "t6_fake_rxcui-09",
+   "params": {
+    "rxcui": "2042855"
+   },
+   "phrasing": 0,
+   "split": "test",
+   "template": "t6_fake_rxcui",
+   "text": "Which products are mapped to RxCUI 2042855?",
+   "type": "T6"
+  }
+ ],
+ "seed": 20261127
+}

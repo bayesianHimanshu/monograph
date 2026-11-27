@@ -1,6 +1,6 @@
 """The version of the drug product model. Bump it according to semver; CI enforces the rules."""
 
-SCHEMA_VERSION = "2.1.1"
+SCHEMA_VERSION = "2.2.0"
 
 # What changed in each release and why. Every entry corrects the model in response to an H6 or H6.1
 # real-data finding; none of them loosens a constraint for its own sake. `monograph measure` writes this
@@ -94,6 +94,17 @@ CHANGES: dict[str, tuple[tuple[str, str, str], ...]] = {
             "The JSON Schema now states the charset as `not: {pattern}` and Decimal bounds on the number branch. "
             "What it still cannot state (bounds on string-encoded Decimals, floats for Decimals, pydantic_only) is "
             "a declared list that the agreement gate checks.",
+        ),
+    ),
+    "2.2.0": (
+        (
+            "identity-layer",
+            "H2: identity questions need a product-to-RxCUI crosswalk, salt-to-moiety links, brand-to-generic "
+            "links, firm name variants, the 11-digit NDC form and openFDA's harmonized RxCUIs on event drugs.",
+            "Additive: Product.drug_mappings (DrugMapping with source and evidence), Substance.active_moiety "
+            "(MoietyLink), ClinicalDrug.term_type and generic (GenericLink), Organization.aliases "
+            "(OrganizationAlias), PackagedProduct.ndc11, DrugInvolvement.harmonized_clinical_drugs. Every link "
+            "carries its provenance.",
         ),
     ),
 }

@@ -90,8 +90,17 @@ shape:ClinicalDrug
     rdfs:label "Clinical drug" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:ClinicalDrug-name, shape:ClinicalDrug-rxcui ;
+    sh:property shape:ClinicalDrug-hasGeneric, shape:ClinicalDrug-name, shape:ClinicalDrug-rxcui, shape:ClinicalDrug-termType ;
     sh:targetClass mono:ClinicalDrug .
+
+shape:ClinicalDrug-hasGeneric
+    a sh:PropertyShape ;
+    sh:class mono:GenericLink ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:name "has generic" ;
+    sh:node shape:GenericLink ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:hasGeneric .
 
 shape:ClinicalDrug-name
     a sh:PropertyShape ;
@@ -118,12 +127,24 @@ shape:ClinicalDrug-rxcui
     sh:path mono:rxcui ;
     sh:pattern "^[0-9]{1,8}$" .
 
+shape:ClinicalDrug-termType
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "6"^^xsd:integer ;
+    sh:name "RxNorm term type" ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:termType ;
+    sh:pattern "^[A-Z]{2,6}$" .
+
 shape:DrugInvolvement
     a sh:NodeShape ;
     rdfs:label "Drug involvement" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:DrugInvolvement-clinicalDrug, shape:DrugInvolvement-drugRole, shape:DrugInvolvement-verbatimDrugName ;
+    sh:property shape:DrugInvolvement-clinicalDrug, shape:DrugInvolvement-drugRole, shape:DrugInvolvement-harmonizedClinicalDrug, shape:DrugInvolvement-verbatimDrugName ;
     sh:targetClass mono:DrugInvolvement .
 
 shape:DrugInvolvement-clinicalDrug
@@ -146,6 +167,17 @@ shape:DrugInvolvement-drugRole
     sh:name "drug role" ;
     sh:path mono:drugRole .
 
+shape:DrugInvolvement-harmonizedClinicalDrug
+    a sh:PropertyShape ;
+    sh:class mono:ClinicalDrug ;
+    sh:name "harmonized clinical drug" ;
+    sh:nodeKind sh:IRI ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:harmonizedClinicalDrug ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
 shape:DrugInvolvement-verbatimDrugName
     a sh:PropertyShape ;
     sh:datatype xsd:string ;
@@ -158,6 +190,48 @@ shape:DrugInvolvement-verbatimDrugName
         sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
     ] ;
     sh:path mono:verbatimDrugName .
+
+shape:DrugMapping
+    a sh:NodeShape ;
+    rdfs:label "Drug mapping" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:DrugMapping-evidence, shape:DrugMapping-mappedClinicalDrug, shape:DrugMapping-mappingSource ;
+    sh:targetClass mono:DrugMapping .
+
+shape:DrugMapping-evidence
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "evidence" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:evidence .
+
+shape:DrugMapping-mappedClinicalDrug
+    a sh:PropertyShape ;
+    sh:class mono:ClinicalDrug ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "mapped clinical drug" ;
+    sh:nodeKind sh:IRI ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:mappedClinicalDrug ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:DrugMapping-mappingSource
+    a sh:PropertyShape ;
+    sh:in ( mono:MappingSource-OPENFDA_NDC mono:MappingSource-RXNAV_NDCPROPERTIES ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "mapping source" ;
+    sh:path mono:mappingSource .
 
 shape:EmbeddedValue
     a sh:NodeShape ;
@@ -328,6 +402,40 @@ shape:ExtractedProduct-route
     sh:minCount "1"^^xsd:integer ;
     sh:name "route" ;
     sh:path mono:route .
+
+shape:GenericLink
+    a sh:NodeShape ;
+    rdfs:label "Generic link" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:GenericLink-genericDrug, shape:GenericLink-linkSource ;
+    sh:targetClass mono:GenericLink .
+
+shape:GenericLink-genericDrug
+    a sh:PropertyShape ;
+    sh:class mono:ClinicalDrug ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "generic drug" ;
+    sh:nodeKind sh:IRI ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:genericDrug ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
+shape:GenericLink-linkSource
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "200"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "link source" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:linkSource .
 
 shape:Ingredient
     a sh:NodeShape ;
@@ -516,13 +624,55 @@ shape:LabelSection-sectionTitle
     ] ;
     sh:path mono:sectionTitle .
 
+shape:MoietyLink
+    a sh:NodeShape ;
+    rdfs:label "Moiety link" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:MoietyLink-linkSource, shape:MoietyLink-moiety ;
+    sh:targetClass mono:MoietyLink .
+
+shape:MoietyLink-linkSource
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "200"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "link source" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:linkSource .
+
+shape:MoietyLink-moiety
+    a sh:PropertyShape ;
+    sh:class mono:Substance ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "moiety" ;
+    sh:nodeKind sh:IRI ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:moiety ;
+    sh:pattern "^https?://[A-Za-z0-9._~:/?#@!$&'()*+,;=%\\-]+$" .
+
 shape:Organization
     a sh:NodeShape ;
     rdfs:label "Organization" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:Organization-name, shape:Organization-slug ;
+    sh:property shape:Organization-alias, shape:Organization-name, shape:Organization-slug ;
     sh:targetClass mono:Organization .
+
+shape:Organization-alias
+    a sh:PropertyShape ;
+    sh:class mono:OrganizationAlias ;
+    sh:name "alias" ;
+    sh:node shape:OrganizationAlias ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:alias .
 
 shape:Organization-name
     a sh:PropertyShape ;
@@ -550,12 +700,54 @@ shape:Organization-slug
     sh:path mono:slug ;
     sh:pattern "^[a-z0-9]+(-[a-z0-9]+)*$" .
 
+shape:OrganizationAlias
+    a sh:NodeShape ;
+    rdfs:label "Organization alias" ;
+    sh:closed "true"^^xsd:boolean ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property shape:OrganizationAlias-aliasName, shape:OrganizationAlias-aliasSource, shape:OrganizationAlias-evidence ;
+    sh:targetClass mono:OrganizationAlias .
+
+shape:OrganizationAlias-aliasName
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "alias name" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:aliasName .
+
+shape:OrganizationAlias-aliasSource
+    a sh:PropertyShape ;
+    sh:in ( mono:AliasSource-NDC_DIRECTORY mono:AliasSource-ENFORCEMENT mono:AliasSource-RXNAV ) ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:name "alias source" ;
+    sh:path mono:aliasSource .
+
+shape:OrganizationAlias-evidence
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "500"^^xsd:integer ;
+    sh:minCount "1"^^xsd:integer ;
+    sh:minLength "1"^^xsd:integer ;
+    sh:name "evidence" ;
+    sh:not [
+        sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:evidence .
+
 shape:PackagedProduct
     a sh:NodeShape ;
     rdfs:label "Packaged product" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:PackagedProduct-labeler, shape:PackagedProduct-ndc, shape:PackagedProduct-packageDescription, shape:PackagedProduct-product ;
+    sh:property shape:PackagedProduct-labeler, shape:PackagedProduct-ndc, shape:PackagedProduct-ndc11, shape:PackagedProduct-packageDescription, shape:PackagedProduct-product ;
     sh:targetClass mono:PackagedProduct .
 
 shape:PackagedProduct-labeler
@@ -583,6 +775,18 @@ shape:PackagedProduct-ndc
     ] ;
     sh:path mono:ndc ;
     sh:pattern "^([0-9]{4}-[0-9]{4}-[0-9]{2}|[0-9]{5}-[0-9]{3}-[0-9]{2}|[0-9]{5}-[0-9]{4}-[0-9])$" .
+
+shape:PackagedProduct-ndc11
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:maxLength "11"^^xsd:integer ;
+    sh:name "11-digit NDC" ;
+    sh:not [
+        sh:pattern "[\u0000-\u001F\u007F-\u009F]"
+    ] ;
+    sh:path mono:ndc11 ;
+    sh:pattern "^[0-9]{11}$" .
 
 shape:PackagedProduct-packageDescription
     a sh:PropertyShape ;
@@ -614,7 +818,7 @@ shape:Product
     rdfs:label "Product" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:Product-clinicalDrug, shape:Product-dosageForm, shape:Product-finished, shape:Product-ingredient, shape:Product-name, shape:Product-productNdc, shape:Product-productType, shape:Product-route ;
+    sh:property shape:Product-clinicalDrug, shape:Product-dosageForm, shape:Product-drugMapping, shape:Product-finished, shape:Product-ingredient, shape:Product-name, shape:Product-productNdc, shape:Product-productType, shape:Product-route ;
     sh:targetClass mono:Product .
 
 shape:Product-clinicalDrug
@@ -641,6 +845,14 @@ shape:Product-dosageForm
         sh:pattern "[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]"
     ] ;
     sh:path mono:dosageForm .
+
+shape:Product-drugMapping
+    a sh:PropertyShape ;
+    sh:class mono:DrugMapping ;
+    sh:name "drug mapping" ;
+    sh:node shape:DrugMapping ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:drugMapping .
 
 shape:Product-finished
     a sh:PropertyShape ;
@@ -797,8 +1009,17 @@ shape:Substance
     rdfs:label "Substance" ;
     sh:closed "true"^^xsd:boolean ;
     sh:ignoredProperties ( rdf:type ) ;
-    sh:property shape:Substance-name, shape:Substance-unii ;
+    sh:property shape:Substance-hasActiveMoiety, shape:Substance-name, shape:Substance-unii ;
     sh:targetClass mono:Substance .
+
+shape:Substance-hasActiveMoiety
+    a sh:PropertyShape ;
+    sh:class mono:MoietyLink ;
+    sh:maxCount "1"^^xsd:integer ;
+    sh:name "has active moiety" ;
+    sh:node shape:MoietyLink ;
+    sh:nodeKind sh:IRI ;
+    sh:path mono:hasActiveMoiety .
 
 shape:Substance-name
     a sh:PropertyShape ;

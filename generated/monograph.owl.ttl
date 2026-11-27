@@ -8,8 +8,8 @@
 
 <https://example.org/monograph/ontology>
     a owl:Ontology ;
-    owl:versionIRI <https://example.org/monograph/ontology/2.1.1> ;
-    owl:versionInfo "2.1.1" ;
+    owl:versionIRI <https://example.org/monograph/ontology/2.2.0> ;
+    owl:versionInfo "2.2.0" ;
     rdfs:label "MONOGRAPH drug product model" .
 
 mono:AdverseEventReport
@@ -17,6 +17,23 @@ mono:AdverseEventReport
     rdfs:comment "A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA." ;
     rdfs:label "Adverse event report" ;
     rdfs:subClassOf mono:Entity .
+
+mono:AliasSource
+    a owl:Class ;
+    rdfs:comment "Which kind of record an organization name variant was seen in." ;
+    rdfs:label "Alias source" .
+
+mono:AliasSource-ENFORCEMENT
+    a mono:AliasSource, owl:NamedIndividual ;
+    rdfs:label "enforcement" .
+
+mono:AliasSource-NDC_DIRECTORY
+    a mono:AliasSource, owl:NamedIndividual ;
+    rdfs:label "ndc_directory" .
+
+mono:AliasSource-RXNAV
+    a mono:AliasSource, owl:NamedIndividual ;
+    rdfs:label "rxnav" .
 
 mono:ClinicalDrug
     a owl:Class ;
@@ -667,6 +684,12 @@ mono:DrugInvolvement
     rdfs:label "Drug involvement" ;
     rdfs:subClassOf mono:EmbeddedValue .
 
+mono:DrugMapping
+    a owl:Class ;
+    rdfs:comment "A crosswalk entry from a product to an RxNorm clinical drug, with its provenance." ;
+    rdfs:label "Drug mapping" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
 mono:DrugRole
     a owl:Class ;
     rdfs:comment "The role a drug played in an adverse event report. `suspect` is E2B characterization 1 when the source does not say which suspect is primary." ;
@@ -720,6 +743,12 @@ mono:ExtractedProduct
     rdfs:label "Extracted product" ;
     rdfs:subClassOf mono:EmbeddedValue .
 
+mono:GenericLink
+    a owl:Class ;
+    rdfs:comment "The generic clinical drug a branded drug is a trade name of, with where that is stated." ;
+    rdfs:label "Generic link" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
 mono:Ingredient
     a owl:Class ;
     rdfs:comment "An active ingredient of a product with its strength." ;
@@ -744,11 +773,36 @@ mono:LabelSection
     rdfs:label "Label section" ;
     rdfs:subClassOf mono:EmbeddedValue .
 
+mono:MappingSource
+    a owl:Class ;
+    rdfs:comment "Where a product-to-clinical-drug mapping comes from." ;
+    rdfs:label "Mapping source" .
+
+mono:MappingSource-OPENFDA_NDC
+    a mono:MappingSource, owl:NamedIndividual ;
+    rdfs:label "openfda_ndc" .
+
+mono:MappingSource-RXNAV_NDCPROPERTIES
+    a mono:MappingSource, owl:NamedIndividual ;
+    rdfs:label "rxnav_ndcproperties" .
+
+mono:MoietyLink
+    a owl:Class ;
+    rdfs:comment "The active moiety of a substance that is a salt, ester or other form of it, with where that is stated." ;
+    rdfs:label "Moiety link" ;
+    rdfs:subClassOf mono:EmbeddedValue .
+
 mono:Organization
     a owl:Class ;
     rdfs:comment "A company acting as manufacturer, labeler or recalling firm." ;
     rdfs:label "Organization" ;
     rdfs:subClassOf mono:Entity .
+
+mono:OrganizationAlias
+    a owl:Class ;
+    rdfs:comment "A name variant of an organization, tied to it by an identifier (the NDC labeler code), not by similarity." ;
+    rdfs:label "Organization alias" ;
+    rdfs:subClassOf mono:EmbeddedValue .
 
 mono:PackagedProduct
     a owl:Class ;
@@ -1586,6 +1640,27 @@ mono:UcumUnit-YEAR
     a mono:UcumUnit, owl:NamedIndividual ;
     rdfs:label "a" .
 
+mono:alias
+    a owl:ObjectProperty ;
+    rdfs:comment "Other names this firm appears under, each with its source and evidence." ;
+    rdfs:domain mono:Organization ;
+    rdfs:label "alias" ;
+    rdfs:range mono:OrganizationAlias .
+
+mono:aliasName
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "The variant." ;
+    rdfs:domain mono:OrganizationAlias ;
+    rdfs:label "alias name" ;
+    rdfs:range xsd:string .
+
+mono:aliasSource
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Record kind." ;
+    rdfs:domain mono:OrganizationAlias ;
+    rdfs:label "alias source" ;
+    rdfs:range mono:AliasSource .
+
 mono:basisUnit
     a owl:FunctionalProperty, owl:ObjectProperty ;
     rdfs:comment "Unit of the basis: mL in 'per 5 mL', '1' for per tablet or capsule." ;
@@ -1623,6 +1698,13 @@ mono:drugInvolvement
     rdfs:label "drug involvement" ;
     rdfs:range mono:DrugInvolvement .
 
+mono:drugMapping
+    a owl:ObjectProperty ;
+    rdfs:comment "Crosswalk to RxNorm clinical drugs (RxCUIs), one entry per source, sorted." ;
+    rdfs:domain mono:Product ;
+    rdfs:label "drug mapping" ;
+    rdfs:range mono:DrugMapping .
+
 mono:drugRole
     a owl:FunctionalProperty, owl:ObjectProperty ;
     rdfs:comment "Role in the report." ;
@@ -1636,6 +1718,15 @@ mono:effectiveDate
     rdfs:domain mono:Label ;
     rdfs:label "effective date" ;
     rdfs:range xsd:date .
+
+mono:evidence
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:DrugMapping mono:OrganizationAlias )
+    ] ;
+    rdfs:label "evidence" ;
+    rdfs:range xsd:string .
 
 mono:extractedDosageForm
     a owl:FunctionalProperty, owl:ObjectProperty ;
@@ -1672,6 +1763,34 @@ mono:finished
     rdfs:label "finished" ;
     rdfs:range xsd:boolean .
 
+mono:genericDrug
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The generic clinical drug." ;
+    rdfs:domain mono:GenericLink ;
+    rdfs:label "generic drug" ;
+    rdfs:range mono:ClinicalDrug .
+
+mono:harmonizedClinicalDrug
+    a owl:ObjectProperty ;
+    rdfs:comment "Every RxCUI openFDA's harmonization assigns to the reported drug (openfda.rxcui)." ;
+    rdfs:domain mono:DrugInvolvement ;
+    rdfs:label "harmonized clinical drug" ;
+    rdfs:range mono:ClinicalDrug .
+
+mono:hasActiveMoiety
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "For a salt, ester or other form, its active moiety (for example ampicillin sodium to ampicillin). Absent when the substance is its own moiety or no label states one." ;
+    rdfs:domain mono:Substance ;
+    rdfs:label "has active moiety" ;
+    rdfs:range mono:MoietyLink .
+
+mono:hasGeneric
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "For a branded drug (SBD or BPCK), the generic clinical drug it is a brand of." ;
+    rdfs:domain mono:ClinicalDrug ;
+    rdfs:label "has generic" ;
+    rdfs:range mono:GenericLink .
+
 mono:ingredient
     a owl:ObjectProperty ;
     rdfs:comment "Active ingredients, in order." ;
@@ -1702,6 +1821,15 @@ mono:labelsProduct
     rdfs:label "labels product" ;
     rdfs:range mono:Product .
 
+mono:linkSource
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( mono:GenericLink mono:MoietyLink )
+    ] ;
+    rdfs:label "link source" ;
+    rdfs:range xsd:string .
+
 mono:loincCode
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "LOINC code." ;
@@ -1709,12 +1837,33 @@ mono:loincCode
     rdfs:label "LOINC code" ;
     rdfs:range xsd:string .
 
+mono:mappedClinicalDrug
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The RxCUI." ;
+    rdfs:domain mono:DrugMapping ;
+    rdfs:label "mapped clinical drug" ;
+    rdfs:range mono:ClinicalDrug .
+
+mono:mappingSource
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "Source." ;
+    rdfs:domain mono:DrugMapping ;
+    rdfs:label "mapping source" ;
+    rdfs:range mono:MappingSource .
+
 mono:meddraPreferredTerm
     a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:comment "MedDRA PT text (at most 100 characters)." ;
     rdfs:domain mono:Reaction ;
     rdfs:label "MedDRA preferred term" ;
     rdfs:range xsd:string .
+
+mono:moiety
+    a owl:FunctionalProperty, owl:ObjectProperty ;
+    rdfs:comment "The active moiety (parent substance)." ;
+    rdfs:domain mono:MoietyLink ;
+    rdfs:label "moiety" ;
+    rdfs:range mono:Substance .
 
 mono:name
     a owl:DatatypeProperty, owl:FunctionalProperty ;
@@ -1733,6 +1882,13 @@ mono:ndc
         owl:unionOf ( mono:ExtractedPackage mono:PackagedProduct )
     ] ;
     rdfs:label "NDC" ;
+    rdfs:range xsd:string .
+
+mono:ndc11
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "The same NDC in the 11-digit 5-4-2 form without hyphens (HIPAA form): a leading zero is added to the short segment." ;
+    rdfs:domain mono:PackagedProduct ;
+    rdfs:label "11-digit NDC" ;
     rdfs:range xsd:string .
 
 mono:packageDescription
@@ -1964,6 +2120,13 @@ mono:substanceName
     rdfs:comment "Substance name exactly as the label states it." ;
     rdfs:domain mono:ExtractedIngredient ;
     rdfs:label "substance name" ;
+    rdfs:range xsd:string .
+
+mono:termType
+    a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:comment "RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs." ;
+    rdfs:domain mono:ClinicalDrug ;
+    rdfs:label "RxNorm term type" ;
     rdfs:range xsd:string .
 
 mono:unii

@@ -253,6 +253,25 @@ class ProductType(StrEnum):
     LICENSED_VACCINE_BULK_INTERMEDIATE = "LICENSED VACCINE BULK INTERMEDIATE"
 
 
+class AliasSource(StrEnum):
+    """Which kind of record an organization name variant was seen in."""
+
+    __ont__ = OntEnum(name="AliasSource", label="Alias source")
+
+    NDC_DIRECTORY = "ndc_directory"
+    ENFORCEMENT = "enforcement"
+    RXNAV = "rxnav"
+
+
+class MappingSource(StrEnum):
+    """Where a product-to-clinical-drug mapping comes from."""
+
+    __ont__ = OntEnum(name="MappingSource", label="Mapping source")
+
+    OPENFDA_NDC = "openfda_ndc"  # the NDC directory record's openfda.rxcui harmonization
+    RXNAV_NDCPROPERTIES = "rxnav_ndcproperties"  # RxNav getNDCProperties, per package NDC
+
+
 class SourceSystem(StrEnum):
     """Which reporting system an adverse event report came from. The two differ in what they record
     (for example, only the FAERS quarterly files say which suspect drug is primary)."""
@@ -507,6 +526,21 @@ class UcumUnit(StrEnum):
 # ---------------------------------------------------------------------------------------------------
 
 
+class MoietyLink(EmbeddedValue):
+    """The active moiety of a substance that is a salt, ester or other form of it, with where that is stated."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="MoietyLink", label="Moiety link")
+
+    moiety: Annotated[
+        Ref[Substance], OntProp("moiety", "moiety"), Field(description="The active moiety (parent substance).")
+    ]
+    source: Annotated[
+        SafeText,
+        OntProp("linkSource", "link source"),
+        Field(min_length=1, max_length=200, description="Provenance: 'spl:<set id>' of the label that states it."),
+    ]
+
+
 class Substance(Entity):
     """A chemical or biological substance identified by its FDA Unique Ingredient Identifier."""
 
@@ -517,6 +551,36 @@ class Substance(Entity):
     ]
     name: Annotated[
         SafeText, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")
+    ]
+    active_moiety: Annotated[
+        MoietyLink | None,
+        OntProp("hasActiveMoiety", "has active moiety"),
+        Field(
+            description=(
+                "For a salt, ester or other form, its active moiety (for example ampicillin sodium to ampicillin)."
+                " Absent when the substance is its own moiety or no label states one."
+            )
+        ),
+    ] = None
+
+
+MoietyLink.model_rebuild()  # MoietyLink and Substance refer to each other
+
+
+class OrganizationAlias(EmbeddedValue):
+    """A name variant of an organization, tied to it by an identifier (the NDC labeler code), not by
+    similarity."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="OrganizationAlias", label="Organization alias", key=("name",))
+
+    name: Annotated[
+        SafeText, OntProp("aliasName", "alias name"), Field(min_length=1, max_length=500, description="The variant.")
+    ]
+    source: Annotated[AliasSource, OntProp("aliasSource", "alias source"), Field(description="Record kind.")]
+    evidence: Annotated[
+        SafeText,
+        OntProp("evidence", "evidence"),
+        Field(min_length=1, max_length=500, description="The record and identifier that tie the name to the firm."),
     ]
 
 
@@ -539,6 +603,11 @@ class Organization(Entity):
     name: Annotated[
         SafeText, OntProp("name", "name"), Field(min_length=1, max_length=500, description="Preferred name.")
     ]
+    aliases: Annotated[
+        frozenset[OrganizationAlias],
+        OntProp("alias", "alias"),
+        Field(description="Other names this firm appears under, each with its source and evidence."),
+    ] = frozenset()
 
 
 class ClinicalDrug(Entity):
@@ -558,6 +627,53 @@ class ClinicalDrug(Entity):
     name: Annotated[
         SafeText | None, OntProp("name", "name"), Field(min_length=1, max_length=500, description="RxNorm name.")
     ] = None
+    term_type: Annotated[
+        SafeIdentifier | None,
+        OntProp("termType", "RxNorm term type"),
+        Field(
+            pattern=safe(r"^[A-Z]{2,6}$"),
+            description="RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.",
+        ),
+    ] = None
+    generic: Annotated[
+        GenericLink | None,
+        OntProp("hasGeneric", "has generic"),
+        Field(description="For a branded drug (SBD or BPCK), the generic clinical drug it is a brand of."),
+    ] = None
+
+
+class GenericLink(EmbeddedValue):
+    """The generic clinical drug a branded drug is a trade name of, with where that is stated."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="GenericLink", label="Generic link")
+
+    drug: Annotated[
+        Ref[ClinicalDrug], OntProp("genericDrug", "generic drug"), Field(description="The generic clinical drug.")
+    ]
+    source: Annotated[
+        SafeText,
+        OntProp("linkSource", "link source"),
+        Field(min_length=1, max_length=200, description="Provenance: the RxNav request and RxNorm data version."),
+    ]
+
+
+ClinicalDrug.model_rebuild()  # ClinicalDrug and GenericLink refer to each other
+
+
+class DrugMapping(EmbeddedValue):
+    """A crosswalk entry from a product to an RxNorm clinical drug, with its provenance."""
+
+    __ont__: ClassVar[OntClass] = OntClass(name="DrugMapping", label="Drug mapping")
+
+    clinical_drug: Annotated[
+        Ref[ClinicalDrug], OntProp("mappedClinicalDrug", "mapped clinical drug"), Field(description="The RxCUI.")
+    ]
+    source: Annotated[MappingSource, OntProp("mappingSource", "mapping source"), Field(description="Source.")]
+    evidence: Annotated[
+        SafeText,
+        OntProp("evidence", "evidence"),
+        Field(min_length=1, max_length=500, description="The request or record the mapping was read from."),
+    ]
 
 
 class Ingredient(EmbeddedValue):
@@ -629,6 +745,11 @@ class Product(Entity):
         OntProp("clinicalDrug", "clinical drug"),
         Field(description="The RxNorm clinical drug, when the source names exactly one."),
     ] = None
+    drug_mappings: Annotated[
+        list[DrugMapping],
+        OntProp("drugMapping", "drug mapping"),
+        Field(description="Crosswalk to RxNorm clinical drugs (RxCUIs), one entry per source, sorted."),
+    ] = []
 
     @model_validator(mode="after")
     @pydantic_only(
@@ -666,6 +787,17 @@ class PackagedProduct(Entity):
         SafeText | None,
         OntProp("packageDescription", "package description"),
         Field(min_length=1, max_length=2000, description="Package description as written in the source."),
+    ] = None
+    ndc11: Annotated[
+        SafeIdentifier | None,
+        OntProp("ndc11", "11-digit NDC"),
+        Field(
+            pattern=safe(r"^\d{11}$"),
+            description=(
+                "The same NDC in the 11-digit 5-4-2 form without hyphens (HIPAA form): a leading zero is added"
+                " to the short segment."
+            ),
+        ),
     ] = None
 
 
@@ -755,6 +887,11 @@ class DrugInvolvement(EmbeddedValue):
         Field(description="The RxNorm clinical drug, when the source resolves the name to exactly one RxCUI."),
     ] = None
     role: Annotated[DrugRole, OntProp("drugRole", "drug role"), Field(description="Role in the report.")]
+    harmonized_clinical_drugs: Annotated[
+        frozenset[Ref[ClinicalDrug]],
+        OntProp("harmonizedClinicalDrug", "harmonized clinical drug"),
+        Field(description="Every RxCUI openFDA's harmonization assigns to the reported drug (openfda.rxcui)."),
+    ] = frozenset()
 
 
 class Reaction(EmbeddedValue):
@@ -1005,9 +1142,13 @@ class LabelExtraction(Entity):
 MODELS: tuple[type[ModelBase], ...] = (
     Entity,
     EmbeddedValue,
+    MoietyLink,
     Substance,
+    OrganizationAlias,
     Organization,
     ClinicalDrug,
+    GenericLink,
+    DrugMapping,
     Ingredient,
     Product,
     PackagedProduct,

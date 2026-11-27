@@ -11,8 +11,9 @@ from pathlib import Path
 
 from monograph.mutate.mutations import Mutation, MutationError
 
+# .git is copied: the prereg gate compares each PREREG.md with the commit that added it.
 _IGNORE = shutil.ignore_patterns(
-    ".git", ".venv", "data", "results", "__pycache__", ".mypy_cache", ".pytest_cache", ".hypothesis", ".ruff_cache"
+    ".venv", "data", "results", "__pycache__", ".mypy_cache", ".pytest_cache", ".hypothesis", ".ruff_cache"
 )
 
 
@@ -39,6 +40,7 @@ def default_gates(python: str) -> tuple[Gate, ...]:
         Gate("breaking", (*cli, "check", "breaking")),
         Gate("lint", (*cli, "check", "lint")),
         Gate("agreement", (*cli, "check", "agreement")),
+        Gate("prereg", (*cli, "check", "prereg")),
         # tests/test_mutations.py checks that the mutations apply to the pristine source, which a mutant
         # copy no longer is, so it is the one test file the mutant pipeline leaves out.
         Gate(
