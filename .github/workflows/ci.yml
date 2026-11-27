@@ -66,6 +66,27 @@ jobs:
       - name: Postgres integration
         run: uv run pytest -q -m integration
 
+  age:
+    # H2: backend equivalence and read-only roles against PostgreSQL 18 + Apache AGE 1.8.0. A service
+    # container cannot take a command, and AGE must be preloaded for non-superuser roles, so it is started here.
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    env:
+      MONOGRAPH_AGE_DSN: postgresql://monograph:monograph@localhost:5433/monograph
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - name: start Postgres + AGE
+        run: |
+          docker run -d --name age -p 5433:5432 \
+            -e POSTGRES_USER=monograph -e POSTGRES_PASSWORD=monograph -e POSTGRES_DB=monograph \
+            apache/age:release_PG18_1.8.0@sha256:47a0b054c3663a3e64a25fc0c5a982f1b58348019274b326a691cdf77f78eb58 \
+            postgres -c shared_preload_libraries=age
+          for i in $(seq 1 60); do docker exec age pg_isready -U monograph -d monograph && break; sleep 1; done
+      - name: AGE tests
+        run: uv run pytest -q -m age
+
   mutation:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
