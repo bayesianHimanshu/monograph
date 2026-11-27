@@ -1753,7 +1753,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t2_substances_recalled_by_firm",
-   "text": "List the active ingredient substances of products recalled by Kowa Pharmaceuticals America, Inc..",
+   "text": "List the active ingredient substances of products recalled by Kowa Pharmaceuticals America, Inc.",
    "type": "T2"
   },
   {
@@ -1816,7 +1816,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t2_substances_recalled_by_firm",
-   "text": "List the active ingredient substances of products recalled by Rising Pharma Holding, Inc..",
+   "text": "List the active ingredient substances of products recalled by Rising Pharma Holding, Inc.",
    "type": "T2"
   },
   {
@@ -1882,7 +1882,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t2_substances_recalled_by_firm",
-   "text": "List the active ingredient substances of products recalled by Apotex Corp..",
+   "text": "List the active ingredient substances of products recalled by Apotex Corp.",
    "type": "T2"
   },
   {
@@ -2003,7 +2003,7 @@
    "phrasing": 2,
    "split": "dev",
    "template": "t2_recalls_of_labeled_products",
-   "text": "List the recalls that name a product labeled by Thea Pharma Inc..",
+   "text": "List the recalls that name a product labeled by Thea Pharma Inc.",
    "type": "T2"
   },
   {
@@ -2925,7 +2925,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t3_alias_recalls",
-   "text": "List the recalls whose recalling firm is Granules Pharmaceutical Inc..",
+   "text": "List the recalls whose recalling firm is Granules Pharmaceutical Inc.",
    "type": "T3"
   },
   {
@@ -3020,48 +3020,6 @@
   },
   {
    "anchors": [
-    "https://example.org/monograph/organization/cardinal-health-110-llc-dba-leader"
-   ],
-   "gold": {
-    "ids": [
-     "https://example.org/monograph/recall/D-0131-2024",
-     "https://example.org/monograph/recall/D-0134-2024",
-     "https://example.org/monograph/recall/D-0135-2024"
-    ],
-    "kind": "ids"
-   },
-   "id": "t3_alias_recalls-07",
-   "params": {
-    "firm": "CARDINAL HEALTH, INC. 063997360"
-   },
-   "phrasing": 1,
-   "split": "test",
-   "template": "t3_alias_recalls",
-   "text": "Which recalls did CARDINAL HEALTH, INC. 063997360 issue as recalling firm?",
-   "type": "T3"
-  },
-  {
-   "anchors": [
-    "https://example.org/monograph/organization/azurity-pharmaceuticals-inc"
-   ],
-   "gold": {
-    "ids": [
-     "https://example.org/monograph/recall/D-0323-2024"
-    ],
-    "kind": "ids"
-   },
-   "id": "t3_alias_recalls-08",
-   "params": {
-    "firm": "Azurity Pharmaceuticals, Inc. (formerly Arbor Pharmaceuticals)"
-   },
-   "phrasing": 2,
-   "split": "dev",
-   "template": "t3_alias_recalls",
-   "text": "List the recalls whose recalling firm is Azurity Pharmaceuticals, Inc. (formerly Arbor Pharmaceuticals).",
-   "type": "T3"
-  },
-  {
-   "anchors": [
     "https://example.org/monograph/organization/focus-health-group"
    ],
    "gold": {
@@ -3070,14 +3028,61 @@
     ],
     "kind": "ids"
    },
-   "id": "t3_alias_recalls-09",
+   "id": "t3_alias_recalls-07",
    "params": {
     "firm": "Focus Health Group Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t3_alias_recalls",
+   "text": "Which recalls did Focus Health Group Inc issue as recalling firm?",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/carefusion-213-llc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0517-2026",
+     "https://example.org/monograph/recall/D-0518-2026",
+     "https://example.org/monograph/recall/D-0643-2026",
+     "https://example.org/monograph/recall/D-0646-2026",
+     "https://example.org/monograph/recall/D-1168-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-08",
+   "params": {
+    "firm": "CareFusion 213, LLC"
+   },
+   "phrasing": 2,
+   "split": "dev",
+   "template": "t3_alias_recalls",
+   "text": "List the recalls whose recalling firm is CareFusion 213, LLC.",
+   "type": "T3"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/k-c-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/recall/D-0006-2027",
+     "https://example.org/monograph/recall/D-0323-2015",
+     "https://example.org/monograph/recall/D-0416-2026",
+     "https://example.org/monograph/recall/D-0898-2023"
+    ],
+    "kind": "ids"
+   },
+   "id": "t3_alias_recalls-09",
+   "params": {
+    "firm": "K C Pharmaceuticals Inc"
    },
    "phrasing": 0,
    "split": "test",
    "template": "t3_alias_recalls",
-   "text": "Which recalls were issued by Focus Health Group Inc?",
+   "text": "Which recalls were issued by K C Pharmaceuticals Inc?",
    "type": "T3"
   },
   {
@@ -3570,31 +3575,6 @@
   },
   {
    "anchors": [
-    "https://example.org/monograph/organization/cardinal-health-110-llc-dba-leader"
-   ],
-   "gold": {
-    "ids": [
-     "https://example.org/monograph/substance/0YZT43HS7D",
-     "https://example.org/monograph/substance/532B59J990",
-     "https://example.org/monograph/substance/6DC9Q167V3",
-     "https://example.org/monograph/substance/B697894SGQ",
-     "https://example.org/monograph/substance/FZ989GH94E",
-     "https://example.org/monograph/substance/K679OBS311"
-    ],
-    "kind": "ids"
-   },
-   "id": "t4_substances_recalled_by_alias-01",
-   "params": {
-    "firm": "CARDINAL HEALTH, INC. 063997360"
-   },
-   "phrasing": 1,
-   "split": "test",
-   "template": "t4_substances_recalled_by_alias",
-   "text": "What active ingredients are in the products that CARDINAL HEALTH, INC. 063997360 recalled?",
-   "type": "T4"
-  },
-  {
-   "anchors": [
     "https://example.org/monograph/organization/mayne-pharma"
    ],
    "gold": {
@@ -3604,14 +3584,14 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-02",
+   "id": "t4_substances_recalled_by_alias-01",
    "params": {
     "firm": "Mayne Pharma Commercial LLC"
    },
-   "phrasing": 2,
+   "phrasing": 1,
    "split": "test",
    "template": "t4_substances_recalled_by_alias",
-   "text": "List the active ingredient substances of products recalled by Mayne Pharma Commercial LLC.",
+   "text": "What active ingredients are in the products that Mayne Pharma Commercial LLC recalled?",
    "type": "T4"
   },
   {
@@ -3630,14 +3610,14 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-03",
+   "id": "t4_substances_recalled_by_alias-02",
    "params": {
     "firm": "Dr. Reddys Laboratories Inc"
    },
-   "phrasing": 0,
+   "phrasing": 2,
    "split": "test",
    "template": "t4_substances_recalled_by_alias",
-   "text": "Which substances are active ingredients of products recalled by Dr. Reddys Laboratories Inc?",
+   "text": "List the active ingredient substances of products recalled by Dr. Reddys Laboratories Inc.",
    "type": "T4"
   },
   {
@@ -3650,14 +3630,14 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-04",
+   "id": "t4_substances_recalled_by_alias-03",
    "params": {
     "firm": "SPIRIT PHARMACEUTICALS LLC"
    },
-   "phrasing": 1,
+   "phrasing": 0,
    "split": "test",
    "template": "t4_substances_recalled_by_alias",
-   "text": "What active ingredients are in the products that SPIRIT PHARMACEUTICALS LLC recalled?",
+   "text": "Which substances are active ingredients of products recalled by SPIRIT PHARMACEUTICALS LLC?",
    "type": "T4"
   },
   {
@@ -3671,34 +3651,14 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-05",
+   "id": "t4_substances_recalled_by_alias-04",
    "params": {
     "firm": "RISING PHARMACEUTICALS"
    },
-   "phrasing": 2,
+   "phrasing": 1,
    "split": "test",
    "template": "t4_substances_recalled_by_alias",
-   "text": "List the active ingredient substances of products recalled by RISING PHARMACEUTICALS.",
-   "type": "T4"
-  },
-  {
-   "anchors": [
-    "https://example.org/monograph/organization/azurity-pharmaceuticals-inc"
-   ],
-   "gold": {
-    "ids": [
-     "https://example.org/monograph/substance/JJ768O327N"
-    ],
-    "kind": "ids"
-   },
-   "id": "t4_substances_recalled_by_alias-06",
-   "params": {
-    "firm": "Azurity Pharmaceuticals, Inc. (formerly Arbor Pharmaceuticals)"
-   },
-   "phrasing": 0,
-   "split": "dev",
-   "template": "t4_substances_recalled_by_alias",
-   "text": "Which substances are active ingredients of products recalled by Azurity Pharmaceuticals, Inc. (formerly Arbor Pharmaceuticals)?",
+   "text": "What active ingredients are in the products that RISING PHARMACEUTICALS recalled?",
    "type": "T4"
   },
   {
@@ -3713,14 +3673,14 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-07",
+   "id": "t4_substances_recalled_by_alias-05",
    "params": {
     "firm": "Novo Nordisk Pharmaceutical Industries, LP"
    },
-   "phrasing": 1,
+   "phrasing": 2,
    "split": "test",
    "template": "t4_substances_recalled_by_alias",
-   "text": "What active ingredients are in the products that Novo Nordisk Pharmaceutical Industries, LP recalled?",
+   "text": "List the active ingredient substances of products recalled by Novo Nordisk Pharmaceutical Industries, LP.",
    "type": "T4"
   },
   {
@@ -3739,14 +3699,14 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-08",
+   "id": "t4_substances_recalled_by_alias-06",
    "params": {
     "firm": "K C Pharmaceuticals Inc"
    },
-   "phrasing": 2,
-   "split": "test",
+   "phrasing": 0,
+   "split": "dev",
    "template": "t4_substances_recalled_by_alias",
-   "text": "List the active ingredient substances of products recalled by K C Pharmaceuticals Inc.",
+   "text": "Which substances are active ingredients of products recalled by K C Pharmaceuticals Inc?",
    "type": "T4"
   },
   {
@@ -3759,14 +3719,57 @@
     ],
     "kind": "ids"
    },
-   "id": "t4_substances_recalled_by_alias-09",
+   "id": "t4_substances_recalled_by_alias-07",
    "params": {
     "firm": "Breckenridge Pharmaceutical, Inc"
+   },
+   "phrasing": 1,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "What active ingredients are in the products that Breckenridge Pharmaceutical, Inc recalled?",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/genentech-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/1RXS4UE564",
+     "https://example.org/monograph/substance/ZL1R02VT79"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-08",
+   "params": {
+    "firm": "Genentech Inc"
+   },
+   "phrasing": 2,
+   "split": "test",
+   "template": "t4_substances_recalled_by_alias",
+   "text": "List the active ingredient substances of products recalled by Genentech Inc.",
+   "type": "T4"
+  },
+  {
+   "anchors": [
+    "https://example.org/monograph/organization/altaire-pharmaceuticals-inc"
+   ],
+   "gold": {
+    "ids": [
+     "https://example.org/monograph/substance/4T6H12BN9U",
+     "https://example.org/monograph/substance/QTG126297Q",
+     "https://example.org/monograph/substance/T5L8T28FGP"
+    ],
+    "kind": "ids"
+   },
+   "id": "t4_substances_recalled_by_alias-09",
+   "params": {
+    "firm": "Altaire Pharmaceuticals, Inc."
    },
    "phrasing": 0,
    "split": "dev",
    "template": "t4_substances_recalled_by_alias",
-   "text": "Which substances are active ingredients of products recalled by Breckenridge Pharmaceutical, Inc?",
+   "text": "Which substances are active ingredients of products recalled by Altaire Pharmaceuticals, Inc.?",
    "type": "T4"
   },
   {
@@ -4883,7 +4886,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t5_recalls_by_class",
-   "text": "Count the class II recalls issued by Prescript Pharmaceuticals, Inc..",
+   "text": "Count the class II recalls issued by Prescript Pharmaceuticals, Inc.",
    "type": "T5"
   },
   {
@@ -5172,7 +5175,7 @@
    "phrasing": 2,
    "split": "dev",
    "template": "t5_products_labeled",
-   "text": "Count the products labeled by Actavis Pharma, Inc..",
+   "text": "Count the products labeled by Actavis Pharma, Inc.",
    "type": "T5"
   },
   {
@@ -5226,7 +5229,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t5_products_labeled",
-   "text": "Count the products labeled by Sun Pharmaceutical Industries, Inc..",
+   "text": "Count the products labeled by Sun Pharmaceutical Industries, Inc.",
    "type": "T5"
   },
   {
@@ -5280,7 +5283,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t5_products_labeled",
-   "text": "Count the products labeled by Leadiant Biosciences, Inc..",
+   "text": "Count the products labeled by Leadiant Biosciences, Inc.",
    "type": "T5"
   },
   {
@@ -5334,7 +5337,7 @@
    "phrasing": 2,
    "split": "dev",
    "template": "t5_products_labeled",
-   "text": "Count the products labeled by Granules Pharmaceuticals Inc..",
+   "text": "Count the products labeled by Granules Pharmaceuticals Inc.",
    "type": "T5"
   },
   {
@@ -5904,7 +5907,7 @@
    "phrasing": 2,
    "split": "test",
    "template": "t6_fake_firm",
-   "text": "List the recalls whose recalling firm is Calder Ridge Laboratories, Inc..",
+   "text": "List the recalls whose recalling firm is Calder Ridge Laboratories, Inc.",
    "type": "T6"
   },
   {

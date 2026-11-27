@@ -190,3 +190,33 @@ and the interface interval does not, the report says the win comes from the tool
 10. Test runs (cost estimate first; stop above USD 40).
 11. Report.
 12. PR.
+
+## Findings and decisions while building (stages 1 to 7)
+
+* **Frame.** 1,000 recalls that name product NDCs (of 3,268 such recalls in openFDA), the NDC directory
+  records of 1,880 of their 1,947 product NDCs, 1,028 SPLs, RxNav for 2,283 products and 2,438 RxCUIs, and
+  994 event reports for 400 sampled RxCUIs. Loaded: 866 substances, 646 organizations, 8,468 clinical
+  drugs, 2,132 products, 4,713 packages, 892 labels, 1,422 reports, 1,161 recalls (147,515 rows; 48,544
+  vertices; 138,484 edges, every label and edge source verified against the tables).
+* **Identity layer as loaded.** 311 salt-to-moiety links, 377 brand-to-generic links, 239 organization
+  aliases (48 differ from the canonical name even after normalization), 576 recalling firms tied to a
+  labeler. The derived 11-digit NDC agrees with RxNav's `ndcItem` on all 5,892 packages checked.
+* **Rejects, never repaired.** 36 products fail `finished-rx-otc-requires-route`, 115 products cannot be
+  paired (no SPL) and are dropped, 13 labels have empty sections, 1 recall reason has a control character,
+  1 report has no suspect drug. References to entities not in the frame are dropped and counted.
+* **`neighbors` and `get_entity` take up to 50 ids** (the brief's single-id form is the one-element case):
+  with one id per call, a multi-hop walk over a set of entities cannot fit the 12-call budget, which would
+  penalize the tools arms on T2 for a reason that has nothing to do with tools.
+* **Gold is independent of the tools.** It is computed over the validated instances (`qa/index.py`); each
+  template's tool plan must reproduce it exactly on the SQL store, and every question is re-checked on the
+  Cypher store (0 disagreements).
+* **Two read-only roles**, one per store, so a free-form arm cannot query the other store even by breaking
+  out of `cypher()` quoting.
+* **Response cache keyed by arm**: S-tools and G-tools send byte-identical requests and get identical tool
+  results by design, so without the arm in the key G-tools would replay S-tools' samples and the store
+  effect under tools would be exactly 0 with no interval.
+* **AGE 1.8.0 limitations** found so far: no `shortestPath()`, no `CALL { }`, no `[:A|B]` alternation,
+  `cypher()` needs a column definition list, a variable bound by `UNWIND`/`WITH` cannot be reused in a later
+  `MATCH` pattern, an internal error on lists of graph elements ("unknown type of agtype container"), and
+  grouping stricter than openCypher. None blocks the experiment.
+* Stage 7 (agent loop and arms) was built before stage 6 (questions) while the frame fetch ran.

@@ -283,10 +283,16 @@ def _aliases(ix: Index, rng: random.Random, need: Callable[[str], bool]) -> list
     first, then variants that differ only in case, punctuation or corporate suffix."""
     strong: list[tuple[str, str]] = []
     weak: list[tuple[str, str]] = []
+    names = {iri: normalize_firm(o.name) for iri, o in ix.orgs.items()}
     for org in _shuffled(list(ix.orgs), rng):
         o = ix.orgs[org]
         for a in sorted(o.aliases, key=lambda a: a.name):
             if not need(org) or not _unique_firm_name(ix, a.name):
+                continue
+            # An alias that names another organization in the data ("Azurity (formerly Arbor Pharmaceuticals)"
+            # while Arbor Pharmaceuticals is its own firm) makes the gold ambiguous: not used.
+            text = normalize_firm(a.name)
+            if any(other != org and len(n) >= 8 and n in text for other, n in names.items()):
                 continue
             (strong if normalize_firm(a.name) != normalize_firm(o.name) else weak).append((org, a.name))
     return strong + weak

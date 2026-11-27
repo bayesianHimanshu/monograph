@@ -107,7 +107,7 @@ class AgentLoop:
         nudged = False
         data_calls = 0
         while t.turns < s.max_turns:
-            request = ToolRequest(self._model, self._system, self._arm.tools, tuple(messages), s)
+            request = ToolRequest(self._model, self._system, self._arm.tools, tuple(messages), s, self._arm.name)
             response = self._client.complete(request)
             t.turns += 1
             t.stop_reasons.append(response.stop_reason)

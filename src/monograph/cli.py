@@ -299,6 +299,14 @@ def report_h6(root: Root = Path()) -> None:
     typer.echo(f"wrote {path} from {len(records)} result lines")
 
 
+@report_app.command("h2")
+def report_h2(root: Root = Path()) -> None:
+    """Regenerate docs/h2/RESULTS.md from results/h2/*.jsonl alone."""
+    from monograph.graph.cli import report_h2 as run
+
+    run(root)
+
+
 @report_app.command("h4")
 def report_h4(root: Root = Path(), split: str = "test") -> None:
     """Regenerate docs/h4/RESULTS.md from results/h4/*.jsonl alone."""

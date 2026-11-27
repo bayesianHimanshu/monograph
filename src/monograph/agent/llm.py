@@ -49,9 +49,13 @@ class ToolRequest:
     tools: tuple[dict[str, Any], ...]
     messages: tuple[dict[str, Any], ...]
     settings: AgentSettings
+    # In the cache key, never sent. S-tools and G-tools send byte-identical requests by design; the tag keeps
+    # their samples independent instead of replaying one arm's responses for the other.
+    tag: str = ""
 
     def key(self) -> str:
         payload = {
+            "tag": self.tag,
             "model": self.model,
             "system": self.system,
             "tools": list(self.tools),

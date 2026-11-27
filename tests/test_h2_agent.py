@@ -120,3 +120,11 @@ def test_free_arms_differ_only_in_the_query_tool() -> None:
     assert [t["name"] for t in g.tools] == ["describe_schema", "run_cypher", "submit_answer"]
     assert s.tools[0] == g.tools[0]
     assert s.tools[1]["input_schema"] == g.tools[1]["input_schema"]
+
+
+def test_arms_draw_independent_samples() -> None:
+    from monograph.agent.llm import ToolRequest
+
+    a = ToolRequest("m", "s", (), (), AGENT_SETTINGS, "S-tools")
+    b = ToolRequest("m", "s", (), (), AGENT_SETTINGS, "G-tools")
+    assert a.key() != b.key()

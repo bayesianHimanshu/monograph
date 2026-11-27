@@ -209,3 +209,272 @@ def questions(root: Root = Path()) -> None:
 
     wiring.results_writer(root, "H2").write("h2.questions", len(qs), {"counts": counts, **_asdict(report)})
     typer.echo(f"{len(qs)} questions written to {QUESTIONS_FILE}: {counts}")
+
+
+H2_RESPONSES = Path("data/h2/responses")
+
+
+def load_questions(root: Path, split: str) -> list[dict[str, Any]]:
+    data = json.loads((root / QUESTIONS_FILE).read_text(encoding="utf-8"))
+    return [q for q in data["questions"] if q["split"] == split]
+
+
+def known_ids(store_dsn: str) -> set[str]:
+    import psycopg
+
+    tables = (
+        "substance",
+        "organization",
+        "clinical_drug",
+        "product",
+        "packaged_product",
+        "label",
+        "adverse_event_report",
+        "recall",
+    )
+    with psycopg.connect(store_dsn) as conn:
+        conn.execute("SET search_path = h2")
+        return {str(r[0]) for t in tables for r in conn.execute(f"SELECT iri FROM {t}").fetchall()}
+
+
+def make_arm_factory(arm: str, root: Path) -> Any:
+    import psycopg
+
+    from monograph.agent.arms import free_arm, tools_arm
+    from monograph.gen.age import Projection
+    from monograph.gen.artifacts import AGE_FILE, DDL_FILE
+    from monograph.tools.freeform import CypherRunner, SqlRunner
+
+    projection = Projection.parse((wiring.generated_dir(root) / AGE_FILE).read_text(encoding="utf-8"))
+    ddl = (wiring.generated_dir(root) / DDL_FILE).read_text(encoding="utf-8")
+
+    def make() -> Any:
+        if arm == "S-free":
+            return free_arm(arm, SqlRunner(psycopg.connect(role_dsn("h2_sql"), autocommit=True), ddl))
+        if arm == "G-free":
+            return free_arm(arm, CypherRunner(psycopg.connect(role_dsn("h2_graph"), autocommit=True), projection))
+        return tools_arm(arm, tool_service("sql" if arm == "S-tools" else "graph", root))
+
+    return make
+
+
+@h2_app.command("run")
+def run(
+    arm: Annotated[str, typer.Option(help="S-free, S-tools, G-free or G-tools")],
+    model: Annotated[str, typer.Option(help="claude-sonnet-5-5 or claude-haiku-5-5")],
+    split: Annotated[str, typer.Option(help="dev or test")] = "dev",
+    limit: Annotated[int | None, typer.Option(help="Only the first N questions (smoke runs).")] = None,
+    workers: Annotated[int, typer.Option(help="Questions run concurrently.")] = 4,
+    root: Root = Path(),
+) -> None:
+    """Run one arm with one model on one split (responses cached; results appended to results/h2)."""
+    import anthropic
+
+    from monograph.agent.arms import ARMS
+    from monograph.agent.llm import AnthropicToolClient, CachedToolClient, ToolResponseCache
+    from monograph.extract.config import MODELS
+    from monograph.qa.run import Writer, run_split
+
+    if arm not in ARMS or model not in MODELS or split not in ("dev", "test"):
+        raise typer.BadParameter("unknown arm, model or split")
+    if split == "test":
+        drift = h2_frozen_drift(root)
+        if drift:
+            typer.echo(f"refusing the test run: PREREG frozen files changed or missing: {drift}", err=True)
+            raise typer.Exit(1)
+    qs = load_questions(root, split)[:limit] if limit else load_questions(root, split)
+    client = CachedToolClient(
+        AnthropicToolClient(anthropic.Anthropic(max_retries=8)), ToolResponseCache(root / H2_RESPONSES)
+    )
+    writer = wiring.results_writer(root, "H2")
+    records = run_split(
+        qs,
+        arm,
+        model,
+        split,
+        make_arm_factory(arm, root),
+        client,
+        Writer(writer.write),
+        known_ids(role_dsn("h2_sql")),
+        workers,
+        log=typer.echo,
+    )
+    acc = sum(r["correct"] for r in records) / len(records) if records else 0.0
+    cost = sum(float(r["cost_usd"]) for r in records if not r["from_cache"])
+    typer.echo(
+        f"{arm} {model} {split}: {len(records)} questions, accuracy {acc:.3f}, {client.network_calls} API calls,"
+        f" new spend USD {cost:.2f}"
+    )
+
+
+def h2_frozen_drift(root: Path) -> list[str]:
+    """Files listed with a sha256 in docs/h2/PREREG.md whose content changed (or the PREREG is missing)."""
+    import hashlib
+    import re
+
+    prereg = root / "docs" / "h2" / "PREREG.md"
+    if not prereg.exists():
+        return ["docs/h2/PREREG.md"]
+    text = prereg.read_text(encoding="utf-8")
+    out = []
+    for path, digest in re.findall(r"^\| `([^`]+)` \| `([0-9a-f]{64})` \|$", text, re.MULTILINE):
+        target = root / path
+        if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            out.append(path)
+    return out
+
+
+def current_hashes(root: Path) -> dict[str, tuple[str, str]]:
+    """arm -> (system prompt sha256, tools sha256) for the prompts and tools as they are now."""
+    from monograph.agent.arms import ARMS, free_arm, sha256, system_prompt, tools_arm
+    from monograph.gen.age import Projection
+    from monograph.gen.artifacts import AGE_FILE
+    from monograph.tools.freeform import CypherRunner, SqlRunner
+    from monograph.tools.service import ToolService
+
+    projection = Projection.parse((wiring.generated_dir(root) / AGE_FILE).read_text(encoding="utf-8"))
+    arms = {
+        "S-free": free_arm("S-free", SqlRunner(None, "")),  # type: ignore[arg-type]
+        "G-free": free_arm("G-free", CypherRunner(None, projection)),  # type: ignore[arg-type]
+        "S-tools": tools_arm("S-tools", ToolService(None)),  # type: ignore[arg-type]
+        "G-tools": tools_arm("G-tools", ToolService(None)),  # type: ignore[arg-type]
+    }
+    return {a: (sha256(system_prompt(a)), arms[a].tools_hash()) for a in ARMS}
+
+
+def _records(root: Path, split: str) -> list[dict[str, Any]]:
+    from monograph.harness.results import read_results
+    from monograph.qa.report import select_runs
+
+    return select_runs(read_results(root / "results" / "h2"), split, current_hashes(root))
+
+
+@h2_app.command("score")
+def score(split: Annotated[str, typer.Option(help="dev or test")] = "test", root: Root = Path()) -> None:
+    """Score the latest runs (current prompts and tools) and append the summary to results/h2."""
+    from monograph.extract.config import MODELS
+    from monograph.qa.report import ARMS, score_lines
+
+    records = _records(root, split)
+    scores = score_lines(records, MODELS)
+    wiring.results_writer(root, "H2").write(f"h2.score.{split}", len(records), scores)
+    for m in MODELS:
+        for g in ("T1", "T2", "T3", "T4", "T5", "T6", "core", "all"):
+            row = [scores["cells"].get(f"{m}|{a}|{g}") for a in ARMS]
+            if all(row):
+                typer.echo(
+                    f"{m} {g:4s} " + "  ".join(f"{a} {c['accuracy']:.2f}" for a, c in zip(ARMS, row, strict=True) if c)
+                )
+    if scores["verdict"]:
+        typer.echo(f"verdict: {scores['verdict']['verdict']}")
+
+
+@h2_app.command("estimate")
+def estimate(root: Root = Path()) -> None:
+    """Estimate the test cost from the dev runs (current prompts): mean USD per question x test questions."""
+    from decimal import Decimal
+
+    from monograph.extract.config import MODELS
+    from monograph.qa.report import ARMS
+
+    records = _records(root, "dev")
+    n_test = len(load_questions(root, "test"))
+    total = Decimal(0)
+    for m in MODELS:
+        for a in ARMS:
+            rs = [r for r in records if r["model"] == m and r["arm"] == a]
+            if not rs:
+                typer.echo(f"{m} {a}: no dev runs with the current prompt")
+                continue
+            per = sum((Decimal(r["cost_usd"]) for r in rs), Decimal(0)) / len(rs)
+            total += per * n_test
+            typer.echo(f"{m} {a}: USD {per:.4f} per question x {n_test} = {per * n_test:.2f}")
+    typer.echo(f"estimated test cost: USD {total:.2f} (approval threshold USD 40)")
+    wiring.results_writer(root, "H2").write("h2.estimate", float(total), {"test_questions": n_test})
+
+
+RESULTS_FILE = Path("docs/h2/RESULTS.md")
+
+
+def report_h2(root: Path) -> None:
+    from decimal import Decimal
+
+    from monograph.extract.config import MODELS
+    from monograph.qa.pov import pov_section
+    from monograph.qa.report import render, score_lines
+
+    records = _records(root, "test")
+    questions = {
+        r["question_id"]: {"type": r["type"], "text": r.get("question", ""), "gold": r.get("gold", {"kind": "none"})}
+        for r in records
+    }
+    scores = score_lines(records, MODELS)
+    spend = sum(Decimal(r["cost_usd"]) for r in records)
+    meta = {"test_spend": float(spend), "pov": pov_section(scores, records, MODELS)}
+    text = render(scores, records, questions, MODELS, meta)
+    path = root / RESULTS_FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {RESULTS_FILE} ({len(records)} test records)")
+
+
+PREREG_FILE = Path("docs/h2/PREREG.md")
+LIMITATIONS = (
+    "Dev questions are only 60 (10 per type), so prompt tuning had little signal; the same budget applied to"
+    " every arm, and the dev log above shows each arm's iterations.",
+    "The frame is targeted: recalls that name products, their NDC records, and events sampled by RxCUI. It is"
+    " connected by construction and is not a random sample of FDA data.",
+    "Organization identity is by NDC labeler code (plus a recall's own product): firms that share a parent but"
+    " not a labeler code stay separate, and a recalling firm that is not a labeler of the recalled product"
+    " stays its own organization.",
+    "Tool results and query results are capped at 200 rows; questions whose tool plan would hit a cap were not"
+    " generated, so no question needs more than the cap on any arm.",
+    "Gold for 'a report involves a product' follows openFDA's harmonization of the reported drug to RxCUIs,"
+    " which is broad (every strength and brand of the reported ingredient); it is the defined relation, not a"
+    " clinical judgement.",
+    "AGE limitations found on dev are listed in the report; the G-free arm meets them, the G-tools backend"
+    " works around them.",
+    "Dev accuracy was at or near the ceiling for every arm and both models (0.97 to 1.00 after the gold fix),"
+    " so no arm's prompt was tuned: all four ran prompt v1 on dev and test. The question set may not separate"
+    " the arms; that is a property of these templates, not a reason to change them after seeing dev.",
+    "One gold fix on dev: an alias that names a second firm in the data ('Azurity Pharmaceuticals, Inc."
+    " (formerly Arbor Pharmaceuticals)', while Arbor Pharmaceuticals is its own organization) made the gold"
+    " ambiguous; such aliases are excluded for dev and test alike, and doubled periods in question text were"
+    " removed. 23 questions changed; dev was rerun for every arm.",
+)
+
+
+def _dev_log(root: Path) -> list[dict[str, Any]]:
+    from monograph.harness.results import read_results
+
+    latest: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+    for line in read_results(root / "results" / "h2"):
+        if line["metric"] != "h2.run" or line["details"].get("split") != "dev":
+            continue
+        d = line["details"]
+        version = f"base {d['prompt_versions']['base']}, arm {d['prompt_versions'][d['arm']]}"
+        latest[(d["arm"], d["model"], version, d["question_id"])] = d
+    groups: dict[tuple[str, str, str], list[bool]] = {}
+    runs: dict[tuple[str, str, str], int] = {}
+    for (arm, model, version, _), d in latest.items():
+        groups.setdefault((arm, model, version), []).append(bool(d["correct"]))
+    for line in read_results(root / "results" / "h2"):
+        if line["metric"] == "h2.run" and line["details"].get("split") == "dev":
+            d = line["details"]
+            version = f"base {d['prompt_versions']['base']}, arm {d['prompt_versions'][d['arm']]}"
+            runs[(d["arm"], d["model"], version)] = runs.get((d["arm"], d["model"], version), 0) + 1
+    return [
+        {"arm": a, "model": m, "version": v, "n": runs[(a, m, v)], "accuracy": sum(xs) / len(xs)}
+        for (a, m, v), xs in sorted(groups.items())
+    ]
+
+
+@h2_app.command("prereg")
+def prereg(root: Root = Path()) -> None:
+    """Write docs/h2/PREREG.md from the code, the question set and the dev log."""
+    from monograph.qa.prereg import render_prereg
+
+    data = json.loads((root / QUESTIONS_FILE).read_text(encoding="utf-8"))
+    text = render_prereg(root, current_hashes(root), _dev_log(root), data["dataset"], data["counts"], LIMITATIONS)
+    (root / PREREG_FILE).write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {PREREG_FILE}; frozen drift now: {h2_frozen_drift(root)}")

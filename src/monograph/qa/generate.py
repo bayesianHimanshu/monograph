@@ -85,7 +85,7 @@ def generate(
             random.Random(f"{seed}:{template.id}:split").shuffle(order)
             dev_set = set(order[:n_dev])
             for k, c in enumerate(kept):
-                text = template.phrasings[k % len(template.phrasings)].format(**c.params)
+                text = template.phrasings[k % len(template.phrasings)].format(**c.params).replace("..", ".")
                 questions.append(
                     {
                         "id": f"{template.id}-{k:02d}",

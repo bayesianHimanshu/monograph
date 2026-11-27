@@ -9,8 +9,8 @@ Failure categories, for a wrong answer, first that applies:
 1. refusal: the model refused;
 2. budget exhausted: no answer (tool, turn or token budget, truncation, or stopped without answering);
 3. hallucinated id: the answer names an id that is not in the database;
-4. wrong entity resolution: no tool call or result ever mentions the id of the entity the question names
-   (the anchor), so the agent never reached it;
+4. wrong entity resolution: no tool call input, result preview or result id ever mentions the entity the
+   question names (the anchor), by id or by key, so the agent never reached it;
 5. query error or timeout: a tool call failed and the answer is wrong;
 6. missing hop: the answer's ids are of a different kind than the gold's (for example products where firms
    were asked), or a number was given where ids were asked, or the reverse;
@@ -98,7 +98,10 @@ def failure_category(
     got = _answer_ids(answer)
     if known_ids is not None and any(i not in known_ids for i in got):
         return "hallucinated id"
-    seen = " ".join(str(c.get("input")) + " " + " ".join(c.get("ids_seen", [])) for c in record.get("calls", []))
+    seen = " ".join(
+        str(c.get("input")) + " " + str(c.get("preview", "")) + " " + " ".join(c.get("ids_seen", []))
+        for c in record.get("calls", [])
+    )
     if anchors and not any(a in seen or a.rsplit("/", 1)[-1] in seen for a in anchors):
         return "wrong entity resolution"
     if any(c.get("is_error") for c in record.get("calls", [])):
