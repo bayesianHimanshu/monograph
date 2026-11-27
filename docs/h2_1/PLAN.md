@@ -135,9 +135,9 @@ between identity levels (recalling-firm organizations with identity off), and th
 that cell's data.
 
 **T9 to T11 use only relations that are the same in every cell**: a package and its product, a package and
-its labeler, a product and its active ingredients, a recall and the products it names, a label and the
-products it covers. So their gold is identical in all four cells, and they measure path difficulty alone. The
-base prompt defines a step as one of these relations, in either direction.
+its labeler, a product and its active ingredients, a recall and the products it names. So their gold is
+identical in all four cells, and they measure path difficulty alone. The base prompt defines a step as one of
+these relations, in either direction.
 
 Constraints, checked at generation:
 
@@ -178,9 +178,9 @@ as above. One prompt version per arm, the same in every cell; dev iteration is l
   excluding 0, in the baseline cell for at least one model. Store effects under tools are identical by
   construction, so only free-form arms judge it. Backend execution latency of each tool on T9 to T11 (SQL vs
   Cypher, p50 and p95) is reported regardless.
-* **Ceiling rule.** A type on which every arm scores at least 0.95 in the baseline cell on dev, with either
-  model, is marked non-informative in the PREREG before the test run and excluded from P3. Questions do not
-  change after dev.
+* **Ceiling rule.** A type on which every arm scores at least 0.95 in the baseline cell on dev (every arm of
+  both models) is marked non-informative in the PREREG before the test run and excluded from P3. Questions do
+  not change after dev.
 * **Refined H2** ("the graph store helps free-form agents on deep and variable-length paths"): holds if P3
   holds; fails if G-free is within 0.05 of S-free on combined T9+T10 for both models; otherwise partly holds.
 
@@ -236,3 +236,22 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
   the other cells' databases. With identity off the resolver matches only canonical identifiers and names as
   written (no 11-digit NDC, case, punctuation, suffix or alias match), salt forms, crosswalk events and
   crosswalk recalls come back empty, and `resolve_entity` is the only tool whose definition differs.
+* **Stage 3, the extension.** 60 searches (30 substances, 30 labeler codes, one page of 100 each) returned
+  4,869 NDC records, 4,361 of them new products; RxNav was fetched for all of them (3,204 RxCUIs). The H2.1
+  dataset has 5,176 products (H2: 2,132), 11,335 packages (4,713), 1,116 substances (866), 9,842 clinical drugs
+  (8,468); organizations 823 with identity on, 963 with identity off. All four cells loaded with both stores
+  identical in full: 175,093 rows, 60,148 vertices and 168,793 edges with identity on; 68,854 rows, 59,912
+  vertices and 60,778 edges with identity off (the crosswalk edges are most of the difference).
+* **Labels are not a step relation.** The step graph (T9 to T11) uses package-product, package-labeler,
+  product-substance and recall-product; label-product was planned but H2's gold index does not model labels,
+  and adding it would change H2's frozen gold code. The base prompt states the four relations.
+* **Stage 3, the questions.** 420 questions, 60 per type, 15 dev and 45 test each. Every plan reproduced its
+  gold on the SQL store of all four cells, and the recheck on all four Cypher stores found 0 disagreements.
+  `t11_products_of_labeler` has only 11 firms with 50 to 150 products and a unique name; its shortfall of 4 went
+  to the other T11 templates (17, 16, 16), so T11 keeps 60. Gold differs between identity levels only for 24
+  T4 questions, all answered by recalling firms (recalling-firm organizations with identity off), as designed;
+  every T1, T9, T10, T11 and T6 gold is identical in all cells (asserted at generation). Gold sizes: T9 1 to 30
+  (median 5), T10 sets 1 to 27 (median 3), T11 50 to 134 (median 92). The fewest-steps questions answer 5 (11)
+  or 7 (4).
+* A brand name longer than resolve_entity's 200-character input cannot be asked through the tools; such brands
+  are not used (T3, T4).

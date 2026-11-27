@@ -48,7 +48,15 @@ def run_split(
     workers: int = 4,
     settings: AgentSettings = AGENT_SETTINGS,
     log: Callable[[str], None] = print,
+    metric: str = "h2",
+    tag: str | None = None,
+    extra: Mapping[str, Any] | None = None,
+    prompt_versions: Mapping[str, str] | None = None,
+    classify: Callable[[dict[str, Any]], str | None] | None = None,
 ) -> list[dict[str, Any]]:
+    """H2.1 passes its own metric prefix, cache tag, extra details (the cell), prompt versions, and a
+    classifier that may refine a wrong answer's failure category."""
+    versions = prompt_versions if prompt_versions is not None else PROMPT_VERSIONS
     local = threading.local()
     done: list[dict[str, Any]] = []
     lock = threading.Lock()
@@ -57,12 +65,12 @@ def run_split(
         if not hasattr(local, "arm"):
             local.arm = make_arm()
         arm: Arm = local.arm
-        loop = AgentLoop(client, arm, model, system, settings)
+        loop = AgentLoop(client, arm, model, system, settings, tag=tag)
         try:
             t = loop.run(str(q["id"]), str(q["text"]))
         except Exception as exc:  # an API or connection failure: logged, not scored, rerun later
             write(
-                "h2.error",
+                f"{metric}.error",
                 0.0,
                 {
                     "question_id": q["id"],
@@ -70,6 +78,7 @@ def run_split(
                     "model": model,
                     "split": split,
                     "error": f"{type(exc).__name__}: {str(exc)[:500]}",
+                    **(extra or {}),
                 },
             )
             log(f"{arm_name} {model} {q['id']}: {type(exc).__name__}")
@@ -83,14 +92,19 @@ def run_split(
                 "question": q["text"],
                 "gold": q["gold"],
                 "anchors": q.get("anchors", []),
-                "prompt_versions": {"base": PROMPT_VERSIONS["base"], arm_name: PROMPT_VERSIONS[arm_name]},
+                "prompt_versions": {"base": versions["base"], arm_name: versions[arm_name]},
                 "system_prompt_sha256": sha256(system),
                 "tools_sha256": arm.tools_hash(),
                 "settings": settings.as_dict(),
             }
         )
+        record.update(extra or {})
         score_record(record, q, known_ids)
-        write("h2.run", 1.0 if record["correct"] else 0.0, record)
+        if classify is not None and not record["correct"]:
+            refined = classify(record)
+            if refined is not None:
+                record["failure"] = refined
+        write(f"{metric}.run", 1.0 if record["correct"] else 0.0, record)
         with lock:
             done.append(record)
             if len(done) % 10 == 0:

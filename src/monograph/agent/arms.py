@@ -110,13 +110,13 @@ def tools_arm(name: str, service: ToolService) -> Arm:
     return Arm(name, store, "tools", (*defs, SUBMIT), execute)
 
 
-def free_arm(name: str, runner: SqlRunner | CypherRunner) -> Arm:
+def free_arm(name: str, runner: SqlRunner | CypherRunner, schema_description: str = SCHEMA_DESCRIPTION) -> Arm:
     if isinstance(runner, SqlRunner):
         query_tool, description, run = "run_sql", SQL_DESCRIPTION, runner.run_sql
     else:
         query_tool, description, run = "run_cypher", CYPHER_DESCRIPTION, runner.run_cypher
     defs = (
-        {"name": "describe_schema", "description": SCHEMA_DESCRIPTION, "input_schema": _schema(NoInput)},
+        {"name": "describe_schema", "description": schema_description, "input_schema": _schema(NoInput)},
         {"name": query_tool, "description": description, "input_schema": _schema(QueryIn)},
     )
 

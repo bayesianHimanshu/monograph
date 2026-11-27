@@ -90,7 +90,11 @@ class AgentLoop:
         system: str,
         settings: AgentSettings,
         clock: Callable[[], float] = time.monotonic,
+        tag: str | None = None,
     ) -> None:
+        """`tag` keys the response cache (default: the arm's name); H2.1 adds the cell, since tools arms send
+        byte-identical requests in the two description cells."""
+        self._tag = tag if tag is not None else arm.name
         self._client = client
         self._arm = arm
         self._model = model
@@ -107,7 +111,7 @@ class AgentLoop:
         nudged = False
         data_calls = 0
         while t.turns < s.max_turns:
-            request = ToolRequest(self._model, self._system, self._arm.tools, tuple(messages), s, self._arm.name)
+            request = ToolRequest(self._model, self._system, self._arm.tools, tuple(messages), s, self._tag)
             response = self._client.complete(request)
             t.turns += 1
             t.stop_reasons.append(response.stop_reason)

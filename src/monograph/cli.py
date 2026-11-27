@@ -530,3 +530,7 @@ if __name__ == "__main__":
 from monograph.graph.cli import h2_app  # noqa: E402
 
 app.add_typer(h2_app, name="h2")
+
+from monograph.ablation.cli import h2_1_app  # noqa: E402
+
+app.add_typer(h2_1_app, name="h2_1")
