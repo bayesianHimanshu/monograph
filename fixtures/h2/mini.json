@@ -1,0 +1,52 @@
+{
+  "Substance": [
+    {"unii": "7C782967RD", "name": "AMPICILLIN"},
+    {"unii": "S4TF6I2330", "name": "SULBACTAM"},
+    {"unii": "WK2XYI10QM", "name": "IBUPROFEN"},
+    {"unii": "JFN36L5S8K", "name": "AMPICILLIN SODIUM", "active_moiety": {"moiety": "https://example.org/monograph/substance/7C782967RD", "source": "spl:00000000-0000-0000-0000-000000000001"}},
+    {"unii": "DKQ4T82YE6", "name": "SULBACTAM SODIUM", "active_moiety": {"moiety": "https://example.org/monograph/substance/S4TF6I2330", "source": "spl:00000000-0000-0000-0000-000000000001"}}
+  ],
+  "Organization": [
+    {"slug": "pfizer-laboratories-div-pfizer-inc", "name": "Pfizer Laboratories Div Pfizer Inc",
+     "aliases": [{"name": "PFIZER LABORATORIES DIV PFIZER INC.", "source": "enforcement", "evidence": "recall D-0001-2020 names a product of labeler code 0069"}]},
+    {"slug": "acme-repack-llc", "name": "Acme Repack LLC"}
+  ],
+  "ClinicalDrug": [
+    {"rxcui": "1000", "name": "ampicillin 500 MG Oral Capsule", "term_type": "SCD"},
+    {"rxcui": "2000"},
+    {"rxcui": "1001", "name": "ampicillin 500 MG Oral Capsule [Brandx]", "term_type": "SBD", "generic": {"drug": "https://example.org/monograph/clinical-drug/1000", "source": "RxNav getRelatedByType rxcui=1001"}}
+  ],
+  "Product": [
+    {"product_ndc": "0069-1000", "name": "Brandx", "dosage_form": "CAPSULE", "product_type": "HUMAN PRESCRIPTION DRUG", "finished": true, "routes": ["ORAL"],
+     "ingredients": [{"substance": "https://example.org/monograph/substance/JFN36L5S8K", "strength_value": "500", "strength_unit": "mg/1"}],
+     "drug_mappings": [{"clinical_drug": "https://example.org/monograph/clinical-drug/1000", "source": "openfda_ndc", "evidence": "openFDA NDC directory record x"},
+                       {"clinical_drug": "https://example.org/monograph/clinical-drug/1001", "source": "rxnav_ndcproperties", "evidence": "RxNav getNDCProperties id=0069-1000"}]},
+    {"product_ndc": "0069-2000", "name": "Ampicillin and Sulbactam", "dosage_form": "INJECTION, POWDER, FOR SOLUTION", "product_type": "HUMAN PRESCRIPTION DRUG", "finished": true, "routes": ["INTRAVENOUS", "INTRAMUSCULAR"],
+     "ingredients": [{"substance": "https://example.org/monograph/substance/JFN36L5S8K", "strength_value": "1", "strength_unit": "g/1"}, {"substance": "https://example.org/monograph/substance/DKQ4T82YE6", "strength_value": "0.5", "strength_unit": "g/1"}],
+     "drug_mappings": [{"clinical_drug": "https://example.org/monograph/clinical-drug/1000", "source": "openfda_ndc", "evidence": "openFDA NDC directory record y"}]},
+    {"product_ndc": "12345-678", "name": "Ibuprofen", "dosage_form": "TABLET", "product_type": "HUMAN OTC DRUG", "finished": true, "routes": ["ORAL"],
+     "ingredients": [{"substance": "https://example.org/monograph/substance/WK2XYI10QM", "strength_value": "200", "strength_unit": "mg/1"}],
+     "clinical_drug": "https://example.org/monograph/clinical-drug/2000"}
+  ],
+  "PackagedProduct": [
+    {"ndc": "0069-1000-01", "ndc11": "00069100001", "product": "https://example.org/monograph/product/0069-1000", "labeler": "https://example.org/monograph/organization/pfizer-laboratories-div-pfizer-inc", "description": "30 CAPSULE in 1 BOTTLE (0069-1000-01)"},
+    {"ndc": "0069-2000-02", "ndc11": "00069200002", "product": "https://example.org/monograph/product/0069-2000", "labeler": "https://example.org/monograph/organization/pfizer-laboratories-div-pfizer-inc"},
+    {"ndc": "12345-678-90", "ndc11": "12345067890", "product": "https://example.org/monograph/product/12345-678", "labeler": "https://example.org/monograph/organization/acme-repack-llc"}
+  ],
+  "Label": [
+    {"set_id": "00000000-0000-0000-0000-000000000001", "version": 1, "effective_date": "2020-01-01", "products": ["https://example.org/monograph/product/0069-1000"],
+     "sections": [{"code": "34067-9", "title": "INDICATIONS AND USAGE", "text": "Brandx is indicated for infections."}]}
+  ],
+  "AdverseEventReport": [
+    {"report_id": "1001", "source_system": "openfda_e2b", "receipt_date": "2020-01-15", "serious": true, "seriousness_criteria": ["hospitalization"],
+     "drugs": [{"drug_name": "BRANDX", "role": "primary suspect", "harmonized_clinical_drugs": ["https://example.org/monograph/clinical-drug/1000", "https://example.org/monograph/clinical-drug/1001"]}],
+     "reactions": [{"term": "Nausea"}]},
+    {"report_id": "1002", "source_system": "openfda_e2b", "receipt_date": "2021-06-01", "serious": false,
+     "drugs": [{"drug_name": "IBUPROFEN", "role": "primary suspect", "clinical_drug": "https://example.org/monograph/clinical-drug/2000"}],
+     "reactions": [{"term": "Headache"}]}
+  ],
+  "Recall": [
+    {"recall_number": "D-0001-2020", "classification": "II", "reason": "Subpotent.", "report_date": "2020-03-01", "products": ["https://example.org/monograph/product/0069-1000"], "recalling_firm": "https://example.org/monograph/organization/pfizer-laboratories-div-pfizer-inc"},
+    {"recall_number": "D-0002-2021", "classification": "I", "reason": "Contamination.", "report_date": "2021-07-01", "products": ["https://example.org/monograph/product/12345-678"], "recalling_firm": "https://example.org/monograph/organization/acme-repack-llc"}
+  ]
+}
