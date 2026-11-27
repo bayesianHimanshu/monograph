@@ -1,4 +1,4 @@
--- MONOGRAPH drug product model 2.1.1, test profile. Generated from core/models.py; do not edit.
+-- MONOGRAPH drug product model 2.2.0, test profile. Generated from core/models.py; do not edit.
 -- Run inside an empty schema. Constraint names are stable and used by the integration test.
 
 CREATE TABLE substance (
@@ -18,6 +18,24 @@ COMMENT ON COLUMN substance.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN substance.unii IS 'FDA UNII code.';
 COMMENT ON COLUMN substance.name IS 'Preferred name.';
 
+CREATE TABLE substance__active_moiety (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES substance (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    moiety_iri text NOT NULL REFERENCES substance (iri) DEFERRABLE INITIALLY IMMEDIATE,
+    source text NOT NULL,
+    CONSTRAINT ck_substance__active_moiety_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT uq_substance__active_moiety_owner UNIQUE (owner_iri),
+    CONSTRAINT ck_substance__active_moiety_moiety_iri_pattern CHECK (moiety_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_substance__active_moiety_source_charset CHECK (source !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_substance__active_moiety_source_min_length CHECK (char_length(source) >= 1),
+    CONSTRAINT ck_substance__active_moiety_source_max_length CHECK (char_length(source) <= 200)
+);
+COMMENT ON TABLE substance__active_moiety IS 'Substance.active_moiety: For a salt, ester or other form, its active moiety (for example ampicillin sodium to ampicillin). Absent when the substance is its own moiety or no label states one. The active moiety of a substance that is a salt, ester or other form of it, with where that is stated.';
+COMMENT ON COLUMN substance__active_moiety.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN substance__active_moiety.owner_iri IS 'The owning Substance row (substance.iri).';
+COMMENT ON COLUMN substance__active_moiety.moiety_iri IS 'The active moiety (parent substance).';
+COMMENT ON COLUMN substance__active_moiety.source IS 'Provenance: ''spl:<set id>'' of the label that states it.';
+
 CREATE TABLE organization (
     iri text PRIMARY KEY,
     slug text NOT NULL,
@@ -36,16 +54,43 @@ COMMENT ON COLUMN organization.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN organization.slug IS 'Stable key: the normalized name, lowercase, words joined by hyphens.';
 COMMENT ON COLUMN organization.name IS 'Preferred name.';
 
+CREATE TABLE organization__aliases (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES organization (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    name text NOT NULL,
+    source text NOT NULL,
+    evidence text NOT NULL,
+    CONSTRAINT ck_organization__aliases_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT uq_organization__aliases_key UNIQUE (owner_iri, name),
+    CONSTRAINT ck_organization__aliases_name_charset CHECK (name !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_organization__aliases_name_min_length CHECK (char_length(name) >= 1),
+    CONSTRAINT ck_organization__aliases_name_max_length CHECK (char_length(name) <= 500),
+    CONSTRAINT ck_organization__aliases_source_enum CHECK (source IN ('ndc_directory', 'enforcement', 'rxnav')),
+    CONSTRAINT ck_organization__aliases_evidence_charset CHECK (evidence !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_organization__aliases_evidence_min_length CHECK (char_length(evidence) >= 1),
+    CONSTRAINT ck_organization__aliases_evidence_max_length CHECK (char_length(evidence) <= 500)
+);
+COMMENT ON TABLE organization__aliases IS 'Organization.aliases: Other names this firm appears under, each with its source and evidence. A name variant of an organization, tied to it by an identifier (the NDC labeler code), not by
+    similarity.';
+COMMENT ON COLUMN organization__aliases.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN organization__aliases.owner_iri IS 'The owning Organization row (organization.iri).';
+COMMENT ON COLUMN organization__aliases.name IS 'The variant.';
+COMMENT ON COLUMN organization__aliases.source IS 'Record kind.';
+COMMENT ON COLUMN organization__aliases.evidence IS 'The record and identifier that tie the name to the firm.';
+
 CREATE TABLE clinical_drug (
     iri text PRIMARY KEY,
     rxcui text NOT NULL,
     name text,
+    term_type text,
     CONSTRAINT ck_clinical_drug_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
     CONSTRAINT ck_clinical_drug_rxcui_charset CHECK (rxcui !~ '[\x01-\x1f\x7f-\x9f]'),
     CONSTRAINT ck_clinical_drug_rxcui_pattern CHECK (rxcui ~ '^[0-9]{1,8}$'),
     CONSTRAINT ck_clinical_drug_name_charset CHECK (name !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
     CONSTRAINT ck_clinical_drug_name_min_length CHECK (char_length(name) >= 1),
     CONSTRAINT ck_clinical_drug_name_max_length CHECK (char_length(name) <= 500),
+    CONSTRAINT ck_clinical_drug_term_type_charset CHECK (term_type !~ '[\x01-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_clinical_drug_term_type_pattern CHECK (term_type ~ '^[A-Z]{2,6}$'),
     CONSTRAINT uq_clinical_drug_key UNIQUE (rxcui)
 );
 COMMENT ON TABLE clinical_drug IS 'A clinical drug concept in RxNorm, identified by its RxCUI.
@@ -55,6 +100,25 @@ COMMENT ON TABLE clinical_drug IS 'A clinical drug concept in RxNorm, identified
 COMMENT ON COLUMN clinical_drug.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN clinical_drug.rxcui IS 'RxNorm CUI.';
 COMMENT ON COLUMN clinical_drug.name IS 'RxNorm name.';
+COMMENT ON COLUMN clinical_drug.term_type IS 'RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.';
+
+CREATE TABLE clinical_drug__generic (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES clinical_drug (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    drug_iri text NOT NULL REFERENCES clinical_drug (iri) DEFERRABLE INITIALLY IMMEDIATE,
+    source text NOT NULL,
+    CONSTRAINT ck_clinical_drug__generic_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT uq_clinical_drug__generic_owner UNIQUE (owner_iri),
+    CONSTRAINT ck_clinical_drug__generic_drug_iri_pattern CHECK (drug_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_clinical_drug__generic_source_charset CHECK (source !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_clinical_drug__generic_source_min_length CHECK (char_length(source) >= 1),
+    CONSTRAINT ck_clinical_drug__generic_source_max_length CHECK (char_length(source) <= 200)
+);
+COMMENT ON TABLE clinical_drug__generic IS 'ClinicalDrug.generic: For a branded drug (SBD or BPCK), the generic clinical drug it is a brand of. The generic clinical drug a branded drug is a trade name of, with where that is stated.';
+COMMENT ON COLUMN clinical_drug__generic.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN clinical_drug__generic.owner_iri IS 'The owning ClinicalDrug row (clinical_drug.iri).';
+COMMENT ON COLUMN clinical_drug__generic.drug_iri IS 'The generic clinical drug.';
+COMMENT ON COLUMN clinical_drug__generic.source IS 'Provenance: the RxNav request and RxNorm data version.';
 
 CREATE TABLE product (
     iri text PRIMARY KEY,
@@ -116,12 +180,37 @@ COMMENT ON COLUMN product__ingredients.substance_iri IS 'The substance.';
 COMMENT ON COLUMN product__ingredients.strength_value IS 'Numeric strength.';
 COMMENT ON COLUMN product__ingredients.strength_unit IS 'Unit of the strength, for example mg/1.';
 
+CREATE TABLE product__drug_mappings (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES product (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    position integer NOT NULL,
+    clinical_drug_iri text NOT NULL REFERENCES clinical_drug (iri) DEFERRABLE INITIALLY IMMEDIATE,
+    source text NOT NULL,
+    evidence text NOT NULL,
+    CONSTRAINT ck_product__drug_mappings_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_product__drug_mappings_position_min_inclusive CHECK (position >= 0),
+    CONSTRAINT uq_product__drug_mappings_position UNIQUE (owner_iri, position),
+    CONSTRAINT ck_product__drug_mappings_clinical_drug_iri_pattern CHECK (clinical_drug_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT ck_product__drug_mappings_source_enum CHECK (source IN ('openfda_ndc', 'rxnav_ndcproperties')),
+    CONSTRAINT ck_product__drug_mappings_evidence_charset CHECK (evidence !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_product__drug_mappings_evidence_min_length CHECK (char_length(evidence) >= 1),
+    CONSTRAINT ck_product__drug_mappings_evidence_max_length CHECK (char_length(evidence) <= 500)
+);
+COMMENT ON TABLE product__drug_mappings IS 'Product.drug_mappings: Crosswalk to RxNorm clinical drugs (RxCUIs), one entry per source, sorted. A crosswalk entry from a product to an RxNorm clinical drug, with its provenance.';
+COMMENT ON COLUMN product__drug_mappings.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN product__drug_mappings.owner_iri IS 'The owning Product row (product.iri).';
+COMMENT ON COLUMN product__drug_mappings.position IS 'Position in the owner''s list, from 0.';
+COMMENT ON COLUMN product__drug_mappings.clinical_drug_iri IS 'The RxCUI.';
+COMMENT ON COLUMN product__drug_mappings.source IS 'Source.';
+COMMENT ON COLUMN product__drug_mappings.evidence IS 'The request or record the mapping was read from.';
+
 CREATE TABLE packaged_product (
     iri text PRIMARY KEY,
     ndc text NOT NULL,
     product_iri text NOT NULL REFERENCES product (iri) DEFERRABLE INITIALLY IMMEDIATE,
     labeler_iri text NOT NULL REFERENCES organization (iri) DEFERRABLE INITIALLY IMMEDIATE,
     description text,
+    ndc11 text,
     CONSTRAINT ck_packaged_product_iri_pattern CHECK (iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
     CONSTRAINT ck_packaged_product_ndc_charset CHECK (ndc !~ '[\x01-\x1f\x7f-\x9f]'),
     CONSTRAINT ck_packaged_product_ndc_pattern CHECK (ndc ~ '^([0-9]{4}-[0-9]{4}-[0-9]{2}|[0-9]{5}-[0-9]{3}-[0-9]{2}|[0-9]{5}-[0-9]{4}-[0-9])$'),
@@ -130,6 +219,8 @@ CREATE TABLE packaged_product (
     CONSTRAINT ck_packaged_product_description_charset CHECK (description !~ '[\x01-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]'),
     CONSTRAINT ck_packaged_product_description_min_length CHECK (char_length(description) >= 1),
     CONSTRAINT ck_packaged_product_description_max_length CHECK (char_length(description) <= 2000),
+    CONSTRAINT ck_packaged_product_ndc11_charset CHECK (ndc11 !~ '[\x01-\x1f\x7f-\x9f]'),
+    CONSTRAINT ck_packaged_product_ndc11_pattern CHECK (ndc11 ~ '^[0-9]{11}$'),
     CONSTRAINT uq_packaged_product_key UNIQUE (ndc)
 );
 COMMENT ON TABLE packaged_product IS 'A package of a product, identified by its 10-digit hyphenated package NDC.';
@@ -138,6 +229,7 @@ COMMENT ON COLUMN packaged_product.ndc IS 'Package NDC in 4-4-2, 5-3-2 or 5-4-1 
 COMMENT ON COLUMN packaged_product.product_iri IS 'The packaged product.';
 COMMENT ON COLUMN packaged_product.labeler_iri IS 'The labeler firm.';
 COMMENT ON COLUMN packaged_product.description IS 'Package description as written in the source.';
+COMMENT ON COLUMN packaged_product.ndc11 IS 'The same NDC in the 11-digit 5-4-2 form without hyphens (HIPAA form): a leading zero is added to the short segment.';
 
 CREATE TABLE label (
     iri text PRIMARY KEY,
@@ -242,6 +334,16 @@ COMMENT ON COLUMN adverse_event_report__drugs.position IS 'Position in the owner
 COMMENT ON COLUMN adverse_event_report__drugs.drug_name IS 'Drug name exactly as reported.';
 COMMENT ON COLUMN adverse_event_report__drugs.clinical_drug_iri IS 'The RxNorm clinical drug, when the source resolves the name to exactly one RxCUI.';
 COMMENT ON COLUMN adverse_event_report__drugs.role IS 'Role in the report.';
+
+CREATE TABLE adverse_event_report__drugs__harmonized_clinical_drugs (
+    owner_iri text NOT NULL REFERENCES adverse_event_report__drugs (iri) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE,
+    target_iri text NOT NULL REFERENCES clinical_drug (iri) DEFERRABLE INITIALLY IMMEDIATE,
+    CONSTRAINT ck_adverse_event_report__drugs__harmonized_clinical__cbc4cbd0f5 CHECK (target_iri ~ '^https?://[A-Za-z0-9._~:/?#@!$&''()*+,;=%\-]+$'),
+    CONSTRAINT pk_adverse_event_report__drugs__harmonized_clinical_drugs PRIMARY KEY (owner_iri, target_iri)
+);
+COMMENT ON TABLE adverse_event_report__drugs__harmonized_clinical_drugs IS 'DrugInvolvement.harmonized_clinical_drugs: Every RxCUI openFDA''s harmonization assigns to the reported drug (openfda.rxcui).';
+COMMENT ON COLUMN adverse_event_report__drugs__harmonized_clinical_drugs.owner_iri IS 'The DrugInvolvement row (adverse_event_report__drugs.iri).';
+COMMENT ON COLUMN adverse_event_report__drugs__harmonized_clinical_drugs.target_iri IS 'The ClinicalDrug row (clinical_drug.iri).';
 
 CREATE TABLE adverse_event_report__reactions (
     iri text PRIMARY KEY,

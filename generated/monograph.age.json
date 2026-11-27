@@ -1,5 +1,5 @@
 {
-  "version": "2.1.1",
+  "version": "2.2.0",
   "graph": "drug",
   "vertices": [
     {
@@ -53,6 +53,37 @@
       ]
     },
     {
+      "label": "OrganizationAlias",
+      "description": "A name variant of an organization, tied to it by an identifier (the NDC labeler code), not by\n    similarity.",
+      "table": "organization__aliases",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "The variant.",
+          "column": "name"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "description": "Record kind. One of: ndc_directory, enforcement, rxnav.",
+          "column": "source"
+        },
+        {
+          "name": "evidence",
+          "type": "string",
+          "description": "The record and identifier that tie the name to the firm.",
+          "column": "evidence"
+        }
+      ]
+    },
+    {
       "label": "ClinicalDrug",
       "description": "A clinical drug concept in RxNorm, identified by its RxCUI.\n\n    Several NDC products can share one clinical drug. The name is optional because openFDA carries\n    RxCUIs without their RxNorm names.",
       "table": "clinical_drug",
@@ -74,6 +105,12 @@
           "type": "string",
           "description": "RxNorm name.",
           "column": "name"
+        },
+        {
+          "name": "term_type",
+          "type": "string",
+          "description": "RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.",
+          "column": "term_type"
         }
       ]
     },
@@ -148,6 +185,12 @@
           "type": "string",
           "description": "Package description as written in the source.",
           "column": "description"
+        },
+        {
+          "name": "ndc11",
+          "type": "string",
+          "description": "The same NDC in the 11-digit 5-4-2 form without hyphens (HIPAA form): a leading zero is added to the short segment.",
+          "column": "ndc11"
         }
       ]
     },
@@ -358,6 +401,20 @@
   ],
   "edges": [
     {
+      "label": "ALIAS",
+      "sources": [
+        {
+          "from_label": "Organization",
+          "to_label": "OrganizationAlias",
+          "description": "Other names this firm appears under, each with its source and evidence.",
+          "table": "organization__aliases",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    },
+    {
       "label": "CLINICAL_DRUG",
       "sources": [
         {
@@ -391,6 +448,95 @@
           "from_column": "owner_iri",
           "to_column": "iri",
           "properties": []
+        }
+      ]
+    },
+    {
+      "label": "DRUG_MAPPING",
+      "sources": [
+        {
+          "from_label": "Product",
+          "to_label": "ClinicalDrug",
+          "description": "Crosswalk to RxNorm clinical drugs (RxCUIs), one entry per source, sorted.",
+          "table": "product__drug_mappings",
+          "from_column": "owner_iri",
+          "to_column": "clinical_drug_iri",
+          "properties": [
+            {
+              "name": "source",
+              "type": "string",
+              "description": "Source. One of: openfda_ndc, rxnav_ndcproperties.",
+              "column": "source"
+            },
+            {
+              "name": "evidence",
+              "type": "string",
+              "description": "The request or record the mapping was read from.",
+              "column": "evidence"
+            },
+            {
+              "name": "position",
+              "type": "integer",
+              "description": "Position in the owner's list, from 0.",
+              "column": "position"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "HARMONIZED_CLINICAL_DRUG",
+      "sources": [
+        {
+          "from_label": "DrugInvolvement",
+          "to_label": "ClinicalDrug",
+          "description": "Every RxCUI openFDA's harmonization assigns to the reported drug (openfda.rxcui).",
+          "table": "adverse_event_report__drugs__harmonized_clinical_drugs",
+          "from_column": "owner_iri",
+          "to_column": "target_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "HAS_ACTIVE_MOIETY",
+      "sources": [
+        {
+          "from_label": "Substance",
+          "to_label": "Substance",
+          "description": "For a salt, ester or other form, its active moiety (for example ampicillin sodium to ampicillin). Absent when the substance is its own moiety or no label states one.",
+          "table": "substance__active_moiety",
+          "from_column": "owner_iri",
+          "to_column": "moiety_iri",
+          "properties": [
+            {
+              "name": "source",
+              "type": "string",
+              "description": "Provenance: 'spl:<set id>' of the label that states it.",
+              "column": "source"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "HAS_GENERIC",
+      "sources": [
+        {
+          "from_label": "ClinicalDrug",
+          "to_label": "ClinicalDrug",
+          "description": "For a branded drug (SBD or BPCK), the generic clinical drug it is a brand of.",
+          "table": "clinical_drug__generic",
+          "from_column": "owner_iri",
+          "to_column": "drug_iri",
+          "properties": [
+            {
+              "name": "source",
+              "type": "string",
+              "description": "Provenance: the RxNav request and RxNorm data version.",
+              "column": "source"
+            }
+          ]
         }
       ]
     },

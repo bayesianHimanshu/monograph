@@ -487,3 +487,7 @@ app.add_typer(h4_app, name="h4")
 
 if __name__ == "__main__":
     app()
+
+from monograph.graph.cli import h2_app  # noqa: E402
+
+app.add_typer(h2_app, name="h2")

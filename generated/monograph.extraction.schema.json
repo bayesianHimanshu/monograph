@@ -520,9 +520,9 @@
       "type": "string"
     }
   },
-  "$id": "https://example.org/monograph/schema/2.1.1/extraction",
+  "$id": "https://example.org/monograph/schema/2.2.0/extraction",
   "$ref": "#/$defs/LabelExtraction",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "MONOGRAPH extraction target: LabelExtraction",
-  "x-schema-version": "2.1.1"
+  "x-schema-version": "2.2.0"
 }

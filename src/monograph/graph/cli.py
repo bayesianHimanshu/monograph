@@ -1,0 +1,63 @@
+"""`monograph h2 ...` commands."""
+
+from __future__ import annotations
+
+import json
+import time
+from dataclasses import asdict
+from pathlib import Path
+from typing import Annotated, Any
+
+import typer
+
+from monograph import wiring
+
+h2_app = typer.Typer(no_args_is_help=True, help="H2: graph vs relational, free-form vs tools.")
+Root = Annotated[Path, typer.Option("--root", help="Repository root.")]
+
+FRAME_FILE = Path("fixtures/h2/frame.json")
+
+
+def _clients(root: Path) -> tuple[Any, Any, Any, Any]:
+    import os
+
+    import httpx
+
+    from monograph.extract.sources.dailymed import DailyMedClient, SplCache
+    from monograph.ingest.openfda import OpenFdaClient, RawCache
+    from monograph.ingest.rxnav import RxNavCache, RxNavClient
+
+    raw = RawCache(wiring.raw_dir(root))
+    http = httpx.Client(timeout=60.0)
+    openfda = OpenFdaClient(http, raw, os.environ.get("OPENFDA_API_KEY"), 0.3, time.sleep, time.monotonic)
+    dailymed = DailyMedClient(http, SplCache(wiring.raw_dir(root) / "spl"), 0.3, time.sleep, time.monotonic)
+    rxnav = RxNavClient(http, RxNavCache(wiring.raw_dir(root) / "rxnav"), 0.1, time.sleep, time.monotonic)
+    return raw, openfda, dailymed, rxnav
+
+
+@h2_app.command("fetch")
+def fetch(root: Root = Path()) -> None:
+    """Fetch the H2 frame (cached under data/raw/; only missing responses hit the network)."""
+    from monograph.graph.frame import FrameConfig, FrameFetcher
+
+    raw, openfda, dailymed, rxnav = _clients(root)
+    base = [
+        *raw.all("ndc"),
+        *(
+            r
+            for p in sorted((wiring.raw_dir(root) / "ndc" / "search").glob("*.json"))
+            for r in json.loads(p.read_text())
+        ),
+    ]
+    config = FrameConfig()
+    report = FrameFetcher(openfda, raw, dailymed.spl, rxnav, config, typer.echo).fetch(base)
+    path = root / FRAME_FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    out = {"config": asdict(config), **asdict(report)}
+    out["network_calls"] = {
+        "openfda": openfda.network_calls,
+        "dailymed": dailymed.network_calls,
+        "rxnav": rxnav.network_calls,
+    }
+    path.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
+    typer.echo(f"frame written to {FRAME_FILE}")
