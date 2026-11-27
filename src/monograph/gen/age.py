@@ -27,7 +27,7 @@ from decimal import Decimal
 from pydantic import BaseModel
 
 from monograph.core.spec import Card, ClassSpec, FieldSpec, Kind, SchemaError, SchemaSpec
-from monograph.gen.ddl import child_table, column_name, table_name
+from monograph.gen.ddl import child_table, column_name, describe_field, table_name
 
 GRAPH_NAME = "drug"
 
@@ -167,13 +167,10 @@ class AgeProjectionGenerator:
         for f in c.fields:
             if f.kind is Kind.SCALAR:
                 assert f.scalar is not None
-                out.append(Property(f.name, PROPERTY_TYPE[f.scalar], _describe(f), column_name(f)))
+                out.append(Property(f.name, PROPERTY_TYPE[f.scalar], describe_field(f), column_name(f)))
             elif f.kind is Kind.ENUM:
                 kind = "list of strings" if f.is_collection else "string"
-                assert f.enum is not None
-                values = ", ".join(m.value for m in f.enum)
-                text = f"{_describe(f)} One of: {values}." if len(f.enum) <= 12 else _describe(f)
-                out.append(Property(f.name, kind, text, column_name(f)))
+                out.append(Property(f.name, kind, describe_field(f), column_name(f)))
         return tuple(out)
 
     def _vertex(

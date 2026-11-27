@@ -87,12 +87,12 @@ def test_property_descriptions_equal_the_ddl_column_comments() -> None:
     checked = 0
     for v in p.vertices:
         for x in v.properties:
-            assert comments[(v.table, x.column)].startswith(x.description.split(" One of: ")[0]), (v.table, x.column)
+            assert comments[(v.table, x.column)].startswith(x.description), (v.table, x.column)
             checked += 1
     for e in p.edges:
         for s in e.sources:
             for x in s.properties:
-                assert comments[(s.table, x.column)].startswith(x.description.split(" One of: ")[0])
+                assert comments[(s.table, x.column)].startswith(x.description)
                 checked += 1
     assert checked > 30
 

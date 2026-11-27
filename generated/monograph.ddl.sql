@@ -75,7 +75,7 @@ COMMENT ON TABLE organization__aliases IS 'Organization.aliases: Other names thi
 COMMENT ON COLUMN organization__aliases.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN organization__aliases.owner_iri IS 'The owning Organization row (organization.iri).';
 COMMENT ON COLUMN organization__aliases.name IS 'The variant.';
-COMMENT ON COLUMN organization__aliases.source IS 'Record kind.';
+COMMENT ON COLUMN organization__aliases.source IS 'Record kind. One of: ndc_directory, enforcement, rxnav.';
 COMMENT ON COLUMN organization__aliases.evidence IS 'The record and identifier that tie the name to the firm.';
 
 CREATE TABLE clinical_drug (
@@ -149,7 +149,7 @@ COMMENT ON COLUMN product.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN product.product_ndc IS 'Product NDC in 4-4, 5-3 or 5-4 form.';
 COMMENT ON COLUMN product.name IS 'Name as listed.';
 COMMENT ON COLUMN product.dosage_form IS 'Dosage form as written in the source.';
-COMMENT ON COLUMN product.product_type IS 'NDC directory product type.';
+COMMENT ON COLUMN product.product_type IS 'NDC directory product type. One of: HUMAN PRESCRIPTION DRUG, HUMAN OTC DRUG, PLASMA DERIVATIVE, CELLULAR THERAPY, VACCINE, STANDARDIZED ALLERGENIC, NON-STANDARDIZED ALLERGENIC, BULK INGREDIENT, DRUG FOR FURTHER PROCESSING, LICENSED VACCINE BULK INTERMEDIATE.';
 COMMENT ON COLUMN product.finished IS 'Whether this is a finished product (False for bulk ingredients and intermediates).';
 COMMENT ON COLUMN product.routes IS 'Routes of administration. Required for finished prescription and OTC products.';
 COMMENT ON COLUMN product.clinical_drug_iri IS 'The RxNorm clinical drug, when the source names exactly one.';
@@ -201,7 +201,7 @@ COMMENT ON COLUMN product__drug_mappings.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN product__drug_mappings.owner_iri IS 'The owning Product row (product.iri).';
 COMMENT ON COLUMN product__drug_mappings.position IS 'Position in the owner''s list, from 0.';
 COMMENT ON COLUMN product__drug_mappings.clinical_drug_iri IS 'The RxCUI.';
-COMMENT ON COLUMN product__drug_mappings.source IS 'Source.';
+COMMENT ON COLUMN product__drug_mappings.source IS 'Source. One of: openfda_ndc, rxnav_ndcproperties.';
 COMMENT ON COLUMN product__drug_mappings.evidence IS 'The request or record the mapping was read from.';
 
 CREATE TABLE packaged_product (
@@ -305,10 +305,10 @@ CREATE TABLE adverse_event_report (
 COMMENT ON TABLE adverse_event_report IS 'A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA.';
 COMMENT ON COLUMN adverse_event_report.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN adverse_event_report.report_id IS 'Safety report ID, optionally with a -digits version suffix.';
-COMMENT ON COLUMN adverse_event_report.source_system IS 'Where the report came from.';
+COMMENT ON COLUMN adverse_event_report.source_system IS 'Where the report came from. One of: openfda_e2b, faers_qde.';
 COMMENT ON COLUMN adverse_event_report.receipt_date IS 'Date FDA received the report.';
 COMMENT ON COLUMN adverse_event_report.serious IS 'Whether the report is serious.';
-COMMENT ON COLUMN adverse_event_report.seriousness_criteria IS 'Seriousness criteria met.';
+COMMENT ON COLUMN adverse_event_report.seriousness_criteria IS 'Seriousness criteria met. One of: death, life threatening, hospitalization, disabling, congenital anomaly, other.';
 COMMENT ON COLUMN adverse_event_report.patient_age_years IS 'Patient age at onset, in years.';
 
 CREATE TABLE adverse_event_report__drugs (
@@ -333,7 +333,7 @@ COMMENT ON COLUMN adverse_event_report__drugs.owner_iri IS 'The owning AdverseEv
 COMMENT ON COLUMN adverse_event_report__drugs.position IS 'Position in the owner''s list, from 0.';
 COMMENT ON COLUMN adverse_event_report__drugs.drug_name IS 'Drug name exactly as reported.';
 COMMENT ON COLUMN adverse_event_report__drugs.clinical_drug_iri IS 'The RxNorm clinical drug, when the source resolves the name to exactly one RxCUI.';
-COMMENT ON COLUMN adverse_event_report__drugs.role IS 'Role in the report.';
+COMMENT ON COLUMN adverse_event_report__drugs.role IS 'Role in the report. One of: primary suspect, secondary suspect, suspect, concomitant, interacting.';
 
 CREATE TABLE adverse_event_report__drugs__harmonized_clinical_drugs (
     owner_iri text NOT NULL REFERENCES adverse_event_report__drugs (iri) ON DELETE CASCADE,
@@ -382,7 +382,7 @@ CREATE TABLE recall (
 COMMENT ON TABLE recall IS 'A drug recall from the FDA enforcement report.';
 COMMENT ON COLUMN recall.iri IS 'Canonical identifier (IRI).';
 COMMENT ON COLUMN recall.recall_number IS 'FDA recall number, for example D-321-2016 or D-0123-2025.';
-COMMENT ON COLUMN recall.classification IS 'Class.';
+COMMENT ON COLUMN recall.classification IS 'Class. One of: I, II, III.';
 COMMENT ON COLUMN recall.reason IS 'Reason for the recall.';
 COMMENT ON COLUMN recall.report_date IS 'Enforcement report date.';
 COMMENT ON COLUMN recall.recalling_firm_iri IS 'The recalling firm.';

@@ -133,6 +133,18 @@ def _field_text(f: FieldSpec) -> str:
     return f.description or f.prop.label
 
 
+ENUM_LISTED_UP_TO = 12  # members; longer enums (routes, dosage forms) are not listed in descriptions
+
+
+def describe_field(f: FieldSpec) -> str:
+    """The description shown to agents, identical in the DDL comments and the graph projection: the field
+    description, plus the allowed values for a short enum."""
+    text = _field_text(f)
+    if f.enum is not None and len(f.enum) <= ENUM_LISTED_UP_TO:
+        text += " One of: " + ", ".join(m.value for m in f.enum) + "."
+    return text
+
+
 class DdlGenerator:
     def __init__(
         self, spec: SchemaSpec, check_pattern: Callable[[str], None], profile: DdlProfile = DdlProfile.DEFAULT
@@ -213,7 +225,7 @@ class DdlGenerator:
 
     def _column(self, table: _Table, c: ClassSpec, f: FieldSpec) -> None:
         col = column_name(f)
-        table.describe(col, _field_text(f))
+        table.describe(col, describe_field(f))
         not_null = " NOT NULL" if f.card is Card.ONE else ""
         if f.kind is Kind.REF:
             assert f.target is not None
@@ -262,7 +274,7 @@ class DdlGenerator:
     def _enum_array(self, table: _Table, f: FieldSpec) -> None:
         assert f.enum is not None
         col = f.name
-        table.describe(col, _field_text(f))
+        table.describe(col, describe_field(f))
         values = ", ".join(_literal(m.value) for m in f.enum)
         table.columns.append(f"{col} text[] NOT NULL DEFAULT '{{}}'")
         table.check(f"{col}_enum", f"{col} <@ ARRAY[{values}]::text[]")

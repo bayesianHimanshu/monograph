@@ -119,3 +119,30 @@ def test_semantics_on_the_mini_dataset(services: tuple[ToolService, ToolService]
         assert path["length"] == 3
         assert path["paths"][0]["relations"] == ["RECALLS_PRODUCT>", "INGREDIENT>", "HAS_ACTIVE_MOIETY>"]
         assert "error" in _result(service, "events_for", {"entity_id": PFIZER})
+
+
+def test_free_form_tools_on_the_mini_dataset() -> None:
+    from monograph.gen.artifacts import DDL_FILE
+    from monograph.tools.freeform import CypherRunner, NoInput, QueryIn, SqlRunner
+    from monograph.wiring import generated_dir
+
+    from .conftest import ROOT
+
+    test_dsn = load_test_db(mini_instances())
+    ddl = (generated_dir(ROOT) / DDL_FILE).read_text(encoding="utf-8")
+    with connections(test_dsn) as (sql_conn, graph_conn):
+        sql_runner, cypher_runner = SqlRunner(sql_conn, ddl), CypherRunner(graph_conn, projection())
+        out = sql_runner.run_sql(QueryIn(query="SELECT ndc, ndc11 FROM packaged_product ORDER BY ndc"))
+        assert out.columns == ["ndc", "ndc11"]
+        assert out.rows[0] == ["0069-1000-01", "00069100001"]
+        g = cypher_runner.run_cypher(
+            QueryIn(
+                query="MATCH (p:Product)-[i:INGREDIENT]->(s:Substance)"
+                " RETURN p.product_ndc, s.unii, i.strength_value ORDER BY p.product_ndc, s.unii"
+            )
+        )
+        assert g.rows[0] == ["0069-1000", "JFN36L5S8K", "500"]
+        with pytest.raises(ToolError):
+            cypher_runner.run_cypher(QueryIn(query="MATCH (n) RETURN n.nope.nope("))
+        assert "Edge labels" in cypher_runner.describe_schema(NoInput())
+        assert "CREATE TABLE product" in sql_runner.describe_schema(NoInput())
