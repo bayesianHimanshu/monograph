@@ -2,6 +2,12 @@
 
 SCHEMA_VERSION = "2.2.0"
 
+# The stamp on generated/monograph.extraction.schema.json: the model version H4 froze its extraction target
+# under (docs/h4/PREREG.md). It is not the current model version and a version bump never changes it, so the
+# frozen file stays byte-identical. Anything that needs the current version reads SCHEMA_VERSION above,
+# never a stamp inside a frozen file. Change this only with a new pre-registered extraction experiment.
+EXTRACTION_TARGET_VERSION = "2.1.1"
+
 # What changed in each release and why. Every entry corrects the model in response to an H6 or H6.1
 # real-data finding; none of them loosens a constraint for its own sake. `monograph measure` writes this
 # to the results so the report can state it from the data.

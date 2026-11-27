@@ -79,11 +79,12 @@ class JsonSchemaGenerator:
     def render(self) -> str:
         return json.dumps(self.document(), indent=2, sort_keys=True, ensure_ascii=True) + "\n"
 
-    def extraction_document(self, root: type[BaseModel]) -> dict[str, Any]:
+    def extraction_document(self, root: type[BaseModel], version: str) -> dict[str, Any]:
         """The schema an extractor (an LLM) fills: `root` and what it embeds, without derived fields.
 
         Derived fields (resolver links, document metadata) are filled by deterministic code, so asking a
-        model for them would invite invention.
+        model for them would invite invention. `version` is the extraction target's own stamp, not the model
+        version: the file is frozen by an experiment's PREREG, so a model version bump must not rewrite it.
         """
         _, top = models_json_schema([(root, "validation")], ref_template="#/$defs/{model}")
         defs: dict[str, Any] = top.get("$defs", {})
@@ -101,15 +102,15 @@ class JsonSchemaGenerator:
                     _apply_constraints(d["properties"][f.name], f)
         return {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "$id": f"{self._schema_id}/extraction",
+            "$id": f"{self._schema_id.rsplit('/', 1)[0]}/{version}/extraction",
             "title": f"MONOGRAPH extraction target: {root.__name__}",
-            "x-schema-version": self._spec.version,
+            "x-schema-version": version,
             "$ref": f"#/$defs/{root.__name__}",
             "$defs": defs,
         }
 
-    def render_extraction(self, root: type[BaseModel]) -> str:
-        return json.dumps(self.extraction_document(root), indent=2, sort_keys=True, ensure_ascii=True) + "\n"
+    def render_extraction(self, root: type[BaseModel], version: str) -> str:
+        return json.dumps(self.extraction_document(root, version), indent=2, sort_keys=True, ensure_ascii=True) + "\n"
 
 
 def _json(value: RuleValue) -> bool | int | str:
