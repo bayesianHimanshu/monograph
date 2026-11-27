@@ -11,7 +11,7 @@ from collections.abc import Callable, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from monograph.agent.arms import PROMPT_VERSIONS, Arm, sha256, system_prompt
+from monograph.agent.arms import PROMPT_VERSIONS, Arm, sha256
 from monograph.agent.llm import AGENT_SETTINGS, AgentSettings, ToolClient
 from monograph.agent.loop import AgentLoop
 from monograph.qa.score import Gold, failure_category, score_answer
@@ -41,6 +41,7 @@ def run_split(
     model: str,
     split: str,
     make_arm: Callable[[], Arm],
+    system: str,
     client: ToolClient,
     write: Writer,
     known_ids: set[str] | None,
@@ -48,7 +49,6 @@ def run_split(
     settings: AgentSettings = AGENT_SETTINGS,
     log: Callable[[str], None] = print,
 ) -> list[dict[str, Any]]:
-    system = system_prompt(arm_name)
     local = threading.local()
     done: list[dict[str, Any]] = []
     lock = threading.Lock()

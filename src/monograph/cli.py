@@ -148,7 +148,8 @@ def _prereg(root: Path) -> bool:
 
 @check_app.command("prereg")
 def check_prereg(root: Root = Path()) -> None:
-    """Fail if any committed docs/h*/PREREG.md differs from the version in the commit that added it."""
+    """Fail if a committed PREREG.md or pinned experiments/hN/frozen/ file changed, a DEVIATIONS.md lost an
+    entry, or a PREREG references a file outside experiments/hN/frozen/ and docs/hN/ without a logged pin."""
     if not _prereg(root):
         raise _fail("prereg check: pre-registrations are immutable once committed")
     typer.echo("prereg check ok")

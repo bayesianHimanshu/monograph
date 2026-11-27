@@ -1,0 +1,1226 @@
+{
+ "dev": [
+  {
+   "h6_gap": false,
+   "set_id": "006f9a3f-b4e3-4aa5-ac65-6cc3d3e2582d",
+   "stratum": "multi/injectable/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0277db2d-7c81-4cd0-ac19-fa12b5721428",
+   "stratum": "single/injectable/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "036ef1ed-32ef-46b8-8817-b3f63a014280",
+   "stratum": "single/solid_oral/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "043999bc-3efe-5d29-e063-6294a90a95f4",
+   "stratum": "single/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "051f7347-5a76-4664-8fe2-e61b3dfcb0e4",
+   "stratum": "multi/injectable/rx",
+   "version": 10
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0725f7f6-a46e-43bc-8b61-8bd96baf37e7",
+   "stratum": "multi/liquid/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "078fcdab-38a1-4a9a-bdd3-e17446591ea8",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "07a9112c-8c04-4849-8cb3-9463f58731d2",
+   "stratum": "single/injectable/rx",
+   "version": 7
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0b1d086f-7be1-5072-e063-6394a90a11e6",
+   "stratum": "single/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0b3fa92e-8351-4401-860d-4bba8a7155e6",
+   "stratum": "single/liquid/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0f349533-a87a-4512-b23c-d34854d73bc1",
+   "stratum": "multi/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "15917bfb-f660-4a12-bdcc-5b4a96e0e1d0",
+   "stratum": "single/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "175d9f0f-266a-4dc2-865f-d1ebd4ddac51",
+   "stratum": "multi/solid_oral/otc",
+   "version": 9
+  },
+  {
+   "h6_gap": false,
+   "set_id": "186f8519-655d-bd21-e063-6294a90a16a8",
+   "stratum": "multi/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1b7854d6-32b9-4410-bb40-0f02e46c7966",
+   "stratum": "single/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "2c4fc835-a9ad-2666-e063-6394a90a20ac",
+   "stratum": "multi/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "2f29f67a-2918-4318-9cb1-5e0eb22b35a3",
+   "stratum": "multi/solid_oral/rx",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "31d13799-0931-7735-e063-6294a90a6d02",
+   "stratum": "multi/liquid/rx",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "32205cfc-7939-4105-a4b9-2ed327c5e0cc",
+   "stratum": "single/solid_oral/rx",
+   "version": 7
+  },
+  {
+   "h6_gap": true,
+   "set_id": "398ec9c5-6ee8-3e74-e063-6394a90aefb3",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "40dab227-b05b-4e72-a59c-6e6f8a80252e",
+   "stratum": "single/injectable/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "41f02424-231d-4039-a122-df4b49dc9998",
+   "stratum": "single/liquid/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "4e69acd0-cb83-7d3a-e063-6394a90a2776",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "54d72d7a-1f5b-4b36-bf76-ab7aef6243ab",
+   "stratum": "single/liquid/otc",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "58c24504-47de-487a-ab8d-18add155ea95",
+   "stratum": "multi/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "5bbfd46f-d393-e51b-e053-2a91aa0a8e1f",
+   "stratum": "single/injectable/allergenic",
+   "version": 9
+  },
+  {
+   "h6_gap": true,
+   "set_id": "5cdde6f9-89ef-444b-e063-6294a90a7d9a",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "5d764740-70ac-c2a1-e063-6294a90ad2da",
+   "stratum": "single/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "8f270a9f-12a1-44d4-bc7e-873613555801",
+   "stratum": "multi/solid_oral/rx",
+   "version": 27
+  },
+  {
+   "h6_gap": true,
+   "set_id": "9121804a-e5eb-46a2-a4a7-cc625be846d1",
+   "stratum": "multi/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "95c2c515-0f31-49d9-b799-7aaded81a37c",
+   "stratum": "multi/solid_oral/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "96de9cad-2fb7-4947-87ae-4db57563a83a",
+   "stratum": "single/liquid/rx",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "978a5a9d-f0ca-4308-a84b-3b132263bbb8",
+   "stratum": "multi/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "99c66300-bd75-4b31-9fab-88c6e4b12688",
+   "stratum": "single/solid_oral/rx",
+   "version": 12
+  },
+  {
+   "h6_gap": true,
+   "set_id": "a44d7803-164d-4a67-9356-581c45de8596",
+   "stratum": "single/solid_oral/rx",
+   "version": 10
+  },
+  {
+   "h6_gap": false,
+   "set_id": "aee7f1f3-612c-4027-8ce9-4fd1f41eed71",
+   "stratum": "single/injectable/otc",
+   "version": 19
+  },
+  {
+   "h6_gap": true,
+   "set_id": "bb62d499-1d78-1324-e053-2a95a90abe3c",
+   "stratum": "multi/kit/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "cb05d615-918d-8104-e053-2995a90aa96b",
+   "stratum": "multi/solid_oral/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "d3638e92-3a36-4725-8028-021a55483543",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "f6edd793-440b-40c2-96b5-c16133b7a921",
+   "stratum": "single/injectable/otc",
+   "version": 50
+  }
+ ],
+ "quota": {
+  "multi/injectable/otc": 12,
+  "multi/injectable/rx": 12,
+  "multi/liquid/otc": 12,
+  "multi/liquid/rx": 12,
+  "multi/solid_oral/otc": 13,
+  "multi/solid_oral/rx": 13,
+  "single/injectable/otc": 13,
+  "single/injectable/rx": 13,
+  "single/liquid/otc": 13,
+  "single/liquid/rx": 13,
+  "single/solid_oral/otc": 13,
+  "single/solid_oral/rx": 13
+ },
+ "seed": 20261126,
+ "shortfall": {
+  "multi/injectable/otc": 12,
+  "single/injectable/otc": 5
+ },
+ "test": [
+  {
+   "h6_gap": false,
+   "set_id": "012d46f1-d0a0-4676-a879-cd320297ab16",
+   "stratum": "single/injectable/rx",
+   "version": 35
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0130d7c8-d067-4528-beb7-166559c33be9",
+   "stratum": "multi/injectable/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "016a47f2-8524-4178-e063-6294a90ab36e",
+   "stratum": "multi/injectable/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0170c0f4-d502-4f8f-bdbf-6439f3ed33fb",
+   "stratum": "single/injectable/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "01721071-af03-4894-95c1-10b8bc64b888",
+   "stratum": "multi/injectable/rx",
+   "version": 14
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0191fcf7-abc1-e583-e063-6294a90a7854",
+   "stratum": "single/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "02015040-9b71-4dbe-8f8d-e0d0951e8f93",
+   "stratum": "multi/injectable/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0210f9e5-c35b-4cfa-92d1-48555e99f1f3",
+   "stratum": "single/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "02d694b5-3600-4d55-bd5c-924abaec5315",
+   "stratum": "multi/injectable/rx",
+   "version": 10
+  },
+  {
+   "h6_gap": false,
+   "set_id": "030bb176-08ae-6c68-e063-6394a90af527",
+   "stratum": "single/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "03283208-8616-4117-9d2b-aa8046017a4f",
+   "stratum": "single/injectable/rx",
+   "version": 21
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0372598e-4837-43c6-b56f-63527ac94559",
+   "stratum": "single/injectable/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "039391d0-9ec1-45a3-84fa-b5f591794e41",
+   "stratum": "single/solid_oral/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "03ad6056-0e71-4e7c-842a-a5f87649bdcd",
+   "stratum": "single/injectable/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "03c44e2f-d6e3-4c78-9c9a-92d1708a62fe",
+   "stratum": "single/liquid/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0458445b-e431-4c82-86b8-90373813c10a",
+   "stratum": "single/liquid/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "04e0c406-6b49-4c0b-abc5-9a1a75532485",
+   "stratum": "single/injectable/rx",
+   "version": 9
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0536b6fe-6fe5-4fd6-8cc6-1b481945c1fa",
+   "stratum": "multi/injectable/rx",
+   "version": 12
+  },
+  {
+   "h6_gap": false,
+   "set_id": "05a54614-a6ad-4861-87b8-9e2ee49bad20",
+   "stratum": "single/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "05abb2db-d22e-90b5-e063-6294a90ace3f",
+   "stratum": "multi/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "05f326e6-10e4-4ceb-8a23-f53c592f00b8",
+   "stratum": "multi/injectable/rx",
+   "version": 17
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0609120e-c348-494e-b4a0-863e77d7963a",
+   "stratum": "multi/liquid/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "06579fc7-7d91-2a7b-e063-6394a90ae516",
+   "stratum": "single/solid_oral/otc",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0668ddcc-0214-8e97-e063-6294a90a4f32",
+   "stratum": "single/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "06a454bc-50d0-45de-87db-f3e3502e3bb0",
+   "stratum": "single/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "07730e8c-1340-4d30-8d71-e20f850db8da",
+   "stratum": "single/injectable/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "07c69e63-deb1-4607-9f7f-1cf0cd05cc82",
+   "stratum": "single/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "08288825-0f38-b6a3-e063-6394a90aa358",
+   "stratum": "single/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0885dddf-727e-4692-92dd-a26c69cc278d",
+   "stratum": "single/injectable/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "08f0ea03-4e6d-195d-aef4-886e32befa95",
+   "stratum": "single/injectable/rx",
+   "version": 31
+  },
+  {
+   "h6_gap": false,
+   "set_id": "08fcf6d6-4335-43ea-acc0-8f72d7b53517",
+   "stratum": "multi/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "092ddee4-572d-4771-8d95-880cea01097e",
+   "stratum": "single/injectable/rx",
+   "version": 15
+  },
+  {
+   "h6_gap": false,
+   "set_id": "09474431-cf46-45da-8b20-9551ddea28a7",
+   "stratum": "single/liquid/otc",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "097d166f-b73b-41d3-9b37-7653cd2a0c41",
+   "stratum": "multi/injectable/rx",
+   "version": 19
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0a1dd9b9-ada1-4bff-9dcb-18961254e9e8",
+   "stratum": "multi/injectable/rx",
+   "version": 7
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0b7bfbab-decb-970c-e063-6394a90a50ef",
+   "stratum": "multi/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0b8fae6c-2f2c-41e1-94ad-ad6aa8e1e14e",
+   "stratum": "single/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0f2d371d-f890-41e5-ac11-db5559d32466",
+   "stratum": "multi/liquid/otc",
+   "version": 7
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0fe94b11-f7c9-4e32-976f-e5f11d01bd64",
+   "stratum": "single/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "0fec66b4-3a2a-63d1-e063-6294a90a6d72",
+   "stratum": "single/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "107d6b24-fa5e-4fff-8365-b0b92251708e",
+   "stratum": "single/solid_oral/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "10b08ea8-693e-eb18-e063-6394a90af548",
+   "stratum": "multi/liquid/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "10bebb63-19b3-2e14-e063-6394a90a8d4e",
+   "stratum": "single/liquid/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "10d478ff-ddc6-45da-87ff-cfe1b2b07a8e",
+   "stratum": "single/liquid/otc",
+   "version": 10
+  },
+  {
+   "h6_gap": false,
+   "set_id": "14be3ab0-d6ae-e342-e063-6294a90ab851",
+   "stratum": "multi/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1539c3d4-d982-7d4e-e063-6394a90ad7d6",
+   "stratum": "single/liquid/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1539dc44-15a0-153b-e063-6294a90a9d45",
+   "stratum": "single/liquid/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "156033ae-b16a-007b-e063-6294a90a7445",
+   "stratum": "multi/solid_oral/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "178498aa-fb66-6438-e054-00144ff8d46c",
+   "stratum": "single/solid_oral/otc",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1872e1ff-2e08-c404-e063-6294a90afa14",
+   "stratum": "multi/liquid/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1a21cbb2-1ba5-414f-a31f-42b7a7bddae5",
+   "stratum": "multi/liquid/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1b2ec266-be5b-9265-e063-6294a90a10e3",
+   "stratum": "single/solid_oral/rx",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1bc90b2f-612c-e977-e063-6294a90a40b4",
+   "stratum": "multi/solid_oral/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1bf4cd96-5800-434d-a0dc-e84c759ebb33",
+   "stratum": "multi/liquid/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "1c02e465-8750-a088-e063-6394a90a8efb",
+   "stratum": "multi/liquid/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "1d76aed7-308b-5cc5-e063-6394a90a4543",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "20686acb-66c5-4d75-9684-7474436e8bef",
+   "stratum": "single/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "22f645cf-5182-9e3f-e063-6394a90adc84",
+   "stratum": "multi/other/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "25f400d9-1d6e-4d38-8f0d-98d471eba73b",
+   "stratum": "multi/liquid/rx",
+   "version": 27
+  },
+  {
+   "h6_gap": true,
+   "set_id": "26f8dc88-2096-4fa1-81ae-ea92fe1f353d",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "274a0544-6c71-4d91-e063-6394a90a2247",
+   "stratum": "multi/other/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": true,
+   "set_id": "27c7f645-cfb3-6db1-e063-6394a90a42ff",
+   "stratum": "multi/other/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "2a5173ba-047d-4a80-81fb-7154265ae3d1",
+   "stratum": "multi/liquid/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "302b3fa7-ea87-4bf1-aae0-6a2d7459de86",
+   "stratum": "single/liquid/rx",
+   "version": 5
+  },
+  {
+   "h6_gap": true,
+   "set_id": "303967d1-9df8-4a8e-a264-6b0d8fdbf2a8",
+   "stratum": "multi/other/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "3260111b-35da-4f95-8081-51eae4b1ef45",
+   "stratum": "multi/solid_oral/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "32fb74ff-993a-49fe-8943-e029372b863e",
+   "stratum": "single/injectable/rx",
+   "version": 10
+  },
+  {
+   "h6_gap": true,
+   "set_id": "34fae56e-367d-4659-af2d-1c9ddaf1639c",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "35460df2-18d3-4132-85e6-5289bad4c670",
+   "stratum": "single/injectable/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "36b5eab0-9ec8-e5dd-e063-6294a90ae43f",
+   "stratum": "single/injectable/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "36c3dda1-67fb-4dc5-e063-6294a90a1c3e",
+   "stratum": "single/solid_oral/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "36fd53a6-7006-4955-a3cd-b1c08cf84d6c",
+   "stratum": "single/solid_oral/rx",
+   "version": 14
+  },
+  {
+   "h6_gap": false,
+   "set_id": "39452b74-161d-4525-a0f7-fe486f001513",
+   "stratum": "single/liquid/rx",
+   "version": 11
+  },
+  {
+   "h6_gap": false,
+   "set_id": "3983d6d3-8bf4-4a88-962f-9bf72fd6e685",
+   "stratum": "multi/liquid/rx",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "3ab005d4-bc99-4fdb-e063-6394a90a5124",
+   "stratum": "single/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "3cdc1ae9-2924-5057-e063-6294a90ad2f3",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "3e6f8091-d6fe-4c8f-b897-606a70bf74bc",
+   "stratum": "single/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "40f471b7-27cf-4ad4-aef6-cc9d0623ddd9",
+   "stratum": "single/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "4246d4d5-9955-ba5a-e063-6394a90a8448",
+   "stratum": "multi/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "45786c84-51ef-4440-bc88-2501951e4c41",
+   "stratum": "single/liquid/rx",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "45ed4d16-6358-40a1-9352-319e58f55e5d",
+   "stratum": "single/liquid/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "463a6f4a-c833-2e89-e054-00144ff8d46c",
+   "stratum": "single/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "46a9e4e6-af7f-4f60-a888-c6d3afce8113",
+   "stratum": "single/solid_oral/rx",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "46dd68de-8730-1619-e054-00144ff8d46c",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "499e5352-fcc4-4434-96f2-4375816991c9",
+   "stratum": "multi/other/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": true,
+   "set_id": "50206f9e-2dd5-494f-9eed-f7d7ea6efda9",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "508a2763-3cb7-4be5-9e53-544e84cd9b1f",
+   "stratum": "single/injectable/otc",
+   "version": 20
+  },
+  {
+   "h6_gap": false,
+   "set_id": "525136c9-7758-437b-b57b-94b905786825",
+   "stratum": "multi/liquid/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "52aa093c-82cc-4d81-b072-86a2b8adc9c5",
+   "stratum": "single/liquid/rx",
+   "version": 5
+  },
+  {
+   "h6_gap": true,
+   "set_id": "540dd11f-e74f-b2f5-e063-6394a90af6e2",
+   "stratum": "multi/liquid/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "55d94620-bb62-4f78-9dc5-cb705b79020f",
+   "stratum": "single/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "57627ea9-3b14-4428-ad95-6ea25ecaef31",
+   "stratum": "single/liquid/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "57e8f0d7-1f21-4fda-8b21-3caa54fae4e6",
+   "stratum": "multi/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "5d65f53d-85cb-af86-e063-6294a90a2002",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "5d9123f6-b322-4fa0-bf48-6335a6adcbb8",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "5e2d7c94-d70a-47e4-9a4b-5953fe38ede2",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "5e7465d8-dbe4-2f86-e063-6394a90a8dfb",
+   "stratum": "single/injectable/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "5f603b0d-69e5-4c02-b6b3-b4705e243e9a",
+   "stratum": "multi/liquid/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "5f6b3c99-c567-8545-e063-6394a90ac06e",
+   "stratum": "single/other/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "5f904369-5f21-4907-98de-df23bce30823",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "60a2834c-38a2-480e-b89c-563e9cf0c9c3",
+   "stratum": "multi/solid_oral/rx",
+   "version": 17
+  },
+  {
+   "h6_gap": false,
+   "set_id": "6721c3ab-c37f-4504-aebc-0103c56ed567",
+   "stratum": "multi/injectable/rx",
+   "version": 8
+  },
+  {
+   "h6_gap": false,
+   "set_id": "68639fd1-3fd5-4459-8018-51f136e3ed37",
+   "stratum": "multi/liquid/rx",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "68a4c521-6db0-4e94-9906-96e96e251301",
+   "stratum": "multi/liquid/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "6d999dac-7b84-4f19-957e-5c787a4e96c4",
+   "stratum": "multi/other/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "6ef888a3-77c0-498f-92c4-d482cf96ef46",
+   "stratum": "multi/kit/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "70084eea-1480-4c46-b849-4c779319cb74",
+   "stratum": "multi/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "7049feaf-004a-481f-b129-996b21c3170a",
+   "stratum": "single/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "77436178-2956-6a77-e053-2a91aa0a873e",
+   "stratum": "multi/injectable/allergenic",
+   "version": 15
+  },
+  {
+   "h6_gap": true,
+   "set_id": "7a2bec20-8dad-e536-e053-2a91aa0ab928",
+   "stratum": "single/injectable/allergenic",
+   "version": 10
+  },
+  {
+   "h6_gap": true,
+   "set_id": "7b7b8cce-ede6-47c6-91c8-88fd94cb292d",
+   "stratum": "multi/solid_oral/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "7b7dd683-78d0-468e-b1c9-e5b212a19c9a",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "7ef8592d-c7d0-49a4-a559-3190e559fa2f",
+   "stratum": "multi/solid_oral/rx",
+   "version": 25
+  },
+  {
+   "h6_gap": false,
+   "set_id": "8290add3-4449-4e58-6c97-8fe1eec972e3",
+   "stratum": "multi/liquid/rx",
+   "version": 1703
+  },
+  {
+   "h6_gap": false,
+   "set_id": "82f1445c-b2c6-445a-82cf-ba8825fac776",
+   "stratum": "single/injectable/otc",
+   "version": 18
+  },
+  {
+   "h6_gap": true,
+   "set_id": "83d281e9-375a-7e6c-e053-2991aa0a6f0e",
+   "stratum": "single/injectable/allergenic",
+   "version": 9
+  },
+  {
+   "h6_gap": true,
+   "set_id": "85129749-c1a7-4c4a-933f-c3c4768e2cdd",
+   "stratum": "multi/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "878dab20-668b-4d7a-a5f8-794a587564d5",
+   "stratum": "single/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "87f53c04-075c-4d09-925a-0faeaa14f3f9",
+   "stratum": "single/liquid/rx",
+   "version": 100
+  },
+  {
+   "h6_gap": false,
+   "set_id": "8a0f0791-16e0-4fe8-941b-a73cc89dbafb",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": true,
+   "set_id": "8c4ccc5c-f6a2-4ce3-8866-9e6b32b08fd3",
+   "stratum": "single/solid_oral/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "91828614-d0d1-472f-802f-43f473860125",
+   "stratum": "multi/other/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "93dc7087-f85a-3576-e053-2995a90a34d4",
+   "stratum": "multi/injectable/allergenic",
+   "version": 9
+  },
+  {
+   "h6_gap": false,
+   "set_id": "94f74800-1f0d-7814-e053-2a95a90a4f63",
+   "stratum": "single/solid_oral/rx",
+   "version": 4
+  },
+  {
+   "h6_gap": true,
+   "set_id": "963e7bea-ff5d-420a-9cb2-e4aefb534b33",
+   "stratum": "multi/solid_oral/rx",
+   "version": 31
+  },
+  {
+   "h6_gap": true,
+   "set_id": "999b0b17-be73-4d42-b182-ce038f493301",
+   "stratum": "multi/other/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "9a737416-08e0-4df6-897e-cf9d1b5f0b01",
+   "stratum": "multi/liquid/rx",
+   "version": 13
+  },
+  {
+   "h6_gap": true,
+   "set_id": "9c5168d5-31ed-4ce1-b16a-5f51f7e44ed2",
+   "stratum": "multi/kit/otc",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "9c6a440b-bd0f-414b-bab3-3b2f57c479d7",
+   "stratum": "single/liquid/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "a22c9f95-e3a9-bfd3-e053-2995a90a3c66",
+   "stratum": "multi/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "a4c9694c-f539-470e-bfe3-8723fa1c343d",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "a6cbc17f-5c60-489c-8029-84b0add556d8",
+   "stratum": "multi/solid_oral/rx",
+   "version": 18
+  },
+  {
+   "h6_gap": false,
+   "set_id": "a8817f22-8478-49b9-8354-ab27ca222c6b",
+   "stratum": "single/solid_oral/rx",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "a8e57b21-4622-4315-8e8e-437243be2fe1",
+   "stratum": "multi/solid_oral/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "aa8ebccf-6813-2dca-e053-2a95a90a032b",
+   "stratum": "multi/solid_oral/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": false,
+   "set_id": "b05ee52f-4801-d4ca-e053-2995a90af348",
+   "stratum": "single/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "b0615aa9-d840-4739-8d25-4653553c518e",
+   "stratum": "single/solid_oral/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "b8dacd94-8da1-4a8d-e053-2995a90acb67",
+   "stratum": "multi/liquid/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "bacc60ec-0b6a-4ba2-b246-a59694f06b77",
+   "stratum": "multi/kit/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "baed7205-2e0d-c6aa-e053-2995a90a8e29",
+   "stratum": "multi/other/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": true,
+   "set_id": "bb2ad9cd-5d9a-4337-be61-0842d738c79e",
+   "stratum": "multi/injectable/rx",
+   "version": 5
+  },
+  {
+   "h6_gap": true,
+   "set_id": "bb6086c1-f775-70ed-e053-2995a90a531e",
+   "stratum": "multi/kit/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": true,
+   "set_id": "bb611c57-a8ac-0c23-e053-2995a90a5b40",
+   "stratum": "multi/kit/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "c4702809-a2a8-4cac-97b5-9086169c6c99",
+   "stratum": "single/solid_oral/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "cfe9dc65-dfbb-4c36-a8c9-57bb460a8d97",
+   "stratum": "single/solid_oral/otc",
+   "version": 4
+  },
+  {
+   "h6_gap": true,
+   "set_id": "d5e12448-1ca1-46a4-8de4-e8b94567e5a8",
+   "stratum": "single/solid_oral/rx",
+   "version": 21
+  },
+  {
+   "h6_gap": true,
+   "set_id": "d92a17c4-9827-5fb1-e053-2a95a90a9ca1",
+   "stratum": "multi/other/otc",
+   "version": 5
+  },
+  {
+   "h6_gap": false,
+   "set_id": "d92d9269-7532-2f0e-e053-2a95a90ab0d6",
+   "stratum": "multi/solid_oral/otc",
+   "version": 7
+  },
+  {
+   "h6_gap": false,
+   "set_id": "dac2ea61-f5ce-45b8-b4aa-d761c5aecd74",
+   "stratum": "multi/solid_oral/rx",
+   "version": 1
+  },
+  {
+   "h6_gap": false,
+   "set_id": "db432947-fe02-79b2-e053-2a95a90af4a9",
+   "stratum": "multi/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "db44560b-da02-74c9-e053-2a95a90af0b6",
+   "stratum": "multi/solid_oral/otc",
+   "version": 3
+  },
+  {
+   "h6_gap": true,
+   "set_id": "dc129cd6-a173-d2b3-e053-2a95a90aa04e",
+   "stratum": "multi/other/otc",
+   "version": 6
+  },
+  {
+   "h6_gap": false,
+   "set_id": "dc773b57-378b-4650-9bb0-34e6f8c067ab",
+   "stratum": "multi/solid_oral/rx",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "e1aa9682-b1ad-4a22-e053-2a95a90a0e2f",
+   "stratum": "multi/solid_oral/rx",
+   "version": 3
+  },
+  {
+   "h6_gap": false,
+   "set_id": "e245e0c5-b2d6-418b-baa4-1c3324292885",
+   "stratum": "single/injectable/otc",
+   "version": 50
+  },
+  {
+   "h6_gap": true,
+   "set_id": "e78e17bf-5606-1031-e053-2a95a90adb35",
+   "stratum": "multi/other/otc",
+   "version": 2
+  },
+  {
+   "h6_gap": false,
+   "set_id": "e825d7e9-467c-4f50-a6d6-f2602449c1de",
+   "stratum": "single/injectable/otc",
+   "version": 14
+  },
+  {
+   "h6_gap": false,
+   "set_id": "ea712fc4-7f27-4556-b1b8-028f3f6ce57a",
+   "stratum": "multi/solid_oral/otc",
+   "version": 7
+  },
+  {
+   "h6_gap": false,
+   "set_id": "fa2cc334-bd86-46cc-bc6a-12c71303f963",
+   "stratum": "multi/solid_oral/rx",
+   "version": 8
+  },
+  {
+   "h6_gap": false,
+   "set_id": "faa60cf2-a8be-4cf6-a789-3417c1f39ce4",
+   "stratum": "multi/liquid/otc",
+   "version": 1
+  }
+ ],
+ "total": 200
+}

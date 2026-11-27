@@ -20,7 +20,7 @@ from monograph.core.meta import DEFAULT_BASE
 from monograph.core.models import MODELS
 from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec, analyze
-from monograph.core.version import EXTRACTION_TARGET_VERSION, SCHEMA_VERSION
+from monograph.core.version import SCHEMA_VERSION
 from monograph.core.vocab import Vocabulary
 from monograph.gen.age import AgeProjectionGenerator
 from monograph.gen.artifacts import (
@@ -97,10 +97,7 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         context = ShaclGenerator(
             spec, context_vocab(), turtle_writer(context_vocab()), check_pattern, (LabelExtraction,)
         )
-        # Stamped with the frozen H4 target version, not the model version: see EXTRACTION_TARGET_VERSION.
-        renderers[EXTRACTION_SCHEMA_FILE] = lambda: json_schema.render_extraction(
-            LabelExtraction, EXTRACTION_TARGET_VERSION
-        )
+        renderers[EXTRACTION_SCHEMA_FILE] = lambda: json_schema.render_extraction(LabelExtraction)
         renderers[CONTEXT_SHACL_FILE] = context.render
         renderers[AGE_FILE] = AgeProjectionGenerator(spec, h2_excluded()).render
     return ArtifactBuilder(renderers, time.perf_counter)

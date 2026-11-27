@@ -215,8 +215,10 @@ H2_RESPONSES = Path("data/h2/responses")
 
 
 def load_questions(root: Path, split: str) -> list[dict[str, Any]]:
-    data = json.loads((root / QUESTIONS_FILE).read_text(encoding="utf-8"))
-    return [q for q in data["questions"] if q["split"] == split]
+    """From the pinned question set (experiments/h2/frozen/), never the live fixture."""
+    from monograph.qa import pins
+
+    return [q for q in pins.questions(root)["questions"] if q["split"] == split]
 
 
 def known_ids(store_dsn: str) -> set[str]:
@@ -241,19 +243,21 @@ def make_arm_factory(arm: str, root: Path) -> Any:
     import psycopg
 
     from monograph.agent.arms import free_arm, tools_arm
-    from monograph.gen.age import Projection
-    from monograph.gen.artifacts import AGE_FILE, DDL_FILE
+    from monograph.qa import pins
     from monograph.tools.freeform import CypherRunner, SqlRunner
 
-    projection = Projection.parse((wiring.generated_dir(root) / AGE_FILE).read_text(encoding="utf-8"))
-    ddl = (wiring.generated_dir(root) / DDL_FILE).read_text(encoding="utf-8")
+    # Pinned: the projection, the DDL, the tool definitions sent and the schema descriptions returned.
+    projection = pins.projection(root)
+    ddl = pins.ddl(root)
 
     def make() -> Any:
         if arm == "S-free":
-            return free_arm(arm, SqlRunner(psycopg.connect(role_dsn("h2_sql"), autocommit=True), ddl))
-        if arm == "G-free":
-            return free_arm(arm, CypherRunner(psycopg.connect(role_dsn("h2_graph"), autocommit=True), projection))
-        return tools_arm(arm, tool_service("sql" if arm == "S-tools" else "graph", root))
+            live = free_arm(arm, SqlRunner(psycopg.connect(role_dsn("h2_sql"), autocommit=True), ddl))
+        elif arm == "G-free":
+            live = free_arm(arm, CypherRunner(psycopg.connect(role_dsn("h2_graph"), autocommit=True), projection))
+        else:
+            live = tools_arm(arm, tool_service("sql" if arm == "S-tools" else "graph", root))
+        return pins.pin_arm(live, root)
 
     return make
 
@@ -273,6 +277,7 @@ def run(
     from monograph.agent.arms import ARMS
     from monograph.agent.llm import AnthropicToolClient, CachedToolClient, ToolResponseCache
     from monograph.extract.config import MODELS
+    from monograph.qa import pins
     from monograph.qa.run import Writer, run_split
 
     if arm not in ARMS or model not in MODELS or split not in ("dev", "test"):
@@ -293,6 +298,7 @@ def run(
         model,
         split,
         make_arm_factory(arm, root),
+        pins.system_prompt(root, arm),
         client,
         Writer(writer.write),
         known_ids(role_dsn("h2_sql")),
@@ -308,20 +314,11 @@ def run(
 
 
 def h2_frozen_drift(root: Path) -> list[str]:
-    """Files listed with a sha256 in docs/h2/PREREG.md whose content changed (or the PREREG is missing)."""
-    import hashlib
-    import re
+    """Why a test run must be refused: a pin that changed, or a live file that executes and changed
+    (see `monograph.qa.pins`)."""
+    from monograph.qa import pins
 
-    prereg = root / "docs" / "h2" / "PREREG.md"
-    if not prereg.exists():
-        return ["docs/h2/PREREG.md"]
-    text = prereg.read_text(encoding="utf-8")
-    out = []
-    for path, digest in re.findall(r"^\| `([^`]+)` \| `([0-9a-f]{64})` \|$", text, re.MULTILINE):
-        target = root / path
-        if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != digest:
-            out.append(path)
-    return out
+    return pins.drift(root)
 
 
 def current_hashes(root: Path) -> dict[str, tuple[str, str]]:
@@ -344,9 +341,10 @@ def current_hashes(root: Path) -> dict[str, tuple[str, str]]:
 
 def _records(root: Path, split: str) -> list[dict[str, Any]]:
     from monograph.harness.results import read_results
+    from monograph.qa import pins
     from monograph.qa.report import select_runs
 
-    return select_runs(read_results(root / "results" / "h2"), split, current_hashes(root))
+    return select_runs(read_results(root / "results" / "h2"), split, pins.hashes(root))
 
 
 @h2_app.command("score")

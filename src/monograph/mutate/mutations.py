@@ -109,24 +109,8 @@ def _m6(root: Path, cli: Cli) -> None:
 
 
 def _m7(root: Path, cli: Cli) -> None:
-    # An additive change outside the H4 extraction target (ProductType is not in LabelExtraction), so the
-    # frozen H4 artifacts stay byte-identical and every gate must pass.
-    replace_once(
-        root,
-        MODELS,
-        '    LICENSED_VACCINE_BULK_INTERMEDIATE = "LICENSED VACCINE BULK INTERMEDIATE"\n',
-        '    LICENSED_VACCINE_BULK_INTERMEDIATE = "LICENSED VACCINE BULK INTERMEDIATE"\n'
-        '    HUMAN_COMPOUNDED_DRUG = "HUMAN COMPOUNDED DRUG"\n',
-    )
-    bump_version(root, minor=True)
-    cli("gen")
-    cli("release")  # an additive change is complete only with its snapshot
-
-
-def _m17(root: Path, cli: Cli) -> None:
-    # The same kind of additive change, but inside the H4 extraction target: INTRAVENOUS BOLUS (C38274) is in
-    # FDA's Data Standards Manual list but not in the SPL list we ship. Valid for the model, yet it changes the
-    # extraction schema H4 froze, so the H4 frozen-artifact test must refuse it.
+    # INTRAVENOUS BOLUS (C38274) is in FDA's Data Standards Manual list but not in the SPL list we ship. It
+    # also changes the live extraction schema, which H4 no longer reads (it loads its pinned copy).
     replace_once(
         root,
         MODELS,
@@ -135,7 +119,7 @@ def _m17(root: Path, cli: Cli) -> None:
     )
     bump_version(root, minor=True)
     cli("gen")
-    cli("release")
+    cli("release")  # an additive change is complete only with its snapshot
 
 
 def _m8(root: Path, cli: Cli) -> None:
@@ -228,6 +212,14 @@ def _m16(root: Path, cli: Cli) -> None:
     path.write_text(text + "\nAmendment: the threshold is relaxed to 0.02.\n", encoding="utf-8")
 
 
+H4_PINNED_SCHEMA = Path("experiments/h4/frozen/monograph.extraction.schema.json")
+
+
+def _m17(root: Path, cli: Cli) -> None:
+    # Tamper with H4's pinned extraction schema: drop one dosage form from the enum H4 extracted against.
+    replace_once(root, H4_PINNED_SCHEMA, '        "AEROSOL, FOAM",\n', "")
+
+
 MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M1", "Hand-edit generated SHACL to loosen a pattern", "drift", _m1),
     Mutation("M2", "Add a field to a model without regenerating", "drift", _m2),
@@ -235,7 +227,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M4", "Make an optional field required without a major version bump", "breaking", _m4),
     Mutation("M5", "Rename a property without a major bump", "breaking", _m5),
     Mutation("M6", "Change a class IRI", "breaking", _m6),
-    Mutation("M7", "Add an enum member (outside the H4 target) with a minor bump and its snapshot", None, _m7),
+    Mutation("M7", "Add an enum member with a minor bump and its release snapshot", None, _m7),
     Mutation("M8", "Add a custom validator with no rule or pydantic_only declaration", "lint", _m8),
     Mutation("M9", "Introduce a regex outside the safe subset", "generation", _m9),
     Mutation("M10", "Break the instance mapping for one property", "agreement|tests", _m10),
@@ -245,7 +237,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M14", "Hand-edit the generated graph projection to drop an edge label", "drift", _m14),
     Mutation("M15", "Graph projection generator drops single-reference edges (regenerated)", "tests", _m15),
     Mutation("M16", "Edit a committed PREREG.md after its first commit", "prereg", _m16),
-    Mutation("M17", "Add an enum member inside the frozen H4 extraction target (minor bump)", "tests", _m17),
+    Mutation("M17", "Tamper with H4's pinned extraction schema", "tests", _m17),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

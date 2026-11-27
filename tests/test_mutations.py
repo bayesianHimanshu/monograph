@@ -19,6 +19,7 @@ def test_every_mutation_still_applies_to_the_source(mutation: Mutation) -> None:
             {p: p.read_bytes() for p in (root / "src").rglob("*.py")}
             | {p: p.read_bytes() for p in (root / "generated").glob("*.*")}
             | {p: p.read_bytes() for p in (root / "docs").rglob("PREREG.md")}
+            | {p: p.read_bytes() for p in (root / "experiments").rglob("*") if p.is_file()}
         )
         mutation.apply(root, lambda *args: None)
         after = {p: p.read_bytes() for p in before}

@@ -72,9 +72,10 @@ def fetch(
     for cell, n in sorted(report.eligible_by_cell().items()):
         typer.echo(f"  {cell}: {n}")
     typer.echo(f"network calls: {client.network_calls}; frame written to {path}")
-    split_path = root / SPLIT_FILE
-    if split_path.exists():
-        _fetch_registry(root, client, cache, json.loads(split_path.read_text()))
+    from monograph.extract.setup import h4_split
+
+    if (root / SPLIT_FILE).exists():
+        _fetch_registry(root, client, cache, h4_split(root))
     else:
         typer.echo("no split yet: run `monograph h4 split`, then `monograph h4 fetch` again for the registry data")
 
@@ -184,23 +185,35 @@ def _prereg_committed(root: Path) -> bool:
 
 
 def frozen_drift(root: Path) -> list[str]:
-    """Files listed with a sha256 in PREREG's frozen-artifact table whose content no longer matches, and
-    the as-sent system prompt and schema hashes if they changed."""
-    import hashlib
+    """What no longer matches docs/h4/PREREG.md. Each frozen-table entry must have a pin under
+    experiments/h4/frozen/ (docs/h4/DEVIATIONS.md) hashing to the PREREG digest; the data H4 loads comes from
+    the pin, and every other entry (code, and the prompt file the frozen loader reads) must also be
+    unchanged at its live path, since that is what executes. The as-sent system prompt and schema hashes
+    are rebuilt from the pinned schema."""
     import re
 
     from monograph.extract.prompts import load_prompts
-    from monograph.extract.setup import PROMPT_VERSION
-    from monograph.gen.artifacts import EXTRACTION_SCHEMA_FILE
+    from monograph.extract.setup import LOADED_FROM_PIN, PROMPT_VERSION, h4_extraction_schema
+    from monograph.validate.prereg import PreregError, frozen_table, pinned_path, sha256_file
 
-    text = (root / "docs" / "h4" / "PREREG.md").read_text(encoding="utf-8")
     out = []
-    for path, digest in re.findall(r"^\| `([^`]+)` \| `([0-9a-f]{64})` \|$", text, re.MULTILINE):
-        target = root / path
-        if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+    for path, digest in frozen_table(root, "h4").items():
+        try:
+            pin = pinned_path(root, "h4", path)
+        except PreregError:
+            out.append(f"{path} (no pin)")
+            continue
+        if not pin.is_file() or sha256_file(pin) != digest:
+            out.append(str(pin.relative_to(root)))
+            continue
+        live = root / path
+        if path not in LOADED_FROM_PIN and (not live.is_file() or sha256_file(live) != digest):
             out.append(path)
-    schema = json.loads((wiring.generated_dir(root) / EXTRACTION_SCHEMA_FILE).read_text())
-    prompts = load_prompts(PROMPT_VERSION, schema)
+    try:
+        prompts = load_prompts(PROMPT_VERSION, h4_extraction_schema(root))
+    except (PreregError, OSError, ValueError):
+        return [*out, "system_prompt_sha256", "schema_sha256"]
+    text = (root / "docs" / "h4" / "PREREG.md").read_text(encoding="utf-8")
     for name, digest in (("system_prompt_sha256", prompts.system_hash), ("schema_sha256", prompts.schema_hash)):
         if not re.search(rf"`{name}` \| `{digest}`", text):
             out.append(name)
@@ -287,7 +300,9 @@ def _estimate(root: Path, models: list[str], arms: list[str]) -> Any:
         if r["details"].get("system_prompt_sha256") != current:
             continue  # dev runs of an earlier prompt
         costs[(r["details"]["model"], r["details"]["arm"])].append(Decimal(r["details"]["cost_usd"]))
-    n_test = len(json.loads((root / SPLIT_FILE).read_text())["test"])
+    from monograph.extract.setup import h4_split
+
+    n_test = len(h4_split(root)["test"])
     total = Decimal(0)
     for m in models:
         for a in arms:

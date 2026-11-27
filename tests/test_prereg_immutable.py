@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -10,9 +11,8 @@ import pytest
 from typer.testing import CliRunner
 
 from monograph.cli import app
-from monograph.core.models import MODELS, LabelExtraction
-from monograph.core.version import EXTRACTION_TARGET_VERSION, SCHEMA_VERSION
-from monograph.validate.prereg import PreregError, prereg_violations
+from monograph.core.version import SCHEMA_VERSION
+from monograph.validate.prereg import PreregError, prereg_violations, reference_violations
 
 from .conftest import ROOT
 
@@ -107,22 +107,78 @@ def test_generators_write_only_generated_files() -> None:
     assert all("/" not in name and not name.endswith(".md") for name in files)
 
 
-def test_the_h4_extraction_target_keeps_its_stamp_across_a_version_bump() -> None:
-    """The frozen extraction schema carries the version H4 ran under, whatever SCHEMA_VERSION is, so a bump
-    leaves it byte-identical. Code that needs the current version reads SCHEMA_VERSION."""
-    from monograph import wiring
-    from monograph.core.spec import analyze
-    from monograph.core.vocab import Vocabulary
+def test_appending_to_deviations_passes_and_rewriting_fails(repo: Path) -> None:
+    log = repo / "docs" / "h9" / "DEVIATIONS.md"
+    log.write_text("# H9 deviations\n\n## D1\n", encoding="utf-8")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "d1")
+    log.write_text(log.read_text(encoding="utf-8") + "\n## D2\n", encoding="utf-8")
+    _git(repo, "commit", "-qam", "d2")
+    assert prereg_violations(repo) == []
+    log.write_text("# H9 deviations\n\n## D2\n", encoding="utf-8")
+    assert prereg_violations(repo) == [
+        "docs/h9/DEVIATIONS.md: the working tree rewrote or removed committed entries (append-only)"
+    ]
+    _git(repo, "commit", "-qam", "rewrite")
+    assert any("rewrote or removed earlier entries" in p for p in prereg_violations(repo))
+
+
+def test_a_committed_pin_is_immutable(repo: Path) -> None:
+    pin = repo / "experiments" / "h9" / "frozen" / "a.json"
+    pin.parent.mkdir(parents=True)
+    pin.write_text("{}\n", encoding="utf-8")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "pin")
+    pin.write_text('{"x": 1}\n', encoding="utf-8")
+    assert prereg_violations(repo) == [
+        f"experiments/h9/frozen/a.json: the working tree differs from its first commit {_head(repo)}"
+    ]
+
+
+def _prereg(repo: Path, body: str) -> None:
+    (repo / "docs" / "h9" / "PREREG.md").write_text(body, encoding="utf-8")
+
+
+def test_a_prereg_must_reference_pins_not_live_paths(tmp_path: Path) -> None:
+    (tmp_path / "docs" / "h9").mkdir(parents=True)
+    pin = tmp_path / "experiments" / "h9" / "frozen" / "prompt.md"
+    pin.parent.mkdir(parents=True)
+    pin.write_text("prompt\n", encoding="utf-8")
+    digest = hashlib.sha256(b"prompt\n").hexdigest()
+    _prereg(tmp_path, f"See `docs/h9/PLAN.md`.\n\n| `experiments/h9/frozen/prompt.md` | `{digest}` |\n")
+    assert reference_violations(tmp_path) == []
+    _prereg(tmp_path, f"| `experiments/h9/frozen/prompt.md` | `{'0' * 64}` |\n")
+    assert reference_violations(tmp_path) == [
+        "docs/h9/PREREG.md: experiments/h9/frozen/prompt.md is missing or differs from its digest"
+    ]
+    _prereg(tmp_path, f"Prompt `src/monograph/prompt.md`.\n\n| `src/monograph/prompt.md` | `{digest}` |\n")
+    [problem] = reference_violations(tmp_path)
+    assert problem.startswith("docs/h9/PREREG.md references src/monograph/prompt.md, outside experiments/h9/frozen/")
+    # A committed PREREG with a live path is accepted only through a DEVIATIONS pin with matching digests.
+    log = tmp_path / "docs" / "h9" / "DEVIATIONS.md"
+    log.write_text(f"| `src/monograph/prompt.md` | `experiments/h9/frozen/prompt.md` | `{digest}` |\n")
+    assert reference_violations(tmp_path) == []
+    pin.write_text("tampered\n", encoding="utf-8")
+    assert reference_violations(tmp_path) == [
+        "experiments/h9/frozen/prompt.md: sha256 differs from docs/h9/DEVIATIONS.md"
+    ]
+
+
+def test_a_pin_outside_its_experiment_is_refused(tmp_path: Path) -> None:
+    (tmp_path / "docs" / "h9").mkdir(parents=True)
+    _prereg(tmp_path, "| `fixtures/q.json` | `" + "1" * 64 + "` |\n")
+    log = tmp_path / "docs" / "h9" / "DEVIATIONS.md"
+    log.write_text("| `fixtures/q.json` | `experiments/h2/frozen/q.json` | `" + "1" * 64 + "` |\n")
+    assert "docs/h9/DEVIATIONS.md: pin experiments/h2/frozen/q.json is outside experiments/h9/frozen/" in (
+        reference_violations(tmp_path)
+    )
+
+
+def test_the_live_extraction_schema_follows_the_model_version() -> None:
     from monograph.gen.artifacts import EXTRACTION_SCHEMA_FILE
 
-    assert EXTRACTION_TARGET_VERSION == "2.1.1"
-    committed = (ROOT / "generated" / EXTRACTION_SCHEMA_FILE).read_text(encoding="utf-8")
-    assert json.loads(committed)["x-schema-version"] == EXTRACTION_TARGET_VERSION
-    bumped = analyze(MODELS, "99.0.0")
-    assert bumped.version != SCHEMA_VERSION
-    files = wiring.artifact_builder(bumped, Vocabulary()).build().files
-    assert files[EXTRACTION_SCHEMA_FILE] == committed
-    assert LabelExtraction.__name__ in committed
+    live = json.loads((ROOT / "generated" / EXTRACTION_SCHEMA_FILE).read_text(encoding="utf-8"))
+    assert live["x-schema-version"] == SCHEMA_VERSION
 
 
 def _head(repo: Path) -> str:
