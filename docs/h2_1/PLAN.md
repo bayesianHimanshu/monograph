@@ -87,7 +87,7 @@ once so it is true in every cell (it no longer promises "what they mean").
   same database, so a descriptions-off cell must not share a database with a descriptions-on one.
 * The response cache tag includes the cell: tools arms send byte-identical requests in the two description
   cells, and without the cell in the key one cell would replay the other's samples.
-* Generated artifacts per cell (`generated/h2_1/<cell>/monograph.ddl.sql`, `monograph.age.json`) come from
+* Generated artifacts per cell (`generated/h2_1.<cell>.monograph.ddl.sql`, `.monograph.age.json`) come from
   the H6 `SchemaSpec` through two switches (`ablate_spec` for identity, `descriptions=False` in the DDL and
   projection generators) and are drift-checked like every other generated file.
 
@@ -215,4 +215,16 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
 
 ## Findings and decisions while building
 
-(Filled in as the stages land.)
+* **Stage 1, the switches.** The baseline cell's DDL and projection are byte-identical to H2's generated
+  files (a test checks it). Identity off removes 5 tables, 4 columns and 6 edge labels (CLINICAL_DRUG,
+  DRUG_MAPPING, HARMONIZED_CLINICAL_DRUG, HAS_ACTIVE_MOIETY, HAS_GENERIC, ALIAS) and one vertex label
+  (OrganizationAlias); nothing else in the schema changes. Descriptions off removes all 134 COMMENTs (105 with
+  identity off) and every projection description, and nothing else.
+* **Labeler organizations are the same in both identity levels.** 39 canonical names cover more than one
+  labeler code (Actavis Pharma, Inc. has three); H2 keeps one organization per canonical name. That merge is by
+  exact name within a single source, the NDC directory, not a cross-source mapping, so identity off keeps it.
+  It also keeps every relation T1 and T9 to T11 use identical across cells.
+* **Organizations with identity off, on the H2 frame:** 416 labelers plus 362 recalling firms (778), against
+  646 with identity on. All other entity counts and every reject count are identical in both levels. With
+  identity on, 630 recalls name a recalling firm that is a labeler organization: 576 resolved through a labeler's
+  product and 54 that share the labeler's slug.

@@ -11,7 +11,7 @@ from typing import Any
 import psycopg
 from pydantic import BaseModel, ConfigDict, Field
 
-from monograph.gen.age import Projection
+from monograph.gen.age import Projection, Property
 from monograph.graph.loader import STATEMENT_TIMEOUT
 from monograph.tools.cypher_backend import QUOTE, cypher_statement, parse_agtype
 from monograph.tools.registry import ROW_CAP, ToolError, canon
@@ -185,6 +185,10 @@ class CypherRunner:
         return graph_schema_text(self._p)
 
 
+def _property_line(x: Property) -> str:
+    return f"  {x.name}: {x.type}." + (f" {x.description}" if x.description else "")
+
+
 def graph_schema_text(p: Projection) -> str:
     lines = [
         f"Apache AGE 1.8.0 (openCypher subset), graph {p.graph}. Not supported by AGE: shortestPath(),",
@@ -194,10 +198,10 @@ def graph_schema_text(p: Projection) -> str:
     ]
     for v in p.vertices:
         lines.append(f"\n(:{v.label}) {v.description.splitlines()[0] if v.description else ''}".rstrip())
-        lines += [f"  {x.name}: {x.type}. {x.description}" for x in v.properties]
+        lines += [_property_line(x) for x in v.properties]
     lines.append("\nEdge labels:")
     for e in p.edges:
         for s in e.sources:
-            lines.append(f"\n(:{s.from_label})-[:{e.label}]->(:{s.to_label}) {s.description}")
-            lines += [f"  {x.name}: {x.type}. {x.description}" for x in s.properties]
+            lines.append(f"\n(:{s.from_label})-[:{e.label}]->(:{s.to_label}) {s.description}".rstrip())
+            lines += [_property_line(x) for x in s.properties]
     return "\n".join(lines) + "\n"

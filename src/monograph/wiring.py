@@ -100,6 +100,9 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         renderers[EXTRACTION_SCHEMA_FILE] = lambda: json_schema.render_extraction(LabelExtraction)
         renderers[CONTEXT_SHACL_FILE] = context.render
         renderers[AGE_FILE] = AgeProjectionGenerator(spec, h2_excluded()).render
+        from monograph.ablation.cells import cell_renderers  # the H2.1 cells, from the same spec
+
+        renderers.update(cell_renderers(spec, check_pattern, h2_excluded()))
     return ArtifactBuilder(renderers, time.perf_counter)
 
 

@@ -147,11 +147,17 @@ def describe_field(f: FieldSpec) -> str:
 
 class DdlGenerator:
     def __init__(
-        self, spec: SchemaSpec, check_pattern: Callable[[str], None], profile: DdlProfile = DdlProfile.DEFAULT
+        self,
+        spec: SchemaSpec,
+        check_pattern: Callable[[str], None],
+        profile: DdlProfile = DdlProfile.DEFAULT,
+        descriptions: bool = True,
     ) -> None:
+        """`descriptions=False` (the H2.1 ablation) leaves out every COMMENT: names and types only."""
         self._spec = spec
         self._check_pattern = check_pattern
         self._profile = profile
+        self._descriptions = descriptions
         self._fk = " DEFERRABLE INITIALLY IMMEDIATE" if profile is DdlProfile.TEST else ""
 
     def render(self) -> str:
@@ -163,6 +169,10 @@ class DdlGenerator:
         self._partial: list[Unenforced] = []
         for c in self._spec.entities():
             tables += self._entity(c, unenforced)
+        if not self._descriptions:
+            for t in tables:
+                t.comment = None
+                t.column_comments.clear()
         header = [
             f"-- MONOGRAPH drug product model {self._spec.version}, {self._profile.value} profile."
             " Generated from core/models.py; do not edit.",

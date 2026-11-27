@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -144,10 +144,24 @@ def collapses_to_edge(c: ClassSpec) -> FieldSpec | None:
     return refs[0]
 
 
+def _without_descriptions(p: Projection) -> Projection:
+    def props(items: tuple[Property, ...]) -> tuple[Property, ...]:
+        return tuple(replace(x, description="") for x in items)
+
+    vertices = tuple(replace(v, description="", properties=props(v.properties)) for v in p.vertices)
+    edges = tuple(
+        replace(e, sources=tuple(replace(s, description="", properties=props(s.properties)) for s in e.sources))
+        for e in p.edges
+    )
+    return replace(p, vertices=vertices, edges=edges)
+
+
 class AgeProjectionGenerator:
-    def __init__(self, spec: SchemaSpec, exclude: tuple[type[BaseModel], ...] = ()) -> None:
+    def __init__(self, spec: SchemaSpec, exclude: tuple[type[BaseModel], ...] = (), descriptions: bool = True) -> None:
+        """`descriptions=False` (the H2.1 ablation) blanks every label, property and edge description."""
         self._spec = spec
         self._exclude = exclude
+        self._descriptions = descriptions
 
     def render(self) -> str:
         return self.generate().render()
@@ -160,7 +174,8 @@ class AgeProjectionGenerator:
             table = table_name(c.cls)
             self._vertex(b, c, c.meta.name, table, c.doc)
         edges = tuple(EdgeLabel(label, tuple(sources)) for label, sources in sorted(b.edges.items()))
-        return Projection(self._spec.version, GRAPH_NAME, tuple(b.vertices), edges)
+        projection = Projection(self._spec.version, GRAPH_NAME, tuple(b.vertices), edges)
+        return projection if self._descriptions else _without_descriptions(projection)
 
     def _properties(self, c: ClassSpec) -> tuple[Property, ...]:
         out = [Property("iri", "string", "Canonical identifier (IRI).", "iri")]
