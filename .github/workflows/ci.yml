@@ -97,8 +97,32 @@ jobs:
       - name: AGE tests
         run: uv run pytest -q -m age
 
+  changes:
+    # Does this pull request touch what the mutation suite guards? (src/monograph/mutate/trigger.py)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      mutate: ${{ steps.paths.outputs.mutate }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked
+      - id: paths
+        run: |
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | tee changed.txt
+          echo "mutate=$(uv run python -m monograph.mutate.trigger < changed.txt)" >> "$GITHUB_OUTPUT"
+
   mutation:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    # Nightly, on demand, and on pull requests that touch the model, the generators, the check and gate
+    # code, a frozen experiment file or a PREREG/DEVIATIONS file.
+    needs: changes
+    if: >-
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' ||
+        (github.event_name == 'pull_request' && needs.changes.outputs.mutate == 'true')
+      )
     runs-on: ubuntu-latest
     services:
       postgres:

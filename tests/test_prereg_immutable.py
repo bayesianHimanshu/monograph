@@ -184,3 +184,22 @@ def test_the_live_extraction_schema_follows_the_model_version() -> None:
 def _head(repo: Path) -> str:
     out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, check=True, capture_output=True, text=True)
     return out.stdout.strip()[:12]
+
+
+@pytest.mark.parametrize(
+    ("path", "immutable"),
+    [
+        ("docs/h2/PREREG.md", True),
+        ("docs/h2_1/PREREG.md", True),
+        ("docs/h2.1/PREREG.md", True),
+        ("experiments/h2_1/frozen/questions.json", True),
+        ("docs/h2_1/PLAN.md", False),
+        ("docs/h2_1/DEVIATIONS.md", False),
+        ("docs/h2x/PREREG.md", False),
+        ("experiments/h2_1/scratch/questions.json", False),
+    ],
+)
+def test_follow_up_experiments_are_covered(path: str, immutable: bool) -> None:
+    from monograph.validate.prereg import is_immutable
+
+    assert is_immutable(path) is immutable
