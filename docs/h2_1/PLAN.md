@@ -255,3 +255,10 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
   or 7 (4).
 * A brand name longer than resolve_entity's 200-character input cannot be asked through the tools; such brands
   are not used (T3, T4).
+* **Stage 4, dev, two findings that do not change any question.** (1) Gold for an identity reference follows
+  the recorded identity layer, which is incomplete: MOXIFLOXACIN HYDROCHLORIDE has no recorded moiety link, so
+  "products containing moxifloxacin, counting salt forms" excludes a product a chemist would count, and an agent
+  reconstructing salts from names is scored wrong. Questions do not change after dev; instead the PREREG lists
+  the moiety questions where a name-detectable gap exists (2 of 24, 1 on test) and P1 is also reported without
+  them, as a pre-registered sensitivity check. (2) An agent that submits a bare code (a recall number) instead of
+  the id is scored wrong, as in H2; the base prompt asks for ids as the data gives them.
