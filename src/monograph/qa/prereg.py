@@ -194,7 +194,8 @@ def render_prereg(
         "",
         "## Dev iteration (logged per arm)",
         "",
-        "Prompts were tuned on the 60 dev questions only. Runs per arm and prompt version:",
+        "Prompts could be tuned on the 60 dev questions only; dev was at the ceiling, so none was. Runs per arm"
+        " and prompt version (including the rerun after the gold fix):",
         "",
         "| Arm | Model | Prompt version | Dev runs | Dev accuracy |",
         "|---|---|---|---|---|",
