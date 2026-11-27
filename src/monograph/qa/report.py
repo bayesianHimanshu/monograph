@@ -289,7 +289,7 @@ def render(
     for label, n in sql_errors(records).most_common(12):
         lines.append(f"| {label} | {n} |")
     lines += ["", "## Worked examples (core types)", ""]
-    for m in models[:1]:
+    for m in models:
         for qtype, cases in examples(records, questions, m).items():
             lines += [f"### {qtype} ({m})", ""]
             for title, case in cases.items():
