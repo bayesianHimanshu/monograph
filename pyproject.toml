@@ -8,6 +8,7 @@ dependencies = [
     "anthropic>=2.14.0",
     "httpx>=0.28",
     "hypothesis>=6.100",
+    "mcp>=2.3",
     "psycopg[binary]>=3.2",
     "pydantic>=2.10,<3",
     "pyshacl>=0.30",

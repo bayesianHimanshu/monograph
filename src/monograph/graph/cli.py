@@ -147,3 +147,35 @@ def load(root: Root = Path()) -> None:
     writer.write("h2.dataset", sum(summary["instances"].values()), summary)
     writer.write("h2.load", sum(rows.values()), {"rows": rows, "vertices": vertices, "edges": edges})
     typer.echo(f"loaded: {sum(rows.values())} rows, {sum(vertices.values())} vertices, {sum(edges.values())} edges")
+
+
+def tool_service(store: str, root: Path) -> Any:
+    """The shared tool service over one store, connected with that store's read-only role."""
+    import psycopg
+
+    from monograph.gen.age import Projection
+    from monograph.gen.artifacts import AGE_FILE
+    from monograph.tools.cypher_backend import CypherBackend
+    from monograph.tools.service import ToolService
+    from monograph.tools.sql_backend import SqlBackend
+
+    projection = Projection.parse((wiring.generated_dir(root) / AGE_FILE).read_text(encoding="utf-8"))
+    if store == "sql":
+        return ToolService(SqlBackend(psycopg.connect(role_dsn("h2_sql"), autocommit=True), projection))
+    if store == "graph":
+        return ToolService(CypherBackend(psycopg.connect(role_dsn("h2_graph"), autocommit=True), projection))
+    raise typer.BadParameter("store must be sql or graph")
+
+
+@h2_app.command("mcp")
+def mcp(
+    store: Annotated[str, typer.Option(help="sql or graph")] = "graph",
+    root: Root = Path(),
+) -> None:
+    """Serve the tool registry over MCP (stdio), backed by one store."""
+    import anyio
+
+    from monograph.tools.mcp_server import serve_stdio
+
+    service = tool_service(store, root)
+    anyio.run(serve_stdio, service)
