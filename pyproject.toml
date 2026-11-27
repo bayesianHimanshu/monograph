@@ -51,5 +51,6 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 markers = [
     "integration: needs a running Postgres (make it)",
+    "age: needs the Postgres + Apache AGE service (make age-it)",
 ]
-addopts = "-m 'not integration' --strict-markers"
+addopts = "-m 'not integration and not age' --strict-markers"

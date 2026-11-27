@@ -172,6 +172,35 @@ def _m13(root: Path, cli: Cli) -> None:
     cli("gen")
 
 
+AGE_JSON = Path("generated/monograph.age.json")
+AGE_GEN = Path("src/monograph/gen/age.py")
+
+
+def _m14(root: Path, cli: Cli) -> None:
+    # Hand-edit the generated projection: drop the RECALLING_FIRM edge label.
+    import json
+
+    path = root / AGE_JSON
+    data = json.loads(path.read_text(encoding="utf-8"))
+    before = len(data["edges"])
+    data["edges"] = [e for e in data["edges"] if e["label"] != "RECALLING_FIRM"]
+    if len(data["edges"]) != before - 1:
+        raise MutationError("RECALLING_FIRM edge label not found")
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def _m15(root: Path, cli: Cli) -> None:
+    # The projection generator stops emitting edges for single (non-collection) references, regenerated, so
+    # the drift check stays green.
+    replace_once(
+        root,
+        AGE_GEN,
+        "                b.edge(edge_label(f.prop.name), source)\n",
+        "                if f.is_collection:\n                    b.edge(edge_label(f.prop.name), source)\n",
+    )
+    cli("gen")
+
+
 MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M1", "Hand-edit generated SHACL to loosen a pattern", "drift", _m1),
     Mutation("M2", "Add a field to a model without regenerating", "drift", _m2),
@@ -186,6 +215,8 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M11", "Hand-edit the test-profile DDL to make a foreign key non-deferrable", "drift", _m11),
     Mutation("M12", "Bump the major version without a release snapshot", "breaking", _m12),
     Mutation("M13", "JSON Schema generator drops every pattern (regenerated)", "agreement|tests", _m13),
+    Mutation("M14", "Hand-edit the generated graph projection to drop an edge label", "drift", _m14),
+    Mutation("M15", "Graph projection generator drops single-reference edges (regenerated)", "tests", _m15),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

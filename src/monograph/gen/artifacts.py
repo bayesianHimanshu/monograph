@@ -13,6 +13,7 @@ DDL_FILE = "monograph.ddl.sql"
 DDL_TEST_FILE = "monograph.test.ddl.sql"
 EXTRACTION_SCHEMA_FILE = "monograph.extraction.schema.json"
 CONTEXT_SHACL_FILE = "monograph.context.shapes.ttl"
+AGE_FILE = "monograph.age.json"
 
 
 @dataclass(frozen=True, slots=True)

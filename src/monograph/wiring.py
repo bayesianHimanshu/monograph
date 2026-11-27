@@ -12,6 +12,7 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
+from pydantic import BaseModel
 from rdflib import OWL, RDF, RDFS, XSD, Graph
 
 from monograph.core.instances import Instantiator
@@ -21,7 +22,9 @@ from monograph.core.regex import check_pattern
 from monograph.core.spec import SchemaSpec, analyze
 from monograph.core.version import SCHEMA_VERSION
 from monograph.core.vocab import Vocabulary
+from monograph.gen.age import AgeProjectionGenerator
 from monograph.gen.artifacts import (
+    AGE_FILE,
     CONTEXT_SHACL_FILE,
     DDL_FILE,
     DDL_TEST_FILE,
@@ -44,6 +47,13 @@ from monograph.rdf.mapping import RdfMapper
 from monograph.validate.agreement import AgreementChecker
 from monograph.validate.pydantic_side import PydanticValidator
 from monograph.validate.shacl_side import ShaclValidator
+
+
+def h2_excluded() -> tuple[type[BaseModel], ...]:
+    """Classes outside the H2 data: the H4 extraction views of the model (and their embedded values)."""
+    from monograph.core.models import LabelExtraction
+
+    return (LabelExtraction,)
 
 
 def build_spec() -> SchemaSpec:
@@ -89,6 +99,7 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         )
         renderers[EXTRACTION_SCHEMA_FILE] = lambda: json_schema.render_extraction(LabelExtraction)
         renderers[CONTEXT_SHACL_FILE] = context.render
+        renderers[AGE_FILE] = AgeProjectionGenerator(spec, h2_excluded()).render
     return ArtifactBuilder(renderers, time.perf_counter)
 
 
