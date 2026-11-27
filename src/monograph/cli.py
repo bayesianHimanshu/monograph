@@ -155,6 +155,13 @@ def check_prereg(root: Root = Path()) -> None:
     typer.echo("prereg check ok")
 
 
+@check_app.command("clean")
+def check_clean(root: Root = Path()) -> None:
+    """Fail if a test run would refuse to start: the working tree is dirty outside data/ and results/."""
+    sha = wiring.require_clean_tree(root)
+    typer.echo(f"clean tree at {sha}")
+
+
 @check_app.command("all")
 def check_all(root: Root = Path()) -> None:
     """Run drift, breaking-change, lint, agreement and prereg, and report every failure."""

@@ -41,6 +41,8 @@ def default_gates(python: str) -> tuple[Gate, ...]:
         Gate("lint", (*cli, "check", "lint")),
         Gate("agreement", (*cli, "check", "agreement")),
         Gate("prereg", (*cli, "check", "prereg")),
+        # The precondition of `monograph hN run --split test` (the same function the run commands call).
+        Gate("clean", (*cli, "check", "clean")),
         # tests/test_mutations.py checks that the mutations apply to the pristine source, which a mutant
         # copy no longer is, so it is the one test file the mutant pipeline leaves out.
         Gate(
@@ -126,6 +128,8 @@ class MutationRunner:
 
             try:
                 mutation.apply(root, cli)
+                if mutation.commit:
+                    commit_copy(root)
             except MutationError as exc:
                 result.apply_error = str(exc)
                 result.seconds = self._clock() - start
@@ -140,6 +144,24 @@ class MutationRunner:
                     result.evidence[gate.name] = " | ".join(lines[-3:])[-400:]
         result.seconds = round(self._clock() - start, 3)
         return result
+
+
+def commit_copy(root: Path) -> None:
+    """Commit the mutant copy (outside data/ and results/), as a change would reach CI: committed. A copy
+    without .git (the unit tests' fake workspace) is left as it is."""
+    import subprocess
+
+    if not (root / ".git").exists():
+        return
+    ident = ["-c", "user.name=mutation", "-c", "user.email=mutation@example.invalid", "-c", "commit.gpgsign=false"]
+    steps = (
+        ["git", "add", "-A", "--", ".", ":!data", ":!results"],
+        ["git", *ident, "commit", "-q", "--no-verify", "--allow-empty", "-m", "mutation"],
+    )
+    for argv in steps:
+        done = subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False)
+        if done.returncode != 0:
+            raise MutationError(f"committing the mutant copy failed: {done.stderr.strip()[-300:]}")
 
 
 def subprocess_runner(argv: list[str], cwd: Path, env: dict[str, str]) -> CommandResult:

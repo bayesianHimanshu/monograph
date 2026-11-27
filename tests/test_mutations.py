@@ -21,9 +21,10 @@ def test_every_mutation_still_applies_to_the_source(mutation: Mutation) -> None:
             | {p: p.read_bytes() for p in (root / "docs").rglob("PREREG.md")}
             | {p: p.read_bytes() for p in (root / "experiments").rglob("*") if p.is_file()}
         )
+        listing = set(root.iterdir())
         mutation.apply(root, lambda *args: None)
         after = {p: p.read_bytes() for p in before}
-        assert before != after, f"{mutation.id} changed nothing"
+        assert before != after or set(root.iterdir()) != listing, f"{mutation.id} changed nothing"
 
 
 def test_replace_once_refuses_ambiguous_targets(tmp_path: Path) -> None:

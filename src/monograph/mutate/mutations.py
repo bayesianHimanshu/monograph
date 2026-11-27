@@ -51,6 +51,7 @@ class Mutation:
     title: str
     expected_gate: str | None  # None means every gate must pass (a false-alarm probe)
     apply: Callable[[Path, Cli], None]
+    commit: bool = True  # the runner commits the mutant copy, so only uncommitted changes look dirty
 
 
 def _m1(root: Path, cli: Cli) -> None:
@@ -220,6 +221,11 @@ def _m17(root: Path, cli: Cli) -> None:
     replace_once(root, H4_PINNED_SCHEMA, '        "AEROSOL, FOAM",\n', "")
 
 
+def _m18(root: Path, cli: Cli) -> None:
+    # A stray untracked file in the tree (left uncommitted): a test run must refuse to start.
+    (root / "notes-from-a-debugging-session.txt").write_text("try a lower threshold\n", encoding="utf-8")
+
+
 MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M1", "Hand-edit generated SHACL to loosen a pattern", "drift", _m1),
     Mutation("M2", "Add a field to a model without regenerating", "drift", _m2),
@@ -238,6 +244,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M15", "Graph projection generator drops single-reference edges (regenerated)", "tests", _m15),
     Mutation("M16", "Edit a committed PREREG.md after its first commit", "prereg", _m16),
     Mutation("M17", "Tamper with H4's pinned extraction schema", "tests", _m17),
+    Mutation("M18", "Leave a stray untracked file: a test run must refuse to start", "clean", _m18, commit=False),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

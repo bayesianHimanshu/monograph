@@ -166,13 +166,29 @@ def git_sha(root: Path) -> str:
     return out.stdout.strip() + ("-dirty" if dirty.strip() else "")
 
 
-def results_writer(root: Path, experiment: str = "H6") -> ResultsWriter:
+def results_writer(root: Path, experiment: str = "H6", clean_commit: str | None = None) -> ResultsWriter:
+    """`clean_commit`: the SHA a test run verified clean (monograph.validate.clean); it is then recorded as
+    both `git_sha` and `clean_commit` on every line."""
     import uuid
 
     directory = root / "results" / experiment.lower()
+    sha = clean_commit if clean_commit is not None else git_sha(root)
     return ResultsWriter(
-        directory, uuid.uuid4().hex[:12], git_sha(root), SCHEMA_VERSION, lambda: datetime.now(UTC), experiment
+        directory, uuid.uuid4().hex[:12], sha, SCHEMA_VERSION, lambda: datetime.now(UTC), experiment, clean_commit
     )
+
+
+def require_clean_tree(root: Path) -> str:
+    """The clean-tree precondition of every `monograph hN run --split test`: the HEAD SHA, or typer.Exit(1)."""
+    import typer
+
+    from monograph.validate.clean import DirtyTree, require_clean
+
+    try:
+        return require_clean(root)
+    except DirtyTree as exc:
+        typer.echo(f"refusing the test run: {exc}; commit or remove it first", err=True)
+        raise typer.Exit(code=1) from exc
 
 
 def conformance_run(spec: SchemaSpec, root: Path) -> ConformanceRun:

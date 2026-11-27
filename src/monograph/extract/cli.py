@@ -255,6 +255,7 @@ def run(
     models = list(MODELS) if model == "all" else [model]
     if any(a not in ARMS for a in arms) or any(m not in MODELS for m in models) or split not in ("dev", "test"):
         raise typer.Exit(code=_fail(f"unknown arm, model or split; arms {ARMS}, models {MODELS}, splits dev/test"))
+    clean = wiring.require_clean_tree(root) if split == "test" else None
     if split == "test":
         if not _prereg_committed(root):
             raise typer.Exit(code=_fail("docs/h4/PREREG.md must be committed and unchanged before a test run"))
@@ -270,7 +271,7 @@ def run(
             raise typer.Exit(code=_fail(f"estimate exceeds ${COST_APPROVAL_THRESHOLD_USD}; rerun with --approve-cost"))
     ctx = build_context(root)
     docs = ctx.documents(split)[:limit] if limit else ctx.documents(split)
-    writer = wiring.results_writer(root, "H4")
+    writer = wiring.results_writer(root, "H4", clean_commit=clean)
     client = CachedClient(
         AnthropicClient(anthropic.Anthropic(max_retries=4)), ResponseCache(root / "data" / "h4" / "responses")
     )

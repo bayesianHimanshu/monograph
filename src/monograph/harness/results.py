@@ -26,6 +26,7 @@ class ResultsWriter:
         schema_version: str,
         clock: Callable[[], datetime],
         experiment: str = EXPERIMENT,
+        clean_commit: str | None = None,
     ) -> None:
         self._directory = directory
         self._experiment = experiment
@@ -33,6 +34,7 @@ class ResultsWriter:
         self._git_sha = git_sha
         self._schema_version = schema_version
         self._clock = clock
+        self._clean_commit = clean_commit  # set by test runs, which start only from a clean tree
 
     @property
     def run_id(self) -> str:
@@ -52,6 +54,8 @@ class ResultsWriter:
             "value": value,
             "details": details or {},
         }
+        if self._clean_commit is not None:
+            line["clean_commit"] = self._clean_commit
         self._directory.mkdir(parents=True, exist_ok=True)
         path = self._directory / f"{now.date().isoformat()}.jsonl"
         data = (json.dumps(line, sort_keys=True, ensure_ascii=False, default=str) + "\n").encode("utf-8")

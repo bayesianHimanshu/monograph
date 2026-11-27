@@ -282,6 +282,7 @@ def run(
 
     if arm not in ARMS or model not in MODELS or split not in ("dev", "test"):
         raise typer.BadParameter("unknown arm, model or split")
+    clean = wiring.require_clean_tree(root) if split == "test" else None
     if split == "test":
         drift = h2_frozen_drift(root)
         if drift:
@@ -291,7 +292,7 @@ def run(
     client = CachedToolClient(
         AnthropicToolClient(anthropic.Anthropic(max_retries=8)), ToolResponseCache(root / H2_RESPONSES)
     )
-    writer = wiring.results_writer(root, "H2")
+    writer = wiring.results_writer(root, "H2", clean_commit=clean)
     records = run_split(
         qs,
         arm,
