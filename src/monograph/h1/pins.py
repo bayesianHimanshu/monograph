@@ -123,6 +123,12 @@ def pinned_stamp(root: Path) -> str:
     return build.stamp([(base / n).read_bytes() for n in GENERATED])
 
 
+def questions_sha256(root: Path) -> str:
+    """The question set a run uses (recorded on every run line, so dev rounds can be told apart)."""
+    path = root / FROZEN / "questions.json" if frozen(root) else root / QUESTIONS
+    return sha256(path.read_bytes())
+
+
 def questions(root: Path) -> list[dict[str, Any]]:
     data = json.loads(_read(root, "questions.json", root / QUESTIONS))
     qs: list[dict[str, Any]] = data["questions"]

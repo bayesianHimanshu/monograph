@@ -319,25 +319,26 @@ def q1_products_by_form(d: H1Data, rng: random.Random) -> Iterator[Candidate]:
 
 
 def q2_firm_form_route_products(d: H1Data, rng: random.Random) -> Iterator[Candidate]:
-    combos: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    """Three coded filters: product type, dosage form and route, for one labeler."""
+    combos: dict[tuple[str, str, str, str], set[str]] = defaultdict(set)
     for k, slug in d.package_labeler.items():
         p = d.products[d.package_product[k]]
         for route in d.routes[p.product_ndc]:
-            combos[(slug, p.dosage_form, route)].add(p.product_ndc)
+            combos[(slug, p.product_type.value, p.dosage_form, route)].add(p.product_ndc)
     keys = sorted(c for c, v in combos.items() if _fits(len(v)) and d.unique_firm_name(c[0]))
-    for slug, form, route in _shuffled(keys, rng):
-        gold = sorted(combos[(slug, form, route)])
+    for slug, ptype, form, route in _shuffled(keys, rng):
+        gold = sorted(combos[(slug, ptype, form, route)])
         sql = (
             "SELECT DISTINCT p.PRD_CD FROM wh.T_PKG k JOIN wh.T_PRD_MSTR p ON p.PRD_SK = k.PRD_SK"
             " JOIN wh.T_ORG_MSTR o ON o.ORG_SK = k.LBLR_ORG_SK JOIN wh.T_PRD_RTE r ON r.PRD_SK = p.PRD_SK"
-            f" WHERE o.ORG_CD = {lit(slug)} AND p.DSG_FRM_CD = {lit(code('DSG_FRM', form))}"
-            f" AND r.RTE_CD = {lit(code('RTE', route))}"
+            f" WHERE o.ORG_CD = {lit(slug)} AND p.PRD_TYP_CD = {lit(code('PRD_TYP', ptype))}"
+            f" AND p.DSG_FRM_CD = {lit(code('DSG_FRM', form))} AND r.RTE_CD = {lit(code('RTE', route))}"
         )
         yield Candidate(
-            {"firm": d.orgs[slug].name, "form": form, "route": route},
+            {"firm": d.orgs[slug].name, "ptype": ptype, "form": form, "route": route},
             values_gold([(x, []) for x in gold]),
             sql,
-            {"Product.dosage_form": [form], "Product.routes": [route]},
+            {"Product.product_type": [ptype], "Product.dosage_form": [form], "Product.routes": [route]},
         )
 
 
@@ -385,26 +386,31 @@ def q2_route_class_year_recalls(d: H1Data, rng: random.Random) -> Iterator[Candi
 
 
 def q2_serious_role_drug_reports(d: H1Data, rng: random.Random) -> Iterator[Candidate]:
-    combos: dict[tuple[str, str], set[str]] = defaultdict(set)
-    for r in d.reports.values():
-        if not r.serious:
-            continue
-        for name, role, _, _ in r.drugs:
-            if role in ("primary suspect", "concomitant"):
-                combos[(name, role)].add(r.report_id)
-    keys = sorted(c for c, v in combos.items() if 2 <= len(v) <= MAX_VALUES)
-    for name, role in _shuffled(keys, rng):
-        gold = sorted(combos[(name, role)])
-        sql = (
-            "SELECT DISTINCT a.RPT_ID FROM wh.T_AE_HDR a JOIN wh.T_AE_DRG g ON g.AE_SK = a.AE_SK"
-            f" WHERE a.SRS_FLG = 'Y' AND g.DRG_NM = {lit(name)} AND g.DRG_ROLE_CD = {lit(code('DRG_ROLE', role))}"
-        )
-        yield Candidate(
-            {"drug": name, "role": role},
-            values_gold([(x, []) for x in gold]),
-            sql,
-            {"AdverseEventReport.drugs.role": [role], "AdverseEventReport.serious": ["true"]},
-        )
+    """Drug names match case-insensitively by containment (dev round 1: every agent read a name that way)."""
+    names = sorted(
+        {x[0].upper() for r in d.reports.values() for x in r.drugs if x[0].isalpha() and 4 <= len(x[0]) <= 30}
+    )
+    for name in _shuffled(names, rng):
+        for role in ("primary suspect", "concomitant"):
+            gold = sorted(
+                r.report_id
+                for r in d.reports.values()
+                if r.serious and any(role == x[1] and name.casefold() in x[0].casefold() for x in r.drugs)
+            )
+            if not 2 <= len(gold) <= MAX_VALUES:
+                continue
+            sql = (
+                "SELECT DISTINCT a.RPT_ID FROM wh.T_AE_HDR a JOIN wh.T_AE_DRG g ON g.AE_SK = a.AE_SK"
+                f" WHERE a.SRS_FLG = 'Y' AND g.DRG_NM ILIKE {lit('%' + name + '%')}"
+                f" AND g.DRG_ROLE_CD = {lit(code('DRG_ROLE', role))}"
+            )
+            yield Candidate(
+                {"drug": name, "role": role},
+                values_gold([(x, []) for x in gold]),
+                sql,
+                {"AdverseEventReport.drugs.role": [role], "AdverseEventReport.serious": ["true"]},
+            )
+            break
 
 
 def q2_substance_route_products(d: H1Data, rng: random.Random) -> Iterator[Candidate]:
@@ -640,7 +646,7 @@ def q5_reports_by_reaction(d: H1Data, rng: random.Random) -> Iterator[Candidate]
 def q5_reaction_role_reports(d: H1Data, rng: random.Random) -> Iterator[Candidate]:
     combos: dict[tuple[str, str], tuple[int, int]] = {}
     for term in sorted({t for r in d.reports.values() for t in r.reactions}):
-        for role in ("concomitant", "suspect", "primary suspect"):
+        for role in ("concomitant", "primary suspect", "interacting"):
             distinct = naive = 0
             for r in d.reports.values():
                 k = r.reactions.count(term) * sum(1 for x in r.drugs if x[1] == role)
@@ -753,6 +759,42 @@ def q5_substance_labeler_count(d: H1Data, rng: random.Random) -> Iterator[Candid
             f" JOIN wh.T_SUBST_MSTR s ON s.SUBST_SK = i.SUBST_SK WHERE s.UNII_CD = {lit(unii)}"
         )
         yield Candidate({"substance": d.substances[unii].name}, number_gold(len(firms)), sql, naive=float(len(packs)))
+
+
+def q5_firm_class_recalled_products(d: H1Data, rng: random.Random) -> Iterator[Candidate]:
+    """Fan-out from two directions: a product has several packages and can be named by several recalls."""
+    by_product: dict[str, list[str]] = defaultdict(list)
+    for number, named in d.recall_products.items():
+        for ndc in named:
+            by_product[ndc].append(number)
+    combos: dict[tuple[str, str], tuple[set[str], int]] = {}
+    for slug in sorted(d.orgs):
+        packs = d.packages_of_firm(slug)
+        for cls in ("I", "II", "III"):
+            products: set[str] = set()
+            naive = 0
+            for k in packs:
+                ndc = d.package_product[k]
+                hits = sum(1 for n in by_product.get(ndc, []) if d.recalls[n].classification.value == cls)
+                if hits:
+                    products.add(ndc)
+                    naive += hits
+            if len(products) >= 2 and naive != len(products) and d.unique_firm_name(slug):
+                combos[(slug, cls)] = (products, naive)
+    for slug, cls in _shuffled(sorted(combos), rng):
+        products, naive = combos[(slug, cls)]
+        sql = (
+            "SELECT COUNT(DISTINCT p.PRD_SK) FROM wh.T_PKG k JOIN wh.T_PRD_MSTR p ON p.PRD_SK = k.PRD_SK"
+            " JOIN wh.T_ORG_MSTR o ON o.ORG_SK = k.LBLR_ORG_SK JOIN wh.T_RCL_PRD_DNRM r ON r.PRD_SK = p.PRD_SK"
+            f" WHERE o.ORG_CD = {lit(slug)} AND r.RCL_CLS_CD = {lit(code('RCL_CLS', cls))}"
+        )
+        yield Candidate(
+            {"firm": d.orgs[slug].name, "cls": cls},
+            number_gold(len(products)),
+            sql,
+            {"Recall.classification": [cls]},
+            float(naive),
+        )
 
 
 # =========================================================================================== Q6
@@ -911,9 +953,9 @@ TEMPLATES: tuple[Template, ...] = (
         "q1_products_by_form",
         "Q1",
         (
-            "How many products have the dosage form {form}?",
-            "Count the drug products whose dosage form is {form}.",
-            "What is the number of products listed with dosage form {form}?",
+            "How many products have the dosage form '{form}'?",
+            "Count the drug products whose dosage form is '{form}'.",
+            "What is the number of products listed with the dosage form '{form}'?",
         ),
         _f(P, "Product.dosage_form"),
         q1_products_by_form,
@@ -922,24 +964,34 @@ TEMPLATES: tuple[Template, ...] = (
         "q2_firm_form_route_products",
         "Q2",
         (
-            "Which products labeled by {firm} have dosage form {form} and the route of administration {route}? List"
-            " their product NDCs.",
-            "List the product NDCs of {firm}'s {form} products that are administered {route}.",
-            "Give the product NDCs for products that {firm} labels, with dosage form {form}, given by the {route}"
-            " route.",
+            "Which products labeled by {firm} have the product type '{ptype}', the dosage form '{form}' and the route"
+            " '{route}'? List their product NDCs.",
+            "List the product NDCs of {firm}'s products with product type '{ptype}', dosage form '{form}' and route"
+            " of administration '{route}'.",
+            "Give the product NDCs of products that {firm} labels whose product type is '{ptype}', dosage form is"
+            " '{form}' and route is '{route}'.",
         ),
-        _f(P, K, ORG, "PackagedProduct.labeler", "PackagedProduct.product", "Product.dosage_form", "Product.routes"),
+        _f(
+            P,
+            K,
+            ORG,
+            "PackagedProduct.labeler",
+            "PackagedProduct.product",
+            "Product.product_type",
+            "Product.dosage_form",
+            "Product.routes",
+        ),
         q2_firm_form_route_products,
     ),
     Template(
         "q2_class_form_recall_firms",
         "Q2",
         (
-            "Which firms were the recalling firm of a Class {cls} recall that names a product with dosage form"
-            " {form}? Give the firm names.",
-            "Name the firms that initiated Class {cls} recalls covering {form} products.",
-            "List the recalling firms of Class {cls} recalls that include at least one product whose dosage form is"
-            " {form}.",
+            "Which firms were the recalling firm of a Class {cls} recall that names a product with the dosage form"
+            " '{form}'? Give the firm names.",
+            "Name the firms that initiated Class {cls} recalls naming a product whose dosage form is '{form}'.",
+            "List the recalling firms of Class {cls} recalls that include at least one product with the dosage form"
+            " '{form}'.",
         ),
         _f(R, P, ORG, "Recall.classification", "Recall.products", "Recall.recalling_firm", "Product.dosage_form"),
         q2_class_form_recall_firms,
@@ -948,10 +1000,12 @@ TEMPLATES: tuple[Template, ...] = (
         "q2_route_class_year_recalls",
         "Q2",
         (
-            "Which Class {cls} recalls reported in {year} name a product administered by the {route} route? List the"
-            " recall numbers.",
-            "List the recall numbers of the Class {cls} recalls from {year} that cover a product given {route}.",
-            "Give the recall numbers for {year} Class {cls} recalls naming at least one {route} product.",
+            "Which Class {cls} recalls reported in {year} name a product with the route of administration '{route}'?"
+            " List the recall numbers.",
+            "List the recall numbers of the Class {cls} recalls reported in {year} that name a product given by the"
+            " route '{route}'.",
+            "Give the recall numbers of Class {cls} recalls with a report date in {year} that name at least one"
+            " product whose route is '{route}'.",
         ),
         _f(R, P, "Recall.classification", "Recall.report_date", "Recall.products", "Product.routes"),
         q2_route_class_year_recalls,
@@ -960,9 +1014,12 @@ TEMPLATES: tuple[Template, ...] = (
         "q2_serious_role_drug_reports",
         "Q2",
         (
-            "Which serious adverse event reports list {drug} as a {role} drug? Give the report ids.",
-            "List the report ids of serious adverse event reports where {drug} is recorded with the role {role}.",
-            "Give the ids of serious adverse event reports naming {drug} as {role}.",
+            "Which serious adverse event reports list a drug whose name contains '{drug}' with the role '{role}'?"
+            " Give the report ids.",
+            "List the report ids of serious adverse event reports with a drug entry named like '{drug}' (the name"
+            " contains it, any case) recorded as '{role}'.",
+            "Give the ids of serious adverse event reports where a drug whose name includes '{drug}' has the role"
+            " '{role}'.",
         ),
         _f(
             A,
@@ -977,9 +1034,11 @@ TEMPLATES: tuple[Template, ...] = (
         "q2_substance_route_products",
         "Q2",
         (
-            "Which products containing {substance} are administered by the {route} route? List their product NDCs.",
-            "List the product NDCs of products with {substance} as an active ingredient and route {route}.",
-            "Give the product NDCs of the {route} products whose active ingredients include {substance}.",
+            "Which products containing {substance} have the route of administration '{route}'? List their product"
+            " NDCs.",
+            "List the product NDCs of products with {substance} as an active ingredient and the route '{route}'.",
+            "Give the product NDCs of products whose active ingredients include {substance} and whose route is"
+            " '{route}'.",
         ),
         _f(P, S, "Product.ingredients", "Product.ingredients.substance", "Product.routes", "Substance.name"),
         q2_substance_route_products,
@@ -1134,9 +1193,9 @@ TEMPLATES: tuple[Template, ...] = (
         "q5_reaction_role_reports",
         "Q5",
         (
-            "How many adverse event reports list the reaction '{term}' and at least one {role} drug?",
-            "Count the adverse event reports that report '{term}' and include a drug with the role {role}.",
-            "In how many adverse event reports does '{term}' appear together with a {role} drug?",
+            "How many adverse event reports list the reaction '{term}' and at least one drug with the role '{role}'?",
+            "Count the adverse event reports that report '{term}' and include a drug recorded as '{role}'.",
+            "In how many adverse event reports does '{term}' appear together with a drug whose role is '{role}'?",
         ),
         _f(
             A,
@@ -1151,9 +1210,9 @@ TEMPLATES: tuple[Template, ...] = (
         "q5_firm_route_product_count",
         "Q5",
         (
-            "How many products labeled by {firm} are administered by the {route} route?",
-            "Count {firm}'s products that have {route} as a route of administration.",
-            "How many of the products {firm} labels are given {route}?",
+            "How many products labeled by {firm} have the route of administration '{route}'?",
+            "Count {firm}'s products that have '{route}' as a route of administration.",
+            "How many of the products {firm} labels are given by the route '{route}'?",
         ),
         _f(P, K, ORG, "PackagedProduct.labeler", "PackagedProduct.product", "Product.routes"),
         q5_firm_route_product_count,
@@ -1162,9 +1221,9 @@ TEMPLATES: tuple[Template, ...] = (
         "q5_class_form_recall_count",
         "Q5",
         (
-            "How many Class {cls} recalls name at least one product with dosage form {form}?",
-            "Count the Class {cls} recalls covering a {form} product.",
-            "How many recalls classified Class {cls} include a product whose dosage form is {form}?",
+            "How many Class {cls} recalls name at least one product with the dosage form '{form}'?",
+            "Count the Class {cls} recalls naming a product whose dosage form is '{form}'.",
+            "How many recalls classified Class {cls} include a product with the dosage form '{form}'?",
         ),
         _f(R, P, "Recall.classification", "Recall.products", "Product.dosage_form"),
         q5_class_form_recall_count,
@@ -1206,6 +1265,26 @@ TEMPLATES: tuple[Template, ...] = (
             "Substance.name",
         ),
         q5_substance_labeler_count,
+    ),
+    Template(
+        "q5_firm_class_recalled_products",
+        "Q5",
+        (
+            "How many products labeled by {firm} were named in a Class {cls} recall?",
+            "Count the products that {firm} labels and that at least one Class {cls} recall names.",
+            "How many of {firm}'s products appear in a Class {cls} recall?",
+        ),
+        _f(
+            P,
+            K,
+            ORG,
+            R,
+            "PackagedProduct.labeler",
+            "PackagedProduct.product",
+            "Recall.products",
+            "Recall.classification",
+        ),
+        q5_firm_class_recalled_products,
     ),
     Template(
         "q6_fake_firm_recalls",

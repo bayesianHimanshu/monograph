@@ -122,6 +122,12 @@ BAD = [
     ("wh", "SELECT p.FORM FROM T_PRD_MSTR p", "existence"),
     ("wh", "SELECT OLD_PRD_CD FROM T_PRD_MSTR", "existence"),
     ("wh", "SELECT COUNT(*) FROM products", "existence"),  # a view the warehouse context does not have
+    ("wh", "SELECT COUNT(DISTINCT RECALL_NUMBER) FROM STG_RCL_FEED WHERE CLASSIFICATION = 'Class II'", "existence"),
+    ("wh", "SELECT DISTINCT PRD_CD FROM STG_PRD_LOAD WHERE DSG_FRM_LGCY_CD = '120'", "existence"),
+    ("wh", "SELECT DISTINCT k.PKG_NDC FROM T_PKG k WHERE k.LBLR_NM = 'Pfizer Inc'", "existence"),
+    ("wh", "SELECT COUNT(*) FROM T_AE_HDR WHERE LD_DT BETWEEN 20140101 AND 20141231", "existence"),
+    ("wh", "SELECT COUNT(*) FROM T_AE_HDR WHERE SRS_IND = 'Y'", "existence"),
+    ("wh", "SELECT COUNT(*) FROM T_PRD_MSTR p JOIN T_LKP_CD l ON l.LKP_CD = p.DSG_FRM_CD", "existence"),
     ("sv", "SELECT COUNT(*) FROM products WHERE dosage_form = 'Tablet'", "code"),
     ("sv", "SELECT COUNT(*) FROM adverse_event_reports WHERE is_serious = 'Y'", "code"),
     ("sv", "SELECT COUNT(*) FROM recalls WHERE recall_class = '1'", "code"),

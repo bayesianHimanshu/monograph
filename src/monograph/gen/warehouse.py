@@ -172,6 +172,8 @@ class Col:
     code: str | None = None  # code domain, for transform "code"
     nullable: bool = False
     via: str | None = None  # denorm: the reference followed ("Recall.recalling_firm")
+    fill: str | None = None  # legacy: what an unmaintained column holds (SQL over the canonical row), else NULL
+    note: str | None = None  # legacy: why it is mapped to nothing
 
 
 @dataclass(frozen=True, slots=True)
@@ -183,6 +185,25 @@ class Table:
     field: str | None  # the property it holds (child, enum_set, ref_set); "drugs.harmonized_clinical_drugs"
     cols: tuple[Col, ...]
     pk: tuple[str, ...] = ()
+
+
+def _pick(key: str, k: int, byte: int = 0) -> str:
+    """A deterministic subset: about one row in k, by the md5 of a business key."""
+    return f"get_byte(decode(md5({key}), 'hex'), {byte}) % {k} = 0"
+
+
+def _days(key: str, byte: int, k: int) -> str:
+    return f"(get_byte(decode(md5({key}), 'hex'), {byte}) % {k} + 1)"
+
+
+def _etl_dates(day: str, key: str) -> tuple[str, str]:
+    load = f"to_char({day} + {_days(key, 1, 45)}, 'YYYYMMDD')::integer"
+    update = f"to_char({day} + {_days(key, 1, 45)} + {_days(key, 2, 400)}, 'YYYYMMDD')::integer"
+    return load, update
+
+
+STALE = "kept from an earlier load and no longer maintained"
+ETL = "ETL audit date, not a property of the data"
 
 
 def _c(name: str, sqltype: str, role: Role, term: str | None = None, **kw: Any) -> Col:
@@ -200,7 +221,7 @@ LAYOUT: tuple[Table, ...] = (
             _c("SUBST_SK", "integer", "identity", "Substance"),
             _c("UNII_CD", "varchar(10)", "value", "Substance.unii"),
             _c("SUBST_NM", "varchar(400)", "value", "Substance.name"),
-            _c("LGCY_SUBST_ID", "varchar(20)", "legacy", nullable=True),
+            _c("LGCY_SUBST_ID", "varchar(20)", "legacy", nullable=True, note="always empty"),
         ),
         ("SUBST_SK",),
     ),
@@ -227,7 +248,7 @@ LAYOUT: tuple[Table, ...] = (
             _c("ORG_SK", "integer", "identity", "Organization"),
             _c("ORG_CD", "varchar(200)", "value", "Organization.slug"),
             _c("ORG_NM", "varchar(400)", "value", "Organization.name"),
-            _c("DUNS_NO", "varchar(9)", "legacy", nullable=True),
+            _c("DUNS_NO", "varchar(9)", "legacy", nullable=True, note="always empty"),
         ),
         ("ORG_SK",),
     ),
@@ -286,7 +307,19 @@ LAYOUT: tuple[Table, ...] = (
             _c("PRD_TYP_CD", "varchar(8)", "value", "Product.product_type", transform="code", code="PRD_TYP"),
             _c("FNSHD_FLG", "char(1)", "value", "Product.finished", transform="flag"),
             _c("RXN_CLIN_DRG_SK", "integer", "ref", "Product.clinical_drug", nullable=True),
-            _c("OLD_PRD_CD", "varchar(12)", "legacy", nullable=True),
+            _c("OLD_PRD_CD", "varchar(12)", "legacy", nullable=True, note="always empty"),
+            _c(
+                "DSG_FRM_TXT",
+                "varchar(200)",
+                "legacy",
+                nullable=True,
+                fill=(
+                    f"CASE WHEN {_pick('c.product_ndc', 3)} THEN replace(replace(replace(replace(c.dosage_form,"
+                    " 'TABLET', 'TAB'), 'CAPSULE', 'CAP'), 'INJECTION', 'INJ'), 'SOLUTION', 'SOLN')"
+                    " ELSE initcap(c.dosage_form) END"
+                ),
+                note=f"free-text dosage form from an old feed, {STALE}",
+            ),
         ),
         ("PRD_SK",),
     ),
@@ -345,7 +378,19 @@ LAYOUT: tuple[Table, ...] = (
             _c("LBLR_ORG_SK", "integer", "ref", "PackagedProduct.labeler"),
             _c("PKG_DESC", "text", "value", "PackagedProduct.description", nullable=True),
             _c("PKG_NDC11", "varchar(11)", "value", "PackagedProduct.ndc11", nullable=True),
-            _c("MKTG_STAT_CD", "varchar(4)", "legacy", nullable=True),
+            _c("MKTG_STAT_CD", "varchar(4)", "legacy", nullable=True, note="always empty"),
+            _c(
+                "LBLR_NM",
+                "varchar(400)",
+                "legacy",
+                nullable=True,
+                fill=(
+                    f"coalesce((SELECT a.name FROM {SOURCE}.organization__aliases a WHERE a.owner_iri = c.labeler_iri"
+                    f" ORDER BY a.name LIMIT 1),"
+                    f" (SELECT o.name FROM {SOURCE}.organization o WHERE o.iri = c.labeler_iri))"
+                ),
+                note=f"labeler name copied at the first load, {STALE}",
+            ),
         ),
         ("PKG_SK",),
     ),
@@ -442,7 +487,31 @@ LAYOUT: tuple[Table, ...] = (
                 transform="numeric",
                 nullable=True,
             ),
-            _c("LGCY_BTCH_ID", "varchar(20)", "legacy", nullable=True),
+            _c("LGCY_BTCH_ID", "varchar(20)", "legacy", nullable=True, note="always empty"),
+            _c(
+                "SRS_IND",
+                "char(1)",
+                "legacy",
+                nullable=True,
+                fill=f"CASE WHEN {_pick('c.report_id', 6)} THEN 'U' WHEN c.serious THEN 'Y' ELSE 'N' END",
+                note=f"the previous seriousness indicator (U: loaded before it was required), {STALE}",
+            ),
+            _c(
+                "LD_DT",
+                "integer",
+                "legacy",
+                nullable=True,
+                fill=_etl_dates("c.receipt_date", "c.report_id")[0],
+                note=ETL,
+            ),
+            _c(
+                "LST_UPD_DT",
+                "integer",
+                "legacy",
+                nullable=True,
+                fill=_etl_dates("c.receipt_date", "c.report_id")[1],
+                note=ETL,
+            ),
         ),
         ("AE_SK",),
     ),
@@ -505,7 +574,23 @@ LAYOUT: tuple[Table, ...] = (
             _c("FIRM_NM", "varchar(400)", "denorm", "Organization.name", via="Recall.recalling_firm"),
             _c("PRD_SK", "integer", "ref", "Recall.products", nullable=True),
             _c("PRD_CD", "varchar(12)", "denorm", "Product.product_ndc", via="Recall.products", nullable=True),
-            _c("CMNT_TXT", "text", "legacy", nullable=True),
+            _c("CMNT_TXT", "text", "legacy", nullable=True, note="always empty"),
+            _c(
+                "LD_DT",
+                "integer",
+                "legacy",
+                nullable=True,
+                fill=_etl_dates("c.report_date", "c.recall_number")[0],
+                note=ETL,
+            ),
+            _c(
+                "LST_UPD_DT",
+                "integer",
+                "legacy",
+                nullable=True,
+                fill=_etl_dates("c.report_date", "c.recall_number")[1],
+                note=ETL,
+            ),
         ),
     ),
 )
@@ -637,6 +722,7 @@ def render_ddl(wh: Warehouse) -> str:
         if t.pk:
             lines.append(f"    PRIMARY KEY ({', '.join(t.pk)})")
         out += ["", f"CREATE TABLE {SCHEMA}.{t.name} (", ",\n".join(lines), ");"]
+    out.append(render_unmapped_ddl().rstrip())
     # indexes the load and the agents' joins need (a legacy warehouse has them too)
     out.append("")
     for t in wh.tables:
@@ -760,7 +846,7 @@ def _load_table(wh: Warehouse, t: Table) -> str:
                 col = column_name(wh.cls(target_cls).field(prop))
                 exprs.append(f"(SELECT d.{col} FROM {SOURCE}.{target} d WHERE d.iri = {via_iri})")
             else:
-                exprs.append("NULL")
+                exprs.append(c.fill or "NULL")
         frm = f"{SOURCE}.{owner_table} {src}"
         if t.shape == "wide":
             assert t.field is not None
@@ -800,7 +886,7 @@ def _load_table(wh: Warehouse, t: Table) -> str:
                 assert c.term is not None
                 exprs.append(_encode(wh, c, f"x.{_canonical_column(c.term, spec)}"))
             else:
-                exprs.append("NULL")
+                exprs.append(c.fill or "NULL")
         return f"INSERT INTO {SCHEMA}.{t.name} ({names})\nSELECT {', '.join(exprs)}\nFROM {SOURCE}.{child} x;"
     if t.shape == "nested_ref_set":
         assert t.field is not None
@@ -853,7 +939,150 @@ def render_load(wh: Warehouse) -> str:
     out.append(f"INSERT INTO {SCHEMA}.{REF_CD} (CD_DOM, CD_VAL, CD_DSC) VALUES\n" + ",\n".join(rows) + ";")
     for t in _load_order(wh):
         out += ["", _load_table(wh, t)]
+    out.append(render_unmapped_load().rstrip())
     return "\n".join(out) + "\n"
+
+
+# --------------------------------------------------------------------------- unmapped tables (hardening)
+# What nightly loads and an older system leave in a real warehouse (docs/h1/PLAN.md, "Dev round 1"): staging
+# copies of the feeds and the previous system's lookup table. Loaded from the canonical data, mapped to nothing.
+
+LKP_CD = "T_LKP_CD"
+
+
+@dataclass(frozen=True, slots=True)
+class Unmapped:
+    name: str
+    columns: tuple[tuple[str, str, str], ...]  # (name, type, note)
+    note: str
+
+
+UNMAPPED: tuple[Unmapped, ...] = (
+    Unmapped(
+        LKP_CD,
+        (
+            ("LKP_TYP", "varchar(8)", "lookup type: ROUTE or DOSFRM"),
+            ("LKP_CD", "varchar(4)", "the previous system's code"),
+            ("LKP_DESC", "varchar(200)", "its description"),
+            ("ACTV_IND", "char(1)", "active indicator"),
+        ),
+        "lookup table of the previous system (route and dosage form codes the staging feed still uses)",
+    ),
+    Unmapped(
+        "STG_PRD_LOAD",
+        (
+            ("LOAD_BATCH_ID", "integer", "load batch"),
+            ("PRD_CD", "varchar(12)", "product NDC as delivered"),
+            ("PRD_NM", "varchar(400)", "product name as delivered"),
+            ("DSG_FRM_LGCY_CD", "varchar(4)", "dosage form, previous system's code"),
+            ("RTE_LGCY_CD", "varchar(4)", "first route, previous system's code"),
+            ("PRD_TYP_TXT", "varchar(60)", "product type as delivered"),
+            ("LOAD_DT", "integer", "load date YYYYMMDD"),
+        ),
+        "staging copy of the product listing feed as delivered, superseded deliveries included",
+    ),
+    Unmapped(
+        "STG_RCL_FEED",
+        (
+            ("FEED_ROW_ID", "integer", "feed row"),
+            ("DELIVERY_NO", "integer", "delivery number"),
+            ("RECALL_NUMBER", "varchar(20)", "recall number as delivered"),
+            ("CLASSIFICATION", "varchar(20)", "classification as delivered"),
+            ("REPORT_DATE_TXT", "varchar(10)", "report date as delivered, MM/DD/YYYY"),
+            ("RECALLING_FIRM", "varchar(400)", "firm name as delivered"),
+        ),
+        "staging copy of the enforcement feed as delivered, repeat deliveries included",
+    ),
+)
+
+
+def _legacy_codes(enum: str) -> list[tuple[str, str]]:
+    """(label, previous-system code): three-digit codes in the enum's order."""
+    d = next(x for x in code_domains() if x.enum == enum)
+    return [(label, f"{i:03d}") for i, (_, label) in enumerate(d.codes, 1)]
+
+
+def _values(rows: Sequence[tuple[str, ...]]) -> str:
+    return "(VALUES " + ", ".join("(" + ", ".join(_lit(v) for v in r) + ")" for r in rows) + ")"
+
+
+def render_unmapped_ddl() -> str:
+    out = []
+    for u in UNMAPPED:
+        cols = ",\n".join(f"    {n} {t}" for n, t, _ in u.columns)
+        out += ["", f"CREATE TABLE {SCHEMA}.{u.name} (\n{cols}\n);"]
+    return "\n".join(out) + "\n"
+
+
+def render_unmapped_load() -> str:
+    forms, routes = _legacy_codes("DosageForm"), _legacy_codes("Route")
+    lkp = [("ROUTE", c, label, "Y") for label, c in routes] + [("DOSFRM", c, label, "Y") for label, c in forms]
+    form_codes = _values(forms)
+    route_codes = _values(routes)
+    older = _values([(label, forms[(i + 1) % len(forms)][0]) for i, (label, _) in enumerate(forms)])
+    first_route = "(SELECT min(r) FROM unnest(c.routes) AS r)"
+    stg_prd = (
+        f"INSERT INTO {SCHEMA}.STG_PRD_LOAD (LOAD_BATCH_ID, PRD_CD, PRD_NM, DSG_FRM_LGCY_CD, RTE_LGCY_CD, PRD_TYP_TXT,"
+        " LOAD_DT)\n"
+        f"SELECT 2, c.product_ndc, c.name, f.code, r.code, c.product_type, 20260301 FROM {SOURCE}.product c"
+        f" JOIN {form_codes} AS f(label, code) ON f.label = c.dosage_form"
+        f" LEFT JOIN {route_codes} AS r(label, code) ON r.label = {first_route}\n"
+        "UNION ALL\n"
+        f"SELECT 1, c.product_ndc, c.name, f.code, r.code, c.product_type, 20250301 FROM {SOURCE}.product c"
+        f" JOIN {older} AS o(label, prev) ON o.label = c.dosage_form"
+        " JOIN " + form_codes + " AS f(label, code) ON f.label = o.prev"
+        f" LEFT JOIN {route_codes} AS r(label, code) ON r.label = {first_route}"
+        f" WHERE {_pick('c.product_ndc', 10)};"
+    )
+    firm = (
+        f"coalesce((SELECT a.name FROM {SOURCE}.organization__aliases a WHERE a.owner_iri = c.recalling_firm_iri"
+        f" ORDER BY a.name LIMIT 1), (SELECT o.name FROM {SOURCE}.organization o WHERE o.iri = c.recalling_firm_iri))"
+    )
+    stg_rcl = (
+        f"INSERT INTO {SCHEMA}.STG_RCL_FEED (FEED_ROW_ID, DELIVERY_NO, RECALL_NUMBER, CLASSIFICATION, REPORT_DATE_TXT,"
+        " RECALLING_FIRM)\n"
+        'SELECT row_number() OVER (ORDER BY d.n, c.recall_number COLLATE "C"), d.n, c.recall_number,'
+        f" 'Class ' || c.classification, to_char(c.report_date, 'MM/DD/YYYY'), {firm}"
+        f" FROM {SOURCE}.recall c CROSS JOIN (VALUES (1), (2)) AS d(n)"
+        f" WHERE d.n = 1 OR {_pick('c.recall_number', 10)};"
+    )
+    head = (
+        f"INSERT INTO {SCHEMA}.{LKP_CD} (LKP_TYP, LKP_CD, LKP_DESC, ACTV_IND) VALUES\n"
+        + ",\n".join("(" + ", ".join(_lit(v) for v in row) + ")" for row in lkp)
+        + ";"
+    )
+    return (
+        "\n".join(
+            [
+                "",
+                "-- the unmapped tables: staging feeds and the previous system's lookup",
+                head,
+                "",
+                stg_prd,
+                "",
+                stg_rcl,
+            ]
+        )
+        + "\n"
+    )
+
+
+def unmapped_mapping() -> list[dict[str, Any]]:
+    return [
+        {
+            "table": u.name,
+            "grain": "unmapped",
+            "class": None,
+            "property": None,
+            "mapped": False,
+            "note": u.note,
+            "primary_key": [],
+            "columns": [
+                {"name": n, "type": t, "role": "legacy", "nullable": True, "note": note} for n, t, note in u.columns
+            ],
+        }
+        for u in UNMAPPED
+    ]
 
 
 # ------------------------------------------------------------------------------- the round trip
@@ -1100,6 +1329,8 @@ def mapping(wh: Warehouse) -> dict[str, Any]:
                 entry["references"] = _target(spec, col.term)
             if col.via is not None:
                 entry["via"] = col.via
+            if col.note is not None:
+                entry["note"] = col.note
             cols.append(entry)
         tables.append(
             {
@@ -1107,6 +1338,7 @@ def mapping(wh: Warehouse) -> dict[str, Any]:
                 "grain": t.grain,
                 "class": t.cls,
                 "property": t.field,
+                "mapped": True,
                 "primary_key": list(t.pk),
                 "columns": cols,
             }
@@ -1118,15 +1350,17 @@ def mapping(wh: Warehouse) -> dict[str, Any]:
             "grain": "code",
             "class": None,
             "property": None,
+            "mapped": True,
             "primary_key": ["CD_DOM", "CD_VAL"],
             "columns": [
                 {"name": "CD_DOM", "type": "varchar(10)", "role": "code_domain", "nullable": False},
                 {"name": "CD_VAL", "type": "varchar(16)", "role": "code_value", "nullable": False},
                 {"name": "CD_DSC", "type": "varchar(200)", "role": "code_label", "nullable": False},
-                {"name": "SORT_ORD", "type": "integer", "role": "legacy", "nullable": True},
+                {"name": "SORT_ORD", "type": "integer", "role": "legacy", "nullable": True, "note": "always empty"},
             ],
         },
     )
+    tables += unmapped_mapping()
     domains = [
         {
             "domain": d.domain,

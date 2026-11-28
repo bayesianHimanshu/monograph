@@ -64,6 +64,18 @@ def test_the_representation_is_legacy() -> None:
     assert "term" not in cols[("T_PRD_MSTR", "OLD_PRD_CD")]
     recall = next(t for t in mapping["tables"] if t["table"] == "T_RCL_PRD_DNRM")
     assert recall["grain"] == "Recall x Recall.products"
+    # the hardening pass (docs/h1/PLAN.md, dev round 1): staging, stale, ETL and a second code table, unmapped
+    unmapped = {t["table"] for t in mapping["tables"] if not t["mapped"]}
+    assert unmapped == {"STG_PRD_LOAD", "STG_RCL_FEED", "T_LKP_CD"}
+    for table, col in (
+        ("T_PKG", "LBLR_NM"),
+        ("T_PRD_MSTR", "DSG_FRM_TXT"),
+        ("T_AE_HDR", "SRS_IND"),
+        ("T_AE_HDR", "LD_DT"),
+    ):
+        assert cols[(table, col)]["role"] == "legacy"
+        assert "term" not in cols[(table, col)]
+        assert cols[(table, col)]["note"]
 
 
 def test_the_mapping_is_versioned() -> None:

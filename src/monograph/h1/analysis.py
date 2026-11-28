@@ -32,13 +32,18 @@ SECONDARY_TYPES = ("Q2", "Q5")
 METRIC = "h1.run"
 
 
-def latest_runs(records: Iterable[Mapping[str, Any]], split: str) -> list[Mapping[str, Any]]:
-    """One record per (model, arm, question): the last written, so a rerun after an API error counts once."""
+def latest_runs(
+    records: Iterable[Mapping[str, Any]], split: str, questions_sha256: str | None = None
+) -> list[Mapping[str, Any]]:
+    """One record per (model, arm, question): the last written, so a rerun after an API error counts once.
+    With `questions_sha256`, only runs on that question set (dev round 1 predates the field)."""
     latest: dict[tuple[str, str, str], Mapping[str, Any]] = {}
     for r in records:
         if r.get("metric") != METRIC:
             continue
         d = r["details"]
+        if questions_sha256 is not None and d.get("questions_sha256") != questions_sha256:
+            continue
         if d.get("split") == split:
             latest[(d["model"], d["arm"], d["question_id"])] = d
     return list(latest.values())

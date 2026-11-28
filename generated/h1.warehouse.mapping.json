@@ -75,6 +75,7 @@
       "grain": "code",
       "class": null,
       "property": null,
+      "mapped": true,
       "primary_key": [
         "CD_DOM",
         "CD_VAL"
@@ -102,7 +103,8 @@
           "name": "SORT_ORD",
           "type": "integer",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
         }
       ]
     },
@@ -111,6 +113,7 @@
       "grain": "Substance",
       "class": "Substance",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "SUBST_SK"
       ],
@@ -140,7 +143,8 @@
           "name": "LGCY_SUBST_ID",
           "type": "varchar(20)",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
         }
       ]
     },
@@ -149,6 +153,7 @@
       "grain": "Substance.active_moiety",
       "class": "Substance",
       "property": "active_moiety",
+      "mapped": true,
       "primary_key": [
         "SUBST_SK"
       ],
@@ -182,6 +187,7 @@
       "grain": "Organization",
       "class": "Organization",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "ORG_SK"
       ],
@@ -211,7 +217,8 @@
           "name": "DUNS_NO",
           "type": "varchar(9)",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
         }
       ]
     },
@@ -220,6 +227,7 @@
       "grain": "Organization.aliases",
       "class": "Organization",
       "property": "aliases",
+      "mapped": true,
       "primary_key": [
         "ORG_SK",
         "ALIAS_NM"
@@ -262,6 +270,7 @@
       "grain": "ClinicalDrug",
       "class": "ClinicalDrug",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "CLIN_DRG_SK"
       ],
@@ -301,6 +310,7 @@
       "grain": "ClinicalDrug.generic",
       "class": "ClinicalDrug",
       "property": "generic",
+      "mapped": true,
       "primary_key": [
         "BRND_CLIN_DRG_SK"
       ],
@@ -334,6 +344,7 @@
       "grain": "Product",
       "class": "Product",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "PRD_SK"
       ],
@@ -397,7 +408,15 @@
           "name": "OLD_PRD_CD",
           "type": "varchar(12)",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
+        },
+        {
+          "name": "DSG_FRM_TXT",
+          "type": "varchar(200)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "free-text dosage form from an old feed, kept from an earlier load and no longer maintained"
         }
       ]
     },
@@ -406,6 +425,7 @@
       "grain": "Product.routes",
       "class": "Product",
       "property": "routes",
+      "mapped": true,
       "primary_key": [
         "PRD_SK",
         "RTE_CD"
@@ -434,6 +454,7 @@
       "grain": "Product.ingredients",
       "class": "Product",
       "property": "ingredients",
+      "mapped": true,
       "primary_key": [
         "PRD_SK",
         "INGR_SEQ"
@@ -484,6 +505,7 @@
       "grain": "Product.drug_mappings",
       "class": "Product",
       "property": "drug_mappings",
+      "mapped": true,
       "primary_key": [
         "PRD_SK",
         "MAP_SEQ"
@@ -535,6 +557,7 @@
       "grain": "PackagedProduct",
       "class": "PackagedProduct",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "PKG_SK"
       ],
@@ -587,7 +610,15 @@
           "name": "MKTG_STAT_CD",
           "type": "varchar(4)",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
+        },
+        {
+          "name": "LBLR_NM",
+          "type": "varchar(400)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "labeler name copied at the first load, kept from an earlier load and no longer maintained"
         }
       ]
     },
@@ -596,6 +627,7 @@
       "grain": "Label",
       "class": "Label",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "LBL_SK"
       ],
@@ -637,6 +669,7 @@
       "grain": "Label.products",
       "class": "Label",
       "property": "products",
+      "mapped": true,
       "primary_key": [
         "LBL_SK",
         "PRD_SK"
@@ -664,6 +697,7 @@
       "grain": "Label.sections",
       "class": "Label",
       "property": "sections",
+      "mapped": true,
       "primary_key": [
         "LBL_SK",
         "SECT_CD"
@@ -704,6 +738,7 @@
       "grain": "AdverseEventReport",
       "class": "AdverseEventReport",
       "property": null,
+      "mapped": true,
       "primary_key": [
         "AE_SK"
       ],
@@ -807,7 +842,29 @@
           "name": "LGCY_BTCH_ID",
           "type": "varchar(20)",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
+        },
+        {
+          "name": "SRS_IND",
+          "type": "char(1)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "the previous seriousness indicator (U: loaded before it was required), kept from an earlier load and no longer maintained"
+        },
+        {
+          "name": "LD_DT",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "ETL audit date, not a property of the data"
+        },
+        {
+          "name": "LST_UPD_DT",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "ETL audit date, not a property of the data"
         }
       ]
     },
@@ -816,6 +873,7 @@
       "grain": "AdverseEventReport.drugs",
       "class": "AdverseEventReport",
       "property": "drugs",
+      "mapped": true,
       "primary_key": [
         "AE_SK",
         "DRG_SEQ"
@@ -867,6 +925,7 @@
       "grain": "AdverseEventReport.drugs.harmonized_clinical_drugs",
       "class": "AdverseEventReport",
       "property": "drugs.harmonized_clinical_drugs",
+      "mapped": true,
       "primary_key": [
         "AE_SK",
         "DRG_SEQ",
@@ -903,6 +962,7 @@
       "grain": "AdverseEventReport.reactions",
       "class": "AdverseEventReport",
       "property": "reactions",
+      "mapped": true,
       "primary_key": [
         "AE_SK",
         "RXN_SEQ"
@@ -937,6 +997,7 @@
       "grain": "Recall x Recall.products",
       "class": "Recall",
       "property": "products",
+      "mapped": true,
       "primary_key": [],
       "columns": [
         {
@@ -1013,7 +1074,174 @@
           "name": "CMNT_TXT",
           "type": "text",
           "role": "legacy",
-          "nullable": true
+          "nullable": true,
+          "note": "always empty"
+        },
+        {
+          "name": "LD_DT",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "ETL audit date, not a property of the data"
+        },
+        {
+          "name": "LST_UPD_DT",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "ETL audit date, not a property of the data"
+        }
+      ]
+    },
+    {
+      "table": "T_LKP_CD",
+      "grain": "unmapped",
+      "class": null,
+      "property": null,
+      "mapped": false,
+      "note": "lookup table of the previous system (route and dosage form codes the staging feed still uses)",
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "LKP_TYP",
+          "type": "varchar(8)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "lookup type: ROUTE or DOSFRM"
+        },
+        {
+          "name": "LKP_CD",
+          "type": "varchar(4)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "the previous system's code"
+        },
+        {
+          "name": "LKP_DESC",
+          "type": "varchar(200)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "its description"
+        },
+        {
+          "name": "ACTV_IND",
+          "type": "char(1)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "active indicator"
+        }
+      ]
+    },
+    {
+      "table": "STG_PRD_LOAD",
+      "grain": "unmapped",
+      "class": null,
+      "property": null,
+      "mapped": false,
+      "note": "staging copy of the product listing feed as delivered, superseded deliveries included",
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "LOAD_BATCH_ID",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "load batch"
+        },
+        {
+          "name": "PRD_CD",
+          "type": "varchar(12)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "product NDC as delivered"
+        },
+        {
+          "name": "PRD_NM",
+          "type": "varchar(400)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "product name as delivered"
+        },
+        {
+          "name": "DSG_FRM_LGCY_CD",
+          "type": "varchar(4)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "dosage form, previous system's code"
+        },
+        {
+          "name": "RTE_LGCY_CD",
+          "type": "varchar(4)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "first route, previous system's code"
+        },
+        {
+          "name": "PRD_TYP_TXT",
+          "type": "varchar(60)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "product type as delivered"
+        },
+        {
+          "name": "LOAD_DT",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "load date YYYYMMDD"
+        }
+      ]
+    },
+    {
+      "table": "STG_RCL_FEED",
+      "grain": "unmapped",
+      "class": null,
+      "property": null,
+      "mapped": false,
+      "note": "staging copy of the enforcement feed as delivered, repeat deliveries included",
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "FEED_ROW_ID",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "feed row"
+        },
+        {
+          "name": "DELIVERY_NO",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true,
+          "note": "delivery number"
+        },
+        {
+          "name": "RECALL_NUMBER",
+          "type": "varchar(20)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "recall number as delivered"
+        },
+        {
+          "name": "CLASSIFICATION",
+          "type": "varchar(20)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "classification as delivered"
+        },
+        {
+          "name": "REPORT_DATE_TXT",
+          "type": "varchar(10)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "report date as delivered, MM/DD/YYYY"
+        },
+        {
+          "name": "RECALLING_FIRM",
+          "type": "varchar(400)",
+          "role": "legacy",
+          "nullable": true,
+          "note": "firm name as delivered"
         }
       ]
     }

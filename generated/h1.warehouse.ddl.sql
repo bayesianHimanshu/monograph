@@ -64,6 +64,7 @@ CREATE TABLE wh.T_PRD_MSTR (
     FNSHD_FLG char(1) NOT NULL,
     RXN_CLIN_DRG_SK integer,
     OLD_PRD_CD varchar(12),
+    DSG_FRM_TXT varchar(200),
     PRIMARY KEY (PRD_SK)
 );
 
@@ -99,6 +100,7 @@ CREATE TABLE wh.T_PKG (
     PKG_DESC text,
     PKG_NDC11 varchar(11),
     MKTG_STAT_CD varchar(4),
+    LBLR_NM varchar(400),
     PRIMARY KEY (PKG_SK)
 );
 
@@ -138,6 +140,9 @@ CREATE TABLE wh.T_AE_HDR (
     SRS_OTH_FLG char(1) NOT NULL,
     PT_AGE_YRS numeric,
     LGCY_BTCH_ID varchar(20),
+    SRS_IND char(1),
+    LD_DT integer,
+    LST_UPD_DT integer,
     PRIMARY KEY (AE_SK)
 );
 
@@ -174,7 +179,35 @@ CREATE TABLE wh.T_RCL_PRD_DNRM (
     FIRM_NM varchar(400) NOT NULL,
     PRD_SK integer,
     PRD_CD varchar(12),
-    CMNT_TXT text
+    CMNT_TXT text,
+    LD_DT integer,
+    LST_UPD_DT integer
+);
+
+CREATE TABLE wh.T_LKP_CD (
+    LKP_TYP varchar(8),
+    LKP_CD varchar(4),
+    LKP_DESC varchar(200),
+    ACTV_IND char(1)
+);
+
+CREATE TABLE wh.STG_PRD_LOAD (
+    LOAD_BATCH_ID integer,
+    PRD_CD varchar(12),
+    PRD_NM varchar(400),
+    DSG_FRM_LGCY_CD varchar(4),
+    RTE_LGCY_CD varchar(4),
+    PRD_TYP_TXT varchar(60),
+    LOAD_DT integer
+);
+
+CREATE TABLE wh.STG_RCL_FEED (
+    FEED_ROW_ID integer,
+    DELIVERY_NO integer,
+    RECALL_NUMBER varchar(20),
+    CLASSIFICATION varchar(20),
+    REPORT_DATE_TXT varchar(10),
+    RECALLING_FIRM varchar(400)
 );
 
 CREATE INDEX ON wh.T_SUBST_MSTR (UNII_CD);

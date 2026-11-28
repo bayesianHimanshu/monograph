@@ -97,8 +97,8 @@ def ontology_text(root: Path) -> str:
     for t in mapping["tables"]:
         for c in t["columns"]:
             term = c.get("term")
-            if c["role"] == "legacy":
-                legacy.append(f"{t['table']}.{c['name']}")
+            if c["role"] == "legacy" and t.get("mapped", True):
+                legacy.append(f"{t['table']}.{c['name']} ({c.get('note', 'unused')})")
             elif c["role"] == "flag" and term:
                 prop, _, member = term.partition("=")
                 flags.setdefault(prop, []).append((t["table"], c["name"], member))
@@ -132,7 +132,10 @@ def ontology_text(root: Path) -> str:
             lines.append(f"  - {f.name} ({_kind(f)}, {_card(f)}): {_desc(f)}".rstrip())
             lines += [f"      {x}" for x in _storage(term, f, where, flags, tables, domains, wh)]
         lines.append("")
-    lines.append("Unused legacy columns (always empty, mapped to nothing): " + ", ".join(legacy) + ".")
+    lines.append("Columns mapped to no ontology property (do not answer from them): " + "; ".join(legacy) + ".")
+    unmapped = [f"{t['table']} ({t.get('note', '')})" for t in mapping["tables"] if not t.get("mapped", True)]
+    if unmapped:
+        lines.append("Tables mapped to no ontology class (do not answer from them): " + "; ".join(unmapped) + ".")
     return "\n".join(lines) + "\n"
 
 

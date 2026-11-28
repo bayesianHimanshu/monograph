@@ -30,6 +30,7 @@ class ColumnInfo:
     allowed: frozenset[str] | None = None  # the literals a comparison may use
     owner_class: str | None = None  # the class whose property the column holds
     mapped: bool = True
+    note: str = ""
 
     @property
     def label(self) -> str:
@@ -49,6 +50,8 @@ class TableInfo:
     fine: bool  # finer than the entity: a multi-valued property, an embedded list, a bridge, the wide table
     columns: dict[str, ColumnInfo] = field(default_factory=dict)
     row_term: str | None = None  # what one row of a finer table is ("Product.routes", "Recall.products")
+    mapped: bool = True  # False: a staging or lookup table mapped to no ontology term
+    note: str = ""
 
     @property
     def label(self) -> str:
@@ -157,10 +160,19 @@ def load(warehouse_mapping: dict[str, Any], semantic_mapping: dict[str, Any] | N
                 allowed,
                 owner,
                 mapped=role != "legacy",
+                note=c.get("note", ""),
             )
         row_term = t["grain"].split(" x ")[-1] if fine and t["class"] is not None else None
         tables[(schema, name)] = TableInfo(
-            schema, name, t["grain"], t["class"], fine and t["class"] is not None, cols, row_term
+            schema,
+            name,
+            t["grain"],
+            t["class"],
+            fine and t["class"] is not None,
+            cols,
+            row_term,
+            t.get("mapped", True),
+            t.get("note", ""),
         )
     enum_labels = {term: frozenset(domains[d].codes.values()) for term, d in term_domain.items()}
     if semantic_mapping is not None:

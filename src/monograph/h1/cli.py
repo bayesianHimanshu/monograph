@@ -112,7 +112,7 @@ def run_cmd(
     writer = wiring.results_writer(root, EXPERIMENT, clean_commit=clean)
     write = Writer(writer.write)
     network: Any = AnthropicToolClient(anthropic.Anthropic(max_retries=8))
-    extra: dict[str, Any] = {}
+    extra: dict[str, Any] = {"questions_sha256": pins.questions_sha256(root)}
     guard = None
     if split == "test":  # the approved cap on cumulative test spend, reruns included
         from monograph.agent.budget import BudgetedClient, BudgetExceeded, open_guard

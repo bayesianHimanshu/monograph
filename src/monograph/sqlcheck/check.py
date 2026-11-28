@@ -92,7 +92,16 @@ class OntologyChecker:
             info = self._cat.find(table.name, (table.db.lower(),) if table.db else self._path)
             if info is None:
                 out.append(Violation("existence", table.name, f"There is no table or view {table.name!r}."))
-            elif not table.db:
+                continue
+            if not info.mapped:
+                out.append(
+                    Violation(
+                        "existence",
+                        table.name,
+                        f"{info.label} is not mapped to the ontology ({info.note}); the mapped tables hold the data.",
+                    )
+                )
+            if not table.db:
                 table.set("db", exp.to_identifier(info.schema))
         try:
             qualified = qualify(
@@ -200,6 +209,8 @@ class OntologyChecker:
             src = self._source(scope, col.table)
             if not isinstance(src, TableInfo):
                 continue
+            if not src.mapped:
+                continue  # reported once, for the table
             info = src.columns.get(col.name.lower())
             if info is None:
                 out.append(
@@ -212,13 +223,9 @@ class OntologyChecker:
                     )
                 )
             elif not info.mapped:
+                why = info.note or "an unused legacy column"
                 out.append(
-                    Violation(
-                        "existence",
-                        _sql(col),
-                        f"{info.label} is not mapped to any ontology property (an unused legacy column; it is always"
-                        " empty).",
-                    )
+                    Violation("existence", _sql(col), f"{info.label} is not mapped to any ontology property ({why}).")
                 )
         return out
 

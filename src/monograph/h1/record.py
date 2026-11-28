@@ -52,6 +52,7 @@ DOES_NOT_EXIST = re.compile(r"(column|relation) .* does not exist", re.IGNORECAS
 
 # What a query must name to filter on a coded value, by ontology term: warehouse code or decoded label.
 CODE_DOMAINS: dict[str, str] = {
+    "Product.product_type": "PRD_TYP",
     "Product.dosage_form": "DSG_FRM",
     "Product.routes": "RTE",
     "Recall.classification": "RCL_CLS",
