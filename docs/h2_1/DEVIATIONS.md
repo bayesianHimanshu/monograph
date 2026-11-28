@@ -71,3 +71,39 @@ verdict: P3 recomputed without these 4 questions.
 
 **What this changes.** No verdict. On P3's 90 baseline questions per model the 4 questions move G-free minus
 S-free by about one point.
+
+### D1, the rerun selection rule (appended 2026-11-28, on review)
+
+**The rule, applied mechanically to the test records written before the reruns:** rerun every record (`h2_1.run`
+or `h2_1.error`) that was written after the crash (06:50:42.356 UTC) by a process that was running at the
+crash, whatever its score, except the crashing run. A process is one CLI run of one configuration (its `run_id`,
+on every line); it was running at the crash if it wrote records both before and after it. Nothing else is
+rerun, and the rule looks at no score.
+
+Six processes were running at the crash: Haiku S-tools in all four cells and Sonnet G-free in both of its
+cells. The rule selects 1,219 records:
+
+| Selected | Records | What they were |
+|---|---|---|
+| Haiku S-tools, `h2_1.error` | 1,083 | unscored: every one is a lost connection (1,067 "the connection is closed", 16 "server closed the connection") |
+| Haiku S-tools, `h2_1.run` | 5 | in flight at the crash; finished without another store call; all 5 had scored correct |
+| Sonnet G-free, `h2_1.run` | 131 | every call after the crash returned "the connection is lost"; 3 had still scored correct |
+
+Checked against the records (`tests/test_h2_1_d1.py` recomputes all of this from `results/h2_1/` and fails on
+any difference):
+
+* Every one of the 1,219 was rerun, and nothing else was re-sampled: the questions with a new sample or a first
+  scored run after the reruns are exactly the 1,083 + 131 above (the 5 in-flight runs replayed from the cache).
+* The rule and the connection-error criterion agree: every run with a connection-loss error in a call was
+  written after the crash by one of these processes, and in the Sonnet processes every run written after the
+  crash has one (132, the crashing run included). No error record of these processes has another cause.
+* The unscorable Haiku G-free question (`t10_fewest_steps_substance_to_firm-13`) came from a process that
+  started after the crash; the rule does not select it and it was not rerun.
+
+**What ran again that the rule did not select, and why it changes nothing.** The Haiku S-tools reruns used the
+unchanged CLI, which runs a whole configuration. Its 172 questions scored before the crash, all correct and on
+a live connection, were therefore executed again, but every response came from the response cache (no new
+sample), and each replay has the same answer, the same score and the same calls as the original. So no run with
+a correct score on a live connection received a new sample or a different record. The 5 in-flight S-tools runs
+also replayed identically; the 3 Sonnet runs that had scored correct on a dead connection were re-sampled, as
+the rule requires, and scored correct again.
