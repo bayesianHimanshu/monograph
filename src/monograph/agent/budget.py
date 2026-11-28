@@ -55,7 +55,8 @@ def load_cap(path: Path, phase: str) -> Cap:
 def spent(records: Iterable[Mapping[str, Any]], metric: str, split: str) -> Decimal:
     """Cumulative API spend of a phase from the results: every `<metric>.spend` line (one per API call), plus,
     for runs recorded before the ledger existed, each run's cost when any of its responses was not cached (the
-    whole run's cost, so history is counted high, never low)."""
+    whole run's cost, so history is counted high, never low), plus the difference on every
+    `<metric>.spend_correction` line (monograph.agent.spend_correction)."""
     total = Decimal(0)
     for r in records:
         d = r.get("details", {})
@@ -65,6 +66,8 @@ def spent(records: Iterable[Mapping[str, Any]], metric: str, split: str) -> Deci
         unledgered_run = r.get("metric") == f"{metric}.run" and not d.get("from_cache") and not d.get("ledgered")
         if ledger or unledgered_run:
             total += Decimal(str(d["cost_usd"]))
+        elif r.get("metric") == f"{metric}.spend_correction" and d.get("correction"):
+            total += Decimal(str(d["difference_usd"]))
     return total
 
 

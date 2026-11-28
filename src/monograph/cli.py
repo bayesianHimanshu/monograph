@@ -346,6 +346,42 @@ def report_mutations(root: Root = Path()) -> None:
     typer.echo(f"wrote {path} from {len(records)} result lines")
 
 
+SPEND_CORRECTIONS = {"h2_1": ("H2_1", Path("data/h2_1/responses"))}  # experiment -> (results name, cache)
+
+
+@app.command("correct-spend")
+def correct_spend(
+    experiment: Annotated[str, typer.Argument(help=f"One of: {', '.join(SPEND_CORRECTIONS)}.")],
+    root: Root = Path(),
+    dry_run: Annotated[bool, typer.Option(help="Show the corrections without appending them.")] = False,
+) -> None:
+    """Append a spend-correction line for every API call whose cost was logged at the standard rate but is
+    billed on a long-context rate card. The original records are never edited; a correction already present is
+    not written again. Needs a clean tree, like a test run."""
+    from monograph.agent.spend_correction import CORRECTION, cached_responses, corrections, read_located
+
+    if experiment not in SPEND_CORRECTIONS:
+        raise typer.BadParameter(f"unknown experiment {experiment!r}")
+    name, responses = SPEND_CORRECTIONS[experiment]
+    results = root / "results" / experiment
+    lines = corrections(list(read_located(results)), cached_responses(root / responses), experiment)
+    for value, d in lines:
+        c = d["corrects"]
+        typer.echo(
+            f"{c['file']}:{c['line']} {d['request_id']} ({d['prompt_tokens']} prompt tokens, {d['split']}):"
+            f" logged USD {d['logged_cost_usd']}, corrected USD {d['corrected_cost_usd']}, +USD {value:.6f}"
+        )
+    if not lines:
+        typer.echo("no corrections needed")
+        return
+    if dry_run:
+        return
+    writer = wiring.results_writer(root, name, clean_commit=wiring.require_clean_tree(root))
+    for value, d in lines:
+        writer.write(f"{experiment}.{CORRECTION}", value, d)
+    typer.echo(f"appended {len(lines)} correction line(s) to {results}")
+
+
 @report_app.command("h2")
 def report_h2(root: Root = Path()) -> None:
     """Regenerate docs/h2/RESULTS.md from results/h2/*.jsonl alone."""
