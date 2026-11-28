@@ -1,0 +1,416 @@
+{
+  "version": "1.0.0",
+  "schema": "sem",
+  "views": [
+    {
+      "view": "products",
+      "grain": "one row per product (product NDC)",
+      "class": "Product",
+      "columns": [
+        {
+          "name": "product_ndc",
+          "role": "key",
+          "term": "Product.product_ndc",
+          "type": "text"
+        },
+        {
+          "name": "product_name",
+          "role": "value",
+          "term": "Product.name",
+          "type": "text"
+        },
+        {
+          "name": "dosage_form",
+          "role": "value",
+          "term": "Product.dosage_form",
+          "type": "text"
+        },
+        {
+          "name": "product_type",
+          "role": "value",
+          "term": "Product.product_type",
+          "type": "text",
+          "allowed_values": [
+            "HUMAN PRESCRIPTION DRUG",
+            "HUMAN OTC DRUG",
+            "PLASMA DERIVATIVE",
+            "CELLULAR THERAPY",
+            "VACCINE",
+            "STANDARDIZED ALLERGENIC",
+            "NON-STANDARDIZED ALLERGENIC",
+            "BULK INGREDIENT",
+            "DRUG FOR FURTHER PROCESSING",
+            "LICENSED VACCINE BULK INTERMEDIATE"
+          ]
+        },
+        {
+          "name": "is_finished",
+          "role": "value",
+          "term": "Product.finished",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "view": "product_routes",
+      "grain": "one row per product and route of administration",
+      "class": "Product.routes",
+      "columns": [
+        {
+          "name": "product_ndc",
+          "role": "ref",
+          "term": "Product.product_ndc",
+          "references": "Product",
+          "type": "text"
+        },
+        {
+          "name": "route",
+          "role": "value",
+          "term": "Product.routes",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "product_ingredients",
+      "grain": "one row per product and active ingredient",
+      "class": "Product.ingredients",
+      "columns": [
+        {
+          "name": "product_ndc",
+          "role": "ref",
+          "term": "Product.product_ndc",
+          "references": "Product",
+          "type": "text"
+        },
+        {
+          "name": "substance_unii",
+          "role": "ref",
+          "term": "Substance.unii",
+          "references": "Substance",
+          "type": "text"
+        },
+        {
+          "name": "strength_value",
+          "role": "value",
+          "term": "Product.ingredients.strength_value",
+          "type": "numeric"
+        },
+        {
+          "name": "strength_unit",
+          "role": "value",
+          "term": "Product.ingredients.strength_unit",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "substances",
+      "grain": "one row per substance (UNII)",
+      "class": "Substance",
+      "columns": [
+        {
+          "name": "substance_unii",
+          "role": "key",
+          "term": "Substance.unii",
+          "type": "text"
+        },
+        {
+          "name": "substance_name",
+          "role": "value",
+          "term": "Substance.name",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "firms",
+      "grain": "one row per firm",
+      "class": "Organization",
+      "columns": [
+        {
+          "name": "firm_code",
+          "role": "key",
+          "term": "Organization.slug",
+          "type": "text"
+        },
+        {
+          "name": "firm_name",
+          "role": "value",
+          "term": "Organization.name",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "packages",
+      "grain": "one row per package (package NDC)",
+      "class": "PackagedProduct",
+      "columns": [
+        {
+          "name": "package_ndc",
+          "role": "key",
+          "term": "PackagedProduct.ndc",
+          "type": "text"
+        },
+        {
+          "name": "product_ndc",
+          "role": "ref",
+          "term": "Product.product_ndc",
+          "references": "Product",
+          "type": "text"
+        },
+        {
+          "name": "labeler_firm_code",
+          "role": "ref",
+          "term": "Organization.slug",
+          "references": "Organization",
+          "type": "text"
+        },
+        {
+          "name": "package_description",
+          "role": "value",
+          "term": "PackagedProduct.description",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "adverse_event_reports",
+      "grain": "one row per adverse event report",
+      "class": "AdverseEventReport",
+      "columns": [
+        {
+          "name": "report_id",
+          "role": "key",
+          "term": "AdverseEventReport.report_id",
+          "type": "text"
+        },
+        {
+          "name": "source_system",
+          "role": "value",
+          "term": "AdverseEventReport.source_system",
+          "type": "text",
+          "allowed_values": [
+            "openfda_e2b",
+            "faers_qde"
+          ]
+        },
+        {
+          "name": "received_date",
+          "role": "value",
+          "term": "AdverseEventReport.receipt_date",
+          "type": "date"
+        },
+        {
+          "name": "is_serious",
+          "role": "value",
+          "term": "AdverseEventReport.serious",
+          "type": "boolean"
+        },
+        {
+          "name": "resulted_in_death",
+          "role": "value",
+          "term": "AdverseEventReport.seriousness_criteria=death",
+          "type": "boolean"
+        },
+        {
+          "name": "was_life_threatening",
+          "role": "value",
+          "term": "AdverseEventReport.seriousness_criteria=life threatening",
+          "type": "boolean"
+        },
+        {
+          "name": "caused_hospitalization",
+          "role": "value",
+          "term": "AdverseEventReport.seriousness_criteria=hospitalization",
+          "type": "boolean"
+        },
+        {
+          "name": "caused_disability",
+          "role": "value",
+          "term": "AdverseEventReport.seriousness_criteria=disabling",
+          "type": "boolean"
+        },
+        {
+          "name": "congenital_anomaly",
+          "role": "value",
+          "term": "AdverseEventReport.seriousness_criteria=congenital anomaly",
+          "type": "boolean"
+        },
+        {
+          "name": "other_serious",
+          "role": "value",
+          "term": "AdverseEventReport.seriousness_criteria=other",
+          "type": "boolean"
+        },
+        {
+          "name": "patient_age_years",
+          "role": "value",
+          "term": "AdverseEventReport.patient_age_years",
+          "type": "numeric"
+        }
+      ]
+    },
+    {
+      "view": "adverse_event_reactions",
+      "grain": "one row per reaction listed on a report",
+      "class": "AdverseEventReport.reactions",
+      "columns": [
+        {
+          "name": "report_id",
+          "role": "ref",
+          "term": "AdverseEventReport.report_id",
+          "references": "AdverseEventReport",
+          "type": "text"
+        },
+        {
+          "name": "reaction_term",
+          "role": "value",
+          "term": "AdverseEventReport.reactions.term",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "adverse_event_drugs",
+      "grain": "one row per drug listed on a report",
+      "class": "AdverseEventReport.drugs",
+      "columns": [
+        {
+          "name": "report_id",
+          "role": "ref",
+          "term": "AdverseEventReport.report_id",
+          "references": "AdverseEventReport",
+          "type": "text"
+        },
+        {
+          "name": "drug_name",
+          "role": "value",
+          "term": "AdverseEventReport.drugs.drug_name",
+          "type": "text"
+        },
+        {
+          "name": "drug_role",
+          "role": "value",
+          "term": "AdverseEventReport.drugs.role",
+          "type": "text",
+          "allowed_values": [
+            "primary suspect",
+            "secondary suspect",
+            "suspect",
+            "concomitant",
+            "interacting"
+          ]
+        }
+      ]
+    },
+    {
+      "view": "recalls",
+      "grain": "one row per recall",
+      "class": "Recall",
+      "columns": [
+        {
+          "name": "recall_number",
+          "role": "key",
+          "term": "Recall.recall_number",
+          "type": "text"
+        },
+        {
+          "name": "recall_class",
+          "role": "value",
+          "term": "Recall.classification",
+          "type": "text",
+          "allowed_values": [
+            "I",
+            "II",
+            "III"
+          ]
+        },
+        {
+          "name": "reason",
+          "role": "value",
+          "term": "Recall.reason",
+          "type": "text"
+        },
+        {
+          "name": "report_date",
+          "role": "value",
+          "term": "Recall.report_date",
+          "type": "date"
+        },
+        {
+          "name": "recalling_firm_code",
+          "role": "ref",
+          "term": "Organization.slug",
+          "references": "Organization",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "view": "recall_products",
+      "grain": "one row per recall and product it names",
+      "class": "Recall.products",
+      "columns": [
+        {
+          "name": "recall_number",
+          "role": "ref",
+          "term": "Recall.recall_number",
+          "references": "Recall",
+          "type": "text"
+        },
+        {
+          "name": "product_ndc",
+          "role": "ref",
+          "term": "Product.product_ndc",
+          "references": "Product",
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "coverage": [
+    "AdverseEventReport",
+    "AdverseEventReport.drugs",
+    "AdverseEventReport.drugs.drug_name",
+    "AdverseEventReport.drugs.role",
+    "AdverseEventReport.patient_age_years",
+    "AdverseEventReport.reactions",
+    "AdverseEventReport.reactions.term",
+    "AdverseEventReport.receipt_date",
+    "AdverseEventReport.report_id",
+    "AdverseEventReport.serious",
+    "AdverseEventReport.seriousness_criteria",
+    "AdverseEventReport.source_system",
+    "Organization",
+    "Organization.name",
+    "Organization.slug",
+    "PackagedProduct",
+    "PackagedProduct.description",
+    "PackagedProduct.labeler",
+    "PackagedProduct.ndc",
+    "PackagedProduct.product",
+    "Product",
+    "Product.dosage_form",
+    "Product.finished",
+    "Product.ingredients",
+    "Product.ingredients.strength_unit",
+    "Product.ingredients.strength_value",
+    "Product.ingredients.substance",
+    "Product.name",
+    "Product.product_ndc",
+    "Product.product_type",
+    "Product.routes",
+    "Recall",
+    "Recall.classification",
+    "Recall.products",
+    "Recall.reason",
+    "Recall.recall_number",
+    "Recall.recalling_firm",
+    "Recall.report_date",
+    "Substance",
+    "Substance.name",
+    "Substance.unii"
+  ]
+}

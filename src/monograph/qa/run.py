@@ -11,7 +11,9 @@ from collections.abc import Callable, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from monograph.agent.arms import PROMPT_VERSIONS, Arm, sha256
+from pydantic import BaseModel
+
+from monograph.agent.arms import PROMPT_VERSIONS, Arm, FinalAnswer, sha256
 from monograph.agent.budget import BudgetExceeded
 from monograph.agent.llm import AGENT_SETTINGS, AgentSettings, ToolClient
 from monograph.agent.loop import AgentLoop
@@ -54,9 +56,15 @@ def run_split(
     extra: Mapping[str, Any] | None = None,
     prompt_versions: Mapping[str, str] | None = None,
     classify: Callable[[dict[str, Any]], str | None] | None = None,
+    answer_model: type[BaseModel] = FinalAnswer,
+    score: Callable[[dict[str, Any], Mapping[str, Any], set[str] | None], dict[str, Any]] | None = None,
+    fresh_arm: bool = False,
+    annotate: Callable[[dict[str, Any], Arm], None] | None = None,
 ) -> list[dict[str, Any]]:
     """H2.1 passes its own metric prefix, cache tag, extra details (the cell), prompt versions, and a
-    classifier that may refine a wrong answer's failure category."""
+    classifier that may refine a wrong answer's failure category. H1 also passes its answer model and scoring
+    function, asks for a fresh arm per question (its arms hold per-question state) and annotates each record
+    from the arm."""
     versions = prompt_versions if prompt_versions is not None else PROMPT_VERSIONS
     local = threading.local()
     done: list[dict[str, Any]] = []
@@ -67,10 +75,10 @@ def run_split(
     def one(q: Mapping[str, Any]) -> None:
         if stopped.is_set():
             return  # the spend cap was reached: no new question starts
-        if not hasattr(local, "arm"):
+        if fresh_arm or not hasattr(local, "arm"):
             local.arm = make_arm()
         arm: Arm = local.arm
-        loop = AgentLoop(client, arm, model, system, settings, tag=tag)
+        loop = AgentLoop(client, arm, model, system, settings, tag=tag, answer_model=answer_model)
         try:
             t = loop.run(str(q["id"]), str(q["text"]))
         except BudgetExceeded as exc:  # the approved cap: stop, record why, score nothing for this question
@@ -121,7 +129,9 @@ def run_split(
             }
         )
         record.update(extra or {})
-        score_record(record, q, known_ids)
+        if annotate is not None:
+            annotate(record, arm)
+        (score or score_record)(record, q, known_ids)
         if classify is not None and not record["correct"]:
             refined = classify(record)
             if refined is not None:

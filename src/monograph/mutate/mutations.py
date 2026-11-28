@@ -191,6 +191,20 @@ def _m14(root: Path, cli: Cli) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def _m19(root: Path, cli: Cli) -> None:
+    # Hand-edit the generated H1 warehouse mapping: drop the mapping of the dosage form column.
+    import json
+
+    path = root / "generated" / "h1.warehouse.mapping.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    product = next(t for t in data["tables"] if t["table"] == "T_PRD_MSTR")
+    before = len(product["columns"])
+    product["columns"] = [c for c in product["columns"] if c["name"] != "DSG_FRM_CD"]
+    if len(product["columns"]) != before - 1:
+        raise MutationError("DSG_FRM_CD not found in the warehouse mapping")
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def _m15(root: Path, cli: Cli) -> None:
     # The projection generator stops emitting edges for single (non-collection) references, regenerated, so
     # the drift check stays green.
@@ -245,6 +259,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("M16", "Edit a committed PREREG.md after its first commit", "prereg", _m16),
     Mutation("M17", "Tamper with H4's pinned extraction schema", "tests", _m17),
     Mutation("M18", "Leave a stray untracked file: a test run must refuse to start", "clean", _m18, commit=False),
+    Mutation("M19", "Hand-edit the generated H1 warehouse mapping to drop a column", "drift", _m19),
 )
 
 BASELINE = Mutation("M0", "No mutation (control: every gate must pass)", None, lambda root, cli: None)

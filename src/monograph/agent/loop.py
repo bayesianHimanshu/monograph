@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass, field
 from decimal import Decimal
 from typing import Any
 
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from monograph.agent.arms import Arm, FinalAnswer
 from monograph.agent.llm import AgentSettings, ToolClient, ToolRequest
@@ -91,10 +91,13 @@ class AgentLoop:
         settings: AgentSettings,
         clock: Callable[[], float] = time.monotonic,
         tag: str | None = None,
+        answer_model: type[BaseModel] = FinalAnswer,
     ) -> None:
         """`tag` keys the response cache (default: the arm's name); H2.1 adds the cell, since tools arms send
-        byte-identical requests in the two description cells."""
+        byte-identical requests in the two description cells. `answer_model` validates submit_answer (H1 has
+        its own; default H2's)."""
         self._tag = tag if tag is not None else arm.name
+        self._answer_model = answer_model
         self._client = client
         self._arm = arm
         self._model = model
@@ -148,7 +151,7 @@ class AgentLoop:
                 name, arguments, use_id = str(use["name"]), dict(use.get("input") or {}), str(use["id"])
                 if name == "submit_answer":
                     try:
-                        answer = FinalAnswer.model_validate(arguments)
+                        answer = self._answer_model.model_validate(arguments)
                     except ValidationError as exc:
                         results.append(self._error(use_id, f"invalid answer: {exc.errors(include_url=False)}"))
                         continue
