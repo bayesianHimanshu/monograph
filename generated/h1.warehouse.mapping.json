@@ -1,0 +1,2295 @@
+{
+  "version": "1.0.0",
+  "schema": "wh",
+  "source_schema_version": "2.2.0",
+  "classes": [
+    {
+      "class": "Substance",
+      "table": "T_SUBST_MSTR",
+      "identity": "SUBST_SK",
+      "key": {
+        "unii": "UNII_CD"
+      }
+    },
+    {
+      "class": "Organization",
+      "table": "T_ORG_MSTR",
+      "identity": "ORG_SK",
+      "key": {
+        "slug": "ORG_CD"
+      }
+    },
+    {
+      "class": "ClinicalDrug",
+      "table": "T_CLIN_DRG",
+      "identity": "CLIN_DRG_SK",
+      "key": {
+        "rxcui": "RXCUI"
+      }
+    },
+    {
+      "class": "Product",
+      "table": "T_PRD_MSTR",
+      "identity": "PRD_SK",
+      "key": {
+        "product_ndc": "PRD_CD"
+      }
+    },
+    {
+      "class": "PackagedProduct",
+      "table": "T_PKG",
+      "identity": "PKG_SK",
+      "key": {
+        "ndc": "PKG_NDC"
+      }
+    },
+    {
+      "class": "Label",
+      "table": "T_LBL",
+      "identity": "LBL_SK",
+      "key": {
+        "set_id": "SET_ID",
+        "version": "VER_NO"
+      }
+    },
+    {
+      "class": "AdverseEventReport",
+      "table": "T_AE_HDR",
+      "identity": "AE_SK",
+      "key": {
+        "report_id": "RPT_ID"
+      }
+    },
+    {
+      "class": "Recall",
+      "table": "T_RCL_PRD_DNRM",
+      "identity": "RCL_SK",
+      "key": {
+        "recall_number": "RCL_NO"
+      }
+    }
+  ],
+  "tables": [
+    {
+      "table": "T_REF_CD",
+      "grain": "code",
+      "class": null,
+      "property": null,
+      "primary_key": [
+        "CD_DOM",
+        "CD_VAL"
+      ],
+      "columns": [
+        {
+          "name": "CD_DOM",
+          "type": "varchar(10)",
+          "role": "code_domain",
+          "nullable": false
+        },
+        {
+          "name": "CD_VAL",
+          "type": "varchar(16)",
+          "role": "code_value",
+          "nullable": false
+        },
+        {
+          "name": "CD_DSC",
+          "type": "varchar(200)",
+          "role": "code_label",
+          "nullable": false
+        },
+        {
+          "name": "SORT_ORD",
+          "type": "integer",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "T_SUBST_MSTR",
+      "grain": "Substance",
+      "class": "Substance",
+      "property": null,
+      "primary_key": [
+        "SUBST_SK"
+      ],
+      "columns": [
+        {
+          "name": "SUBST_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "Substance"
+        },
+        {
+          "name": "UNII_CD",
+          "type": "varchar(10)",
+          "role": "value",
+          "nullable": false,
+          "term": "Substance.unii"
+        },
+        {
+          "name": "SUBST_NM",
+          "type": "varchar(400)",
+          "role": "value",
+          "nullable": false,
+          "term": "Substance.name"
+        },
+        {
+          "name": "LGCY_SUBST_ID",
+          "type": "varchar(20)",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "X_SALT_MOIETY",
+      "grain": "Substance.active_moiety",
+      "class": "Substance",
+      "property": "active_moiety",
+      "primary_key": [
+        "SUBST_SK"
+      ],
+      "columns": [
+        {
+          "name": "SUBST_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Substance"
+        },
+        {
+          "name": "MOIETY_SUBST_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "Substance.active_moiety.moiety",
+          "references": "Substance"
+        },
+        {
+          "name": "SRC_TXT",
+          "type": "varchar(200)",
+          "role": "value",
+          "nullable": false,
+          "term": "Substance.active_moiety.source"
+        }
+      ]
+    },
+    {
+      "table": "T_ORG_MSTR",
+      "grain": "Organization",
+      "class": "Organization",
+      "property": null,
+      "primary_key": [
+        "ORG_SK"
+      ],
+      "columns": [
+        {
+          "name": "ORG_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "Organization"
+        },
+        {
+          "name": "ORG_CD",
+          "type": "varchar(200)",
+          "role": "value",
+          "nullable": false,
+          "term": "Organization.slug"
+        },
+        {
+          "name": "ORG_NM",
+          "type": "varchar(400)",
+          "role": "value",
+          "nullable": false,
+          "term": "Organization.name"
+        },
+        {
+          "name": "DUNS_NO",
+          "type": "varchar(9)",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "X_ORG_ALIAS",
+      "grain": "Organization.aliases",
+      "class": "Organization",
+      "property": "aliases",
+      "primary_key": [
+        "ORG_SK",
+        "ALIAS_NM"
+      ],
+      "columns": [
+        {
+          "name": "ORG_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Organization"
+        },
+        {
+          "name": "ALIAS_NM",
+          "type": "varchar(400)",
+          "role": "value",
+          "nullable": false,
+          "term": "Organization.aliases.name"
+        },
+        {
+          "name": "SRC_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": false,
+          "term": "Organization.aliases.source",
+          "transform": "code",
+          "code_domain": "ALIAS_SRC"
+        },
+        {
+          "name": "EVID_TXT",
+          "type": "text",
+          "role": "value",
+          "nullable": false,
+          "term": "Organization.aliases.evidence"
+        }
+      ]
+    },
+    {
+      "table": "T_CLIN_DRG",
+      "grain": "ClinicalDrug",
+      "class": "ClinicalDrug",
+      "property": null,
+      "primary_key": [
+        "CLIN_DRG_SK"
+      ],
+      "columns": [
+        {
+          "name": "CLIN_DRG_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "ClinicalDrug"
+        },
+        {
+          "name": "RXCUI",
+          "type": "varchar(12)",
+          "role": "value",
+          "nullable": false,
+          "term": "ClinicalDrug.rxcui"
+        },
+        {
+          "name": "CLIN_DRG_NM",
+          "type": "text",
+          "role": "value",
+          "nullable": true,
+          "term": "ClinicalDrug.name"
+        },
+        {
+          "name": "TTY_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": true,
+          "term": "ClinicalDrug.term_type"
+        }
+      ]
+    },
+    {
+      "table": "X_BRND_GNRC",
+      "grain": "ClinicalDrug.generic",
+      "class": "ClinicalDrug",
+      "property": "generic",
+      "primary_key": [
+        "BRND_CLIN_DRG_SK"
+      ],
+      "columns": [
+        {
+          "name": "BRND_CLIN_DRG_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "ClinicalDrug"
+        },
+        {
+          "name": "GNRC_CLIN_DRG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "ClinicalDrug.generic.drug",
+          "references": "ClinicalDrug"
+        },
+        {
+          "name": "SRC_TXT",
+          "type": "varchar(200)",
+          "role": "value",
+          "nullable": false,
+          "term": "ClinicalDrug.generic.source"
+        }
+      ]
+    },
+    {
+      "table": "T_PRD_MSTR",
+      "grain": "Product",
+      "class": "Product",
+      "property": null,
+      "primary_key": [
+        "PRD_SK"
+      ],
+      "columns": [
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "Product"
+        },
+        {
+          "name": "PRD_CD",
+          "type": "varchar(12)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.product_ndc"
+        },
+        {
+          "name": "PRD_NM",
+          "type": "varchar(400)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.name"
+        },
+        {
+          "name": "DSG_FRM_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.dosage_form",
+          "transform": "code",
+          "code_domain": "DSG_FRM"
+        },
+        {
+          "name": "PRD_TYP_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.product_type",
+          "transform": "code",
+          "code_domain": "PRD_TYP"
+        },
+        {
+          "name": "FNSHD_FLG",
+          "type": "char(1)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.finished",
+          "transform": "flag"
+        },
+        {
+          "name": "RXN_CLIN_DRG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": true,
+          "term": "Product.clinical_drug",
+          "references": "ClinicalDrug"
+        },
+        {
+          "name": "OLD_PRD_CD",
+          "type": "varchar(12)",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "T_PRD_RTE",
+      "grain": "Product.routes",
+      "class": "Product",
+      "property": "routes",
+      "primary_key": [
+        "PRD_SK",
+        "RTE_CD"
+      ],
+      "columns": [
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Product"
+        },
+        {
+          "name": "RTE_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.routes",
+          "transform": "code",
+          "code_domain": "RTE"
+        }
+      ]
+    },
+    {
+      "table": "T_PRD_INGR",
+      "grain": "Product.ingredients",
+      "class": "Product",
+      "property": "ingredients",
+      "primary_key": [
+        "PRD_SK",
+        "INGR_SEQ"
+      ],
+      "columns": [
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Product"
+        },
+        {
+          "name": "INGR_SEQ",
+          "type": "integer",
+          "role": "seq",
+          "nullable": false,
+          "term": "Product.ingredients",
+          "transform": "seq"
+        },
+        {
+          "name": "SUBST_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "Product.ingredients.substance",
+          "references": "Substance"
+        },
+        {
+          "name": "STRNTH_VAL",
+          "type": "numeric",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.ingredients.strength_value",
+          "transform": "numeric"
+        },
+        {
+          "name": "STRNTH_UOM",
+          "type": "varchar(60)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.ingredients.strength_unit"
+        }
+      ]
+    },
+    {
+      "table": "X_NDC_RXN",
+      "grain": "Product.drug_mappings",
+      "class": "Product",
+      "property": "drug_mappings",
+      "primary_key": [
+        "PRD_SK",
+        "MAP_SEQ"
+      ],
+      "columns": [
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Product"
+        },
+        {
+          "name": "MAP_SEQ",
+          "type": "integer",
+          "role": "seq",
+          "nullable": false,
+          "term": "Product.drug_mappings",
+          "transform": "seq"
+        },
+        {
+          "name": "CLIN_DRG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "Product.drug_mappings.clinical_drug",
+          "references": "ClinicalDrug"
+        },
+        {
+          "name": "SRC_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.drug_mappings.source",
+          "transform": "code",
+          "code_domain": "MAP_SRC"
+        },
+        {
+          "name": "EVID_TXT",
+          "type": "text",
+          "role": "value",
+          "nullable": false,
+          "term": "Product.drug_mappings.evidence"
+        }
+      ]
+    },
+    {
+      "table": "T_PKG",
+      "grain": "PackagedProduct",
+      "class": "PackagedProduct",
+      "property": null,
+      "primary_key": [
+        "PKG_SK"
+      ],
+      "columns": [
+        {
+          "name": "PKG_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "PackagedProduct"
+        },
+        {
+          "name": "PKG_NDC",
+          "type": "varchar(14)",
+          "role": "value",
+          "nullable": false,
+          "term": "PackagedProduct.ndc"
+        },
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "PackagedProduct.product",
+          "references": "Product"
+        },
+        {
+          "name": "LBLR_ORG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "PackagedProduct.labeler",
+          "references": "Organization"
+        },
+        {
+          "name": "PKG_DESC",
+          "type": "text",
+          "role": "value",
+          "nullable": true,
+          "term": "PackagedProduct.description"
+        },
+        {
+          "name": "PKG_NDC11",
+          "type": "varchar(11)",
+          "role": "value",
+          "nullable": true,
+          "term": "PackagedProduct.ndc11"
+        },
+        {
+          "name": "MKTG_STAT_CD",
+          "type": "varchar(4)",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "T_LBL",
+      "grain": "Label",
+      "class": "Label",
+      "property": null,
+      "primary_key": [
+        "LBL_SK"
+      ],
+      "columns": [
+        {
+          "name": "LBL_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "Label"
+        },
+        {
+          "name": "SET_ID",
+          "type": "varchar(36)",
+          "role": "value",
+          "nullable": false,
+          "term": "Label.set_id"
+        },
+        {
+          "name": "VER_NO",
+          "type": "integer",
+          "role": "value",
+          "nullable": false,
+          "term": "Label.version",
+          "transform": "int"
+        },
+        {
+          "name": "EFF_DT",
+          "type": "date",
+          "role": "value",
+          "nullable": false,
+          "term": "Label.effective_date",
+          "transform": "date"
+        }
+      ]
+    },
+    {
+      "table": "T_LBL_PRD",
+      "grain": "Label.products",
+      "class": "Label",
+      "property": "products",
+      "primary_key": [
+        "LBL_SK",
+        "PRD_SK"
+      ],
+      "columns": [
+        {
+          "name": "LBL_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Label"
+        },
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "Label.products",
+          "references": "Product"
+        }
+      ]
+    },
+    {
+      "table": "T_LBL_SECT",
+      "grain": "Label.sections",
+      "class": "Label",
+      "property": "sections",
+      "primary_key": [
+        "LBL_SK",
+        "SECT_CD"
+      ],
+      "columns": [
+        {
+          "name": "LBL_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "Label"
+        },
+        {
+          "name": "SECT_CD",
+          "type": "varchar(12)",
+          "role": "value",
+          "nullable": false,
+          "term": "Label.sections.code"
+        },
+        {
+          "name": "SECT_TTL",
+          "type": "text",
+          "role": "value",
+          "nullable": false,
+          "term": "Label.sections.title"
+        },
+        {
+          "name": "SECT_TXT",
+          "type": "text",
+          "role": "value",
+          "nullable": false,
+          "term": "Label.sections.text"
+        }
+      ]
+    },
+    {
+      "table": "T_AE_HDR",
+      "grain": "AdverseEventReport",
+      "class": "AdverseEventReport",
+      "property": null,
+      "primary_key": [
+        "AE_SK"
+      ],
+      "columns": [
+        {
+          "name": "AE_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "AdverseEventReport"
+        },
+        {
+          "name": "RPT_ID",
+          "type": "varchar(40)",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.report_id"
+        },
+        {
+          "name": "SRC_SYS_CD",
+          "type": "varchar(8)",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.source_system",
+          "transform": "code",
+          "code_domain": "SRC_SYS"
+        },
+        {
+          "name": "RCPT_DT",
+          "type": "integer",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.receipt_date",
+          "transform": "date_int"
+        },
+        {
+          "name": "SRS_FLG",
+          "type": "char(1)",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.serious",
+          "transform": "flag"
+        },
+        {
+          "name": "SRS_DTH_FLG",
+          "type": "char(1)",
+          "role": "flag",
+          "nullable": false,
+          "term": "AdverseEventReport.seriousness_criteria=death",
+          "transform": "flag"
+        },
+        {
+          "name": "SRS_LT_FLG",
+          "type": "char(1)",
+          "role": "flag",
+          "nullable": false,
+          "term": "AdverseEventReport.seriousness_criteria=life threatening",
+          "transform": "flag"
+        },
+        {
+          "name": "SRS_HOSP_FLG",
+          "type": "char(1)",
+          "role": "flag",
+          "nullable": false,
+          "term": "AdverseEventReport.seriousness_criteria=hospitalization",
+          "transform": "flag"
+        },
+        {
+          "name": "SRS_DSBL_FLG",
+          "type": "char(1)",
+          "role": "flag",
+          "nullable": false,
+          "term": "AdverseEventReport.seriousness_criteria=disabling",
+          "transform": "flag"
+        },
+        {
+          "name": "SRS_CA_FLG",
+          "type": "char(1)",
+          "role": "flag",
+          "nullable": false,
+          "term": "AdverseEventReport.seriousness_criteria=congenital anomaly",
+          "transform": "flag"
+        },
+        {
+          "name": "SRS_OTH_FLG",
+          "type": "char(1)",
+          "role": "flag",
+          "nullable": false,
+          "term": "AdverseEventReport.seriousness_criteria=other",
+          "transform": "flag"
+        },
+        {
+          "name": "PT_AGE_YRS",
+          "type": "numeric",
+          "role": "value",
+          "nullable": true,
+          "term": "AdverseEventReport.patient_age_years",
+          "transform": "numeric"
+        },
+        {
+          "name": "LGCY_BTCH_ID",
+          "type": "varchar(20)",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "T_AE_DRG",
+      "grain": "AdverseEventReport.drugs",
+      "class": "AdverseEventReport",
+      "property": "drugs",
+      "primary_key": [
+        "AE_SK",
+        "DRG_SEQ"
+      ],
+      "columns": [
+        {
+          "name": "AE_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "AdverseEventReport"
+        },
+        {
+          "name": "DRG_SEQ",
+          "type": "integer",
+          "role": "seq",
+          "nullable": false,
+          "term": "AdverseEventReport.drugs",
+          "transform": "seq"
+        },
+        {
+          "name": "DRG_NM",
+          "type": "text",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.drugs.drug_name"
+        },
+        {
+          "name": "CLIN_DRG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": true,
+          "term": "AdverseEventReport.drugs.clinical_drug",
+          "references": "ClinicalDrug"
+        },
+        {
+          "name": "DRG_ROLE_CD",
+          "type": "varchar(4)",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.drugs.role",
+          "transform": "code",
+          "code_domain": "DRG_ROLE"
+        }
+      ]
+    },
+    {
+      "table": "X_AE_DRG_RXN",
+      "grain": "AdverseEventReport.drugs.harmonized_clinical_drugs",
+      "class": "AdverseEventReport",
+      "property": "drugs.harmonized_clinical_drugs",
+      "primary_key": [
+        "AE_SK",
+        "DRG_SEQ",
+        "CLIN_DRG_SK"
+      ],
+      "columns": [
+        {
+          "name": "AE_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "AdverseEventReport"
+        },
+        {
+          "name": "DRG_SEQ",
+          "type": "integer",
+          "role": "seq",
+          "nullable": false,
+          "term": "AdverseEventReport.drugs",
+          "transform": "seq"
+        },
+        {
+          "name": "CLIN_DRG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "AdverseEventReport.drugs.harmonized_clinical_drugs",
+          "references": "ClinicalDrug"
+        }
+      ]
+    },
+    {
+      "table": "T_AE_RXN",
+      "grain": "AdverseEventReport.reactions",
+      "class": "AdverseEventReport",
+      "property": "reactions",
+      "primary_key": [
+        "AE_SK",
+        "RXN_SEQ"
+      ],
+      "columns": [
+        {
+          "name": "AE_SK",
+          "type": "integer",
+          "role": "owner",
+          "nullable": false,
+          "term": "AdverseEventReport"
+        },
+        {
+          "name": "RXN_SEQ",
+          "type": "integer",
+          "role": "seq",
+          "nullable": false,
+          "term": "AdverseEventReport.reactions",
+          "transform": "seq"
+        },
+        {
+          "name": "RXN_TRM",
+          "type": "varchar(400)",
+          "role": "value",
+          "nullable": false,
+          "term": "AdverseEventReport.reactions.term"
+        }
+      ]
+    },
+    {
+      "table": "T_RCL_PRD_DNRM",
+      "grain": "Recall x Recall.products",
+      "class": "Recall",
+      "property": "products",
+      "primary_key": [],
+      "columns": [
+        {
+          "name": "RCL_SK",
+          "type": "integer",
+          "role": "identity",
+          "nullable": false,
+          "term": "Recall"
+        },
+        {
+          "name": "RCL_NO",
+          "type": "varchar(20)",
+          "role": "value",
+          "nullable": false,
+          "term": "Recall.recall_number"
+        },
+        {
+          "name": "RCL_CLS_CD",
+          "type": "char(1)",
+          "role": "value",
+          "nullable": false,
+          "term": "Recall.classification",
+          "transform": "code",
+          "code_domain": "RCL_CLS"
+        },
+        {
+          "name": "RCL_RSN_TXT",
+          "type": "text",
+          "role": "value",
+          "nullable": false,
+          "term": "Recall.reason"
+        },
+        {
+          "name": "RPT_DT",
+          "type": "integer",
+          "role": "value",
+          "nullable": false,
+          "term": "Recall.report_date",
+          "transform": "date_int"
+        },
+        {
+          "name": "FIRM_ORG_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": false,
+          "term": "Recall.recalling_firm",
+          "references": "Organization"
+        },
+        {
+          "name": "FIRM_NM",
+          "type": "varchar(400)",
+          "role": "denorm",
+          "nullable": false,
+          "term": "Organization.name",
+          "via": "Recall.recalling_firm"
+        },
+        {
+          "name": "PRD_SK",
+          "type": "integer",
+          "role": "ref",
+          "nullable": true,
+          "term": "Recall.products",
+          "references": "Product"
+        },
+        {
+          "name": "PRD_CD",
+          "type": "varchar(12)",
+          "role": "denorm",
+          "nullable": true,
+          "term": "Product.product_ndc",
+          "via": "Recall.products"
+        },
+        {
+          "name": "CMNT_TXT",
+          "type": "text",
+          "role": "legacy",
+          "nullable": true
+        }
+      ]
+    }
+  ],
+  "code_domains": [
+    {
+      "domain": "RTE",
+      "enum": "Route",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "C38192",
+          "label": "AURICULAR (OTIC)"
+        },
+        {
+          "code": "C38193",
+          "label": "BUCCAL"
+        },
+        {
+          "code": "C38194",
+          "label": "CONJUNCTIVAL"
+        },
+        {
+          "code": "C38675",
+          "label": "CUTANEOUS"
+        },
+        {
+          "code": "C38197",
+          "label": "DENTAL"
+        },
+        {
+          "code": "C38633",
+          "label": "ELECTRO-OSMOSIS"
+        },
+        {
+          "code": "C38205",
+          "label": "ENDOCERVICAL"
+        },
+        {
+          "code": "C38206",
+          "label": "ENDOSINUSIAL"
+        },
+        {
+          "code": "C38208",
+          "label": "ENDOTRACHEAL"
+        },
+        {
+          "code": "C38209",
+          "label": "ENTERAL"
+        },
+        {
+          "code": "C38210",
+          "label": "EPIDURAL"
+        },
+        {
+          "code": "C38211",
+          "label": "EXTRA-AMNIOTIC"
+        },
+        {
+          "code": "C38212",
+          "label": "EXTRACORPOREAL"
+        },
+        {
+          "code": "C38200",
+          "label": "HEMODIALYSIS"
+        },
+        {
+          "code": "C38215",
+          "label": "INFILTRATION"
+        },
+        {
+          "code": "C38219",
+          "label": "INTERSTITIAL"
+        },
+        {
+          "code": "C38220",
+          "label": "INTRA-ABDOMINAL"
+        },
+        {
+          "code": "C38221",
+          "label": "INTRA-AMNIOTIC"
+        },
+        {
+          "code": "C38222",
+          "label": "INTRA-ARTERIAL"
+        },
+        {
+          "code": "C38223",
+          "label": "INTRA-ARTICULAR"
+        },
+        {
+          "code": "C38224",
+          "label": "INTRABILIARY"
+        },
+        {
+          "code": "C38225",
+          "label": "INTRABRONCHIAL"
+        },
+        {
+          "code": "C38226",
+          "label": "INTRABURSAL"
+        },
+        {
+          "code": "C64984",
+          "label": "INTRACAMERAL"
+        },
+        {
+          "code": "C132737",
+          "label": "INTRACANALICULAR"
+        },
+        {
+          "code": "C38227",
+          "label": "INTRACARDIAC"
+        },
+        {
+          "code": "C38228",
+          "label": "INTRACARTILAGINOUS"
+        },
+        {
+          "code": "C38229",
+          "label": "INTRACAUDAL"
+        },
+        {
+          "code": "C38230",
+          "label": "INTRACAVERNOUS"
+        },
+        {
+          "code": "C38231",
+          "label": "INTRACAVITARY"
+        },
+        {
+          "code": "C38232",
+          "label": "INTRACEREBRAL"
+        },
+        {
+          "code": "C38233",
+          "label": "INTRACISTERNAL"
+        },
+        {
+          "code": "C38234",
+          "label": "INTRACORNEAL"
+        },
+        {
+          "code": "C38217",
+          "label": "INTRACORONAL, DENTAL"
+        },
+        {
+          "code": "C38218",
+          "label": "INTRACORONARY"
+        },
+        {
+          "code": "C38235",
+          "label": "INTRACORPORUS CAVERNOSUM"
+        },
+        {
+          "code": "C38236",
+          "label": "INTRACRANIAL"
+        },
+        {
+          "code": "C38238",
+          "label": "INTRADERMAL"
+        },
+        {
+          "code": "C38239",
+          "label": "INTRADISCAL"
+        },
+        {
+          "code": "C38240",
+          "label": "INTRADUCTAL"
+        },
+        {
+          "code": "C38241",
+          "label": "INTRADUODENAL"
+        },
+        {
+          "code": "C38242",
+          "label": "INTRADURAL"
+        },
+        {
+          "code": "C79144",
+          "label": "INTRAEPICARDIAL"
+        },
+        {
+          "code": "C38243",
+          "label": "INTRAEPIDERMAL"
+        },
+        {
+          "code": "C38245",
+          "label": "INTRAESOPHAGEAL"
+        },
+        {
+          "code": "C38246",
+          "label": "INTRAGASTRIC"
+        },
+        {
+          "code": "C38247",
+          "label": "INTRAGINGIVAL"
+        },
+        {
+          "code": "C38248",
+          "label": "INTRAHEPATIC"
+        },
+        {
+          "code": "C38249",
+          "label": "INTRAILEAL"
+        },
+        {
+          "code": "C38250",
+          "label": "INTRALESIONAL"
+        },
+        {
+          "code": "C79138",
+          "label": "INTRALINGUAL"
+        },
+        {
+          "code": "C38251",
+          "label": "INTRALUMINAL"
+        },
+        {
+          "code": "C38252",
+          "label": "INTRALYMPHATIC"
+        },
+        {
+          "code": "C79137",
+          "label": "INTRAMAMMARY"
+        },
+        {
+          "code": "C38253",
+          "label": "INTRAMEDULLARY"
+        },
+        {
+          "code": "C38254",
+          "label": "INTRAMENINGEAL"
+        },
+        {
+          "code": "C28161",
+          "label": "INTRAMUSCULAR"
+        },
+        {
+          "code": "C79141",
+          "label": "INTRANODAL"
+        },
+        {
+          "code": "C38255",
+          "label": "INTRAOCULAR"
+        },
+        {
+          "code": "C79142",
+          "label": "INTRAOMENTUM"
+        },
+        {
+          "code": "C38256",
+          "label": "INTRAOVARIAN"
+        },
+        {
+          "code": "C38257",
+          "label": "INTRAPERICARDIAL"
+        },
+        {
+          "code": "C38258",
+          "label": "INTRAPERITONEAL"
+        },
+        {
+          "code": "C38259",
+          "label": "INTRAPLEURAL"
+        },
+        {
+          "code": "C38260",
+          "label": "INTRAPROSTATIC"
+        },
+        {
+          "code": "C38261",
+          "label": "INTRAPULMONARY"
+        },
+        {
+          "code": "C79139",
+          "label": "INTRARUMINAL"
+        },
+        {
+          "code": "C38262",
+          "label": "INTRASINAL"
+        },
+        {
+          "code": "C38263",
+          "label": "INTRASPINAL"
+        },
+        {
+          "code": "C38264",
+          "label": "INTRASYNOVIAL"
+        },
+        {
+          "code": "C38265",
+          "label": "INTRATENDINOUS"
+        },
+        {
+          "code": "C38266",
+          "label": "INTRATESTICULAR"
+        },
+        {
+          "code": "C38267",
+          "label": "INTRATHECAL"
+        },
+        {
+          "code": "C38207",
+          "label": "INTRATHORACIC"
+        },
+        {
+          "code": "C38268",
+          "label": "INTRATUBULAR"
+        },
+        {
+          "code": "C38269",
+          "label": "INTRATUMOR"
+        },
+        {
+          "code": "C38270",
+          "label": "INTRATYMPANIC"
+        },
+        {
+          "code": "C38272",
+          "label": "INTRAUTERINE"
+        },
+        {
+          "code": "C38273",
+          "label": "INTRAVASCULAR"
+        },
+        {
+          "code": "C38276",
+          "label": "INTRAVENOUS"
+        },
+        {
+          "code": "C38277",
+          "label": "INTRAVENTRICULAR"
+        },
+        {
+          "code": "C38278",
+          "label": "INTRAVESICAL"
+        },
+        {
+          "code": "C38280",
+          "label": "INTRAVITREAL"
+        },
+        {
+          "code": "C38203",
+          "label": "IONTOPHORESIS"
+        },
+        {
+          "code": "C38281",
+          "label": "IRRIGATION"
+        },
+        {
+          "code": "C38282",
+          "label": "LARYNGEAL"
+        },
+        {
+          "code": "C38284",
+          "label": "NASAL"
+        },
+        {
+          "code": "C38285",
+          "label": "NASOGASTRIC"
+        },
+        {
+          "code": "C48623",
+          "label": "NOT APPLICABLE"
+        },
+        {
+          "code": "C38286",
+          "label": "OCCLUSIVE DRESSING TECHNIQUE"
+        },
+        {
+          "code": "C38287",
+          "label": "OPHTHALMIC"
+        },
+        {
+          "code": "C38288",
+          "label": "ORAL"
+        },
+        {
+          "code": "C38289",
+          "label": "OROPHARYNGEAL"
+        },
+        {
+          "code": "C38291",
+          "label": "PARENTERAL"
+        },
+        {
+          "code": "C38676",
+          "label": "PERCUTANEOUS"
+        },
+        {
+          "code": "C38292",
+          "label": "PERIARTICULAR"
+        },
+        {
+          "code": "C38677",
+          "label": "PERIDURAL"
+        },
+        {
+          "code": "C38293",
+          "label": "PERINEURAL"
+        },
+        {
+          "code": "C38294",
+          "label": "PERIODONTAL"
+        },
+        {
+          "code": "C38295",
+          "label": "RECTAL"
+        },
+        {
+          "code": "C38216",
+          "label": "RESPIRATORY (INHALATION)"
+        },
+        {
+          "code": "C38296",
+          "label": "RETROBULBAR"
+        },
+        {
+          "code": "C38198",
+          "label": "SOFT TISSUE"
+        },
+        {
+          "code": "C38297",
+          "label": "SUBARACHNOID"
+        },
+        {
+          "code": "C38298",
+          "label": "SUBCONJUNCTIVAL"
+        },
+        {
+          "code": "C38299",
+          "label": "SUBCUTANEOUS"
+        },
+        {
+          "code": "C65103",
+          "label": "SUBGINGIVAL"
+        },
+        {
+          "code": "C38300",
+          "label": "SUBLINGUAL"
+        },
+        {
+          "code": "C38301",
+          "label": "SUBMUCOSAL"
+        },
+        {
+          "code": "C79143",
+          "label": "SUBRETINAL"
+        },
+        {
+          "code": "C128997",
+          "label": "SUPRACHOROIDAL"
+        },
+        {
+          "code": "C38304",
+          "label": "TOPICAL"
+        },
+        {
+          "code": "C38305",
+          "label": "TRANSDERMAL"
+        },
+        {
+          "code": "C79145",
+          "label": "TRANSENDOCARDIAL"
+        },
+        {
+          "code": "C38283",
+          "label": "TRANSMUCOSAL"
+        },
+        {
+          "code": "C38307",
+          "label": "TRANSPLACENTAL"
+        },
+        {
+          "code": "C38308",
+          "label": "TRANSTRACHEAL"
+        },
+        {
+          "code": "C38309",
+          "label": "TRANSTYMPANIC"
+        },
+        {
+          "code": "C38312",
+          "label": "URETERAL"
+        },
+        {
+          "code": "C38271",
+          "label": "URETHRAL"
+        },
+        {
+          "code": "C38313",
+          "label": "VAGINAL"
+        }
+      ]
+    },
+    {
+      "domain": "DSG_FRM",
+      "enum": "DosageForm",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "C42887",
+          "label": "AEROSOL"
+        },
+        {
+          "code": "C42888",
+          "label": "AEROSOL, FOAM"
+        },
+        {
+          "code": "C42960",
+          "label": "AEROSOL, METERED"
+        },
+        {
+          "code": "C42971",
+          "label": "AEROSOL, POWDER"
+        },
+        {
+          "code": "C42889",
+          "label": "AEROSOL, SPRAY"
+        },
+        {
+          "code": "C42892",
+          "label": "BAR, CHEWABLE"
+        },
+        {
+          "code": "C42890",
+          "label": "BEAD"
+        },
+        {
+          "code": "C25158",
+          "label": "CAPSULE"
+        },
+        {
+          "code": "C42895",
+          "label": "CAPSULE, COATED"
+        },
+        {
+          "code": "C42896",
+          "label": "CAPSULE, COATED PELLETS"
+        },
+        {
+          "code": "C42917",
+          "label": "CAPSULE, COATED, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42902",
+          "label": "CAPSULE, DELAYED RELEASE"
+        },
+        {
+          "code": "C42904",
+          "label": "CAPSULE, DELAYED RELEASE PELLETS"
+        },
+        {
+          "code": "C42916",
+          "label": "CAPSULE, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42928",
+          "label": "CAPSULE, FILM COATED, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42936",
+          "label": "CAPSULE, GELATIN COATED"
+        },
+        {
+          "code": "C42954",
+          "label": "CAPSULE, LIQUID FILLED"
+        },
+        {
+          "code": "C100103",
+          "label": "CELLULAR SHEET"
+        },
+        {
+          "code": "C134876",
+          "label": "CHEWABLE GEL"
+        },
+        {
+          "code": "C60884",
+          "label": "CLOTH"
+        },
+        {
+          "code": "C60891",
+          "label": "CONCENTRATE"
+        },
+        {
+          "code": "C28944",
+          "label": "CREAM"
+        },
+        {
+          "code": "C60897",
+          "label": "CREAM, AUGMENTED"
+        },
+        {
+          "code": "C42901",
+          "label": "CRYSTAL"
+        },
+        {
+          "code": "C43525",
+          "label": "DISC"
+        },
+        {
+          "code": "C42679",
+          "label": "DOUCHE"
+        },
+        {
+          "code": "C42763",
+          "label": "DRESSING"
+        },
+        {
+          "code": "C185352",
+          "label": "DRUG-ELUTING CONTACT LENS"
+        },
+        {
+          "code": "C42912",
+          "label": "ELIXIR"
+        },
+        {
+          "code": "C42913",
+          "label": "EMULSION"
+        },
+        {
+          "code": "C42915",
+          "label": "ENEMA"
+        },
+        {
+          "code": "C42929",
+          "label": "EXTRACT"
+        },
+        {
+          "code": "C60926",
+          "label": "FIBER, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42932",
+          "label": "FILM"
+        },
+        {
+          "code": "C42920",
+          "label": "FILM, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42984",
+          "label": "FILM, SOLUBLE"
+        },
+        {
+          "code": "C60927",
+          "label": "FOR SOLUTION"
+        },
+        {
+          "code": "C60928",
+          "label": "FOR SUSPENSION"
+        },
+        {
+          "code": "C60929",
+          "label": "FOR SUSPENSION, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42933",
+          "label": "GAS"
+        },
+        {
+          "code": "C42934",
+          "label": "GEL"
+        },
+        {
+          "code": "C42906",
+          "label": "GEL, DENTIFRICE"
+        },
+        {
+          "code": "C60930",
+          "label": "GEL, METERED"
+        },
+        {
+          "code": "C42937",
+          "label": "GLOBULE"
+        },
+        {
+          "code": "C42938",
+          "label": "GRANULE"
+        },
+        {
+          "code": "C42903",
+          "label": "GRANULE, DELAYED RELEASE"
+        },
+        {
+          "code": "C42909",
+          "label": "GRANULE, EFFERVESCENT"
+        },
+        {
+          "code": "C42939",
+          "label": "GRANULE, FOR SOLUTION"
+        },
+        {
+          "code": "C42940",
+          "label": "GRANULE, FOR SUSPENSION"
+        },
+        {
+          "code": "C42921",
+          "label": "GRANULE, FOR SUSPENSION, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42894",
+          "label": "GUM, CHEWING"
+        },
+        {
+          "code": "C42942",
+          "label": "IMPLANT"
+        },
+        {
+          "code": "C42944",
+          "label": "INHALANT"
+        },
+        {
+          "code": "C113106",
+          "label": "INJECTABLE FOAM"
+        },
+        {
+          "code": "C60931",
+          "label": "INJECTABLE, LIPOSOMAL"
+        },
+        {
+          "code": "C42946",
+          "label": "INJECTION"
+        },
+        {
+          "code": "C42914",
+          "label": "INJECTION, EMULSION"
+        },
+        {
+          "code": "C42950",
+          "label": "INJECTION, LIPID COMPLEX"
+        },
+        {
+          "code": "C42974",
+          "label": "INJECTION, POWDER, FOR SOLUTION"
+        },
+        {
+          "code": "C42976",
+          "label": "INJECTION, POWDER, FOR SUSPENSION"
+        },
+        {
+          "code": "C42977",
+          "label": "INJECTION, POWDER, FOR SUSPENSION, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42959",
+          "label": "INJECTION, POWDER, LYOPHILIZED, FOR LIPOSOMAL SUSPENSION"
+        },
+        {
+          "code": "C42957",
+          "label": "INJECTION, POWDER, LYOPHILIZED, FOR SOLUTION"
+        },
+        {
+          "code": "C42958",
+          "label": "INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION"
+        },
+        {
+          "code": "C42956",
+          "label": "INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42945",
+          "label": "INJECTION, SOLUTION"
+        },
+        {
+          "code": "C42899",
+          "label": "INJECTION, SOLUTION, CONCENTRATE"
+        },
+        {
+          "code": "C42995",
+          "label": "INJECTION, SUSPENSION"
+        },
+        {
+          "code": "C42926",
+          "label": "INJECTION, SUSPENSION, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42951",
+          "label": "INJECTION, SUSPENSION, LIPOSOMAL"
+        },
+        {
+          "code": "C42988",
+          "label": "INJECTION, SUSPENSION, SONICATED"
+        },
+        {
+          "code": "C60933",
+          "label": "INSERT"
+        },
+        {
+          "code": "C42922",
+          "label": "INSERT, EXTENDED RELEASE"
+        },
+        {
+          "code": "C47915",
+          "label": "INTRAUTERINE DEVICE"
+        },
+        {
+          "code": "C42947",
+          "label": "IRRIGANT"
+        },
+        {
+          "code": "C42948",
+          "label": "JELLY"
+        },
+        {
+          "code": "C47916",
+          "label": "KIT"
+        },
+        {
+          "code": "C42949",
+          "label": "LINIMENT"
+        },
+        {
+          "code": "C42952",
+          "label": "LIPSTICK"
+        },
+        {
+          "code": "C42953",
+          "label": "LIQUID"
+        },
+        {
+          "code": "C60934",
+          "label": "LIQUID, EXTENDED RELEASE"
+        },
+        {
+          "code": "C29167",
+          "label": "LOTION"
+        },
+        {
+          "code": "C60957",
+          "label": "LOTION, AUGMENTED"
+        },
+        {
+          "code": "C60958",
+          "label": "LOTION/SHAMPOO"
+        },
+        {
+          "code": "C42955",
+          "label": "LOZENGE"
+        },
+        {
+          "code": "C29269",
+          "label": "MOUTHWASH"
+        },
+        {
+          "code": "C48624",
+          "label": "NOT APPLICABLE"
+        },
+        {
+          "code": "C42965",
+          "label": "OIL"
+        },
+        {
+          "code": "C42966",
+          "label": "OINTMENT"
+        },
+        {
+          "code": "C60984",
+          "label": "OINTMENT, AUGMENTED"
+        },
+        {
+          "code": "C42967",
+          "label": "PASTE"
+        },
+        {
+          "code": "C42907",
+          "label": "PASTE, DENTIFRICE"
+        },
+        {
+          "code": "C60985",
+          "label": "PASTILLE"
+        },
+        {
+          "code": "C42968",
+          "label": "PATCH"
+        },
+        {
+          "code": "C42923",
+          "label": "PATCH, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42911",
+          "label": "PATCH, EXTENDED RELEASE, ELECTRICALLY CONTROLLED"
+        },
+        {
+          "code": "C42969",
+          "label": "PELLET"
+        },
+        {
+          "code": "C42943",
+          "label": "PELLET, IMPLANTABLE"
+        },
+        {
+          "code": "C42918",
+          "label": "PELLETS, COATED, EXTENDED RELEASE"
+        },
+        {
+          "code": "C25394",
+          "label": "PILL"
+        },
+        {
+          "code": "C42970",
+          "label": "PLASTER"
+        },
+        {
+          "code": "C47913",
+          "label": "POULTICE"
+        },
+        {
+          "code": "C42972",
+          "label": "POWDER"
+        },
+        {
+          "code": "C42908",
+          "label": "POWDER, DENTIFRICE"
+        },
+        {
+          "code": "C42973",
+          "label": "POWDER, FOR SOLUTION"
+        },
+        {
+          "code": "C42975",
+          "label": "POWDER, FOR SUSPENSION"
+        },
+        {
+          "code": "C42961",
+          "label": "POWDER, METERED"
+        },
+        {
+          "code": "C60988",
+          "label": "RING"
+        },
+        {
+          "code": "C42979",
+          "label": "RINSE"
+        },
+        {
+          "code": "C42980",
+          "label": "SALVE"
+        },
+        {
+          "code": "C42981",
+          "label": "SHAMPOO"
+        },
+        {
+          "code": "C42982",
+          "label": "SHAMPOO, SUSPENSION"
+        },
+        {
+          "code": "C42983",
+          "label": "SOAP"
+        },
+        {
+          "code": "C42986",
+          "label": "SOLUTION"
+        },
+        {
+          "code": "C42898",
+          "label": "SOLUTION, CONCENTRATE"
+        },
+        {
+          "code": "C42987",
+          "label": "SOLUTION, FOR SLUSH"
+        },
+        {
+          "code": "C60994",
+          "label": "SOLUTION, GEL FORMING / DROPS"
+        },
+        {
+          "code": "C42935",
+          "label": "SOLUTION, GEL FORMING, EXTENDED RELEASE"
+        },
+        {
+          "code": "C60992",
+          "label": "SOLUTION/ DROPS"
+        },
+        {
+          "code": "C47912",
+          "label": "SPONGE"
+        },
+        {
+          "code": "C42989",
+          "label": "SPRAY"
+        },
+        {
+          "code": "C42962",
+          "label": "SPRAY, METERED"
+        },
+        {
+          "code": "C42990",
+          "label": "SPRAY, SUSPENSION"
+        },
+        {
+          "code": "C42991",
+          "label": "STICK"
+        },
+        {
+          "code": "C47914",
+          "label": "STRIP"
+        },
+        {
+          "code": "C42993",
+          "label": "SUPPOSITORY"
+        },
+        {
+          "code": "C42924",
+          "label": "SUPPOSITORY, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42994",
+          "label": "SUSPENSION"
+        },
+        {
+          "code": "C42925",
+          "label": "SUSPENSION, EXTENDED RELEASE"
+        },
+        {
+          "code": "C60995",
+          "label": "SUSPENSION/ DROPS"
+        },
+        {
+          "code": "C47898",
+          "label": "SWAB"
+        },
+        {
+          "code": "C42996",
+          "label": "SYRUP"
+        },
+        {
+          "code": "C17423",
+          "label": "SYSTEM"
+        },
+        {
+          "code": "C42998",
+          "label": "TABLET"
+        },
+        {
+          "code": "C42893",
+          "label": "TABLET, CHEWABLE"
+        },
+        {
+          "code": "C124794",
+          "label": "TABLET, CHEWABLE, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42897",
+          "label": "TABLET, COATED"
+        },
+        {
+          "code": "C60997",
+          "label": "TABLET, COATED PARTICLES"
+        },
+        {
+          "code": "C42905",
+          "label": "TABLET, DELAYED RELEASE"
+        },
+        {
+          "code": "C42997",
+          "label": "TABLET, DELAYED RELEASE PARTICLES"
+        },
+        {
+          "code": "C42910",
+          "label": "TABLET, EFFERVESCENT"
+        },
+        {
+          "code": "C42927",
+          "label": "TABLET, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42931",
+          "label": "TABLET, FILM COATED"
+        },
+        {
+          "code": "C42930",
+          "label": "TABLET, FILM COATED, EXTENDED RELEASE"
+        },
+        {
+          "code": "C61004",
+          "label": "TABLET, FOR SOLUTION"
+        },
+        {
+          "code": "C61005",
+          "label": "TABLET, FOR SUSPENSION"
+        },
+        {
+          "code": "C42964",
+          "label": "TABLET, MULTILAYER"
+        },
+        {
+          "code": "C42963",
+          "label": "TABLET, MULTILAYER, EXTENDED RELEASE"
+        },
+        {
+          "code": "C42999",
+          "label": "TABLET, ORALLY DISINTEGRATING"
+        },
+        {
+          "code": "C61006",
+          "label": "TABLET, ORALLY DISINTEGRATING, DELAYED RELEASE"
+        },
+        {
+          "code": "C42985",
+          "label": "TABLET, SOLUBLE"
+        },
+        {
+          "code": "C42992",
+          "label": "TABLET, SUGAR COATED"
+        },
+        {
+          "code": "C147579",
+          "label": "TABLET WITH SENSOR"
+        },
+        {
+          "code": "C47892",
+          "label": "TAMPON"
+        },
+        {
+          "code": "C47897",
+          "label": "TAPE"
+        },
+        {
+          "code": "C43000",
+          "label": "TINCTURE"
+        },
+        {
+          "code": "C43001",
+          "label": "TROCHE"
+        },
+        {
+          "code": "C43003",
+          "label": "WAFER"
+        }
+      ]
+    },
+    {
+      "domain": "PRD_TYP",
+      "enum": "ProductType",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "HRX",
+          "label": "HUMAN PRESCRIPTION DRUG"
+        },
+        {
+          "code": "HOTC",
+          "label": "HUMAN OTC DRUG"
+        },
+        {
+          "code": "PLSM",
+          "label": "PLASMA DERIVATIVE"
+        },
+        {
+          "code": "CELL",
+          "label": "CELLULAR THERAPY"
+        },
+        {
+          "code": "VACC",
+          "label": "VACCINE"
+        },
+        {
+          "code": "SALG",
+          "label": "STANDARDIZED ALLERGENIC"
+        },
+        {
+          "code": "NALG",
+          "label": "NON-STANDARDIZED ALLERGENIC"
+        },
+        {
+          "code": "BULK",
+          "label": "BULK INGREDIENT"
+        },
+        {
+          "code": "DFFP",
+          "label": "DRUG FOR FURTHER PROCESSING"
+        },
+        {
+          "code": "LVBI",
+          "label": "LICENSED VACCINE BULK INTERMEDIATE"
+        }
+      ]
+    },
+    {
+      "domain": "SRC_SYS",
+      "enum": "SourceSystem",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "E2B",
+          "label": "openfda_e2b"
+        },
+        {
+          "code": "QDE",
+          "label": "faers_qde"
+        }
+      ]
+    },
+    {
+      "domain": "DRG_ROLE",
+      "enum": "DrugRole",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "PS",
+          "label": "primary suspect"
+        },
+        {
+          "code": "SS",
+          "label": "secondary suspect"
+        },
+        {
+          "code": "SU",
+          "label": "suspect"
+        },
+        {
+          "code": "C",
+          "label": "concomitant"
+        },
+        {
+          "code": "I",
+          "label": "interacting"
+        }
+      ]
+    },
+    {
+      "domain": "ALIAS_SRC",
+      "enum": "AliasSource",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "NDCD",
+          "label": "ndc_directory"
+        },
+        {
+          "code": "ENF",
+          "label": "enforcement"
+        },
+        {
+          "code": "RXNV",
+          "label": "rxnav"
+        }
+      ]
+    },
+    {
+      "domain": "MAP_SRC",
+      "enum": "MappingSource",
+      "in_code_table": true,
+      "codes": [
+        {
+          "code": "OFDA",
+          "label": "openfda_ndc"
+        },
+        {
+          "code": "RXNP",
+          "label": "rxnav_ndcproperties"
+        }
+      ]
+    },
+    {
+      "domain": "RCL_CLS",
+      "enum": "RecallClassification",
+      "in_code_table": false,
+      "codes": [
+        {
+          "code": "1",
+          "label": "I"
+        },
+        {
+          "code": "2",
+          "label": "II"
+        },
+        {
+          "code": "3",
+          "label": "III"
+        }
+      ]
+    }
+  ]
+}

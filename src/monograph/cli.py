@@ -558,3 +558,7 @@ app.add_typer(h2_app, name="h2")
 from monograph.ablation.cli import h2_1_app  # noqa: E402
 
 app.add_typer(h2_1_app, name="h2_1")
+
+from monograph.h1.cli import h1_app  # noqa: E402
+
+app.add_typer(h1_app, name="h1")

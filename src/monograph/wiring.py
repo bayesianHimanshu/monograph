@@ -103,6 +103,9 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         from monograph.ablation.cells import cell_renderers  # the H2.1 cells, from the same spec
 
         renderers.update(cell_renderers(spec, check_pattern, h2_excluded()))
+        from monograph.gen.warehouse import warehouse_renderers  # the H1 warehouse, from the same spec
+
+        renderers.update(warehouse_renderers(spec, h2_excluded()))
     return ArtifactBuilder(renderers, time.perf_counter)
 
 
