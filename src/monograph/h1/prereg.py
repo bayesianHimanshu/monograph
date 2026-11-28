@@ -84,8 +84,9 @@ def render(
         "Committed before the first test run. `monograph h1 run --split test` refuses to start from a dirty tree,"
         " if any file in the frozen table below no longer matches its sha256, if code that executes no longer"
         " equals its pinned copy, if a generated artifact no longer equals its pin, if the database it would query"
-        " was not built from the pinned artifacts (build stamp), or without the approved spend cap in"
-        " `experiments/h1/budget.json`. Every file the agents are sent, and every mapping the check reads, comes"
+        " was not built from the pinned artifacts (build stamp), or without the approved spend cap (written by the"
+        " user after the test estimate; a run stops at it). Every file the agents are sent, and every mapping the"
+        " check reads, comes"
         " from these pins. Any change after this commit is a logged deviation in `docs/h1/DEVIATIONS.md`.",
         "",
         "## Hypothesis",

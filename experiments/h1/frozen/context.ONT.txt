@@ -1,0 +1,139 @@
+Ontology of the drug data (MONOGRAPH model 2.2.0), with its mapping to the warehouse.
+The data is in a legacy warehouse, PostgreSQL 18, schema wh (on the search path). Every class and
+property below says where it is stored. Join a reference column to the identity column of the class it
+references; finer tables (one row per list item or set member) repeat their owner's row, so count
+distinct identities when counting owners.
+
+Class Substance: A chemical or biological substance identified by its FDA Unique Ingredient Identifier.
+  stored in T_SUBST_MSTR, one row per Substance; identity SUBST_SK; business key unii = UNII_CD.
+  - unii (text, exactly one): FDA UNII code.
+      stored in T_SUBST_MSTR.UNII_CD.
+  - name (text, exactly one): Preferred name.
+      stored in T_SUBST_MSTR.SUBST_NM.
+  - active_moiety (embedded MoietyLink, at most one): For a salt, ester or other form, its active moiety (for example ampicillin sodium to ampicillin). Absent when the substance is its own moiety or no label states one.
+      stored in X_SALT_MOIETY (one row per active_moiety item), SUBST_SK is the owning Substance.
+      moiety (reference to Substance, exactly one): The active moiety (parent substance). Stored in X_SALT_MOIETY.MOIETY_SUBST_SK references Substance (Substance identity).
+      source (text, exactly one): Provenance: 'spl:<set id>' of the label that states it. Stored in X_SALT_MOIETY.SRC_TXT.
+
+Class Organization: A company acting as manufacturer, labeler or recalling firm.
+  stored in T_ORG_MSTR, one row per Organization; identity ORG_SK; business key slug = ORG_CD.
+  - slug (text, exactly one): Stable key: the normalized name, lowercase, words joined by hyphens.
+      stored in T_ORG_MSTR.ORG_CD.
+  - name (text, exactly one): Preferred name.
+      stored in T_ORG_MSTR.ORG_NM.
+  - aliases (embedded OrganizationAlias, zero or more, unordered): Other names this firm appears under, each with its source and evidence.
+      stored in X_ORG_ALIAS (one row per aliases item), ORG_SK is the owning Organization.
+      name (text, exactly one): The variant. Stored in X_ORG_ALIAS.ALIAS_NM.
+      source (AliasSource term, exactly one): Record kind. Stored in X_ORG_ALIAS.SRC_CD as a code (codes: NDCD = ndc_directory, ENF = enforcement, RXNV = rxnav; decode through T_REF_CD where CD_DOM = 'ALIAS_SRC' (CD_VAL is the code, CD_DSC the term)).
+      evidence (text, exactly one): The record and identifier that tie the name to the firm. Stored in X_ORG_ALIAS.EVID_TXT.
+
+Class ClinicalDrug: A clinical drug concept in RxNorm, identified by its RxCUI. Several NDC products can share one clinical drug. The name is optional because openFDA carries RxCUIs without their RxNorm names.
+  stored in T_CLIN_DRG, one row per ClinicalDrug; identity CLIN_DRG_SK; business key rxcui = RXCUI.
+  - rxcui (text, exactly one): RxNorm CUI.
+      stored in T_CLIN_DRG.RXCUI.
+  - name (text, at most one): RxNorm name.
+      stored in T_CLIN_DRG.CLIN_DRG_NM.
+  - term_type (text, at most one): RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.
+      stored in T_CLIN_DRG.TTY_CD.
+  - generic (embedded GenericLink, at most one): For a branded drug (SBD or BPCK), the generic clinical drug it is a brand of.
+      stored in X_BRND_GNRC (one row per generic item), BRND_CLIN_DRG_SK is the owning ClinicalDrug.
+      drug (reference to ClinicalDrug, exactly one): The generic clinical drug. Stored in X_BRND_GNRC.GNRC_CLIN_DRG_SK references ClinicalDrug (ClinicalDrug identity).
+      source (text, exactly one): Provenance: the RxNav request and RxNorm data version. Stored in X_BRND_GNRC.SRC_TXT.
+
+Class Product: A drug product as listed with FDA, identified by its product NDC (labeler and product segments).
+  stored in T_PRD_MSTR, one row per Product; identity PRD_SK; business key product_ndc = PRD_CD.
+  - product_ndc (text, exactly one): Product NDC in 4-4, 5-3 or 5-4 form.
+      stored in T_PRD_MSTR.PRD_CD.
+  - name (text, exactly one): Name as listed.
+      stored in T_PRD_MSTR.PRD_NM.
+  - dosage_form (text, exactly one): Dosage form as written in the source.
+      stored in T_PRD_MSTR.DSG_FRM_CD as a code (158 codes, for example C25158 = CAPSULE, C42945 = INJECTION, SOLUTION, C42998 = TABLET, C42931 = TABLET, FILM COATED; decode through T_REF_CD where CD_DOM = 'DSG_FRM' (CD_VAL is the code, CD_DSC the term)).
+  - product_type (ProductType term, exactly one): NDC directory product type.
+      stored in T_PRD_MSTR.PRD_TYP_CD as a code (codes: HRX = HUMAN PRESCRIPTION DRUG, HOTC = HUMAN OTC DRUG, PLSM = PLASMA DERIVATIVE, CELL = CELLULAR THERAPY, VACC = VACCINE, SALG = STANDARDIZED ALLERGENIC, NALG = NON-STANDARDIZED ALLERGENIC, BULK = BULK INGREDIENT, DFFP = DRUG FOR FURTHER PROCESSING, LVBI = LICENSED VACCINE BULK INTERMEDIATE; decode through T_REF_CD where CD_DOM = 'PRD_TYP' (CD_VAL is the code, CD_DSC the term)).
+  - finished (boolean, exactly one): Whether this is a finished product (False for bulk ingredients and intermediates).
+      stored in T_PRD_MSTR.FNSHD_FLG as Y/N.
+  - routes (Route term, zero or more, unordered): Routes of administration. Required for finished prescription and OTC products.
+      stored in T_PRD_RTE (one row per Product and value), PRD_SK is the owner; T_PRD_RTE.RTE_CD as a code (121 codes, for example C38276 = INTRAVENOUS, C38288 = ORAL, C38299 = SUBCUTANEOUS, C38304 = TOPICAL; decode through T_REF_CD where CD_DOM = 'RTE' (CD_VAL is the code, CD_DSC the term)).
+  - ingredients (embedded Ingredient, zero or more, ordered): Active ingredients, in order.
+      stored in T_PRD_INGR (one row per ingredients item), PRD_SK is the owning Product.
+      substance (reference to Substance, exactly one): The substance. Stored in T_PRD_INGR.SUBST_SK references Substance (Substance identity).
+      strength_value (decimal, exactly one): Numeric strength. Stored in T_PRD_INGR.STRNTH_VAL.
+      strength_unit (text, exactly one): Unit of the strength, for example mg/1. Stored in T_PRD_INGR.STRNTH_UOM.
+  - clinical_drug (reference to ClinicalDrug, at most one): The RxNorm clinical drug, when the source names exactly one.
+      stored in T_PRD_MSTR.RXN_CLIN_DRG_SK references ClinicalDrug (ClinicalDrug identity).
+  - drug_mappings (embedded DrugMapping, zero or more, ordered): Crosswalk to RxNorm clinical drugs (RxCUIs), one entry per source, sorted.
+      stored in X_NDC_RXN (one row per drug_mappings item), PRD_SK is the owning Product.
+      clinical_drug (reference to ClinicalDrug, exactly one): The RxCUI. Stored in X_NDC_RXN.CLIN_DRG_SK references ClinicalDrug (ClinicalDrug identity).
+      source (MappingSource term, exactly one): Source. Stored in X_NDC_RXN.SRC_CD as a code (codes: OFDA = openfda_ndc, RXNP = rxnav_ndcproperties; decode through T_REF_CD where CD_DOM = 'MAP_SRC' (CD_VAL is the code, CD_DSC the term)).
+      evidence (text, exactly one): The request or record the mapping was read from. Stored in X_NDC_RXN.EVID_TXT.
+
+Class PackagedProduct: A package of a product, identified by its 10-digit hyphenated package NDC.
+  stored in T_PKG, one row per PackagedProduct; identity PKG_SK; business key ndc = PKG_NDC.
+  - ndc (text, exactly one): Package NDC in 4-4-2, 5-3-2 or 5-4-1 form.
+      stored in T_PKG.PKG_NDC.
+  - product (reference to Product, exactly one): The packaged product.
+      stored in T_PKG.PRD_SK references Product (Product identity).
+  - labeler (reference to Organization, exactly one): The labeler firm.
+      stored in T_PKG.LBLR_ORG_SK references Organization (Organization identity).
+  - description (text, at most one): Package description as written in the source.
+      stored in T_PKG.PKG_DESC.
+  - ndc11 (text, at most one): The same NDC in the 11-digit 5-4-2 form without hyphens (HIPAA form): a leading zero is added to the short segment.
+      stored in T_PKG.PKG_NDC11.
+
+Class Label: One version of a structured product label (SPL).
+  stored in T_LBL, one row per Label; identity LBL_SK; business key set_id = SET_ID, version = VER_NO.
+  - set_id (text, exactly one): SPL set ID, a lowercase UUID.
+      stored in T_LBL.SET_ID.
+  - version (integer, exactly one): SPL version.
+      stored in T_LBL.VER_NO.
+  - effective_date (date, exactly one): SPL effective time.
+      stored in T_LBL.EFF_DT.
+  - products (reference to Product, zero or more, unordered): Products.
+      stored in T_LBL_PRD (one row per Label and value), LBL_SK is the owner; T_LBL_PRD.PRD_SK references Product (Product identity).
+  - sections (embedded LabelSection, zero or more, unordered): Coded sections.
+      stored in T_LBL_SECT (one row per sections item), LBL_SK is the owning Label.
+      code (text, exactly one): LOINC code. Stored in T_LBL_SECT.SECT_CD.
+      title (text, exactly one): Title. Stored in T_LBL_SECT.SECT_TTL.
+      text (text, exactly one): Plain text. Stored in T_LBL_SECT.SECT_TXT.
+
+Class AdverseEventReport: A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA.
+  stored in T_AE_HDR, one row per AdverseEventReport; identity AE_SK; business key report_id = RPT_ID.
+  - report_id (text, exactly one): Safety report ID, optionally with a -digits version suffix.
+      stored in T_AE_HDR.RPT_ID.
+  - source_system (SourceSystem term, exactly one): Where the report came from.
+      stored in T_AE_HDR.SRC_SYS_CD as a code (codes: E2B = openfda_e2b, QDE = faers_qde; decode through T_REF_CD where CD_DOM = 'SRC_SYS' (CD_VAL is the code, CD_DSC the term)).
+  - receipt_date (date, exactly one): Date FDA received the report.
+      stored in T_AE_HDR.RCPT_DT as an integer YYYYMMDD.
+  - serious (boolean, exactly one): Whether the report is serious.
+      stored in T_AE_HDR.SRS_FLG as Y/N.
+  - seriousness_criteria (SeriousnessCriterion term, zero or more, unordered): Seriousness criteria met.
+      stored as Y/N flag columns on T_AE_HDR: SRS_DTH_FLG (death), SRS_LT_FLG (life threatening), SRS_HOSP_FLG (hospitalization), SRS_DSBL_FLG (disabling), SRS_CA_FLG (congenital anomaly), SRS_OTH_FLG (other).
+  - patient_age_years (decimal, at most one): Patient age at onset, in years.
+      stored in T_AE_HDR.PT_AGE_YRS.
+  - drugs (embedded DrugInvolvement, one or more, ordered): Drugs, in reported order.
+      stored in T_AE_DRG (one row per drugs item), AE_SK is the owning AdverseEventReport.
+      drug_name (text, exactly one): Drug name exactly as reported. Stored in T_AE_DRG.DRG_NM.
+      clinical_drug (reference to ClinicalDrug, at most one): The RxNorm clinical drug, when the source resolves the name to exactly one RxCUI. Stored in T_AE_DRG.CLIN_DRG_SK references ClinicalDrug (ClinicalDrug identity).
+      role (DrugRole term, exactly one): Role in the report. Stored in T_AE_DRG.DRG_ROLE_CD as a code (codes: PS = primary suspect, SS = secondary suspect, SU = suspect, C = concomitant, I = interacting; decode through T_REF_CD where CD_DOM = 'DRG_ROLE' (CD_VAL is the code, CD_DSC the term)).
+      harmonized_clinical_drugs (reference to ClinicalDrug, zero or more, unordered): Every RxCUI openFDA's harmonization assigns to the reported drug (openfda.rxcui). Stored in X_AE_DRG_RXN.CLIN_DRG_SK references ClinicalDrug (ClinicalDrug identity).
+  - reactions (embedded Reaction, one or more, ordered): Reactions, in order.
+      stored in T_AE_RXN (one row per reactions item), AE_SK is the owning AdverseEventReport.
+      term (text, exactly one): MedDRA PT text (at most 100 characters). Stored in T_AE_RXN.RXN_TRM.
+
+Class Recall: A drug recall from the FDA enforcement report.
+  stored in T_RCL_PRD_DNRM, one row per Recall and product it names (a Recall with no product has one row with empty product columns); identity RCL_SK; business key recall_number = RCL_NO.
+  - recall_number (text, exactly one): FDA recall number, for example D-321-2016 or D-0123-2025.
+      stored in T_RCL_PRD_DNRM.RCL_NO.
+  - classification (RecallClassification term, exactly one): Class.
+      stored in T_RCL_PRD_DNRM.RCL_CLS_CD as a code (codes: 1 = I, 2 = II, 3 = III; the codes are fixed).
+  - reason (text, exactly one): Reason for the recall.
+      stored in T_RCL_PRD_DNRM.RCL_RSN_TXT.
+  - report_date (date, exactly one): Enforcement report date.
+      stored in T_RCL_PRD_DNRM.RPT_DT as an integer YYYYMMDD.
+  - products (reference to Product, zero or more, unordered): Products.
+      stored in T_RCL_PRD_DNRM.PRD_SK references Product (Product identity).
+  - recalling_firm (reference to Organization, exactly one): The recalling firm.
+      stored in T_RCL_PRD_DNRM.FIRM_ORG_SK references Organization (Organization identity).
+
+Columns mapped to no ontology property (do not answer from them): T_REF_CD.SORT_ORD (always empty); T_SUBST_MSTR.LGCY_SUBST_ID (always empty); T_ORG_MSTR.DUNS_NO (always empty); T_PRD_MSTR.OLD_PRD_CD (always empty); T_PRD_MSTR.DSG_FRM_TXT (free-text dosage form from an old feed, kept from an earlier load and no longer maintained); T_PKG.MKTG_STAT_CD (always empty); T_PKG.LBLR_NM (labeler name copied at the first load, kept from an earlier load and no longer maintained); T_AE_HDR.LGCY_BTCH_ID (always empty); T_AE_HDR.SRS_IND (the previous seriousness indicator (U: loaded before it was required), kept from an earlier load and no longer maintained); T_AE_HDR.LD_DT (ETL audit date, not a property of the data); T_AE_HDR.LST_UPD_DT (ETL audit date, not a property of the data); T_RCL_PRD_DNRM.CMNT_TXT (always empty); T_RCL_PRD_DNRM.LD_DT (ETL audit date, not a property of the data); T_RCL_PRD_DNRM.LST_UPD_DT (ETL audit date, not a property of the data).
+Tables mapped to no ontology class (do not answer from them): T_LKP_CD (lookup table of the previous system (route and dosage form codes the staging feed still uses)); STG_PRD_LOAD (staging copy of the product listing feed as delivered, superseded deliveries included); STG_RCL_FEED (staging copy of the enforcement feed as delivered, repeat deliveries included).
