@@ -45,3 +45,21 @@ def build_cmd(root: Root = Path()) -> None:
             },
         )
     typer.echo("built " + ", ".join(build.database(c) for c in reports))
+
+
+@h1_app.command("questions")
+def questions_cmd(root: Root = Path()) -> None:
+    """Generate the question set (fixtures/h1/questions.json): gold by code over the canonical instances,
+    every question's reference SQL checked on the warehouse."""
+    import psycopg
+
+    from monograph.ablation.data import build_cells_dataset
+    from monograph.h1 import build, questions
+    from monograph.qa.h1_templates import H1Data
+
+    data = H1Data.build(build_cells_dataset(root, identity=True).instances)
+    with psycopg.connect(build.agent_dsn(admin_dsn(), "wh")) as conn:
+        qs = questions.generate(data, conn, questions.coverage(root), typer.echo)
+    path = questions.write(root, qs)
+    inside = sum(q["coverage"] == "inside" for q in qs)
+    typer.echo(f"wrote {len(qs)} questions to {path} ({inside} inside semantic coverage)")
