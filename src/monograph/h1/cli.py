@@ -149,3 +149,38 @@ def score_cmd(split: Annotated[str, typer.Option(help="dev or test")] = "dev", r
     runs = analysis.latest_runs(read_results(root / "results" / "h1"), split)
     for line in analysis.summary_lines(runs):
         typer.echo(line)
+
+
+@h1_app.command("prereg")
+def prereg_cmd(root: Root = Path()) -> None:
+    """Pin every artifact a run reads under experiments/h1/frozen/ and write docs/h1/PREREG.md (once)."""
+    from monograph.h1 import analysis, pins, prereg
+    from monograph.harness.results import read_results
+
+    if (root / pins.PREREG).exists():
+        typer.echo(f"{pins.PREREG} exists; it is never rewritten", err=True)
+        raise typer.Exit(1)
+    records = list(read_results(root / "results" / "h1"))
+    dev = analysis.latest_runs(records, "dev")
+    spend = sum(
+        float(r["details"]["cost_usd"])
+        for r in records
+        if r.get("metric") == "h1.run" and r["details"].get("split") == "dev" and not r["details"].get("from_cache")
+    )
+    hashes = pins.write_pins(root)
+    (root / pins.PREREG).write_text(prereg.render(root, dev, spend, hashes), encoding="utf-8")
+    typer.echo(f"pinned {len(hashes)} files; wrote {pins.PREREG}")
+
+
+@h1_app.command("estimate")
+def estimate_cmd(root: Root = Path()) -> None:
+    """The test cost estimated from dev (USD per dev question, per configuration and type, times the test questions)."""
+    from monograph.h1 import analysis, pins, prereg
+    from monograph.harness.results import read_results
+
+    dev = analysis.latest_runs(read_results(root / "results" / "h1"), "dev")
+    test = [q for q in pins.questions(root) if q["split"] == "test"]
+    est = prereg.estimate(dev, test)
+    for row in est["rows"]:
+        typer.echo(f"{row['model']} {row['arm']:7s} USD {row['usd']:.2f}")
+    typer.echo(f"test estimate: USD {est['total']:.2f}")
