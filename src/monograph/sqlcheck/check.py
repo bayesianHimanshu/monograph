@@ -392,7 +392,7 @@ class OntologyChecker:
         self, scope: Scope, col: exp.Column, info: ColumnInfo, literals: list[str], node: exp.Expression
     ) -> Violation | None:
         allowed = info.allowed
-        what = _term(info)
+        what = "the code domains of T_REF_CD" if info.role == "code_domain" else _term(info)
         if info.kind == "code_table" and info.role in ("code_value", "code_label"):
             domains = self._domain_filter(scope, col.table)
             if len(domains) != 1:

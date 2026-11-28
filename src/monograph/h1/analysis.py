@@ -2,10 +2,10 @@
 categories and cost, all from the results JSONL alone.
 
 Verdict (primary): H1 holds if, for at least one model, ONT+OC beats SV by at least 0.10 on the core types
-combined (Q2 to Q5, less any type marked non-informative) with the 95% interval excluding 0, and ONT+OC is no
-more than 0.05 below SV on Q1 (point estimates; Sonnet has no Q1 runs, so for Sonnet the Q1 condition uses
-Haiku's). H1 fails if, for both models, ONT+OC beats SV by at most 0.05 on the core types (SV within 0.05 of
-ONT+OC, or ahead of it); "fails" takes precedence. Otherwise it partly holds.
+combined (Q2 to Q5; the ceiling rule marks types, it does not remove them) with the 95% interval excluding 0,
+and ONT+OC is no more than 0.05 below SV on Q1 (point estimates; Sonnet has no Q1 runs, so for Sonnet the Q1
+condition uses Haiku's). H1 fails if, for both models, ONT+OC beats SV by at most 0.05 on the core types (SV
+within 0.05 of ONT+OC, or ahead of it); "fails" takes precedence. Otherwise it partly holds.
 
 Secondary: the same rule restricted to the Q2 and Q5 questions inside semantic coverage.
 """
@@ -153,13 +153,19 @@ def verdict(comparisons: Sequence[Mapping[str, Any]]) -> str:
 
 
 def primary(t: Table, excluded: Iterable[str] = ()) -> dict[str, Any]:
+    """On Q2 to Q5 combined, as the hypothesis states. With `excluded` (the types the ceiling rule marked), the
+    sensitivity verdict on the core types that remain; none if every core type is marked."""
     types = _core(excluded)
+    if not types:
+        return {"types": [], "comparisons": [], "verdict": "none: every core type is at the ceiling"}
     cs = [comparison(t, m, types, None, HAIKU if m == SONNET else None) for m in _models(t)]
     return {"types": list(types), "comparisons": cs, "verdict": verdict(cs)}
 
 
 def secondary(t: Table, excluded: Iterable[str] = ()) -> dict[str, Any]:
     types = tuple(x for x in SECONDARY_TYPES if x not in set(excluded))
+    if not types:
+        return {"types": [], "comparisons": [], "verdict": "none: every core type is at the ceiling"}
     cs = [comparison(t, m, types, "inside", HAIKU if m == SONNET else None) for m in _models(t)]
     return {"types": list(types), "comparisons": cs, "verdict": verdict(cs)}
 
@@ -174,10 +180,10 @@ EFFECTS: tuple[tuple[str, str, str], ...] = (
 )
 
 
-def attribution(t: Table, excluded: Iterable[str] = ()) -> list[dict[str, Any]]:
+def attribution(t: Table) -> list[dict[str, Any]]:
     """Context and check effects, and each arm minus W-raw (the floor), per model, on the core types and on
     each type."""
-    types = _core(excluded)
+    types = CORE_TYPES
     out = []
     for model in MODELS:
         pairs = [(kind, a, b) for kind, a, b in EFFECTS] + [("floor", a, "W-raw") for a in ARMS if a != "W-raw"]

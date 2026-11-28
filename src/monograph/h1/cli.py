@@ -161,14 +161,25 @@ def prereg_cmd(root: Root = Path()) -> None:
         typer.echo(f"{pins.PREREG} exists; it is never rewritten", err=True)
         raise typer.Exit(1)
     records = list(read_results(root / "results" / "h1"))
-    dev = analysis.latest_runs(records, "dev")
-    spend = sum(
-        float(r["details"]["cost_usd"])
-        for r in records
-        if r.get("metric") == "h1.run" and r["details"].get("split") == "dev" and not r["details"].get("from_cache")
-    )
+    sha = pins.questions_sha256(root)
+    dev = analysis.latest_runs(records, "dev", sha)
+    round1 = [
+        d for d in analysis.latest_runs([r for r in records if "questions_sha256" not in r.get("details", {})], "dev")
+    ]
+
+    def spend(round_sha: str | None) -> float:
+        return sum(
+            float(r["details"]["cost_usd"])
+            for r in records
+            if r.get("metric") == "h1.run"
+            and r["details"].get("split") == "dev"
+            and not r["details"].get("from_cache")
+            and r["details"].get("questions_sha256") == round_sha
+        )
+
     hashes = pins.write_pins(root)
-    (root / pins.PREREG).write_text(prereg.render(root, dev, spend, hashes), encoding="utf-8")
+    text = prereg.render(root, dev, spend(sha), hashes, round1, spend(None))
+    (root / pins.PREREG).write_text(text, encoding="utf-8")
     typer.echo(f"pinned {len(hashes)} files; wrote {pins.PREREG}")
 
 

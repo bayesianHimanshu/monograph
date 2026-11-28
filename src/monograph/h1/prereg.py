@@ -11,13 +11,14 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
+from monograph.ablation.analysis import mean_ci
 from monograph.gen import semantic_layer as s
 from monograph.gen import warehouse as w
 from monograph.h1 import analysis, arms, pins
 from monograph.h1.record import FAILURES
 from monograph.h1.run import HAIKU, MODELS, SONNET, SONNET_ARMS, SONNET_TYPES, configs, types_for
 from monograph.h1.score import ABS_TOLERANCE, REL_TOLERANCE
-from monograph.qa.h1_templates import DEV_PER_TYPE, PER_TYPE, SEED, TEMPLATES, TYPES
+from monograph.qa.h1_templates import CORE_TYPES, DEV_PER_TYPE, PER_TYPE, SEED, TEMPLATES, TYPES
 from monograph.sqlcheck.gate import MAX_EXEC_ERRORS, MAX_ROUNDS
 
 
@@ -52,7 +53,26 @@ def estimate(dev: Sequence[Mapping[str, Any]], test: Sequence[Mapping[str, Any]]
     return {"rows": rows, "total": total}
 
 
-def render(root: Path, dev: Sequence[Mapping[str, Any]], dev_spend: float, hashes: Mapping[str, str]) -> str:
+def _dev_rows(runs: Sequence[Mapping[str, Any]]) -> list[list[Any]]:
+    t = analysis.Table.of(runs)
+    rows = []
+    for (model, arm), rs in sorted(t.records.items()):
+        versions = ", ".join(sorted({f"{k} {v}" for r in rs for k, v in r["prompt_versions"].items()}))
+        by = {q: t.of_types(model, arm, (q,)) for q in TYPES}
+        cells = [_f(sum(v.values()) / len(v)) if v else "" for v in by.values()]
+        rows.append([model, arm, versions, len(rs), *cells, _f(sum(r["correct"] for r in rs) / len(rs))])
+    return rows
+
+
+def render(
+    root: Path,
+    dev: Sequence[Mapping[str, Any]],
+    dev_spend: float,
+    hashes: Mapping[str, str],
+    round1: Sequence[Mapping[str, Any]] = (),
+    round1_spend: float = 0.0,
+) -> str:
+    """`dev`: dev round 2 (the pinned question set); `round1`: dev round 1, before the hardening pass."""
     t = analysis.Table.of(dev)
     qs = pins.questions(root)
     marked = analysis.non_informative(t)
@@ -127,7 +147,7 @@ def render(root: Path, dev: Sequence[Mapping[str, Any]], dev_spend: float, hashe
         "## Decision rules",
         "",
         f"* **Primary.** H1 **holds** if, for at least one model, ONT+OC beats SV by at least {analysis.HOLDS_MARGIN}"
-        " on Q2 to Q5 combined (less any non-informative type), with the 95% paired bootstrap interval excluding"
+        " on Q2 to Q5 combined (types the ceiling rule marks stay in), with the 95% paired bootstrap interval excluding"
         f" 0, and ONT+OC is no more than {analysis.Q1_TOLERANCE} below SV on Q1 (point estimate). Sonnet has no Q1"
         " runs, so for Sonnet the Q1 condition uses Haiku's Q1 result. H1 **fails** if, for both models, ONT+OC"
         f" beats SV by at most {analysis.FAILS_WITHIN} on Q2 to Q5 (SV within {analysis.FAILS_WITHIN} of ONT+OC, or"
@@ -137,7 +157,8 @@ def render(root: Path, dev: Sequence[Mapping[str, Any]], dev_spend: float, hashe
         "* **Attribution**, always reported: context effect (ONT - SV, ONT+OC - SV+OC), check effect (SV+OC - SV,"
         " ONT+OC - ONT), floor (each arm - W-raw), per model where both arms ran.",
         f"* **Ceiling rule:** a type at {analysis.CEILING} or higher in every arm (every configuration that ran it)"
-        " on dev is non-informative and excluded from the combined core.",
+        " on dev is marked non-informative. The verdicts above are on Q2 to Q5 as the hypothesis states; a"
+        " sensitivity verdict without the marked types is reported when any core type remains unmarked.",
         "",
         "### Ceiling marks (dev)",
         "",
@@ -152,18 +173,38 @@ def render(root: Path, dev: Sequence[Mapping[str, Any]], dev_spend: float, hashe
         "",
         f"Non-informative types: {', '.join(marked) if marked else 'none'}.",
         "",
-        "## Dev runs",
+        "## Dev iteration",
         "",
-    ]
-    rows = []
-    for (model, arm), rs in sorted(t.records.items()):
-        versions = ", ".join(sorted({f"{k} {v}" for r in rs for k, v in r["prompt_versions"].items()}))
-        rows.append([model, arm, versions, len(rs), _f(sum(r["correct"] for r in rs) / len(rs))])
-    lines += _table(["Model", "Arm", "Prompt versions", "Dev questions", "Dev accuracy"], rows)
-    lines += [
+        "Prompts were not tuned between rounds; the question set and the warehouse were changed once, between",
+        "round 1 and round 2, as recorded in PLAN.md before round 2 ran.",
         "",
-        f"Dev spend recorded: USD {dev_spend:.2f}. The test estimate is printed by `monograph h1 estimate` after"
-        " this commit; the test runs wait for the approved cap.",
+        "### Round 1 (before the hardening pass): a finding",
+        "",
+        "On a cryptic but consistent warehouse, both models answered from bare DDL with no meaning layer: Q1, Q3"
+        " and Q4 scored 1.00 in every arm, the W-raw floor included. The Q2 and Q5 failures were mostly defects in"
+        " the question set shared by every arm (exact drug-name matching, the bare role suspect, recall year read"
+        " from the recall number, loose dosage forms), fixed before round 2.",
+        "",
+        *_table(["Model", "Arm", "Prompt versions", "Questions", *TYPES, "All"], _dev_rows(round1)),
+        "",
+        f"Round 1 spend: USD {round1_spend:.2f}.",
+        "",
+        "### Round 2 (the pinned question set and warehouse)",
+        "",
+        "The hardening pass of PLAN.md (staging tables, stale and ETL columns, a second code table, harder Q2 and"
+        " Q5 templates) and the question fixes, applied once. W-raw core accuracy at most 0.80 was a check, not a"
+        " target; whatever round 2 showed, the warehouse was not hardened again.",
+        "",
+        *_table(["Model", "Arm", "Prompt versions", "Questions", *TYPES, "All"], _dev_rows(dev)),
+        "",
+        f"Round 2 spend: USD {dev_spend:.2f}. W-raw core (Q2 to Q5) accuracy on round 2: "
+        + ", ".join(
+            f"{m} {_f(mean_ci(list(t.of_types(m, 'W-raw', CORE_TYPES).values())).get('mean'))}"
+            for m in MODELS
+            if t.has(m, "W-raw")
+        )
+        + ". The test estimate is printed by `monograph h1 estimate` after this commit; the test runs wait for the"
+        " approved cap.",
         "",
         "## Known limitations",
         "",

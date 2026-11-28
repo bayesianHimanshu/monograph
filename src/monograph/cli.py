@@ -362,6 +362,24 @@ def report_h2_1(root: Root = Path()) -> None:
     render_report(root)
 
 
+@report_app.command("h1")
+def report_h1(root: Root = Path()) -> None:
+    """docs/h1/RESULTS.md from results/h1/*.jsonl alone (test split, the pinned question set)."""
+    import re
+
+    from monograph.h1 import pins
+    from monograph.h1.report import render
+    from monograph.harness.results import read_results
+
+    prereg = (root / pins.PREREG).read_text(encoding="utf-8") if (root / pins.PREREG).exists() else ""
+    marked = re.search(r"^Non-informative types: (.*)\.$", prereg, re.MULTILINE)
+    excluded = [] if not marked or marked.group(1) == "none" else [x.strip() for x in marked.group(1).split(",")]
+    text = render(read_results(root / "results" / "h1"), pins.questions_sha256(root), excluded)
+    path = root / "docs" / "h1" / "RESULTS.md"
+    path.write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {path}")
+
+
 @report_app.command("h4")
 def report_h4(root: Root = Path(), split: str = "test") -> None:
     """Regenerate docs/h4/RESULTS.md from results/h4/*.jsonl alone."""
