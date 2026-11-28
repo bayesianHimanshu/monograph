@@ -1,14 +1,16 @@
-"""Build the H1 database: the canonical tables, the warehouse loaded from them, the round trip, the semantic
-layer and the agents' read-only roles.
+"""Build the H1 databases: one per context, holding exactly what the arms in that context may see.
 
-One database (`monograph_h1` by default) holds:
+Postgres catalogs (`pg_class`, view definitions, comments) are readable by every role in a database, whatever
+its schema privileges. So the contexts do not share a database:
 
-* schema `h2`: the canonical tables, loaded from the validated instances exactly as H2 and H2.1 load them;
-* schema `wh`: the warehouse, created and loaded by the generated DDL and load SQL;
-* schemas `h1_eq_wh` and `h1_eq_h2`: the round-trip views; the build aborts if they differ in any row;
-* schema `sem`: the semantic layer's views over the warehouse (stage 2).
+* `monograph_h1_wh` (W-raw, ONT, ONT+OC): schema `wh` only;
+* `monograph_h1_sv` (SV, SV+OC): schemas `wh` and `sem`.
 
-The agents' roles read only what their arm is given (docs/h1/PLAN.md), never `h2` or the round-trip views.
+Each is built the same way: the canonical tables (schema `h2`) loaded from the validated instances exactly as
+H2 and H2.1 load them; the warehouse loaded from them by the generated SQL; the round trip (every canonical
+table rebuilt from the warehouse equals the canonical table, row for row; the build aborts otherwise); in the
+SV database the semantic views, checked against the canonical tables too; then `h2` and the round-trip views
+are dropped, and one read-only agent role is created that may connect to that database only.
 """
 
 from __future__ import annotations
@@ -16,27 +18,53 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import psycopg
 from psycopg import sql
 from pydantic import BaseModel
 
 from monograph import wiring
+from monograph.gen import semantic_layer as s
 from monograph.gen import warehouse as w
 
-DATABASE = "monograph_h1"
+Context = Literal["wh", "sv"]
+CONTEXTS: tuple[Context, ...] = ("wh", "sv")
+PREFIX = "monograph_h1"
+STATEMENT_TIMEOUT = "10s"
+
+
+def database(context: Context, prefix: str = PREFIX) -> str:
+    return f"{prefix}_{context}"
+
+
+def role(context: Context, prefix: str = PREFIX) -> str:
+    return f"{prefix.removeprefix('monograph_')}_{context}_agent"
+
+
+def schemas(context: Context) -> tuple[str, ...]:
+    return (w.SCHEMA, s.SCHEMA) if context == "sv" else (w.SCHEMA,)
 
 
 @dataclass(frozen=True, slots=True)
 class BuildReport:
-    canonical_rows: dict[str, int]
     warehouse_rows: dict[str, int]
     round_trip: dict[str, int]  # canonical table -> rows compared
+    semantic_checks: dict[str, int]  # semantic view -> rows compared
 
 
 def generated(root: Path, name: str) -> str:
     return (wiring.generated_dir(root) / name).read_text(encoding="utf-8")
+
+
+def _one(conn: psycopg.Connection[Any], query: str) -> int:
+    row = conn.execute(query.encode("utf-8")).fetchone()
+    return int(row[0]) if row else 0
+
+
+def _diff(conn: psycopg.Connection[Any], a: str, b: str) -> tuple[int, int]:
+    q = "SELECT count(*) FROM (({}) EXCEPT ALL ({})) x"
+    return _one(conn, q.format(a, b)), _one(conn, q.format(b, a))
 
 
 def round_trip_differences(
@@ -46,40 +74,87 @@ def round_trip_differences(
     rows: dict[str, int] = {}
     problems: list[str] = []
     for v in views:
-        a, b = sql.Identifier(w.EQ_WH, v.name), sql.Identifier(w.EQ_H2, v.name)
-        q = sql.SQL("SELECT count(*) FROM (SELECT * FROM {} EXCEPT ALL SELECT * FROM {}) x")
-        extra = _one(conn, q.format(a, b))
-        missing = _one(conn, q.format(b, a))
-        rows[v.name] = _one(conn, sql.SQL("SELECT count(*) FROM {}").format(b))
+        a, b = f"SELECT * FROM {w.EQ_WH}.{v.name}", f"SELECT * FROM {w.EQ_H2}.{v.name}"
+        extra, missing = _diff(conn, a, b)
+        rows[v.name] = _one(conn, f"SELECT count(*) FROM {w.EQ_H2}.{v.name}")
         if extra or missing:
             problems.append(f"{v.name}: {extra} rows only in the warehouse, {missing} only in the canonical tables")
     return rows, problems
 
 
-def _one(conn: psycopg.Connection[Any], query: sql.Composed) -> int:
-    row = conn.execute(query).fetchone()
-    return int(row[0]) if row else 0
+# Each semantic view against the canonical tables it must show (as the round-trip views key them).
+SEMANTIC_CHECKS: dict[str, tuple[str, str]] = {
+    "products": (
+        "SELECT product_ndc, product_name, dosage_form, product_type, is_finished FROM sem.products",
+        "SELECT product_ndc, name, dosage_form, product_type, finished FROM h1_eq_h2.product",
+    ),
+    "product_routes": (
+        "SELECT product_ndc, route FROM sem.product_routes",
+        "SELECT product_ndc, unnest(routes) FROM h1_eq_h2.product",
+    ),
+    "product_ingredients": (
+        "SELECT product_ndc, substance_unii, strength_value, strength_unit FROM sem.product_ingredients",
+        "SELECT owner__product_ndc, substance__unii, strength_value, strength_unit FROM h1_eq_h2.product__ingredients",
+    ),
+    "substances": (
+        "SELECT substance_unii, substance_name FROM sem.substances",
+        "SELECT unii, name FROM h1_eq_h2.substance",
+    ),
+    "firms": ("SELECT firm_code, firm_name FROM sem.firms", "SELECT slug, name FROM h1_eq_h2.organization"),
+    "packages": (
+        "SELECT package_ndc, product_ndc, labeler_firm_code, package_description FROM sem.packages",
+        "SELECT ndc, product__product_ndc, labeler__slug, description FROM h1_eq_h2.packaged_product",
+    ),
+    "adverse_event_reports": (
+        "SELECT report_id, source_system, received_date, is_serious, patient_age_years,"
+        " resulted_in_death, caused_hospitalization FROM sem.adverse_event_reports",
+        "SELECT report_id, source_system, receipt_date, serious, patient_age_years,"
+        " 'death' = ANY(seriousness_criteria), 'hospitalization' = ANY(seriousness_criteria)"
+        " FROM h1_eq_h2.adverse_event_report",
+    ),
+    "adverse_event_reactions": (
+        "SELECT report_id, reaction_term FROM sem.adverse_event_reactions",
+        "SELECT owner__report_id, term FROM h1_eq_h2.adverse_event_report__reactions",
+    ),
+    "adverse_event_drugs": (
+        "SELECT report_id, drug_name, drug_role FROM sem.adverse_event_drugs",
+        "SELECT owner__report_id, drug_name, role FROM h1_eq_h2.adverse_event_report__drugs",
+    ),
+    "recalls": (
+        "SELECT recall_number, recall_class, reason, report_date, recalling_firm_code FROM sem.recalls",
+        "SELECT recall_number, classification, reason, report_date, recalling_firm__slug FROM h1_eq_h2.recall",
+    ),
+    "recall_products": (
+        "SELECT recall_number, product_ndc FROM sem.recall_products",
+        "SELECT owner__recall_number, target__product_ndc FROM h1_eq_h2.recall__products",
+    ),
+}
 
 
-def build_warehouse(conn: psycopg.Connection[Any], root: Path, log: Callable[[str], None]) -> BuildReport:
+def semantic_differences(conn: psycopg.Connection[Any]) -> tuple[dict[str, int], list[str]]:
+    rows: dict[str, int] = {}
+    problems: list[str] = []
+    for name, (view, canonical) in SEMANTIC_CHECKS.items():
+        extra, missing = _diff(conn, view, canonical)
+        rows[name] = _one(conn, f"SELECT count(*) FROM ({view}) x")
+        if extra or missing:
+            problems.append(f"sem.{name}: {extra} rows only in the view, {missing} only in the canonical tables")
+    return rows, problems
+
+
+def build_warehouse(conn: psycopg.Connection[Any], root: Path) -> tuple[dict[str, int], dict[str, int]]:
     """Load `wh` from `h2` (already loaded) and prove the round trip. Raises on any difference."""
-    for schema in (w.SCHEMA, w.EQ_WH, w.EQ_H2):
+    for schema in (w.SCHEMA, w.EQ_WH, w.EQ_H2, s.SCHEMA):
         conn.execute(sql.SQL("DROP SCHEMA IF EXISTS {} CASCADE").format(sql.Identifier(schema)))
     conn.execute(generated(root, w.DDL_FILE).encode("utf-8"))
     conn.execute(generated(root, w.LOAD_FILE).encode("utf-8"))
     conn.execute(generated(root, w.INVERSE_FILE).encode("utf-8"))
-    spec = wiring.build_spec()
-    wh = w.analyze(spec)
-    counts = {
-        t.name: _one(conn, sql.SQL("SELECT count(*) FROM {}").format(sql.Identifier(w.SCHEMA, t.name.lower())))
-        for t in wh.tables
-    }
+    wh = w.analyze(wiring.build_spec())
+    counts = {t.name: _one(conn, f"SELECT count(*) FROM {w.SCHEMA}.{t.name}") for t in wh.tables}
     rows, problems = round_trip_differences(conn, w.eq_views(wh))
     if problems:
         raise RuntimeError("the warehouse does not hold the canonical data: " + "; ".join(problems))
-    log(f"warehouse: {sum(counts.values())} rows in {len(counts)} tables; round trip exact on {len(rows)} tables")
-    canonical = {name: n for name, n in rows.items()}
-    return BuildReport(canonical, counts, rows)
+    return counts, rows
 
 
 def load_canonical(
@@ -90,17 +165,76 @@ def load_canonical(
     from monograph.graph.loader import RelationalLoader
 
     spec = wiring.build_spec()
-    ddl = generated(root, DDL_FILE)
-    return RelationalLoader(conn, spec, wiring.mapper(spec, Vocabulary()), ddl).load(instances, log)
+    counts = RelationalLoader(conn, spec, wiring.mapper(spec, Vocabulary()), generated(root, DDL_FILE)).load(
+        instances, log
+    )
+    conn.execute("SET search_path = public")
+    return counts
 
 
-def ensure_database(admin: str, database: str) -> str:
+def ensure_database(admin: str, name: str) -> str:
     from monograph.ablation.load import with_database
 
     with psycopg.connect(admin, autocommit=True) as conn:
-        if not conn.execute("SELECT 1 FROM pg_database WHERE datname = %s", [database]).fetchone():
-            conn.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database)))
-    return with_database(admin, database)
+        if not conn.execute("SELECT 1 FROM pg_database WHERE datname = %s", [name]).fetchone():
+            conn.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
+    return with_database(admin, name)
+
+
+def agent_dsn(admin: str, context: Context, prefix: str = PREFIX) -> str:
+    from monograph.ablation.load import with_database
+
+    r = role(context, prefix)
+    return with_database(admin, database(context, prefix), r, r)
+
+
+def create_role(conn: psycopg.Connection[Any], context: Context, prefix: str = PREFIX) -> None:
+    """One read-only role that reads this context's schemas and may connect to this database only."""
+    name = role(context, prefix)
+    r = sql.Identifier(name)
+    if conn.execute("SELECT 1 FROM pg_roles WHERE rolname = %s", [name]).fetchone():
+        conn.execute(sql.SQL("DROP OWNED BY {}").format(r))
+        conn.execute(sql.SQL("DROP ROLE {}").format(r))
+    conn.execute(sql.SQL("CREATE ROLE {} LOGIN PASSWORD {}").format(r, sql.Literal(name)))
+    conn.execute(sql.SQL("ALTER ROLE {} SET default_transaction_read_only = on").format(r))
+    conn.execute(sql.SQL("ALTER ROLE {} SET statement_timeout = {}").format(r, sql.Literal(STATEMENT_TIMEOUT)))
+    for schema in schemas(context):
+        conn.execute(sql.SQL("GRANT USAGE ON SCHEMA {} TO {}").format(sql.Identifier(schema), r))
+        conn.execute(sql.SQL("GRANT SELECT ON ALL TABLES IN SCHEMA {} TO {}").format(sql.Identifier(schema), r))
+    conn.execute("REVOKE ALL ON SCHEMA public FROM PUBLIC")
+    path = sql.SQL(", ").join(sql.Identifier(x) for x in schemas(context))
+    conn.execute(sql.SQL("ALTER ROLE {} SET search_path = {}").format(r, path))
+    db = sql.Identifier(database(context, prefix))
+    conn.execute(sql.SQL("REVOKE CONNECT ON DATABASE {} FROM PUBLIC").format(db))
+    conn.execute(sql.SQL("GRANT CONNECT ON DATABASE {} TO {}").format(db, r))
+
+
+def build_context(
+    admin: str,
+    context: Context,
+    instances: Mapping[str, Sequence[BaseModel]],
+    root: Path,
+    log: Callable[[str], None],
+    prefix: str = PREFIX,
+) -> BuildReport:
+    dsn = ensure_database(admin, database(context, prefix))
+    with psycopg.connect(dsn, autocommit=True) as conn:
+        load_canonical(conn, instances, root, log)
+        counts, rows = build_warehouse(conn, root)
+        checks: dict[str, int] = {}
+        if context == "sv":
+            conn.execute(generated(root, s.VIEWS_FILE).encode("utf-8"))
+            checks, problems = semantic_differences(conn)
+            if problems:
+                raise RuntimeError("the semantic views do not show the canonical data: " + "; ".join(problems))
+        for schema in ("h2", w.EQ_WH, w.EQ_H2):
+            conn.execute(sql.SQL("DROP SCHEMA IF EXISTS {} CASCADE").format(sql.Identifier(schema)))
+        create_role(conn, context, prefix)
+    log(
+        f"{database(context, prefix)}: {sum(counts.values())} warehouse rows, round trip exact on {len(rows)} tables"
+        + (f", {len(checks)} semantic views checked" if checks else "")
+    )
+    return BuildReport(counts, rows, checks)
 
 
 def build(
@@ -108,10 +242,6 @@ def build(
     instances: Mapping[str, Sequence[BaseModel]],
     root: Path,
     log: Callable[[str], None],
-    database: str = DATABASE,
-) -> BuildReport:
-    dsn = ensure_database(admin, database)
-    with psycopg.connect(dsn, autocommit=True) as conn:
-        load_canonical(conn, instances, root, log)
-        conn.execute("SET search_path = public")
-        return build_warehouse(conn, root, log)
+    prefix: str = PREFIX,
+) -> dict[Context, BuildReport]:
+    return {c: build_context(admin, c, instances, root, log, prefix) for c in CONTEXTS}

@@ -16,7 +16,7 @@ from monograph.gen import warehouse as w
 from monograph.h1 import build
 
 from .conftest import ROOT
-from .h2_support import mini_instances, with_db
+from .h2_support import mini_instances
 
 
 def test_every_in_scope_property_is_mapped_exactly_once() -> None:
@@ -76,13 +76,14 @@ def test_the_round_trip_is_exact_on_the_mini_fixture() -> None:
     admin = os.environ.get("MONOGRAPH_PG_DSN")
     if not admin:
         pytest.skip("MONOGRAPH_PG_DSN is not set (make it)")
-    report = build.build(admin, mini_instances(), ROOT, lambda _: None, database="h1_test")
-    assert report.round_trip["product"] == 3
-    assert report.round_trip["recall__products"] > 0
-    assert set(report.round_trip) >= {"product__ingredients", "adverse_event_report__reactions", "label__sections"}
-    # and a difference is caught: break one warehouse row, rebuild nothing, compare again
-    dsn = with_db(admin, "h1_test")
+    dsn = build.ensure_database(admin, "h1_test_rt")
     with psycopg.connect(dsn, autocommit=True) as conn:
+        build.load_canonical(conn, mini_instances(), ROOT, lambda _: None)
+        _, rows = build.build_warehouse(conn, ROOT)
+        assert rows["product"] == 3
+        assert rows["recall__products"] > 0
+        assert set(rows) >= {"product__ingredients", "adverse_event_report__reactions", "label__sections"}
+        # a difference is caught: break one warehouse value and compare again
         conn.execute("UPDATE wh.T_PRD_MSTR SET FNSHD_FLG = CASE FNSHD_FLG WHEN 'Y' THEN 'N' ELSE 'Y' END")
         _, problems = build.round_trip_differences(conn, w.eq_views(w.analyze(wiring.build_spec())))
     assert any(p.startswith("product:") for p in problems)

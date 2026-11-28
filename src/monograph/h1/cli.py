@@ -29,15 +29,19 @@ def build_cmd(root: Root = Path()) -> None:
     from monograph.h1 import build
 
     dataset = build_cells_dataset(root, identity=True)
-    report = build.build(admin_dsn(), dataset.instances, root, typer.echo)
+    reports = build.build(admin_dsn(), dataset.instances, root, typer.echo)
     writer = wiring.results_writer(root, "H1")
-    writer.write(
-        "h1.build",
-        sum(report.warehouse_rows.values()),
-        {
-            "instances": dataset.count(),
-            "warehouse_rows": report.warehouse_rows,
-            "round_trip_rows": report.round_trip,
-        },
-    )
-    typer.echo(f"built {build.DATABASE}")
+    for context, report in reports.items():
+        writer.write(
+            "h1.build",
+            sum(report.warehouse_rows.values()),
+            {
+                "context": context,
+                "database": build.database(context),
+                "instances": dataset.count(),
+                "warehouse_rows": report.warehouse_rows,
+                "round_trip_rows": report.round_trip,
+                "semantic_view_rows": report.semantic_checks,
+            },
+        )
+    typer.echo("built " + ", ".join(build.database(c) for c in reports))

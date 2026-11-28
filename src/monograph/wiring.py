@@ -106,6 +106,9 @@ def artifact_builder(spec: SchemaSpec, vocab: Vocabulary) -> ArtifactBuilder:
         from monograph.gen.warehouse import warehouse_renderers  # the H1 warehouse, from the same spec
 
         renderers.update(warehouse_renderers(spec, h2_excluded()))
+        from monograph.gen.semantic_layer import semantic_renderers  # its semantic layer
+
+        renderers.update(semantic_renderers(spec))
     return ArtifactBuilder(renderers, time.perf_counter)
 
 
