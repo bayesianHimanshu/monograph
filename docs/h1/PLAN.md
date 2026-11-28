@@ -252,3 +252,47 @@ docs/h1/                  PLAN.md PREREG.md DEVIATIONS.md RESULTS.md
 experiments/h1/           frozen/ budget.json
 results/h1/
 ```
+
+## Dev round 1: a finding, and the one hardening pass it led to
+
+**Finding (dev round 1, 2026-11-28, USD 4.78).** On a cryptic but consistent warehouse, both models answered
+from bare DDL with no meaning layer: Q1, Q3 and Q4 scored 1.00 in every arm, the W-raw floor included, and
+Q2 and Q5 scored 0.73 to 0.87 with near-identical scores across arms. Names such as `PRD_CD`, `RCPT_DT` and
+`X_SALT_MOIETY` were readable enough. The Q2 and Q5 failures were mostly defects in the question set, shared by
+every arm:
+
+* drug names matched exactly, where every agent read "AMLODIPINE" as any drug entry whose name contains it;
+* "a suspect drug" meant the role literally named suspect, where every agent included primary and secondary
+  suspects;
+* "Class II recalls from 2015" meant the report date, where some agents read the year in the recall number;
+* "covering POWDER products" meant the dosage form POWDER exactly, where some agents matched any powder form.
+
+These are bugs in the questions in any case and are fixed first: drug names match case-insensitively by
+containment (and the questions say so), the role "suspect" is no longer asked on its own, every recall year is
+"reported in" (the report date), and every dosage form and route is quoted as the exact term.
+
+**The hardening pass, fixed here before dev is re-run, applied once.** The warehouse gets what real enterprise
+warehouses carry, each element because warehouses have it, never because it trips a model:
+
+1. **Staging tables** in the same schema, as nightly loads leave them: `STG_PRD_LOAD` (the product feed as
+   delivered, including superseded deliveries of some products with their older dosage form and route codes in
+   the previous system's codes, with a load batch id) and `STG_RCL_FEED` (the enforcement feed as delivered:
+   classification as text, report date as text, firm name as delivered, repeat deliveries of some recalls).
+   Mapped to nothing.
+2. **Near-duplicate and stale columns** kept from earlier loads and no longer maintained:
+   `T_PKG.LBLR_NM` (labeler name copied at first load; for firms with an alias, the alias), `T_PRD_MSTR.DSG_FRM_TXT`
+   (free-text form from an old feed, abbreviated for some), `T_AE_HDR.SRS_IND` (an older seriousness indicator,
+   with `U` for reports loaded before the flag was required). Mapped to nothing.
+3. **Several plausible date columns**: ETL audit dates as integers YYYYMMDD, `LD_DT` (load) and `LST_UPD_DT`
+   (last update), on the report header and the recall table. Mapped to nothing.
+4. **A second, overlapping code table** from the previous system, `T_LKP_CD`, with its own route and dosage form
+   codes (the codes the staging feed still uses). No fact table uses it. Mapped to nothing.
+5. **Harder templates**: Q2 questions with three coded filters, and Q5 questions whose naive count fans out from
+   two directions (packages and recall products).
+
+The semantic layer gets what real ones do: its views hide the staging and stale objects and expose the right
+date and code table (they already read only the maintained columns and `T_REF_CD`). It is not weakened. The
+ontology context names the unmapped objects as not mapped; the check flags their use (rule 4).
+
+Then dev is re-run once. W-raw core accuracy at most 0.80 is a check, not a target: whatever dev shows, the
+warehouse is not hardened again; the ceiling rule is applied and the PREREG follows.
