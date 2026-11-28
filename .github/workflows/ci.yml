@@ -149,6 +149,9 @@ jobs:
       - name: measurements and report
         if: always()
         run: uv run monograph measure && uv run monograph report h6
+      - name: mutation status page
+        if: always()
+        run: uv run monograph report mutations
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -157,3 +160,4 @@ jobs:
             results/h6/
             results/mutations/
             docs/h6/RESULTS.md
+            docs/MUTATIONS.md

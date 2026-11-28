@@ -20,7 +20,8 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Protocol
 
-from monograph.extract.config import PRICES, Settings
+from monograph.extract.config import Settings
+from monograph.extract.pricing import Rate, rate
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,8 +56,19 @@ class Usage:
     cache_read_tokens: int = 0
     cache_write_tokens: int = 0
 
+    @property
+    def prompt_tokens(self) -> int:
+        """What a long-context threshold is measured on: every input token, cache reads and writes included."""
+        return self.input_tokens + self.cache_read_tokens + self.cache_write_tokens
+
+    def rate(self, model: str) -> Rate:
+        """The rate this usage is billed at, taken as one request (monograph.extract.pricing)."""
+        return rate(model, self.prompt_tokens)
+
     def cost_usd(self, model: str) -> Decimal:
-        p = PRICES[model]
+        """The cost of this usage as one request. Price each request on its own: summed usage can cross a
+        long-context threshold that no single request crossed."""
+        p = self.rate(model).price
         million = Decimal(1_000_000)
         return (
             p.input * self.input_tokens
