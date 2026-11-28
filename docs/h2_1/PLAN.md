@@ -266,3 +266,12 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
   10.58, Sonnet 41.75), above the USD 40 stop. The user chose, on 2026-11-28 before the PREREG, to keep Haiku's
   full factorial and run Sonnet's test only on T3, T9, T10 and T11 (estimate USD 41.32). Ceiling marks on dev:
   T1, T4 and T6 are non-informative; P3's types (T9, T10) are not, so nothing is excluded from P3.
+* **Stage 6, test runs.** All 22 configurations ran from a clean, pinned tree. An agent's Cypher query
+  segfaulted the AGE server once; the runs it took down were rerun (DEVIATIONS D1), the crashing run is kept,
+  and one question could not be scored for one configuration (a harness TypeError, D1). Test API spend USD
+  45.12 against the USD 41.32 estimate; the difference is the crash.
+* **Stage 7, the report.** One T9 template's gold counts a product as sharing an ingredient with itself while
+  the base prompt says "two products" (4 test questions; DEVIATIONS D2); the report keeps the pre-registered
+  numbers and adds a post-hoc P3 line without them. The report also breaks T3+T4 down by the kind of identity a
+  question needs: identity encoded in names or codes survives without the layer for free-form agents, identity
+  recorded only in a crosswalk does not survive for any arm.

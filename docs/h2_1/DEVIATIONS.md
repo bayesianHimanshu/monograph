@@ -54,3 +54,20 @@ infrastructure failures are rerun; no agent outcome is rerun or discarded.
   (`t10_firms_within_six_steps-10`, Sonnet, G-free, hardest cell), which is kept as recorded.
 * Test API spend, all test records including the ones the reruns replaced: USD 45.12, against the USD 41.32
   estimate the user approved; the difference is the work the crash forced to be redone.
+
+## D2, 2026-11-28: one T9 template counts a product as sharing an ingredient with itself
+
+**What happened.** Reading the worked examples after the test runs showed that the gold of
+`t9_labelers_of_ingredient_sharers` ("Which firms label a product that shares an active ingredient with the
+product P?") includes P itself among the products that share an ingredient with P. The base prompt defines
+the relation for "two products", which reads as two distinct products. For most questions the two readings
+give the same answer; for 4 of the 15 test questions of this template they do not (`-06`, `-07`, `-08`, `-12`:
+the gold has one more firm, P's own labeler, than the distinct reading; for `-06` and `-08` the distinct reading
+is the empty set). Most arms answered with the distinct reading and were scored wrong on these.
+
+**What was done.** Nothing in the questions, gold or scoring changes: questions do not change after dev, and
+the results are reported as pre-registered. The report adds one line, labelled post hoc and not part of any
+verdict: P3 recomputed without these 4 questions.
+
+**What this changes.** No verdict. On P3's 90 baseline questions per model the 4 questions move G-free minus
+S-free by about one point.

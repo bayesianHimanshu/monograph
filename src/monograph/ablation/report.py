@@ -67,6 +67,21 @@ def _arms_of(t: Table, model: str) -> list[str]:
 # ------------------------------------------------------------------------------------------- sections
 
 
+# docs/h2_1/DEVIATIONS.md, D2: test questions whose gold counts a product as sharing an ingredient with itself
+# (the base prompt says "two products"). Reported post hoc only; no verdict uses this list.
+D2_QUESTIONS = (
+    "t9_labelers_of_ingredient_sharers-06",
+    "t9_labelers_of_ingredient_sharers-07",
+    "t9_labelers_of_ingredient_sharers-08",
+    "t9_labelers_of_ingredient_sharers-12",
+)
+
+
+def _without(t: Table, qids: Sequence[str]) -> Table:
+    skip = set(qids)
+    return Table.of(r for rs in t.records.values() for r in rs if r["question_id"] not in skip)
+
+
 def predictions(t: Table, excluded: Sequence[str], gaps: Sequence[str] = ()) -> tuple[list[str], dict[str, Any]]:
     p1 = analysis.p1(t)
     p1_sensitive = analysis.p1(t, exclude=gaps)
@@ -106,6 +121,11 @@ def predictions(t: Table, excluded: Sequence[str], gaps: Sequence[str] = ()) -> 
             [[m, _diff(d), d.get("n", 0)] for m, d in p3["models"].items()],
         ),
         "",
+        "Post hoc, not part of any verdict (D2): without the 4 T9 questions whose gold counts a product as sharing"
+        " an ingredient with itself, G-free minus S-free is "
+        + ", ".join(f"{m} {_diff(d)}" for m, d in analysis.p3(_without(t, D2_QUESTIONS), excluded)["models"].items())
+        + ".",
+        "",
     ]
     if excluded:
         lines += [f"Non-informative on dev (ceiling rule), excluded from P3: {', '.join(excluded)}.", ""]
@@ -135,6 +155,8 @@ def factor_tables(t: Table) -> list[str]:
                     row.append(_ci(analysis.mean_ci(values)) if values else "n/a")
                 rows.append(row)
             n = len(t.of_types(model, BASELINE, arms[0], types))
+            if not n:
+                continue  # a type this model's test runs do not cover
             lines += [f"**{qtype}** (n = {n})", "", *_table(["Arm", *(c.name for c in cells)], rows), ""]
         rows = []
         for arm in arms:
@@ -145,6 +167,51 @@ def factor_tables(t: Table) -> list[str]:
 
 def _mean(values: Mapping[str, float]) -> float | None:
     return statistics.fmean(values.values()) if values else None
+
+
+IDENTITY_KINDS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "encoded in names or codes (salt forms, 11-digit NDCs)",
+        ("t3_moiety_products", "t3_ndc11_labeler", "t4_recall_firms_by_moiety", "t4_recall_firms_by_ndc11"),
+    ),
+    (
+        "recorded only in a crosswalk (RxCUI, brand to generic)",
+        (
+            "t3_rxcui_products",
+            "t3_brand_generics",
+            "t4_labelers_by_rxcui",
+            "t4_recalls_of_generics",
+        ),
+    ),
+    ("firm aliases", ("t3_alias_recalls", "t4_substances_recalled_by_alias")),
+)
+
+
+def _kind_scores(t: Table, cell: Cell) -> dict[str, dict[str, float | None]]:
+    """Per identity kind and arm (Haiku): mean score over the kind's T3/T4 templates in one cell."""
+    out: dict[str, dict[str, float | None]] = {}
+    for kind, templates in IDENTITY_KINDS:
+        row: dict[str, float | None] = {}
+        for arm in ARMS:
+            values = [
+                analysis.score(r) for r in t.records.get((HAIKU, cell.name, arm), []) if r["template"] in templates
+            ]
+            row[arm] = statistics.fmean(values) if values else None
+        out[kind] = row
+    return out
+
+
+def identity_kinds_table(t: Table) -> list[str]:
+    on, off = _kind_scores(t, BASELINE), _kind_scores(t, ID_OFF_DESC_ON)
+    rows = [[kind, *(f"{_f(on[kind][a])} / {_f(off[kind][a])}" for a in ARMS)] for kind, _ in IDENTITY_KINDS]
+    return [
+        "## What an agent can rebuild without the identity layer",
+        "",
+        f"{HAIKU}, descriptions on, T3+T4 by the kind of identity the question needs: score with identity on / off.",
+        "",
+        *_table(["Identity needed", *ARMS], rows),
+        "",
+    ]
 
 
 def interaction_table(t: Table) -> list[str]:
@@ -239,6 +306,17 @@ def failure_table(records: Sequence[Mapping[str, Any]]) -> list[str]:
     return lines
 
 
+CRASH = "server crash: the query killed the AGE backend (signal 11), and the calls after it found the connection closed"
+_CRASH = re.compile(r"server closed the connection|connection is (closed|lost)|terminat\w* connection", re.I)
+
+
+def _relabel(counts: Counter[str]) -> Counter[str]:
+    out: Counter[str] = Counter()
+    for k, v in counts.items():
+        out[CRASH if _CRASH.search(k) else k] += v
+    return out
+
+
 def age_gaps(records: Sequence[Mapping[str, Any]]) -> list[str]:
     lines = [
         "## AGE limitations hit",
@@ -246,7 +324,7 @@ def age_gaps(records: Sequence[Mapping[str, Any]]) -> list[str]:
         "Cypher errors the G-free agents hit on test, by AGE limitation (H2's classifier), per cell:",
         "",
     ]
-    by_cell = {c.name: age_errors([r for r in records if r["cell"] == c.name]) for c in CELLS}
+    by_cell = {c.name: _relabel(age_errors([r for r in records if r["cell"] == c.name])) for c in CELLS}
     kinds = sorted({k for v in by_cell.values() for k in v}, key=lambda k: -sum(v[k] for v in by_cell.values()))
     lines += (
         _table(["Cause", *by_cell], [[k, *(by_cell[c][k] for c in by_cell)] for k in kinds]) if kinds else ["None."]
@@ -257,48 +335,53 @@ def age_gaps(records: Sequence[Mapping[str, Any]]) -> list[str]:
     return [*lines, ""]
 
 
+Pick = tuple[str, str, list[Mapping[str, Any]]]
+
+
+def _pick(picks: list[Pick], labels: set[str], label: str, q: str, rs: list[Mapping[str, Any]]) -> None:
+    """Keep at most two examples per type, with different labels and different questions."""
+    if label not in labels and len(picks) < 2 and all(p[1] != q for p in picks):
+        labels.add(label)
+        picks.append((label, q, rs))
+
+
 def _examples(records: Sequence[Mapping[str, Any]]) -> list[str]:
+    """Two worked examples per hard type (Haiku): T3/T4, a question identity off broke and one answered without
+    the layer; T9 to T11, a question where the graph free-form arm won or lost against SQL, or every arm failed."""
     by: dict[tuple[str, str], dict[str, Mapping[str, Any]]] = defaultdict(dict)
+    types: dict[str, str] = {}
     for r in records:
         if r["model"] == HAIKU:
             by[(r["question_id"], r["cell"])][r["arm"]] = r
+            types[r["question_id"]] = r["type"]
     lines = ["## Worked examples (hard types)", ""]
     for qtype in HARD_TYPES:
-        qids = sorted(
-            {
-                q
-                for q, _ in by
-                if by[(q, BASELINE.name)] and next(iter(by[(q, BASELINE.name)].values()))["type"] == qtype
-            }
-        )
-        picks: list[tuple[str, str, list[Mapping[str, Any]]]] = []
+        qids = sorted(q for q, t in types.items() if t == qtype)
+        picks: list[Pick] = []
+        labels: set[str] = set()
+
         for q in qids:
             b = by.get((q, BASELINE.name), {})
             if qtype in ("T3", "T4"):
                 off = by.get((q, ID_OFF_DESC_ON.name), {})
                 arm = next((a for a in ARMS if a in b and a in off and b[a]["correct"] and not off[a]["correct"]), None)
-                if arm and not any(p[0] == "identity off broke it" for p in picks):
-                    picks.append(("identity off broke it", q, [b[arm], off[arm]]))
+                if arm:
+                    _pick(picks, labels, "identity off broke it", q, [b[arm], off[arm]])
                 arm = next((a for a in ARMS if a in off and off[a]["correct"]), None)
-                if arm and not any(p[0] == "answered without the identity layer" for p in picks):
-                    picks.append(("answered without the identity layer", q, [off[arm]]))
+                if arm:
+                    _pick(picks, labels, "answered without the identity layer", q, [off[arm]])
             else:
                 if "G-free" in b and "S-free" in b and b["G-free"]["correct"] != b["S-free"]["correct"]:
                     label = "graph free-form won" if b["G-free"]["correct"] else "graph free-form lost"
-                    if not any(p[0] == label for p in picks):
-                        picks.append((label, q, [b["G-free"], b["S-free"]]))
-                if (
-                    b
-                    and not any(x["correct"] for x in b.values())
-                    and not any(p[0] == "every arm failed" for p in picks)
-                ):
-                    picks.append(("every arm failed", q, list(b.values())))
+                    _pick(picks, labels, label, q, [b["G-free"], b["S-free"]])
+                if b and not any(x["correct"] for x in b.values()):
+                    _pick(picks, labels, "every arm failed", q, list(b.values()))
             if len(picks) >= 2:
                 break
         lines += [f"### {qtype}", ""]
         if not picks:
             lines += ["No contrasting question on test.", ""]
-        for label, q, rs in picks[:2]:
+        for label, q, rs in picks:
             first = rs[0]
             lines += [f"*{label}*: `{q}`. {first['question']}", "", f"Gold: {_gold_text(first['gold'])}.", ""]
             for r in rs:
@@ -340,73 +423,162 @@ def cost_table(records: Sequence[Mapping[str, Any]]) -> list[str]:
         )
     header = ["Model", "Cell", "Arm", "Tool calls / q", "Input", "Cache read", "Cache write", "Output", "USD"]
     header += ["USD per correct", "p50 s", "p95 s"]
-    return [
-        "## Cost and latency",
-        "",
-        *_table(header, rows),
-        "",
-        f"Spend recorded for the test runs: USD {total:.2f}.",
-        "",
-    ]
+    note = (
+        f"Cost of the scored runs (the latest record per question; a replayed response is priced at its original"
+        f" cost): USD {total:.2f}. API spend including the records the D1 reruns replaced is in"
+        " `docs/h2_1/DEVIATIONS.md`."
+    )
+    return ["## Cost and latency", "", *_table(header, rows), "", note, ""]
 
 
 # ------------------------------------------------------------------------------------------------- PoV
 
 
-def pov(t: Table, v: Mapping[str, Any]) -> list[str]:
-    p1, p2, p3 = v["p1"], v["p2"], v["p3"]
-    identity_drop = statistics.fmean([d["mean"] for d in p1["arms"].values() if "mean" in d]) if p1["arms"] else None
-    desc = {arm: d.get("mean") for arm, d in p2["drops"].items()}
-    free_desc = statistics.fmean([x for a, x in desc.items() if a.endswith("free") and x is not None] or [0.0])
-    tools_desc = statistics.fmean([x for a, x in desc.items() if a.endswith("tools") and x is not None] or [0.0])
-    store = {m: d.get("mean") for m, d in p3["models"].items()}
+def _latency_ratio(records: Sequence[Mapping[str, Any]], tool: str) -> float | None:
+    sql = [
+        float(c["latency_s"])
+        for r in records
+        if r["type"] in DEEP_TYPES and r["arm"].startswith("S")
+        for c in r.get("calls", [])
+        if c["name"] == tool
+    ]
+    graph = [
+        float(c["latency_s"])
+        for r in records
+        if r["type"] in DEEP_TYPES and r["arm"].startswith("G")
+        for c in r.get("calls", [])
+        if c["name"] == tool
+    ]
+    a, b = _pct(sql, 0.5), _pct(graph, 0.5)
+    return b / a if a and b else None
 
-    # interface effect, baseline, Haiku, hard paths: tools minus free-form, per store
-    def mean_of(arm: str, cell: Cell, types: Sequence[str]) -> float | None:
-        return _mean(t.of_types(HAIKU, cell, arm, types))
+
+def _clear(c: Mapping[str, float]) -> bool:
+    return "ci_low" in c and (c["ci_low"] > 0 or c["ci_high"] < 0)
+
+
+def _kinds_sentence(off: Mapping[str, Mapping[str, float | None]]) -> str:
+    parts = []
+    for kind, row in off.items():
+        free = [x for a, x in row.items() if a.endswith("free") and x is not None]
+        tools = [x for a, x in row.items() if a.endswith("tools") and x is not None]
+        if free and tools:
+            parts.append(f"{kind}: free-form {statistics.fmean(free):.2f}, tools {statistics.fmean(tools):.2f}")
+    return "Without the layer, by the identity a question needs: " + "; ".join(parts) + "." if parts else ""
+
+
+def pov(t: Table, v: Mapping[str, Any], records: Sequence[Mapping[str, Any]] = ()) -> list[str]:
+    p1, p2, p3 = v["p1"], v["p2"], v["p3"]
+    drops = {a: d.get("mean") for a, d in p1["arms"].items()}
+    free_id = statistics.fmean([x for a, x in drops.items() if a.endswith("free") and x is not None] or [0.0])
+    tools_id = statistics.fmean([x for a, x in drops.items() if a.endswith("tools") and x is not None] or [0.0])
+    desc = {arm: d for arm, d in p2["drops"].items()}
+    free_desc = statistics.fmean([d.get("mean", 0.0) for a, d in desc.items() if a.endswith("free")])
+    tools_desc = statistics.fmean([d.get("mean", 0.0) for a, d in desc.items() if a.endswith("tools")])
+    any_desc = any(_clear(d) for d in desc.values())
+    store = {m: d for m, d in p3["models"].items()}
+
+    def mean_of(arm: str, types: Sequence[str]) -> float | None:
+        return _mean(t.of_types(HAIKU, BASELINE, arm, types))
 
     interface = {
-        store_: (mean_of(f"{store_}-tools", BASELINE, analysis.PATH_TYPES) or 0.0)
-        - (mean_of(f"{store_}-free", BASELINE, analysis.PATH_TYPES) or 0.0)
-        for store_ in ("S", "G")
+        s: (mean_of(f"{s}-tools", analysis.PATH_TYPES) or 0.0) - (mean_of(f"{s}-free", analysis.PATH_TYPES) or 0.0)
+        for s in ("S", "G")
     }
+    identity_off = {arm: _mean(t.of_types(HAIKU, ID_OFF_DESC_ON, arm, analysis.IDENTITY_TYPES)) for arm in ARMS}
+    ratios = {tool: _latency_ratio(records, tool) for tool in ("neighbors", "find_path", "recalls_for")}
+    ratio_text = ", ".join(f"{k} {x:.0f}x" for k, x in ratios.items() if x is not None)
     effects = {
-        "meaning (the identity layer), on identity questions": identity_drop or 0.0,
-        "meaning (schema descriptions), free-form arms": free_desc,
-        "tools over free-form queries, on deep paths": statistics.fmean(interface.values()),
-        "the graph store, free-form, on deep paths": statistics.fmean(
-            [x for x in store.values() if x is not None] or [0.0]
+        "meaning in the data (the identity layer), on identity questions": statistics.fmean([free_id, tools_id]),
+        "the interface (tools over free-form queries), on deep paths": statistics.fmean(interface.values()),
+        "the store (graph over relational, free-form), on deep paths": statistics.fmean(
+            [d["mean"] for d in store.values() if "mean" in d] or [0.0]
         ),
+        "meaning in the schema (descriptions), free-form arms": free_desc,
     }
     ranked = sorted(effects.items(), key=lambda kv: -abs(kv[1]))
+    store_text = ", ".join(f"{m} {_diff(d)}" for m, d in store.items()) or "not measured"
+    identity_first = ranked[0][0].startswith("meaning in the data")
+    rebuild = (
+        "a free-form agent can partly rebuild identity from names and codes (pattern matching, padding an NDC),"
+        " while a fixed tool set that resolves exactly cannot"
+        if free_id < tools_id
+        else "the tools arms held up at least as well as the free-form arms"
+    )
+    if p3["verdict"] == "holds":
+        store_head = "The graph store helped free-form agents on deep paths."
+    elif v["refined"] == "fails":
+        store_head = "The graph store did not help free-form agents on deep paths."
+    else:
+        store_head = "The graph store's effect on deep paths is unclear."
+    slower = [k for k, x in ratios.items() if x is not None and x > 1]
+    speed_head = "The graph store was slower." if slower else "The graph store was not slower."
+    desc_head = (
+        "Descriptions did not matter here."
+        if not any_desc and abs(p2["interaction"].get("mean", 0.0)) < analysis.P2_MARGIN / 2
+        else "Descriptions moved some arms."
+    )
+    tools_won = min(interface.values()) > 0
     lines = [
         "## What this means for the PoV",
         "",
-        f"* **Identity.** Turning the identity layer off changed combined T3+T4 accuracy by"
-        f" {', '.join(f'{a} {-d.get("mean", 0):+.2f}' for a, d in p1['arms'].items())} ({HAIKU}, descriptions on;"
-        f" P1 {p1['verdict']}). The layer is data both stores carry; what an agent does without it is reconstruct"
-        " identity from names and codes, and the drop measures how often it cannot.",
-        f"* **Descriptions.** Turning schema descriptions off moved free-form arms by {-free_desc:+.2f} and tools arms"
-        f" by {-tools_desc:+.2f} on average (identity on; P2 {p2['verdict']}). Tools carry their meaning in their"
-        " definitions, which no cell removes.",
-        f"* **Store.** On deep and variable-length paths in the baseline cell, G-free minus S-free was"
-        f" {', '.join(f'{m} {x:+.2f}' for m, x in store.items() if x is not None) or 'not measured'} (P3"
-        f" {p3['verdict']}; refined H2 {v['refined']}).",
-        f"* **Interface.** On the same questions ({HAIKU}, baseline), tools minus free-form was"
-        f" {interface['S']:+.2f} over SQL and {interface['G']:+.2f} over Cypher.",
+        f"* **{'Identity is the lever.' if identity_first else 'Identity.'}** Removing the identity layer cost"
+        f" {_f(free_id)} of T3+T4 accuracy on average for free-form arms and {_f(tools_id)} for tools arms"
+        f" ({HAIKU}, descriptions on; P1 {p1['verdict']}). Without the layer, free-form SQL and Cypher reached"
+        f" {_f(identity_off['S-free'])} and {_f(identity_off['G-free'])} on those questions, the tools"
+        f" {_f(identity_off['S-tools'])} and {_f(identity_off['G-tools'])}: {rebuild}. Identity is data both"
+        " stores carry; how much an agent loses without it is what P1 measures. "
+        + _kinds_sentence(_kind_scores(t, ID_OFF_DESC_ON)),
+        f"* **{desc_head}** Turning descriptions off moved the free-form arms by {-free_desc:+.2f} and the tools"
+        f" arms by {-tools_desc:+.2f} (identity on; interaction {_diff(p2['interaction'])}, P2 {p2['verdict']})"
+        f"{'' if any_desc else '; no arm moved with an interval clear of 0'}.",
+        f"* **{store_head}** G-free minus S-free on T9+T10 in the baseline: {store_text} (P3 {p3['verdict']};"
+        f" refined H2 {v['refined']}). The AGE limitations table counts the failed Cypher calls behind it.",
+        f"* **{speed_head}** Under the same tool service, Cypher's p50 execution time on T9 to T11 as a multiple of"
+        f" SQL's: {ratio_text or 'n/a'}.",
+        f"* **Tools {'beat' if tools_won else 'did not beat'} free-form queries on deep paths** ({HAIKU}, baseline,"
+        f" T9+T10: tools minus free-form {interface['S']:+.2f} over SQL and {interface['G']:+.2f} over Cypher).",
         "",
-        "**What made multi-hop and identity questions answerable, in order of measured effect size:**",
+        "**What made multi-hop and identity questions answerable, in order of measured effect:**",
         "",
     ]
     lines += [f"{i}. {name}: {value:+.2f}" for i, (name, value) in enumerate(ranked, 1)]
+    gap = abs(ranked[0][1]) - abs(ranked[1][1]) if len(ranked) > 1 else 0.0
     lines += [
         "",
-        "Effects are on different question sets (identity on T3+T4, store and interface on T9+T10, descriptions"
-        " on every type but T6), so the order compares how much each lever moved the questions it is meant to"
-        " move, not one common scale.",
+        "Effects are on the questions each lever is meant to move (identity on T3+T4, interface and store on"
+        " T9+T10, descriptions on every type but T6), so the order compares how much each moved its own questions,"
+        f" not one common scale. The first lever leads the second by {gap:.2f}.",
         "",
     ]
     return lines
+
+
+def runs_section(records: Sequence[Mapping[str, Any]]) -> list[str]:
+    """Scored questions per configuration (the latest record per question), against the pre-registered counts."""
+    from monograph.ablation.run import configs, test_types
+
+    expected = {"T1": 45, "T3": 45, "T4": 45, "T9": 45, "T10": 45, "T11": 45, "T6": 45}
+    counts: Counter[tuple[str, str, str]] = Counter((r["model"], r["cell"], r["arm"]) for r in records)
+    rows, short = [], []
+    for c in configs():
+        types = test_types(c.model) or tuple(expected)
+        want = sum(expected[t] for t in types)
+        got = counts.get((c.model, c.cell.name, c.arm), 0)
+        rows.append([c.model, c.cell.name, c.arm, got, want])
+        if got != want:
+            short.append(f"{c.model} {c.cell.name} {c.arm} ({got} of {want})")
+    return [
+        "## Runs",
+        "",
+        "Scored test questions per configuration: the latest record per question (reruns of infrastructure"
+        " failures replace the record they rerun; `docs/h2_1/DEVIATIONS.md`, D1).",
+        "",
+        *_table(["Model", "Cell", "Arm", "scored", "pre-registered"], rows),
+        "",
+        "Short of the pre-registered count: " + (", ".join(short) or "none") + ".",
+        "",
+    ]
 
 
 # ------------------------------------------------------------------------------------------------ render
@@ -430,13 +602,15 @@ def render(records: Sequence[Mapping[str, Any]], dev_records: Sequence[Mapping[s
         " configuration (see `docs/h2_1/PREREG.md` for the frozen prompts, tools, questions and rules).",
         "",
         *head,
+        *runs_section(records),
         *factor_tables(t),
+        *identity_kinds_table(t),
         *interaction_table(t),
         *backend_latency(records),
         *failure_table(records),
         *age_gaps(records),
         *_examples(records),
         *cost_table(records),
-        *pov(t, verdicts),
+        *pov(t, verdicts, records),
     ]
     return "\n".join(lines).rstrip() + "\n"

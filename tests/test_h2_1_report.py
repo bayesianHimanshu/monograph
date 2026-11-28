@@ -23,6 +23,7 @@ def _record(model: str, cell: str, arm: str, qid: str, qtype: str, right: bool, 
         "arm": arm,
         "question_id": qid,
         "type": qtype,
+        "template": {"T3": "t3_moiety_products", "T4": "t4_labelers_by_rxcui"}.get(qtype, f"{qtype.lower()}_x"),
         "split": split,
         "correct": right,
         "f1": 1.0 if right else 0.0,
@@ -118,6 +119,7 @@ def test_the_report_has_every_section_and_no_em_dash() -> None:
     text = render(_records(rule), _records(lambda c, q, i: True, "dev"), "")
     for heading in (
         "## Verdicts against the PREREG",
+        "## Runs",
         "## Identity x descriptions x arm, per type",
         "## P2 interaction data",
         "## Backend execution latency on deep paths (T9 to T11)",
