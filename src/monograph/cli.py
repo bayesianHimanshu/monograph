@@ -332,6 +332,20 @@ def report_h6(root: Root = Path()) -> None:
     typer.echo(f"wrote {path} from {len(records)} result lines")
 
 
+@report_app.command("mutations")
+def report_mutations(root: Root = Path()) -> None:
+    """Regenerate docs/MUTATIONS.md from results/mutations/*.jsonl only: the latest run of each mutation, the
+    gate that caught it, and the run's date and commit."""
+    from monograph.harness.report_mutations import render
+    from monograph.harness.results import read_results
+
+    directory = wiring.mutations_dir(root)
+    records = list(read_results(directory)) if directory.exists() else []
+    path = root / "docs" / "MUTATIONS.md"
+    path.write_text(render(records), encoding="utf-8")
+    typer.echo(f"wrote {path} from {len(records)} result lines")
+
+
 @report_app.command("h2")
 def report_h2(root: Root = Path()) -> None:
     """Regenerate docs/h2/RESULTS.md from results/h2/*.jsonl alone."""

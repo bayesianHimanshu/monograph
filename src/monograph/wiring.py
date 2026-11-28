@@ -171,6 +171,7 @@ def git_sha(root: Path) -> str:
             ".",
             ":!results",
             ":!docs/h6/RESULTS.md",
+            ":!docs/MUTATIONS.md",
             ":!docs/h4/RESULTS.md",
             ":!docs/h2/RESULTS.md",
         ],
