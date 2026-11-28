@@ -41,6 +41,16 @@ COVERED_CLASSES: tuple[str, ...] = (
 
 ColRole = Literal["key", "ref", "value", "seq"]
 
+# The examples given for the two large code lists, in both contexts (the semantic layer and the ontology).
+EXAMPLES: dict[str, tuple[str, ...]] = {
+    "DosageForm": ("TABLET", "TABLET, FILM COATED", "INJECTION, SOLUTION", "CAPSULE"),
+    "Route": ("ORAL", "INTRAVENOUS", "TOPICAL", "SUBCUTANEOUS"),
+}
+
+
+def _examples(enum: str) -> str:
+    return ", ".join(f"'{x}'" for x in EXAMPLES[enum])
+
 
 @dataclass(frozen=True, slots=True)
 class VCol:
@@ -143,8 +153,7 @@ def views(desc: Callable[[str], str]) -> tuple[View, ...]:
                     "Product.dosage_form",
                     "text",
                     desc("Product.dosage_form")
-                    + " Values are FDA SPL dosage form terms in capitals, for example 'TABLET', 'TABLET, FILM COATED',"
-                    " 'INJECTION, SOLUTION', 'CAPSULE'.",
+                    + f" Values are FDA SPL dosage form terms in capitals, for example {_examples('DosageForm')}.",
                     synonyms=("form", "formulation"),
                 ),
                 VCol(
@@ -179,8 +188,7 @@ def views(desc: Callable[[str], str]) -> tuple[View, ...]:
                     "Product.routes",
                     "text",
                     desc("Product.routes")
-                    + " Values are FDA SPL route terms in capitals, for example 'ORAL', 'INTRAVENOUS', 'TOPICAL',"
-                    " 'SUBCUTANEOUS'.",
+                    + f" Values are FDA SPL route terms in capitals, for example {_examples('Route')}.",
                     synonyms=("route of administration", "administration route"),
                 ),
             ),

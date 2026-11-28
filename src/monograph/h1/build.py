@@ -28,6 +28,18 @@ from monograph import wiring
 from monograph.gen import semantic_layer as s
 from monograph.gen import warehouse as w
 
+# The generated artifacts a database is built from (and that the pins hold); their hash is the build stamp.
+ARTIFACTS: tuple[str, ...] = (
+    w.MAPPING_FILE,
+    w.DDL_FILE,
+    w.LOAD_FILE,
+    w.INVERSE_FILE,
+    s.MAPPING_FILE,
+    s.MODEL_FILE,
+    s.VIEWS_FILE,
+)
+STAMP_SCHEMA = "h1_admin"  # not granted to any agent role
+
 Context = Literal["wh", "sv"]
 CONTEXTS: tuple[Context, ...] = ("wh", "sv")
 PREFIX = "monograph_h1"
@@ -55,6 +67,31 @@ class BuildReport:
 
 def generated(root: Path, name: str) -> str:
     return (wiring.generated_dir(root) / name).read_text(encoding="utf-8")
+
+
+def stamp(texts: Sequence[bytes]) -> str:
+    """The build stamp: sha256 over the artifacts, each prefixed by its length."""
+    import hashlib
+
+    h = hashlib.sha256()
+    for t in texts:
+        h.update(len(t).to_bytes(8, "big") + t)
+    return h.hexdigest()
+
+
+def live_stamp(root: Path) -> str:
+    return stamp([(wiring.generated_dir(root) / n).read_bytes() for n in ARTIFACTS])
+
+
+def database_stamp(admin: str, context: Context, prefix: str = PREFIX) -> str | None:
+    from monograph.ablation.load import with_database
+
+    try:
+        with psycopg.connect(with_database(admin, database(context, prefix)), connect_timeout=5) as conn:
+            row = conn.execute(f"SELECT sha256 FROM {STAMP_SCHEMA}.build").fetchone()
+    except psycopg.Error:
+        return None
+    return str(row[0]) if row else None
 
 
 def _one(conn: psycopg.Connection[Any], query: str) -> int:
@@ -230,6 +267,10 @@ def build_context(
         for schema in ("h2", w.EQ_WH, w.EQ_H2):
             conn.execute(sql.SQL("DROP SCHEMA IF EXISTS {} CASCADE").format(sql.Identifier(schema)))
         create_role(conn, context, prefix)
+        conn.execute(sql.SQL("DROP SCHEMA IF EXISTS {} CASCADE").format(sql.Identifier(STAMP_SCHEMA)))
+        conn.execute(sql.SQL("CREATE SCHEMA {}").format(sql.Identifier(STAMP_SCHEMA)))
+        conn.execute(f"CREATE TABLE {STAMP_SCHEMA}.build (sha256 text NOT NULL, built_at timestamptz NOT NULL)")
+        conn.execute(f"INSERT INTO {STAMP_SCHEMA}.build VALUES (%s, now())", [live_stamp(root)])
     log(
         f"{database(context, prefix)}: {sum(counts.values())} warehouse rows, round trip exact on {len(rows)} tables"
         + (f", {len(checks)} semantic views checked" if checks else "")

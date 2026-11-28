@@ -116,6 +116,9 @@ def test_both_contexts_on_the_mini_fixture() -> None:
                     "SELECT nspname FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname <> 'information_schema'"
                 )
             }
-            assert visible - {"public"} == set(build.schemas(context))
+            assert visible - {"public", build.STAMP_SCHEMA} == set(build.schemas(context))
+            with pytest.raises(psycopg.errors.InsufficientPrivilege):
+                conn.execute(f"SELECT * FROM {build.STAMP_SCHEMA}.build")
+            conn.rollback()
             with pytest.raises(psycopg.errors.ReadOnlySqlTransaction):
                 conn.execute("CREATE TEMP TABLE x (a int)")
