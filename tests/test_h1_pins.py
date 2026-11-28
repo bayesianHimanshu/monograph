@@ -24,15 +24,16 @@ def test_the_pins_are_what_the_live_code_sends() -> None:
     for arm in arms.ARMS:
         assert pins.system_prompt(ROOT, arm) == arms.system_prompt(arm)
     assert pins.render_tools(pins.tools(ROOT)) == pins.render_tools(arms.TOOLS)
-    assert pins.pinned_stamp(ROOT) == build.live_stamp(ROOT)
 
 
 def test_a_test_run_is_allowed_now() -> None:
-    # Not a CI invariant: an evolved stack correctly refuses an H1 rerun. True on this branch.
+    # Not a CI invariant: an evolved stack (code, or the generated artifacts after a model change) correctly
+    # refuses an H1 rerun. True on this branch.
     drift = pins.frozen_drift(ROOT)
     if drift:
         pytest.skip(f"the live stack has moved on since H1: {drift}")
     assert drift == []
+    assert pins.pinned_stamp(ROOT) == build.live_stamp(ROOT)
 
 
 def _copy(tmp_path: Path) -> Path:

@@ -45,8 +45,8 @@ def test_a_layout_that_maps_a_property_twice_is_refused() -> None:
 def test_route_and_dosage_form_codes_are_the_nci_codes_in_the_source() -> None:
     routes = dict((label, code) for code, label in w.nci_codes(Route))
     forms = dict((label, code) for code, label in w.nci_codes(DosageForm))
-    assert len(routes) == len(Route) == 121
-    assert len(forms) == len(DosageForm) == 158
+    assert len(routes) == len(Route)  # every member, however many the model has
+    assert len(forms) == len(DosageForm)
     assert routes["ORAL"] == "C38288"
     assert routes["INTRAVENOUS"] == "C38276"
     assert forms["TABLET"] == "C42998"
