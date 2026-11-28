@@ -141,6 +141,19 @@ def results_dir(root: Path) -> Path:
     return root / "results" / "h6"
 
 
+MUTATIONS = "MUTATIONS"  # results/mutations/: the mutation suite's own results, never an experiment's
+
+
+def mutations_dir(root: Path) -> Path:
+    return root / "results" / MUTATIONS.lower()
+
+
+def mutations_writer(root: Path) -> ResultsWriter:
+    """Where `monograph mutate` records its results. The suite belongs to no experiment, so it never writes to
+    results/h6/ or any other experiment's results."""
+    return results_writer(root, MUTATIONS)
+
+
 def git_sha(root: Path) -> str:
     import subprocess
 

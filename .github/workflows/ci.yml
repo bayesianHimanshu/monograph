@@ -155,4 +155,5 @@ jobs:
           name: h6-results-${{ github.run_id }}
           path: |
             results/h6/
+            results/mutations/
             docs/h6/RESULTS.md

@@ -192,9 +192,10 @@ def check_all(root: Root = Path()) -> None:
 def mutate(
     root: Root = Path(),
     only: Annotated[list[str] | None, typer.Option("--only", help="Run only these mutation IDs.")] = None,
-    record: Annotated[bool, typer.Option(help="Append the results to results/h6.")] = True,
+    record: Annotated[bool, typer.Option(help="Append the results to results/mutations.")] = True,
 ) -> None:
-    """Run the mutation suite: copy the repo, break one thing, run every gate, record what caught it."""
+    """Run the mutation suite: copy the repo, break one thing, run every gate, record what caught it.
+    Results go to results/mutations/ only, never to an experiment's results."""
     import sys
     import time
 
@@ -216,7 +217,7 @@ def mutate(
         if result.apply_error:
             typer.echo(f"    could not apply: {result.apply_error}", err=True)
     if record:
-        record_mutations(wiring.results_writer(root), results)
+        record_mutations(wiring.mutations_writer(root), results)
     if not all(r.as_expected for r in results):
         raise _fail("some mutations were not caught by their expected gate")
 
@@ -317,11 +318,12 @@ app.add_typer(report_app, name="report")
 
 @report_app.command("h6")
 def report_h6(root: Root = Path()) -> None:
-    """Regenerate docs/h6/RESULTS.md from results/h6/*.jsonl alone."""
+    """Regenerate docs/h6/RESULTS.md from results/h6/*.jsonl and the mutation suite's results/mutations/*.jsonl
+    (the latest suite run, wherever it was recorded: runs before 2026-11-28 were recorded in results/h6/)."""
     from monograph.harness.report import ReportBuilder
     from monograph.harness.results import read_results
 
-    records = list(read_results(wiring.results_dir(root)))
+    records = [*read_results(wiring.results_dir(root)), *read_results(wiring.mutations_dir(root))]
     if not records:
         raise _fail("no results in results/h6; run `monograph measure` and `monograph mutate` first")
     text = ReportBuilder(records).render()
