@@ -31,6 +31,7 @@ PROMPTS = Path("src/monograph/agent/prompts")
 
 # Code that executes in a run, pinned under frozen/code/ (the same relative path).
 CODE: tuple[str, ...] = (
+    "src/monograph/ablation/analysis.py",  # the decision rules
     "src/monograph/ablation/cells.py",
     "src/monograph/ablation/cli.py",
     "src/monograph/ablation/load.py",

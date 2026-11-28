@@ -262,3 +262,7 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
   the moiety questions where a name-detectable gap exists (2 of 24, 1 on test) and P1 is also reported without
   them, as a pre-registered sensitivity check. (2) An agent that submits a bare code (a recall number) instead of
   the id is scored wrong, as in H2; the base prompt asks for ids as the data gives them.
+* **Stage 5, cost and the test set.** Dev spend USD 17.45; the full test set was estimated at USD 52.34 (Haiku
+  10.58, Sonnet 41.75), above the USD 40 stop. The user chose, on 2026-11-28 before the PREREG, to keep Haiku's
+  full factorial and run Sonnet's test only on T3, T9, T10 and T11 (estimate USD 41.32). Ceiling marks on dev:
+  T1, T4 and T6 are non-informative; P3's types (T9, T10) are not, so nothing is excluded from P3.

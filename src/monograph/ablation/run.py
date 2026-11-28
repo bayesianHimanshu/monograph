@@ -49,6 +49,17 @@ class Config:
         return f"h2_1/{self.cell.name}/{self.arm}"
 
 
+# Sonnet's test runs cover these types only (decided by the user on 2026-11-28, after the dev cost estimate of
+# USD 52.34 exceeded the USD 40 stop and before the PREREG). Dev ran every type for every configuration; T1, T4
+# and T6 were at the ceiling there. P3 and the refined verdict (T9+T10) stay fully covered for both models.
+SONNET_TEST_TYPES: tuple[str, ...] = ("T3", "T9", "T10", "T11")
+
+
+def test_types(model: str) -> tuple[str, ...] | None:
+    """The question types a model's test runs cover (None: every type)."""
+    return SONNET_TEST_TYPES if model == SONNET else None
+
+
 def configs() -> list[Config]:
     """Haiku: the full factorial. Sonnet: S-free, G-free and G-tools in the baseline and the hardest cell (G-free
     added on 2026-11-28, before any run, so P3 and the refined verdict can be checked for both models)."""

@@ -1441,3 +1441,24 @@ def gold_for(question: Mapping[str, Any], identity: bool) -> Gold:
 def anchors_for(question: Mapping[str, Any], identity: bool) -> list[str]:
     anchors: list[str] = question["anchors"]["identity_on" if identity else "identity_off"]
     return anchors
+
+
+MOIETY_TEMPLATES = ("t3_moiety_products", "t4_recall_firms_by_moiety")
+
+
+def moiety_gaps(ix: Index, questions: Sequence[Mapping[str, Any]]) -> list[str]:
+    """Moiety questions whose gold (the recorded moiety links) can disagree with a correct reconstruction from
+    names: some substance in a product is not linked to the moiety but its name starts with the moiety's name
+    (for example MOXIFLOXACIN HYDROCHLORIDE with no recorded link to MOXIFLOXACIN). P1 is also reported
+    without them (pre-registered sensitivity check)."""
+    in_products = {s for subs in ix.ingredients.values() for s in subs}
+    out = []
+    for q in questions:
+        if q["template"] not in MOIETY_TEMPLATES:
+            continue
+        m = q["anchors"]["identity_on"][0]
+        name = normalize_name(ix.substances[m].name)
+        linked = {s for s, mm in ix.moiety.items() if mm == m} | {m}
+        if any(s not in linked and normalize_name(ix.substances[s].name).startswith(name + " ") for s in in_products):
+            out.append(str(q["id"]))
+    return sorted(out)

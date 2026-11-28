@@ -233,7 +233,10 @@ def run_one(root: Path, model: str, cell_name: str, arm: str, split: str, limit:
         if drift:
             typer.echo(f"refusing the test run: PREREG frozen files changed or missing: {drift}", err=True)
             raise typer.Exit(1)
-    qs = [_materialized(q, cell) for q in load_questions(root, split)]
+    from monograph.ablation.run import test_types
+
+    types = test_types(model) if split == "test" else None
+    qs = [_materialized(q, cell) for q in load_questions(root, split) if types is None or q["type"] in types]
     qs = qs[:limit] if limit else qs
     client = CachedToolClient(
         AnthropicToolClient(anthropic.Anthropic(max_retries=8)), ToolResponseCache(root / RESPONSES)
@@ -294,3 +297,146 @@ def run_all(
     for c in configs():
         if model is None or c.model == model:
             run_one(root, c.model, c.cell.name, c.arm, split, None, workers)
+
+
+# ------------------------------------------------------------------------------------------- report
+
+RESULTS_FILE = Path("docs/h2_1/RESULTS.md")
+
+
+def report_h2_1(root: Path) -> None:
+    from monograph.ablation import analysis
+    from monograph.ablation.report import render
+    from monograph.harness.results import read_results
+
+    records = list(read_results(root / "results" / "h2_1"))
+    test, dev = analysis.runs(records, "test"), analysis.runs(records, "dev")
+    if not test:
+        typer.echo("no H2.1 test results yet", err=True)
+        raise typer.Exit(1)
+    prereg = root / "docs" / "h2_1" / "PREREG.md"
+    text = render(test, dev, prereg.read_text(encoding="utf-8") if prereg.exists() else "")
+    (root / RESULTS_FILE).write_text(text, encoding="utf-8")
+    typer.echo(f"wrote {RESULTS_FILE}")
+
+
+# ------------------------------------------------------------------------------------------- PREREG
+
+PREREG_FILE = Path("docs/h2_1/PREREG.md")
+LIMITATIONS = (
+    "The frame is targeted (H2's recall-centred frame plus a fan-out extension) and connected by construction;"
+    " it is not a random sample of FDA data.",
+    "Identity off is defined operationally (the PREREG's table): the H6 ingest keys without the derived"
+    " cross-source mappings. Labelers sharing a canonical name across labeler codes stay one organization in"
+    " both identity levels (an exact-name merge within the NDC directory).",
+    "T3 and T4 gold with identity off is what the identity layer says the question refers to; an agent can"
+    " only reach it by reconstructing identity from names and codes, which is what P1 measures.",
+    "Prompts and tool definitions are the same in every cell (except resolve_entity's matching sentence), so"
+    " the base prompt's vocabulary (aliases, 11-digit NDCs, drug mappings) is present even where the data has"
+    " no such links.",
+    "With descriptions off the SQL store still exposes CHECK constraints (enumerated values, patterns) through"
+    " the catalog, as in H2; the graph store exposes values only through the data.",
+    "The ceiling rule is applied once, on dev, before the test run; questions were not changed after dev.",
+    "Each test question runs once per configuration (one sample).",
+    "Gold for identity references follows the recorded identity layer, which is incomplete: a salt with no"
+    " recorded moiety link, a product with no recorded crosswalk or a firm variant with no recorded alias is"
+    " not in the gold even when a careful reading of names would include it. The name-detectable case for"
+    " moieties is listed and checked as a sensitivity analysis.",
+    "Answers must be ids as the data gives them (IRIs, or the part after the base); a bare code such as a"
+    " recall number is scored wrong, as in H2.",
+    "The fewest-steps questions (T10) answer 5 or 7 steps (11 and 4 questions).",
+)
+
+
+def _latest(records: list[dict[str, Any]], metric: str, key: str) -> dict[Any, dict[str, Any]]:
+    out: dict[Any, dict[str, Any]] = {}
+    for r in records:
+        if r.get("metric") == metric:
+            out[r["details"].get(key)] = r["details"]
+    return out
+
+
+def dev_summary(
+    records: list[dict[str, Any]], qs: list[dict[str, Any]]
+) -> tuple[list[dict[str, Any]], dict[str, float]]:
+    """Per configuration: runs, prompt versions and dev score; the dev spend and the test estimate."""
+    from collections import Counter, defaultdict
+
+    from monograph.ablation import analysis
+    from monograph.ablation.run import configs, test_types
+
+    dev_ids = {q["id"] for q in qs if q["split"] == "dev"}
+    n_test: Counter[str] = Counter(q["type"] for q in qs if q["split"] == "test")
+    runs = [r["details"] for r in records if r.get("metric") == "h2_1.run" and r["details"].get("split") == "dev"]
+    latest = analysis.runs(records, "dev")
+    log, estimate = [], 0.0
+    for c in configs():
+        mine = [d for d in latest if (d["model"], d["cell"], d["arm"]) == (c.model, c.cell.name, c.arm)]
+        if {d["question_id"] for d in mine} != dev_ids:
+            raise typer.BadParameter(f"dev is incomplete for {c.model} {c.cell.name} {c.arm}")
+        every = [d for d in runs if (d["model"], d["cell"], d["arm"]) == (c.model, c.cell.name, c.arm)]
+        versions = ", ".join(sorted({f"{k} {v}" for d in every for k, v in d["prompt_versions"].items()}))
+        log.append(
+            {
+                "model": c.model,
+                "cell": c.cell.name,
+                "arm": c.arm,
+                "versions": versions,
+                "runs": len(every),
+                "score": sum(analysis.score(d) for d in mine) / len(mine),
+            }
+        )
+        by_type: dict[str, list[float]] = defaultdict(list)
+        for d in mine:
+            by_type[d["type"]].append(float(d["cost_usd"]))
+        covered = test_types(c.model)
+        for qtype, costs in by_type.items():
+            if covered is None or qtype in covered:
+                estimate += sum(costs) / len(costs) * n_test[qtype]
+    spend = sum(float(d["cost_usd"]) for d in runs if not d.get("from_cache"))
+    return log, {"dev_usd": spend, "test_estimate_usd": estimate}
+
+
+@h2_1_app.command("estimate")
+def estimate(root: Root = Path()) -> None:
+    """The test cost estimated from dev (USD per dev question, per configuration, times the test questions)."""
+    from monograph.ablation import pins
+    from monograph.harness.results import read_results
+
+    records = list(read_results(root / "results" / "h2_1"))
+    _, cost = dev_summary(records, pins.questions(root)["questions"])
+    typer.echo(f"dev spend USD {cost['dev_usd']:.2f}; test estimate USD {cost['test_estimate_usd']:.2f}")
+
+
+@h2_1_app.command("prereg")
+def prereg(root: Root = Path()) -> None:
+    """Pin everything the agents are sent under experiments/h2_1/frozen/ and write docs/h2_1/PREREG.md, once."""
+    from monograph.ablation import analysis, pins
+    from monograph.ablation.prereg import render, write_pins
+    from monograph.harness.results import read_results
+
+    path = root / PREREG_FILE
+    if path.exists():
+        typer.echo(f"{PREREG_FILE} exists; a PREREG is written once (changes go to docs/h2_1/DEVIATIONS.md)", err=True)
+        raise typer.Exit(1)
+    records = list(read_results(root / "results" / "h2_1"))
+    qs = pins.questions(root)["questions"]
+    log, cost = dev_summary(records, qs)
+    dev = analysis.Table.of(analysis.runs(records, "dev"))
+    datasets = {
+        ("identity on" if k else "identity off"): v for k, v in _latest(records, "h2_1.dataset", "identity").items()
+    }
+    loads = dict(sorted(_latest(records, "h2_1.load", "cell").items()))
+    extension = json.loads((root / FRAME_FILE).read_text(encoding="utf-8"))
+    counts: dict[str, dict[str, int]] = {}
+    for q in qs:
+        counts.setdefault(q["type"], {"dev": 0, "test": 0})[q["split"]] += 1
+    from monograph.ablation.questions import moiety_gaps
+    from monograph.qa.index import Index
+
+    gaps = moiety_gaps(Index.build(_datasets(root)[True].instances), qs)
+    hashes = write_pins(root)
+    text = render(root, hashes, datasets, loads, extension, counts, dev, log, cost, LIMITATIONS, gaps)
+    with path.open("x", encoding="utf-8") as f:
+        f.write(text)
+    typer.echo(f"wrote {PREREG_FILE} and {len(hashes)} pins; commit both before any test run")

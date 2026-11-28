@@ -39,6 +39,13 @@ def test_the_pre_registered_configurations() -> None:
     assert {c.arm for c in sonnet} == {"S-free", "G-free", "G-tools"}
 
 
+def test_sonnet_tests_cover_the_informative_types_only() -> None:
+    from monograph.ablation.run import SONNET_TEST_TYPES, test_types
+
+    assert test_types(HAIKU) is None
+    assert test_types(SONNET) == SONNET_TEST_TYPES == ("T3", "T9", "T10", "T11")
+
+
 def test_the_cache_tag_separates_cells() -> None:
     a, b = Config(HAIKU, CELLS[0], "S-tools"), Config(HAIKU, CELLS[1], "S-tools")
     assert a.tag != b.tag

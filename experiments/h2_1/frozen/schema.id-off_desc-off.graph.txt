@@ -1,0 +1,96 @@
+Apache AGE 1.8.0 (openCypher subset), graph drug. Not supported by AGE: shortestPath(),
+CALL { } subqueries, relationship type alternation [:A|B]. Dates are ISO strings (YYYY-MM-DD).
+
+Vertex labels:
+
+(:Substance)
+  iri: string.
+  unii: string.
+  name: string.
+
+(:Organization)
+  iri: string.
+  slug: string.
+  name: string.
+
+(:ClinicalDrug)
+  iri: string.
+  rxcui: string.
+  name: string.
+  term_type: string.
+
+(:Product)
+  iri: string.
+  product_ndc: string.
+  name: string.
+  dosage_form: string.
+  product_type: string.
+  finished: boolean.
+  routes: list of strings.
+
+(:PackagedProduct)
+  iri: string.
+  ndc: string.
+  description: string.
+
+(:Label)
+  iri: string.
+  set_id: string.
+  version: integer.
+  effective_date: string (ISO date, YYYY-MM-DD).
+
+(:LabelSection)
+  iri: string.
+  code: string.
+  title: string.
+  text: string.
+
+(:AdverseEventReport)
+  iri: string.
+  report_id: string.
+  source_system: string.
+  receipt_date: string (ISO date, YYYY-MM-DD).
+  serious: boolean.
+  seriousness_criteria: list of strings.
+  patient_age_years: number.
+
+(:DrugInvolvement)
+  iri: string.
+  drug_name: string.
+  role: string.
+  position: integer.
+
+(:Reaction)
+  iri: string.
+  term: string.
+  position: integer.
+
+(:Recall)
+  iri: string.
+  recall_number: string.
+  classification: string.
+  reason: string.
+  report_date: string (ISO date, YYYY-MM-DD).
+
+Edge labels:
+
+(:AdverseEventReport)-[:DRUG_INVOLVEMENT]->(:DrugInvolvement)
+
+(:Product)-[:INGREDIENT]->(:Substance)
+  strength_value: number.
+  strength_unit: string.
+  position: integer.
+
+(:PackagedProduct)-[:LABELER]->(:Organization)
+
+(:Label)-[:LABELS_PRODUCT]->(:Product)
+
+(:PackagedProduct)-[:PRODUCT]->(:Product)
+
+(:AdverseEventReport)-[:REACTION]->(:Reaction)
+
+(:Recall)-[:RECALLING_FIRM]->(:Organization)
+
+(:Recall)-[:RECALLS_PRODUCT]->(:Product)
+
+(:Label)-[:SECTION]->(:LabelSection)

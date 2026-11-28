@@ -1,0 +1,96 @@
+Apache AGE 1.8.0 (openCypher subset), graph drug. Not supported by AGE: shortestPath(),
+CALL { } subqueries, relationship type alternation [:A|B]. Dates are ISO strings (YYYY-MM-DD).
+
+Vertex labels:
+
+(:Substance) A chemical or biological substance identified by its FDA Unique Ingredient Identifier.
+  iri: string. Canonical identifier (IRI).
+  unii: string. FDA UNII code.
+  name: string. Preferred name.
+
+(:Organization) A company acting as manufacturer, labeler or recalling firm.
+  iri: string. Canonical identifier (IRI).
+  slug: string. Stable key: the normalized name, lowercase, words joined by hyphens.
+  name: string. Preferred name.
+
+(:ClinicalDrug) A clinical drug concept in RxNorm, identified by its RxCUI.
+  iri: string. Canonical identifier (IRI).
+  rxcui: string. RxNorm CUI.
+  name: string. RxNorm name.
+  term_type: string. RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.
+
+(:Product) A drug product as listed with FDA, identified by its product NDC (labeler and product segments).
+  iri: string. Canonical identifier (IRI).
+  product_ndc: string. Product NDC in 4-4, 5-3 or 5-4 form.
+  name: string. Name as listed.
+  dosage_form: string. Dosage form as written in the source.
+  product_type: string. NDC directory product type. One of: HUMAN PRESCRIPTION DRUG, HUMAN OTC DRUG, PLASMA DERIVATIVE, CELLULAR THERAPY, VACCINE, STANDARDIZED ALLERGENIC, NON-STANDARDIZED ALLERGENIC, BULK INGREDIENT, DRUG FOR FURTHER PROCESSING, LICENSED VACCINE BULK INTERMEDIATE.
+  finished: boolean. Whether this is a finished product (False for bulk ingredients and intermediates).
+  routes: list of strings. Routes of administration. Required for finished prescription and OTC products.
+
+(:PackagedProduct) A package of a product, identified by its 10-digit hyphenated package NDC.
+  iri: string. Canonical identifier (IRI).
+  ndc: string. Package NDC in 4-4-2, 5-3-2 or 5-4-1 form.
+  description: string. Package description as written in the source.
+
+(:Label) One version of a structured product label (SPL).
+  iri: string. Canonical identifier (IRI).
+  set_id: string. SPL set ID, a lowercase UUID.
+  version: integer. SPL version.
+  effective_date: string (ISO date, YYYY-MM-DD). SPL effective time.
+
+(:LabelSection) One LOINC-coded section of a structured product label.
+  iri: string. Canonical identifier (IRI).
+  code: string. LOINC code.
+  title: string. Title.
+  text: string. Plain text.
+
+(:AdverseEventReport) A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA.
+  iri: string. Canonical identifier (IRI).
+  report_id: string. Safety report ID, optionally with a -digits version suffix.
+  source_system: string. Where the report came from. One of: openfda_e2b, faers_qde.
+  receipt_date: string (ISO date, YYYY-MM-DD). Date FDA received the report.
+  serious: boolean. Whether the report is serious.
+  seriousness_criteria: list of strings. Seriousness criteria met. One of: death, life threatening, hospitalization, disabling, congenital anomaly, other.
+  patient_age_years: number. Patient age at onset, in years.
+
+(:DrugInvolvement) A drug mentioned in an adverse event report, as reported.
+  iri: string. Canonical identifier (IRI).
+  drug_name: string. Drug name exactly as reported.
+  role: string. Role in the report. One of: primary suspect, secondary suspect, suspect, concomitant, interacting.
+  position: integer. Position in the owner's list, from 0.
+
+(:Reaction) A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed).
+  iri: string. Canonical identifier (IRI).
+  term: string. MedDRA PT text (at most 100 characters).
+  position: integer. Position in the owner's list, from 0.
+
+(:Recall) A drug recall from the FDA enforcement report.
+  iri: string. Canonical identifier (IRI).
+  recall_number: string. FDA recall number, for example D-321-2016 or D-0123-2025.
+  classification: string. Class. One of: I, II, III.
+  reason: string. Reason for the recall.
+  report_date: string (ISO date, YYYY-MM-DD). Enforcement report date.
+
+Edge labels:
+
+(:AdverseEventReport)-[:DRUG_INVOLVEMENT]->(:DrugInvolvement) Drugs, in reported order.
+
+(:Product)-[:INGREDIENT]->(:Substance) Active ingredients, in order.
+  strength_value: number. Numeric strength.
+  strength_unit: string. Unit of the strength, for example mg/1.
+  position: integer. Position in the owner's list, from 0.
+
+(:PackagedProduct)-[:LABELER]->(:Organization) The labeler firm.
+
+(:Label)-[:LABELS_PRODUCT]->(:Product) Products.
+
+(:PackagedProduct)-[:PRODUCT]->(:Product) The packaged product.
+
+(:AdverseEventReport)-[:REACTION]->(:Reaction) Reactions, in order.
+
+(:Recall)-[:RECALLING_FIRM]->(:Organization) The recalling firm.
+
+(:Recall)-[:RECALLS_PRODUCT]->(:Product) Products.
+
+(:Label)-[:SECTION]->(:LabelSection) Coded sections.

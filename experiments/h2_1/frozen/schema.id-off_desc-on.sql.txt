@@ -1,0 +1,201 @@
+PostgreSQL 18. All tables are in schema h2 (the search path).
+
+CREATE TABLE substance (
+    iri text PRIMARY KEY,
+    unii text NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT uq_substance_key UNIQUE (unii)
+);
+COMMENT ON TABLE substance IS 'A chemical or biological substance identified by its FDA Unique Ingredient Identifier.';
+COMMENT ON COLUMN substance.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN substance.unii IS 'FDA UNII code.';
+COMMENT ON COLUMN substance.name IS 'Preferred name.';
+
+CREATE TABLE organization (
+    iri text PRIMARY KEY,
+    slug text NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT uq_organization_key UNIQUE (slug)
+);
+COMMENT ON TABLE organization IS 'A company acting as manufacturer, labeler or recalling firm.';
+COMMENT ON COLUMN organization.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN organization.slug IS 'Stable key: the normalized name, lowercase, words joined by hyphens.';
+COMMENT ON COLUMN organization.name IS 'Preferred name.';
+
+CREATE TABLE clinical_drug (
+    iri text PRIMARY KEY,
+    rxcui text NOT NULL,
+    name text,
+    term_type text,
+    CONSTRAINT uq_clinical_drug_key UNIQUE (rxcui)
+);
+COMMENT ON TABLE clinical_drug IS 'A clinical drug concept in RxNorm, identified by its RxCUI.
+
+    Several NDC products can share one clinical drug. The name is optional because openFDA carries
+    RxCUIs without their RxNorm names.';
+COMMENT ON COLUMN clinical_drug.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN clinical_drug.rxcui IS 'RxNorm CUI.';
+COMMENT ON COLUMN clinical_drug.name IS 'RxNorm name.';
+COMMENT ON COLUMN clinical_drug.term_type IS 'RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.';
+
+CREATE TABLE product (
+    iri text PRIMARY KEY,
+    product_ndc text NOT NULL,
+    name text NOT NULL,
+    dosage_form text NOT NULL,
+    product_type text NOT NULL,
+    finished boolean NOT NULL,
+    routes text[] NOT NULL DEFAULT '{}',
+    CONSTRAINT uq_product_key UNIQUE (product_ndc)
+);
+COMMENT ON TABLE product IS 'A drug product as listed with FDA, identified by its product NDC (labeler and product segments).';
+COMMENT ON COLUMN product.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN product.product_ndc IS 'Product NDC in 4-4, 5-3 or 5-4 form.';
+COMMENT ON COLUMN product.name IS 'Name as listed.';
+COMMENT ON COLUMN product.dosage_form IS 'Dosage form as written in the source.';
+COMMENT ON COLUMN product.product_type IS 'NDC directory product type. One of: HUMAN PRESCRIPTION DRUG, HUMAN OTC DRUG, PLASMA DERIVATIVE, CELLULAR THERAPY, VACCINE, STANDARDIZED ALLERGENIC, NON-STANDARDIZED ALLERGENIC, BULK INGREDIENT, DRUG FOR FURTHER PROCESSING, LICENSED VACCINE BULK INTERMEDIATE.';
+COMMENT ON COLUMN product.finished IS 'Whether this is a finished product (False for bulk ingredients and intermediates).';
+COMMENT ON COLUMN product.routes IS 'Routes of administration. Required for finished prescription and OTC products.';
+
+CREATE TABLE product__ingredients (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES product (iri) ON DELETE CASCADE,
+    position integer NOT NULL,
+    substance_iri text NOT NULL REFERENCES substance (iri),
+    strength_value numeric NOT NULL,
+    strength_unit text NOT NULL,
+    CONSTRAINT uq_product__ingredients_position UNIQUE (owner_iri, position),
+    CONSTRAINT uq_product__ingredients_substance UNIQUE (owner_iri, substance_iri)
+);
+COMMENT ON TABLE product__ingredients IS 'Product.ingredients: Active ingredients, in order. An active ingredient of a product with its strength.';
+COMMENT ON COLUMN product__ingredients.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN product__ingredients.owner_iri IS 'The owning Product row (product.iri).';
+COMMENT ON COLUMN product__ingredients.position IS 'Position in the owner''s list, from 0.';
+COMMENT ON COLUMN product__ingredients.substance_iri IS 'The substance.';
+COMMENT ON COLUMN product__ingredients.strength_value IS 'Numeric strength.';
+COMMENT ON COLUMN product__ingredients.strength_unit IS 'Unit of the strength, for example mg/1.';
+
+CREATE TABLE packaged_product (
+    iri text PRIMARY KEY,
+    ndc text NOT NULL,
+    product_iri text NOT NULL REFERENCES product (iri),
+    labeler_iri text NOT NULL REFERENCES organization (iri),
+    description text,
+    CONSTRAINT uq_packaged_product_key UNIQUE (ndc)
+);
+COMMENT ON TABLE packaged_product IS 'A package of a product, identified by its 10-digit hyphenated package NDC.';
+COMMENT ON COLUMN packaged_product.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN packaged_product.ndc IS 'Package NDC in 4-4-2, 5-3-2 or 5-4-1 form.';
+COMMENT ON COLUMN packaged_product.product_iri IS 'The packaged product.';
+COMMENT ON COLUMN packaged_product.labeler_iri IS 'The labeler firm.';
+COMMENT ON COLUMN packaged_product.description IS 'Package description as written in the source.';
+
+CREATE TABLE label (
+    iri text PRIMARY KEY,
+    set_id text NOT NULL,
+    version bigint NOT NULL,
+    effective_date date NOT NULL,
+    CONSTRAINT uq_label_key UNIQUE (set_id, version)
+);
+COMMENT ON TABLE label IS 'One version of a structured product label (SPL).';
+COMMENT ON COLUMN label.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN label.set_id IS 'SPL set ID, a lowercase UUID.';
+COMMENT ON COLUMN label.version IS 'SPL version.';
+COMMENT ON COLUMN label.effective_date IS 'SPL effective time.';
+
+CREATE TABLE label__products (
+    owner_iri text NOT NULL REFERENCES label (iri) ON DELETE CASCADE,
+    target_iri text NOT NULL REFERENCES product (iri),
+    CONSTRAINT pk_label__products PRIMARY KEY (owner_iri, target_iri)
+);
+COMMENT ON TABLE label__products IS 'Label.products: Products.';
+COMMENT ON COLUMN label__products.owner_iri IS 'The Label row (label.iri).';
+COMMENT ON COLUMN label__products.target_iri IS 'The Product row (product.iri).';
+
+CREATE TABLE label__sections (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES label (iri) ON DELETE CASCADE,
+    code text NOT NULL,
+    title text NOT NULL,
+    text text NOT NULL,
+    CONSTRAINT uq_label__sections_key UNIQUE (owner_iri, code)
+);
+COMMENT ON TABLE label__sections IS 'Label.sections: Coded sections. One LOINC-coded section of a structured product label.';
+COMMENT ON COLUMN label__sections.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN label__sections.owner_iri IS 'The owning Label row (label.iri).';
+COMMENT ON COLUMN label__sections.code IS 'LOINC code.';
+COMMENT ON COLUMN label__sections.title IS 'Title.';
+COMMENT ON COLUMN label__sections.text IS 'Plain text.';
+
+CREATE TABLE adverse_event_report (
+    iri text PRIMARY KEY,
+    report_id text NOT NULL,
+    source_system text NOT NULL,
+    receipt_date date NOT NULL,
+    serious boolean NOT NULL,
+    seriousness_criteria text[] NOT NULL DEFAULT '{}',
+    patient_age_years numeric,
+    CONSTRAINT uq_adverse_event_report_key UNIQUE (report_id)
+);
+COMMENT ON TABLE adverse_event_report IS 'A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA.';
+COMMENT ON COLUMN adverse_event_report.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN adverse_event_report.report_id IS 'Safety report ID, optionally with a -digits version suffix.';
+COMMENT ON COLUMN adverse_event_report.source_system IS 'Where the report came from. One of: openfda_e2b, faers_qde.';
+COMMENT ON COLUMN adverse_event_report.receipt_date IS 'Date FDA received the report.';
+COMMENT ON COLUMN adverse_event_report.serious IS 'Whether the report is serious.';
+COMMENT ON COLUMN adverse_event_report.seriousness_criteria IS 'Seriousness criteria met. One of: death, life threatening, hospitalization, disabling, congenital anomaly, other.';
+COMMENT ON COLUMN adverse_event_report.patient_age_years IS 'Patient age at onset, in years.';
+
+CREATE TABLE adverse_event_report__drugs (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES adverse_event_report (iri) ON DELETE CASCADE,
+    position integer NOT NULL,
+    drug_name text NOT NULL,
+    role text NOT NULL,
+    CONSTRAINT uq_adverse_event_report__drugs_position UNIQUE (owner_iri, position)
+);
+COMMENT ON TABLE adverse_event_report__drugs IS 'AdverseEventReport.drugs: Drugs, in reported order. A drug mentioned in an adverse event report, as reported.';
+COMMENT ON COLUMN adverse_event_report__drugs.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN adverse_event_report__drugs.owner_iri IS 'The owning AdverseEventReport row (adverse_event_report.iri).';
+COMMENT ON COLUMN adverse_event_report__drugs.position IS 'Position in the owner''s list, from 0.';
+COMMENT ON COLUMN adverse_event_report__drugs.drug_name IS 'Drug name exactly as reported.';
+COMMENT ON COLUMN adverse_event_report__drugs.role IS 'Role in the report. One of: primary suspect, secondary suspect, suspect, concomitant, interacting.';
+
+CREATE TABLE adverse_event_report__reactions (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES adverse_event_report (iri) ON DELETE CASCADE,
+    position integer NOT NULL,
+    term text NOT NULL,
+    CONSTRAINT uq_adverse_event_report__reactions_position UNIQUE (owner_iri, position)
+);
+COMMENT ON TABLE adverse_event_report__reactions IS 'AdverseEventReport.reactions: Reactions, in order. A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed).';
+COMMENT ON COLUMN adverse_event_report__reactions.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN adverse_event_report__reactions.owner_iri IS 'The owning AdverseEventReport row (adverse_event_report.iri).';
+COMMENT ON COLUMN adverse_event_report__reactions.position IS 'Position in the owner''s list, from 0.';
+COMMENT ON COLUMN adverse_event_report__reactions.term IS 'MedDRA PT text (at most 100 characters).';
+
+CREATE TABLE recall (
+    iri text PRIMARY KEY,
+    recall_number text NOT NULL,
+    classification text NOT NULL,
+    reason text NOT NULL,
+    report_date date NOT NULL,
+    recalling_firm_iri text NOT NULL REFERENCES organization (iri),
+    CONSTRAINT uq_recall_key UNIQUE (recall_number)
+);
+COMMENT ON TABLE recall IS 'A drug recall from the FDA enforcement report.';
+COMMENT ON COLUMN recall.iri IS 'Canonical identifier (IRI).';
+COMMENT ON COLUMN recall.recall_number IS 'FDA recall number, for example D-321-2016 or D-0123-2025.';
+COMMENT ON COLUMN recall.classification IS 'Class. One of: I, II, III.';
+COMMENT ON COLUMN recall.reason IS 'Reason for the recall.';
+COMMENT ON COLUMN recall.report_date IS 'Enforcement report date.';
+COMMENT ON COLUMN recall.recalling_firm_iri IS 'The recalling firm.';
+
+CREATE TABLE recall__products (
+    owner_iri text NOT NULL REFERENCES recall (iri) ON DELETE CASCADE,
+    target_iri text NOT NULL REFERENCES product (iri),
+    CONSTRAINT pk_recall__products PRIMARY KEY (owner_iri, target_iri)
+);
+COMMENT ON TABLE recall__products IS 'Recall.products: Products.';
+COMMENT ON COLUMN recall__products.owner_iri IS 'The Recall row (recall.iri).';
+COMMENT ON COLUMN recall__products.target_iri IS 'The Product row (product.iri).';

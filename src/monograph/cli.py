@@ -338,6 +338,14 @@ def report_h2(root: Root = Path()) -> None:
     run(root)
 
 
+@report_app.command("h2_1")
+def report_h2_1(root: Root = Path()) -> None:
+    """docs/h2_1/RESULTS.md from results/h2_1/*.jsonl alone."""
+    from monograph.ablation.cli import report_h2_1 as render_report
+
+    render_report(root)
+
+
 @report_app.command("h4")
 def report_h4(root: Root = Path(), split: str = "test") -> None:
     """Regenerate docs/h4/RESULTS.md from results/h4/*.jsonl alone."""
