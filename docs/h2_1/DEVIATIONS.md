@@ -43,3 +43,14 @@ record it reruns and nothing else.
 
 **What this changes.** No question, gold, prompt, tool, setting, threshold or decision rule changes. Only
 infrastructure failures are rerun; no agent outcome is rerun or discarded.
+
+### D1, outcome (appended after the reruns, 2026-11-28)
+
+* Haiku S-tools: the four configurations were rerun with the CLI from clean commit `62de336`; each now has 315
+  scored questions. Questions scored before the crash replayed from the response cache.
+* Sonnet G-free: the 131 runs that lost their connection were rerun from clean commit `62de336` in 14 batches
+  of up to 10 questions; no batch crashed the server (one crash in the container's log, the original). The
+  latest record of every test question now has no connection-loss error, except the crashing run
+  (`t10_firms_within_six_steps-10`, Sonnet, G-free, hardest cell), which is kept as recorded.
+* Test API spend, all test records including the ones the reruns replaced: USD 45.12, against the USD 41.32
+  estimate the user approved; the difference is the work the crash forced to be redone.
