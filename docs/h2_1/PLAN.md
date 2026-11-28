@@ -275,3 +275,9 @@ The test cost is estimated from dev before any test run; above USD 40 the run st
   numbers and adds a post-hoc P3 line without them. The report also breaks T3+T4 down by the kind of identity a
   question needs: identity encoded in names or codes survives without the layer for free-form agents, identity
   recorded only in a crosswalk does not survive for any arm.
+* **After review: a hard spend cap.** The USD 40 stop was a manual check on the dev estimate, so D1's reruns could
+  take the test spend to USD 45.12 against the USD 41.32 the user approved. Test runs now read the approved cap
+  from `experiments/h2_1/budget.json` and count cumulative test spend from the results (every earlier run and
+  rerun, and from now on one `h2_1.spend` line per API call). Each API call reserves its worst-case cost first,
+  so the cap cannot be passed; a run that reaches it stops and records why. H2.1's own test spend is already past
+  its cap, so any further H2.1 test run is refused (it is refused anyway: the run code changed after its pins).

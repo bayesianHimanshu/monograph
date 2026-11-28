@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from monograph.agent.arms import PROMPT_VERSIONS, Arm, sha256
+from monograph.agent.budget import BudgetExceeded
 from monograph.agent.llm import AGENT_SETTINGS, AgentSettings, ToolClient
 from monograph.agent.loop import AgentLoop
 from monograph.qa.score import Gold, failure_category, score_answer
@@ -61,13 +62,34 @@ def run_split(
     done: list[dict[str, Any]] = []
     lock = threading.Lock()
 
+    stopped = threading.Event()
+
     def one(q: Mapping[str, Any]) -> None:
+        if stopped.is_set():
+            return  # the spend cap was reached: no new question starts
         if not hasattr(local, "arm"):
             local.arm = make_arm()
         arm: Arm = local.arm
         loop = AgentLoop(client, arm, model, system, settings, tag=tag)
         try:
             t = loop.run(str(q["id"]), str(q["text"]))
+        except BudgetExceeded as exc:  # the approved cap: stop, record why, score nothing for this question
+            if not stopped.is_set():
+                stopped.set()
+                write(
+                    f"{metric}.budget_stop",
+                    0.0,
+                    {
+                        "question_id": q["id"],
+                        "arm": arm_name,
+                        "model": model,
+                        "split": split,
+                        "reason": str(exc),
+                        **(extra or {}),
+                    },
+                )
+                log(f"{arm_name} {model} {split}: stopped at the spend cap: {exc}")
+            return
         except Exception as exc:  # an API or connection failure: logged, not scored, rerun later
             write(
                 f"{metric}.error",

@@ -156,6 +156,7 @@ def questions(root: Root = Path()) -> None:
 # ---------------------------------------------------------------------------------------------- runs
 
 RESPONSES = Path("data/h2_1/responses")
+BUDGET_FILE = Path("experiments/h2_1/budget.json")  # the approved cap on cumulative test spend
 
 
 def load_questions(root: Path, split: str) -> list[dict[str, Any]]:
@@ -238,10 +239,22 @@ def run_one(root: Path, model: str, cell_name: str, arm: str, split: str, limit:
     types = test_types(model) if split == "test" else None
     qs = [_materialized(q, cell) for q in load_questions(root, split) if types is None or q["type"] in types]
     qs = qs[:limit] if limit else qs
-    client = CachedToolClient(
-        AnthropicToolClient(anthropic.Anthropic(max_retries=8)), ToolResponseCache(root / RESPONSES)
-    )
     writer = wiring.results_writer(root, EXPERIMENT, clean_commit=clean)
+    write = Writer(writer.write)
+    network: Any = AnthropicToolClient(anthropic.Anthropic(max_retries=8))
+    extra: dict[str, Any] = {"cell": cell.name, "identity": cell.identity, "descriptions": cell.descriptions}
+    guard = None
+    if split == "test":  # the approved cap on cumulative test spend, reruns included
+        from monograph.agent.budget import BudgetedClient, BudgetExceeded, open_guard
+
+        try:
+            guard = open_guard(root / BUDGET_FILE, root / "results" / "h2_1", "h2_1", "test", write)
+        except BudgetExceeded as exc:
+            typer.echo(f"refusing the test run: {exc}", err=True)
+            raise typer.Exit(1) from exc
+        network = BudgetedClient(network, guard)
+        extra["ledgered"] = True  # its API calls are in the h2_1.spend lines
+    client = CachedToolClient(network, ToolResponseCache(root / RESPONSES))
     records = run_split(
         qs,
         arm,
@@ -250,14 +263,14 @@ def run_one(root: Path, model: str, cell_name: str, arm: str, split: str, limit:
         make_arm_factory(root, cell, arm),
         pins.system_prompt(root, arm),
         client,
-        Writer(writer.write),
+        write,
         known_ids(cell),
         workers,
         settings=SETTINGS,
         log=typer.echo,
         metric="h2_1",
         tag=config.tag,
-        extra={"cell": cell.name, "identity": cell.identity, "descriptions": cell.descriptions},
+        extra=extra,
         prompt_versions=pins.prompt_versions(root),
         classify=crosswalk_classifier(cell),
     )
@@ -267,6 +280,13 @@ def run_one(root: Path, model: str, cell_name: str, arm: str, split: str, limit:
         f"{model} {cell.name} {arm} {split}: {len(records)} questions, accuracy {acc:.3f},"
         f" {client.network_calls} API calls, new spend USD {cost:.2f}"
     )
+    if guard is not None and guard.tripped:
+        typer.echo(
+            f"stopped at the approved cap: test spend USD {guard.spent:.2f} of USD {guard.cap.usd:.2f};"
+            f" {len(qs) - len(records)} questions not run",
+            err=True,
+        )
+        raise typer.Exit(1)
 
 
 @h2_1_app.command("run")
