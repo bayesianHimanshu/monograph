@@ -1,0 +1,121 @@
+PostgreSQL 18. All tables are in schema h2 (the search path).
+
+CREATE TABLE substance (
+    iri text PRIMARY KEY,
+    unii text NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT uq_substance_key UNIQUE (unii)
+);
+
+CREATE TABLE organization (
+    iri text PRIMARY KEY,
+    slug text NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT uq_organization_key UNIQUE (slug)
+);
+
+CREATE TABLE clinical_drug (
+    iri text PRIMARY KEY,
+    rxcui text NOT NULL,
+    name text,
+    term_type text,
+    CONSTRAINT uq_clinical_drug_key UNIQUE (rxcui)
+);
+
+CREATE TABLE product (
+    iri text PRIMARY KEY,
+    product_ndc text NOT NULL,
+    name text NOT NULL,
+    dosage_form text NOT NULL,
+    product_type text NOT NULL,
+    finished boolean NOT NULL,
+    routes text[] NOT NULL DEFAULT '{}',
+    CONSTRAINT uq_product_key UNIQUE (product_ndc)
+);
+
+CREATE TABLE product__ingredients (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES product (iri) ON DELETE CASCADE,
+    position integer NOT NULL,
+    substance_iri text NOT NULL REFERENCES substance (iri),
+    strength_value numeric NOT NULL,
+    strength_unit text NOT NULL,
+    CONSTRAINT uq_product__ingredients_position UNIQUE (owner_iri, position),
+    CONSTRAINT uq_product__ingredients_substance UNIQUE (owner_iri, substance_iri)
+);
+
+CREATE TABLE packaged_product (
+    iri text PRIMARY KEY,
+    ndc text NOT NULL,
+    product_iri text NOT NULL REFERENCES product (iri),
+    labeler_iri text NOT NULL REFERENCES organization (iri),
+    description text,
+    CONSTRAINT uq_packaged_product_key UNIQUE (ndc)
+);
+
+CREATE TABLE label (
+    iri text PRIMARY KEY,
+    set_id text NOT NULL,
+    version bigint NOT NULL,
+    effective_date date NOT NULL,
+    CONSTRAINT uq_label_key UNIQUE (set_id, version)
+);
+
+CREATE TABLE label__products (
+    owner_iri text NOT NULL REFERENCES label (iri) ON DELETE CASCADE,
+    target_iri text NOT NULL REFERENCES product (iri),
+    CONSTRAINT pk_label__products PRIMARY KEY (owner_iri, target_iri)
+);
+
+CREATE TABLE label__sections (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES label (iri) ON DELETE CASCADE,
+    code text NOT NULL,
+    title text NOT NULL,
+    text text NOT NULL,
+    CONSTRAINT uq_label__sections_key UNIQUE (owner_iri, code)
+);
+
+CREATE TABLE adverse_event_report (
+    iri text PRIMARY KEY,
+    report_id text NOT NULL,
+    source_system text NOT NULL,
+    receipt_date date NOT NULL,
+    serious boolean NOT NULL,
+    seriousness_criteria text[] NOT NULL DEFAULT '{}',
+    patient_age_years numeric,
+    CONSTRAINT uq_adverse_event_report_key UNIQUE (report_id)
+);
+
+CREATE TABLE adverse_event_report__drugs (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES adverse_event_report (iri) ON DELETE CASCADE,
+    position integer NOT NULL,
+    drug_name text NOT NULL,
+    role text NOT NULL,
+    CONSTRAINT uq_adverse_event_report__drugs_position UNIQUE (owner_iri, position)
+);
+
+CREATE TABLE adverse_event_report__reactions (
+    iri text PRIMARY KEY,
+    owner_iri text NOT NULL REFERENCES adverse_event_report (iri) ON DELETE CASCADE,
+    position integer NOT NULL,
+    term text NOT NULL,
+    CONSTRAINT uq_adverse_event_report__reactions_position UNIQUE (owner_iri, position)
+);
+
+CREATE TABLE recall (
+    iri text PRIMARY KEY,
+    recall_number text NOT NULL,
+    classification text NOT NULL,
+    reason text NOT NULL,
+    report_date date NOT NULL,
+    recalling_firm_iri text NOT NULL REFERENCES organization (iri),
+    CONSTRAINT uq_recall_key UNIQUE (recall_number)
+);
+
+CREATE TABLE recall__products (
+    owner_iri text NOT NULL REFERENCES recall (iri) ON DELETE CASCADE,
+    target_iri text NOT NULL REFERENCES product (iri),
+    CONSTRAINT pk_recall__products PRIMARY KEY (owner_iri, target_iri)
+);

@@ -198,6 +198,78 @@ class GraphLoader:
             raise RuntimeError("graph does not match the tables: " + "; ".join(problems))
 
 
+def _plain(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {k: _plain(v) for k, v in value.items()}
+    if isinstance(value, list | tuple):
+        return [_plain(v) for v in value]
+    return _agvalue(value)
+
+
+def _canonical(value: Any) -> str:
+    return json.dumps(_plain(value), sort_keys=True)
+
+
+def store_differences(conn: psycopg.Connection[Any], projection: Projection, limit: int = 20) -> list[str]:
+    """Compare the two stores' full content, not only counts: every vertex label's (iri, properties) and every
+    edge source's (from, to, edge properties) as multisets. Returns up to `limit` differences."""
+    from collections import Counter
+
+    from monograph.tools.cypher_backend import cypher_statement, parse_agtype
+
+    def graph(query: str, columns: int) -> list[list[Any]]:
+        rows = conn.execute(cypher_statement(projection.graph, query, columns, False)).fetchall()
+        return [[parse_agtype(v) for v in row] for row in rows]
+
+    age_session(conn)
+    problems: list[str] = []
+    for v in projection.vertices:
+        cols = [p.column for p in v.properties]
+        names = [p.name for p in v.properties]
+        rows = conn.execute(
+            sql.SQL("SELECT {} FROM {}.{}").format(
+                sql.SQL(", ").join(sql.Identifier(c) for c in cols), sql.Identifier(SCHEMA), sql.Identifier(v.table)
+            )
+        ).fetchall()
+        tables = Counter(_canonical({n: x for n, x in zip(names, row, strict=True) if x is not None}) for row in rows)
+        found = graph(f"MATCH (n:{v.label}) RETURN properties(n)", 1)
+        vertices = Counter(_canonical({k: x for k, x in row[0].items() if x is not None}) for row in found)
+        if tables != vertices:
+            extra, missing = vertices - tables, tables - vertices
+            problems.append(
+                f"{v.label}: {sum(missing.values())} rows not in the graph, {sum(extra.values())} extra vertices"
+            )
+    for e in projection.edges:
+        for s in e.sources:
+            cols = [s.from_column, s.to_column, *(p.column for p in s.properties)]
+            names = [p.name for p in s.properties]
+            rows = conn.execute(
+                sql.SQL("SELECT {} FROM {}.{} WHERE {} IS NOT NULL").format(
+                    sql.SQL(", ").join(sql.Identifier(c) for c in cols),
+                    sql.Identifier(SCHEMA),
+                    sql.Identifier(s.table),
+                    sql.Identifier(s.to_column),
+                )
+            ).fetchall()
+            tables = Counter(
+                _canonical([row[0], row[1], {n: x for n, x in zip(names, row[2:], strict=True) if x is not None}])
+                for row in rows
+            )
+            found = graph(
+                f"MATCH (a:{s.from_label})-[r:{e.label}]->(b:{s.to_label}) RETURN a.iri, b.iri, properties(r)", 3
+            )
+            edges = Counter(
+                _canonical([a, b, {k: x for k, x in (props or {}).items() if x is not None}]) for a, b, props in found
+            )
+            if tables != edges:
+                extra, missing = edges - tables, tables - edges
+                problems.append(
+                    f"{e.label} {s.from_label}->{s.to_label}: {sum(missing.values())} rows not in the graph,"
+                    f" {sum(extra.values())} extra edges"
+                )
+    return problems[:limit]
+
+
 def create_roles(
     conn: psycopg.Connection[Any],
     graph: str,

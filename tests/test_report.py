@@ -77,6 +77,44 @@ def test_no_em_dashes_anywhere_in_the_repository() -> None:
             continue
         if path.suffix in {".py", ".md", ".toml", ".yml", ".ttl", ".sql", ".json", ".jsonl", ""}:
             text = path.read_text(encoding="utf-8", errors="ignore")
+            if path.suffix == ".jsonl" and path.parent.parent.name == "results":
+                text = _without_verbatim_output(text)
             if EM_DASH in text and "fixtures/openfda" not in str(path):
                 offenders.append(str(path.relative_to(ROOT)))
     assert offenders == []
+
+
+# Fields of an agent run that hold verbatim model or tool output (the model's closing text, the first
+# characters of each tool result). They are recorded as received, like fixtures/openfda, and results are
+# append-only; every other field of every result line is still checked.
+VERBATIM_FIELDS = ("final_text",)
+VERBATIM_CALL_FIELDS = ("preview",)
+
+
+def _without_verbatim_output(text: str) -> str:
+    import json
+
+    out = []
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        details = record.get("details")
+        if isinstance(details, dict):
+            for key in VERBATIM_FIELDS:
+                details.pop(key, None)
+            for call in details.get("calls", []) if isinstance(details.get("calls"), list) else []:
+                for key in VERBATIM_CALL_FIELDS:
+                    call.pop(key, None)
+        out.append(json.dumps(record, ensure_ascii=False))
+    return "\n".join(out)
+
+
+def test_verbatim_output_is_the_only_exemption_in_results() -> None:
+    import json
+    from typing import Any
+
+    details: dict[str, Any] = {"final_text": "a \u2014 b", "calls": [{"preview": "\u2014"}], "question": "x"}
+    assert EM_DASH not in _without_verbatim_output(json.dumps({"metric": "h2_1.run", "details": details}))
+    details["question"] = "an \u2014 in a field we wrote"
+    assert EM_DASH in _without_verbatim_output(json.dumps({"metric": "h2_1.run", "details": details}))

@@ -1,0 +1,512 @@
+{
+  "version": "2.2.0",
+  "graph": "drug",
+  "vertices": [
+    {
+      "label": "Substance",
+      "description": "",
+      "table": "substance",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "unii",
+          "type": "string",
+          "description": "",
+          "column": "unii"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "",
+          "column": "name"
+        }
+      ]
+    },
+    {
+      "label": "Organization",
+      "description": "",
+      "table": "organization",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "",
+          "column": "slug"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "",
+          "column": "name"
+        }
+      ]
+    },
+    {
+      "label": "ClinicalDrug",
+      "description": "",
+      "table": "clinical_drug",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "rxcui",
+          "type": "string",
+          "description": "",
+          "column": "rxcui"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "",
+          "column": "name"
+        },
+        {
+          "name": "term_type",
+          "type": "string",
+          "description": "",
+          "column": "term_type"
+        }
+      ]
+    },
+    {
+      "label": "Product",
+      "description": "",
+      "table": "product",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "product_ndc",
+          "type": "string",
+          "description": "",
+          "column": "product_ndc"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "",
+          "column": "name"
+        },
+        {
+          "name": "dosage_form",
+          "type": "string",
+          "description": "",
+          "column": "dosage_form"
+        },
+        {
+          "name": "product_type",
+          "type": "string",
+          "description": "",
+          "column": "product_type"
+        },
+        {
+          "name": "finished",
+          "type": "boolean",
+          "description": "",
+          "column": "finished"
+        },
+        {
+          "name": "routes",
+          "type": "list of strings",
+          "description": "",
+          "column": "routes"
+        }
+      ]
+    },
+    {
+      "label": "PackagedProduct",
+      "description": "",
+      "table": "packaged_product",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "ndc",
+          "type": "string",
+          "description": "",
+          "column": "ndc"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "",
+          "column": "description"
+        }
+      ]
+    },
+    {
+      "label": "Label",
+      "description": "",
+      "table": "label",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "set_id",
+          "type": "string",
+          "description": "",
+          "column": "set_id"
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "description": "",
+          "column": "version"
+        },
+        {
+          "name": "effective_date",
+          "type": "string (ISO date, YYYY-MM-DD)",
+          "description": "",
+          "column": "effective_date"
+        }
+      ]
+    },
+    {
+      "label": "LabelSection",
+      "description": "",
+      "table": "label__sections",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "",
+          "column": "code"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "",
+          "column": "title"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "",
+          "column": "text"
+        }
+      ]
+    },
+    {
+      "label": "AdverseEventReport",
+      "description": "",
+      "table": "adverse_event_report",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "report_id",
+          "type": "string",
+          "description": "",
+          "column": "report_id"
+        },
+        {
+          "name": "source_system",
+          "type": "string",
+          "description": "",
+          "column": "source_system"
+        },
+        {
+          "name": "receipt_date",
+          "type": "string (ISO date, YYYY-MM-DD)",
+          "description": "",
+          "column": "receipt_date"
+        },
+        {
+          "name": "serious",
+          "type": "boolean",
+          "description": "",
+          "column": "serious"
+        },
+        {
+          "name": "seriousness_criteria",
+          "type": "list of strings",
+          "description": "",
+          "column": "seriousness_criteria"
+        },
+        {
+          "name": "patient_age_years",
+          "type": "number",
+          "description": "",
+          "column": "patient_age_years"
+        }
+      ]
+    },
+    {
+      "label": "DrugInvolvement",
+      "description": "",
+      "table": "adverse_event_report__drugs",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "drug_name",
+          "type": "string",
+          "description": "",
+          "column": "drug_name"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "",
+          "column": "role"
+        },
+        {
+          "name": "position",
+          "type": "integer",
+          "description": "",
+          "column": "position"
+        }
+      ]
+    },
+    {
+      "label": "Reaction",
+      "description": "",
+      "table": "adverse_event_report__reactions",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "term",
+          "type": "string",
+          "description": "",
+          "column": "term"
+        },
+        {
+          "name": "position",
+          "type": "integer",
+          "description": "",
+          "column": "position"
+        }
+      ]
+    },
+    {
+      "label": "Recall",
+      "description": "",
+      "table": "recall",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "",
+          "column": "iri"
+        },
+        {
+          "name": "recall_number",
+          "type": "string",
+          "description": "",
+          "column": "recall_number"
+        },
+        {
+          "name": "classification",
+          "type": "string",
+          "description": "",
+          "column": "classification"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "description": "",
+          "column": "reason"
+        },
+        {
+          "name": "report_date",
+          "type": "string (ISO date, YYYY-MM-DD)",
+          "description": "",
+          "column": "report_date"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "label": "DRUG_INVOLVEMENT",
+      "sources": [
+        {
+          "from_label": "AdverseEventReport",
+          "to_label": "DrugInvolvement",
+          "description": "",
+          "table": "adverse_event_report__drugs",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "INGREDIENT",
+      "sources": [
+        {
+          "from_label": "Product",
+          "to_label": "Substance",
+          "description": "",
+          "table": "product__ingredients",
+          "from_column": "owner_iri",
+          "to_column": "substance_iri",
+          "properties": [
+            {
+              "name": "strength_value",
+              "type": "number",
+              "description": "",
+              "column": "strength_value"
+            },
+            {
+              "name": "strength_unit",
+              "type": "string",
+              "description": "",
+              "column": "strength_unit"
+            },
+            {
+              "name": "position",
+              "type": "integer",
+              "description": "",
+              "column": "position"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "LABELER",
+      "sources": [
+        {
+          "from_label": "PackagedProduct",
+          "to_label": "Organization",
+          "description": "",
+          "table": "packaged_product",
+          "from_column": "iri",
+          "to_column": "labeler_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "LABELS_PRODUCT",
+      "sources": [
+        {
+          "from_label": "Label",
+          "to_label": "Product",
+          "description": "",
+          "table": "label__products",
+          "from_column": "owner_iri",
+          "to_column": "target_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "PRODUCT",
+      "sources": [
+        {
+          "from_label": "PackagedProduct",
+          "to_label": "Product",
+          "description": "",
+          "table": "packaged_product",
+          "from_column": "iri",
+          "to_column": "product_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "REACTION",
+      "sources": [
+        {
+          "from_label": "AdverseEventReport",
+          "to_label": "Reaction",
+          "description": "",
+          "table": "adverse_event_report__reactions",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "RECALLING_FIRM",
+      "sources": [
+        {
+          "from_label": "Recall",
+          "to_label": "Organization",
+          "description": "",
+          "table": "recall",
+          "from_column": "iri",
+          "to_column": "recalling_firm_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "RECALLS_PRODUCT",
+      "sources": [
+        {
+          "from_label": "Recall",
+          "to_label": "Product",
+          "description": "",
+          "table": "recall__products",
+          "from_column": "owner_iri",
+          "to_column": "target_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "SECTION",
+      "sources": [
+        {
+          "from_label": "Label",
+          "to_label": "LabelSection",
+          "description": "",
+          "table": "label__sections",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    }
+  ]
+}

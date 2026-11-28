@@ -128,7 +128,11 @@ class DatasetBuilder:
         validator: PydanticValidator,
         rxnav: RxNavClient,
         spl: Callable[[str], bytes | None],
+        identity: bool = True,
     ) -> None:
+        """`identity=False` builds the H2.1 identity-off data: the same records without the identity layer
+        (`monograph.ablation.cells.IDENTITY_FIELDS`), and recalling firms never merged into labelers."""
+        self._identity = identity
         self._spec = spec
         self._instantiator = instantiator
         self._validator = validator
@@ -164,6 +168,10 @@ class DatasetBuilder:
         substances = self._substances(ds, products, gold, facts)
         clinical = self._clinical_drugs(ds, products, raw.event, rx_version)
 
+        org_records = [orgs.record(slug) for slug in sorted(orgs.names)]
+        if not self._identity:
+            org_records = self._without_identity(ds, products, packages, substances, clinical, recall_records, orgs)
+
         accepted: dict[str, list[BaseModel]] = defaultdict(list)
         known: dict[str, set[str]] = defaultdict(set)
 
@@ -175,9 +183,7 @@ class DatasetBuilder:
                     known[cls_name].add(key(record))
 
         take("Substance", substances, lambda r: iri("substance", r["unii"]))
-        take(
-            "Organization", [orgs.record(slug) for slug in sorted(orgs.names)], lambda r: iri("organization", r["slug"])
-        )
+        take("Organization", org_records, lambda r: iri("organization", r["slug"]))
         take("ClinicalDrug", clinical, lambda r: iri("clinical-drug", r["rxcui"]))
         products = [p for p in products if self._refs_ok(ds, "Product.ingredients", p, known)]
         take("Product", products, lambda r: iri("product", r["product_ndc"]))
@@ -187,15 +193,66 @@ class DatasetBuilder:
         take("PackagedProduct", packages, lambda r: iri("packaged-product", r["ndc"]))
         labels = self._labels(ds, raw.label, known)
         take("Label", labels, lambda r: f"{r['set_id']}|{r['version']}")
-        take("AdverseEventReport", self._events(raw.event), lambda r: iri("adverse-event-report", r["report_id"]))
+        events = self._events(raw.event)
+        if not self._identity:
+            for e in events:
+                e["drugs"] = [
+                    {k: v for k, v in d.items() if k not in ("clinical_drug", "harmonized_clinical_drugs")}
+                    for d in e["drugs"]
+                ]
+        take("AdverseEventReport", events, lambda r: iri("adverse-event-report", r["report_id"]))
         for r in recall_records:
             r["products"] = self._filter(ds, "Recall.products", list(r["products"]), known["Product"])
         take("Recall", recall_records, lambda r: iri("recall", r["recall_number"]))
         ds.instances = {k: accepted[k] for k in LOAD_ORDER}
         ds.stats.update(product_sources)
-        ds.stats["organization aliases"] = sum(len(a) for a in orgs.aliases.values())
-        ds.stats["recall firms resolved to a labeler"] = orgs.recall_matches
+        if self._identity:
+            ds.stats["organization aliases"] = sum(len(a) for a in orgs.aliases.values())
+            ds.stats["recall firms resolved to a labeler"] = orgs.recall_matches
         return ds
+
+    # ------------------------------------------------------------------------------- identity off
+
+    def _without_identity(
+        self,
+        ds: Dataset,
+        products: list[dict[str, Any]],
+        packages: list[dict[str, Any]],
+        substances: list[dict[str, Any]],
+        clinical: list[dict[str, Any]],
+        recalls: list[dict[str, Any]],
+        orgs: _Orgs,
+    ) -> list[dict[str, Any]]:
+        """Strip the identity layer in place and return the organizations as each source identifies them.
+
+        A labeler is identified as the NDC directory identifies it, by labeler code: the same organizations
+        (canonical name, same IRI) as with identity on, without aliases. A recalling firm is identified as an
+        enforcement record identifies it, by name: one organization per H6 ingest key (the slug of the name,
+        within enforcement records), never merged with a labeler, under `organization/recalling-firm-<slug>`.
+        """
+        for p in products:
+            p.pop("drug_mappings", None)
+            p.pop("clinical_drug", None)
+        for k in packages:
+            k.pop("ndc11", None)
+        for sub in substances:
+            sub.pop("active_moiety", None)
+        for c in clinical:
+            c.pop("generic", None)
+        labelers = sorted(set(orgs.code_slug.values()))
+        out = [{"slug": slug, "name": orgs.names[slug], "aliases": []} for slug in labelers]
+        firms: dict[str, Counter[str]] = defaultdict(Counter)
+        for r in recalls:
+            firm = r.pop("_firm")
+            slug = recalling_firm_slug(firm)
+            firms[slug][firm] += 1
+            r["recalling_firm"] = iri("organization", slug)
+        for slug in sorted(firms):
+            name = sorted(firms[slug].items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
+            out.append({"slug": slug, "name": name, "aliases": []})
+        ds.stats["labeler organizations"] = len(labelers)
+        ds.stats["recalling-firm organizations (identity off)"] = len(firms)
+        return out
 
     @staticmethod
     def _filter(ds: Dataset, what: str, refs: Sequence[str], known: set[str]) -> list[str]:
@@ -351,6 +408,8 @@ class DatasetBuilder:
             ndcs = sorted(str(n) for n in (raw.get("openfda") or {}).get("product_ndc", []))
             slug = orgs.recalling_firm(firm, ndcs, str(raw.get("recall_number")))
             record["recalling_firm"] = iri("organization", slug)
+            if not self._identity:
+                record["_firm"] = firm  # re-keyed as ingested in _without_identity
             out.append(record)
         return out
 
@@ -477,6 +536,15 @@ class DatasetBuilder:
             record["drugs"] = drugs
             out.append(record)
         return out
+
+
+RECALLING_FIRM_PREFIX = "recalling-firm-"
+
+
+def recalling_firm_slug(firm: str) -> str:
+    """Identity off: a recalling firm's own key, which cannot collide with a labeler's."""
+    slug = slugify(firm)[: 120 - len(RECALLING_FIRM_PREFIX)].rstrip("-") or "unnamed"
+    return RECALLING_FIRM_PREFIX + slug
 
 
 @dataclass

@@ -48,8 +48,12 @@ def _blob(root: Path, commit: str, path: str) -> bytes | None:
     return _git(root, "cat-file", "blob", found.decode()) if found else None
 
 
+# An experiment folder: h2, h4, and a follow-up such as h2_1 (or h2.1).
+EXPERIMENT_DIR = r"h\d+([._]\d+)?"
+
+
 def _experiment(parts: list[str], top: str) -> bool:
-    return len(parts) >= 3 and parts[0] == top and re.fullmatch(r"h\d+(\.\d+)?", parts[1]) is not None
+    return len(parts) >= 3 and parts[0] == top and re.fullmatch(EXPERIMENT_DIR, parts[1]) is not None
 
 
 def is_immutable(path: str) -> bool:

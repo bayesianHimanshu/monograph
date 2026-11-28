@@ -89,6 +89,8 @@ class CypherBackend:
         return [row[0] for row in rows]
 
     def alias_owners(self, token: str) -> list[tuple[str, str]]:
+        if not self._p.has_edge("ALIAS"):
+            return []
         rows = self.run(
             "MATCH (o:Organization)-[:ALIAS]->(a:OrganizationAlias) WHERE toUpper(a.name) CONTAINS $t"
             " RETURN o.iri, a.name",
@@ -132,7 +134,7 @@ class CypherBackend:
         query = (
             "MATCH (p:Product)-[:INGREDIENT]->(s:Substance {iri: $s}) RETURN p.iri, p.name, p.product_ndc, 'ingredient'"
         )
-        if moiety:
+        if moiety and self._p.has_edge("HAS_ACTIVE_MOIETY"):
             query += (
                 " UNION MATCH (p:Product)-[:INGREDIENT]->(:Substance)-[:HAS_ACTIVE_MOIETY]->(m:Substance {iri: $s})"
                 " RETURN p.iri, p.name, p.product_ndc, 'moiety'"
@@ -149,21 +151,27 @@ class CypherBackend:
         if label == "ClinicalDrug":
             return [iri]
         start = self._PRODUCTS[label]
-        query = (
-            f"{start}-[:DRUG_MAPPING]->(c:ClinicalDrug) RETURN c.iri"
-            f" UNION {start}-[:CLINICAL_DRUG]->(c:ClinicalDrug) RETURN c.iri"
-        )
-        return [str(row[0]) for row in self.run(query, {"i": iri}, 1)]
+        parts = [
+            f"{start}-[:{edge}]->(c:ClinicalDrug) RETURN c.iri"
+            for edge in ("DRUG_MAPPING", "CLINICAL_DRUG")
+            if self._p.has_edge(edge, "Product")
+        ]
+        if not parts:
+            return []  # no crosswalk in this store (H2.1, identity off)
+        return [str(row[0]) for row in self.run(" UNION ".join(parts), {"i": iri}, 1)]
 
     def reports_involving(self, clinical_drugs: Sequence[str]) -> list[tuple[str, str, str, bool]]:
         ret = "RETURN r.iri, r.report_id, r.receipt_date, r.serious"
-        query = (
-            "MATCH (r:AdverseEventReport)-[:DRUG_INVOLVEMENT]->(:DrugInvolvement)-[:HARMONIZED_CLINICAL_DRUG]->"
+        parts = [
+            f"MATCH (r:AdverseEventReport)-[:DRUG_INVOLVEMENT]->(:DrugInvolvement)-[:{edge}]->"
             f"(c:ClinicalDrug) WHERE c.iri IN $c {ret}"
-            " UNION MATCH (r:AdverseEventReport)-[:DRUG_INVOLVEMENT]->(:DrugInvolvement)-[:CLINICAL_DRUG]->"
-            f"(c:ClinicalDrug) WHERE c.iri IN $c {ret}"
-        )
-        return [(str(a), str(b), str(c), bool(d)) for a, b, c, d in self.run(query, {"c": list(clinical_drugs)}, 4)]
+            for edge in ("HARMONIZED_CLINICAL_DRUG", "CLINICAL_DRUG")
+            if self._p.has_edge(edge, "DrugInvolvement")
+        ]
+        if not parts:
+            return []  # report drugs are not linked to clinical drugs in this store (H2.1, identity off)
+        rows = self.run(" UNION ".join(parts), {"c": list(clinical_drugs)}, 4)
+        return [(str(a), str(b), str(c), bool(d)) for a, b, c, d in rows]
 
     _RECALL = "RETURN DISTINCT r.iri, r.recall_number, r.classification, r.report_date, f.iri"
 
@@ -180,10 +188,14 @@ class CypherBackend:
 
     def products_of(self, label: str, iri: str) -> list[str]:
         if label == "ClinicalDrug":
-            query = (
-                "MATCH (p:Product)-[:DRUG_MAPPING]->(:ClinicalDrug {iri: $i}) RETURN p.iri"
-                " UNION MATCH (p:Product)-[:CLINICAL_DRUG]->(:ClinicalDrug {iri: $i}) RETURN p.iri"
-            )
+            parts = [
+                f"MATCH (p:Product)-[:{edge}]->(:ClinicalDrug {{iri: $i}}) RETURN p.iri"
+                for edge in ("DRUG_MAPPING", "CLINICAL_DRUG")
+                if self._p.has_edge(edge, "Product")
+            ]
+            if not parts:
+                return []
+            query = " UNION ".join(parts)
         elif label == "Organization":
             query = (
                 "MATCH (:Organization {iri: $i})<-[:LABELER]-(:PackagedProduct)-[:PRODUCT]->(p:Product)"

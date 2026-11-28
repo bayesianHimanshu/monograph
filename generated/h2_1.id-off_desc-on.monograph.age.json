@@ -1,0 +1,512 @@
+{
+  "version": "2.2.0",
+  "graph": "drug",
+  "vertices": [
+    {
+      "label": "Substance",
+      "description": "A chemical or biological substance identified by its FDA Unique Ingredient Identifier.",
+      "table": "substance",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "unii",
+          "type": "string",
+          "description": "FDA UNII code.",
+          "column": "unii"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Preferred name.",
+          "column": "name"
+        }
+      ]
+    },
+    {
+      "label": "Organization",
+      "description": "A company acting as manufacturer, labeler or recalling firm.",
+      "table": "organization",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "slug",
+          "type": "string",
+          "description": "Stable key: the normalized name, lowercase, words joined by hyphens.",
+          "column": "slug"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Preferred name.",
+          "column": "name"
+        }
+      ]
+    },
+    {
+      "label": "ClinicalDrug",
+      "description": "A clinical drug concept in RxNorm, identified by its RxCUI.\n\n    Several NDC products can share one clinical drug. The name is optional because openFDA carries\n    RxCUIs without their RxNorm names.",
+      "table": "clinical_drug",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "rxcui",
+          "type": "string",
+          "description": "RxNorm CUI.",
+          "column": "rxcui"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "RxNorm name.",
+          "column": "name"
+        },
+        {
+          "name": "term_type",
+          "type": "string",
+          "description": "RxNorm term type: SCD generic clinical drug, SBD branded drug, GPCK/BPCK packs.",
+          "column": "term_type"
+        }
+      ]
+    },
+    {
+      "label": "Product",
+      "description": "A drug product as listed with FDA, identified by its product NDC (labeler and product segments).",
+      "table": "product",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "product_ndc",
+          "type": "string",
+          "description": "Product NDC in 4-4, 5-3 or 5-4 form.",
+          "column": "product_ndc"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name as listed.",
+          "column": "name"
+        },
+        {
+          "name": "dosage_form",
+          "type": "string",
+          "description": "Dosage form as written in the source.",
+          "column": "dosage_form"
+        },
+        {
+          "name": "product_type",
+          "type": "string",
+          "description": "NDC directory product type. One of: HUMAN PRESCRIPTION DRUG, HUMAN OTC DRUG, PLASMA DERIVATIVE, CELLULAR THERAPY, VACCINE, STANDARDIZED ALLERGENIC, NON-STANDARDIZED ALLERGENIC, BULK INGREDIENT, DRUG FOR FURTHER PROCESSING, LICENSED VACCINE BULK INTERMEDIATE.",
+          "column": "product_type"
+        },
+        {
+          "name": "finished",
+          "type": "boolean",
+          "description": "Whether this is a finished product (False for bulk ingredients and intermediates).",
+          "column": "finished"
+        },
+        {
+          "name": "routes",
+          "type": "list of strings",
+          "description": "Routes of administration. Required for finished prescription and OTC products.",
+          "column": "routes"
+        }
+      ]
+    },
+    {
+      "label": "PackagedProduct",
+      "description": "A package of a product, identified by its 10-digit hyphenated package NDC.",
+      "table": "packaged_product",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "ndc",
+          "type": "string",
+          "description": "Package NDC in 4-4-2, 5-3-2 or 5-4-1 form.",
+          "column": "ndc"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Package description as written in the source.",
+          "column": "description"
+        }
+      ]
+    },
+    {
+      "label": "Label",
+      "description": "One version of a structured product label (SPL).",
+      "table": "label",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "set_id",
+          "type": "string",
+          "description": "SPL set ID, a lowercase UUID.",
+          "column": "set_id"
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "description": "SPL version.",
+          "column": "version"
+        },
+        {
+          "name": "effective_date",
+          "type": "string (ISO date, YYYY-MM-DD)",
+          "description": "SPL effective time.",
+          "column": "effective_date"
+        }
+      ]
+    },
+    {
+      "label": "LabelSection",
+      "description": "One LOINC-coded section of a structured product label.",
+      "table": "label__sections",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "description": "LOINC code.",
+          "column": "code"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Title.",
+          "column": "title"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Plain text.",
+          "column": "text"
+        }
+      ]
+    },
+    {
+      "label": "AdverseEventReport",
+      "description": "A safety report from FDA adverse event data (FAERS, now FDA AEMS), via openFDA.",
+      "table": "adverse_event_report",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "report_id",
+          "type": "string",
+          "description": "Safety report ID, optionally with a -digits version suffix.",
+          "column": "report_id"
+        },
+        {
+          "name": "source_system",
+          "type": "string",
+          "description": "Where the report came from. One of: openfda_e2b, faers_qde.",
+          "column": "source_system"
+        },
+        {
+          "name": "receipt_date",
+          "type": "string (ISO date, YYYY-MM-DD)",
+          "description": "Date FDA received the report.",
+          "column": "receipt_date"
+        },
+        {
+          "name": "serious",
+          "type": "boolean",
+          "description": "Whether the report is serious.",
+          "column": "serious"
+        },
+        {
+          "name": "seriousness_criteria",
+          "type": "list of strings",
+          "description": "Seriousness criteria met. One of: death, life threatening, hospitalization, disabling, congenital anomaly, other.",
+          "column": "seriousness_criteria"
+        },
+        {
+          "name": "patient_age_years",
+          "type": "number",
+          "description": "Patient age at onset, in years.",
+          "column": "patient_age_years"
+        }
+      ]
+    },
+    {
+      "label": "DrugInvolvement",
+      "description": "A drug mentioned in an adverse event report, as reported.",
+      "table": "adverse_event_report__drugs",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "drug_name",
+          "type": "string",
+          "description": "Drug name exactly as reported.",
+          "column": "drug_name"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "Role in the report. One of: primary suspect, secondary suspect, suspect, concomitant, interacting.",
+          "column": "role"
+        },
+        {
+          "name": "position",
+          "type": "integer",
+          "description": "Position in the owner's list, from 0.",
+          "column": "position"
+        }
+      ]
+    },
+    {
+      "label": "Reaction",
+      "description": "A reaction, as a MedDRA preferred term string. No MedDRA hierarchy is shipped (licensed).",
+      "table": "adverse_event_report__reactions",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "term",
+          "type": "string",
+          "description": "MedDRA PT text (at most 100 characters).",
+          "column": "term"
+        },
+        {
+          "name": "position",
+          "type": "integer",
+          "description": "Position in the owner's list, from 0.",
+          "column": "position"
+        }
+      ]
+    },
+    {
+      "label": "Recall",
+      "description": "A drug recall from the FDA enforcement report.",
+      "table": "recall",
+      "properties": [
+        {
+          "name": "iri",
+          "type": "string",
+          "description": "Canonical identifier (IRI).",
+          "column": "iri"
+        },
+        {
+          "name": "recall_number",
+          "type": "string",
+          "description": "FDA recall number, for example D-321-2016 or D-0123-2025.",
+          "column": "recall_number"
+        },
+        {
+          "name": "classification",
+          "type": "string",
+          "description": "Class. One of: I, II, III.",
+          "column": "classification"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "description": "Reason for the recall.",
+          "column": "reason"
+        },
+        {
+          "name": "report_date",
+          "type": "string (ISO date, YYYY-MM-DD)",
+          "description": "Enforcement report date.",
+          "column": "report_date"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "label": "DRUG_INVOLVEMENT",
+      "sources": [
+        {
+          "from_label": "AdverseEventReport",
+          "to_label": "DrugInvolvement",
+          "description": "Drugs, in reported order.",
+          "table": "adverse_event_report__drugs",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "INGREDIENT",
+      "sources": [
+        {
+          "from_label": "Product",
+          "to_label": "Substance",
+          "description": "Active ingredients, in order.",
+          "table": "product__ingredients",
+          "from_column": "owner_iri",
+          "to_column": "substance_iri",
+          "properties": [
+            {
+              "name": "strength_value",
+              "type": "number",
+              "description": "Numeric strength.",
+              "column": "strength_value"
+            },
+            {
+              "name": "strength_unit",
+              "type": "string",
+              "description": "Unit of the strength, for example mg/1.",
+              "column": "strength_unit"
+            },
+            {
+              "name": "position",
+              "type": "integer",
+              "description": "Position in the owner's list, from 0.",
+              "column": "position"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "LABELER",
+      "sources": [
+        {
+          "from_label": "PackagedProduct",
+          "to_label": "Organization",
+          "description": "The labeler firm.",
+          "table": "packaged_product",
+          "from_column": "iri",
+          "to_column": "labeler_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "LABELS_PRODUCT",
+      "sources": [
+        {
+          "from_label": "Label",
+          "to_label": "Product",
+          "description": "Products.",
+          "table": "label__products",
+          "from_column": "owner_iri",
+          "to_column": "target_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "PRODUCT",
+      "sources": [
+        {
+          "from_label": "PackagedProduct",
+          "to_label": "Product",
+          "description": "The packaged product.",
+          "table": "packaged_product",
+          "from_column": "iri",
+          "to_column": "product_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "REACTION",
+      "sources": [
+        {
+          "from_label": "AdverseEventReport",
+          "to_label": "Reaction",
+          "description": "Reactions, in order.",
+          "table": "adverse_event_report__reactions",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "RECALLING_FIRM",
+      "sources": [
+        {
+          "from_label": "Recall",
+          "to_label": "Organization",
+          "description": "The recalling firm.",
+          "table": "recall",
+          "from_column": "iri",
+          "to_column": "recalling_firm_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "RECALLS_PRODUCT",
+      "sources": [
+        {
+          "from_label": "Recall",
+          "to_label": "Product",
+          "description": "Products.",
+          "table": "recall__products",
+          "from_column": "owner_iri",
+          "to_column": "target_iri",
+          "properties": []
+        }
+      ]
+    },
+    {
+      "label": "SECTION",
+      "sources": [
+        {
+          "from_label": "Label",
+          "to_label": "LabelSection",
+          "description": "Coded sections.",
+          "table": "label__sections",
+          "from_column": "owner_iri",
+          "to_column": "iri",
+          "properties": []
+        }
+      ]
+    }
+  ]
+}
