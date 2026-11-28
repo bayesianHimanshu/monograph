@@ -6,11 +6,13 @@ The cap is the one the user approved, committed in `experiments/<exp>/budget.jso
 
 Spend is cumulative for the phase: everything already spent (read from the experiment's results JSONL) plus
 everything this process spends. `BudgetedClient` wraps the network client inside the response cache, so it sees
-only real API calls. Before each call it reserves the call's worst-case cost (every input character as one
-token at the dearest input rate, plus the full output budget at the output rate) and refuses the call if
-spent + open reservations + this call would pass the cap; after the call it charges the actual cost and
-appends one `<metric>.spend` line to the results. The cap therefore cannot be exceeded, a rerun counts like
-any other run, and spend inside a question that later errors is counted too.
+only real API calls. Before each call it reserves the call's worst-case cost (every input character as one token
+at the dearest input rate the model can be billed at, long-context rate included, plus the full output budget at
+the matching output rate) and refuses the call if spent + open reservations + this call would pass the cap;
+after the call it charges the actual cost and appends one `<metric>.spend` line to the results, with the rate
+card it was billed on (`rate`: standard, long_context, or unconfirmed_highest with `rate_unconfirmed: true`; see
+monograph.extract.pricing). The cap therefore cannot be exceeded, a rerun counts like any other run, and spend
+inside a question that later errors is counted too.
 """
 
 from __future__ import annotations
@@ -24,7 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from monograph.agent.llm import ToolClient, ToolRequest, ToolResponse
-from monograph.extract.config import PRICES
+from monograph.extract.pricing import dearest
 
 BUDGET_FILE = "budget.json"
 
@@ -69,7 +71,7 @@ def spent(records: Iterable[Mapping[str, Any]], metric: str, split: str) -> Deci
 def worst_case_cost(request: ToolRequest) -> Decimal:
     """An upper bound on one call's cost: tokens never outnumber characters, the dearest input rate, and the full
     output budget."""
-    p = PRICES[request.model]
+    p = dearest(request.model)  # a long prompt can be billed on the dearer rate card
     chars = len(request.system) + len(json.dumps(list(request.tools))) + len(json.dumps(list(request.messages)))
     input_rate = max(p.input, p.cache_write, p.cache_read)
     return (input_rate * chars + p.output * request.settings.max_tokens) / Decimal(1_000_000)
@@ -134,13 +136,19 @@ class BudgetedClient:
         self._guard.reserve(worst)
         actual = Decimal(0)
         request_id = None
+        rate: dict[str, Any] = {}
         try:
             response = self._inner.complete(request)
+            billed = response.usage.rate(request.model)
             actual = response.usage.cost_usd(request.model)
             request_id = response.request_id
+            rate = {"prompt_tokens": response.usage.prompt_tokens, "rate": billed.tier}
+            if not billed.confirmed:  # charged at the highest rate in the table: the real rate is unknown
+                rate["rate_unconfirmed"] = True
             return response
         finally:
-            self._guard.settle(worst, actual, {"model": request.model, "tag": request.tag, "request_id": request_id})
+            info = {"model": request.model, "tag": request.tag, "request_id": request_id, **rate}
+            self._guard.settle(worst, actual, info)
 
 
 def open_guard(

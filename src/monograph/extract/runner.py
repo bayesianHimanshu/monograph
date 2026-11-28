@@ -65,13 +65,19 @@ def record_lines(
                 "pydantic_valid": result.pydantic_valid,
                 "context_issues": result.context_issues,
                 "usage": asdict(usage),
-                "cost_usd": str(usage.cost_usd(result.model)),
+                "cost_usd": str(_cost(result)),  # each round priced on its own
                 "latency_s": round(sum(r.latency_s for r in result.rounds), 3),
                 "network_rounds": sum(not r.from_cache for r in result.rounds),
             },
         )
     )
     return lines
+
+
+def _cost(result: RecordResult) -> Decimal:
+    """A label's cost: the sum of its rounds' costs, each round one request (a long-context rate applies per
+    request, not to the label's summed usage)."""
+    return sum((r.usage.cost_usd(result.model) for r in result.rounds), Decimal(0))
 
 
 class SplitRunner:
@@ -87,7 +93,7 @@ class SplitRunner:
             result = self._extractor.run(doc, arm)
             for metric, value, details in record_lines(result, split, self._prompts, self._settings):
                 self._writer.write(metric, value, details)
-            total += result.usage().cost_usd(result.model)
+            total += _cost(result)
             if n % 10 == 0 or n == len(docs):
                 log(f"{arm} {result.model} {split}: {n}/{len(docs)} labels, cost so far ${total:.4f}")
         return total

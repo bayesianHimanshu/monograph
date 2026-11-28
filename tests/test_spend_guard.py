@@ -142,7 +142,8 @@ def test_a_run_stops_at_the_cap_and_never_passes_it(tmp_path: Path) -> None:
     lines: list[tuple[str, Any, dict[str, Any]]] = []
     write = Writer(lambda metric, value, details: lines.append((metric, value, details)))
     budget = tmp_path / "budget.json"
-    budget.write_text('{"test": {"cap_usd": "0.012", "approved": "a test"}}')
+    # one worst case (Haiku long-context output budget) is about USD 0.02; a question spends under USD 0.001
+    budget.write_text('{"test": {"cap_usd": "0.03", "approved": "a test"}}')
     guard = open_guard(budget, tmp_path / "results", "x", "test", write)
     client = BudgetedClient(FakeToolClient(_script), guard)
     questions = [
@@ -154,7 +155,7 @@ def test_a_run_stops_at_the_cap_and_never_passes_it(tmp_path: Path) -> None:
     )
     assert 0 < len(records) < len(questions)
     assert guard.tripped
-    assert guard.spent <= Decimal("0.012")
+    assert guard.spent <= Decimal("0.03")
     metrics = [m for m, _, _ in lines]
     assert metrics.count("x.budget_stop") == 1
     assert "x.error" not in metrics
